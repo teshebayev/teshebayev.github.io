@@ -1,0 +1,628 @@
+{
+  "site": {
+    "author": "Your Name",
+    "avatar": "assets/img/avatar.svg",
+    "bio": {
+      "ru": "Инженер-программист. Пишу про машинное и глубокое обучение, и математику за ними.",
+      "en": "Software engineer. I write about machine learning, deep learning, and the math behind them."
+    },
+    "social": {
+      "github": "https://github.com/yourname",
+      "twitter": "https://twitter.com/yourname",
+      "email": "mailto:you@example.com",
+      "rss": "feed.xml"
+    },
+    "languages": ["ru", "en"],
+    "defaultLanguage": "ru"
+  },
+
+  "i18n": {
+    "ru": {
+      "nav_about": "Обо мне",
+      "nav_blog": "Блог",
+      "blog_title": "Блог",
+      "blog_subtitle": "Статьи сгруппированы по направлениям. Выберите раздел и откройте материал.",
+      "back_to_categories": "Все категории",
+      "see_all": "Смотреть все",
+      "view_curriculum": "Учебный порядок",
+      "view_chronological": "По дате",
+      "search_placeholder": "Поиск по статьям, описанию и тегам…",
+      "sidebar_filter_placeholder": "Фильтр…",
+      "no_results": "Ничего не найдено.",
+      "reset_filters": "Сбросить фильтры",
+      "min_read": "мин",
+      "min_read_full": "мин чтения",
+      "in_this_article": "В этой статье",
+      "prev_curriculum": "← Назад в курсе",
+      "next_curriculum": "Дальше в курсе →",
+      "prev_chronological": "← Предыдущая",
+      "next_chronological": "Следующая →",
+      "updated": "обновлено",
+      "article_not_translated": "Эта статья пока доступна только на",
+      "view_in_lang": "Открыть на",
+      "reading_order_mode": "учебный порядок",
+      "other_group": "Прочее",
+      "page_not_found": "Такой страницы нет.",
+      "to_home": "На главную",
+      "to_blog": "В блог",
+      "article_not_found": "Статья не найдена.",
+      "back_to_blog": "Вернуться в блог",
+      "category_not_found": "Категория не найдена.",
+      "_lang_name": "Русский",
+      "_lang_short": "RU"
+    },
+    "en": {
+      "nav_about": "About",
+      "nav_blog": "Blog",
+      "blog_title": "Blog",
+      "blog_subtitle": "Articles grouped by topic. Pick a section and dive in.",
+      "back_to_categories": "All categories",
+      "see_all": "See all",
+      "view_curriculum": "Curriculum order",
+      "view_chronological": "By date",
+      "search_placeholder": "Search articles, descriptions, tags…",
+      "sidebar_filter_placeholder": "Filter…",
+      "no_results": "Nothing found.",
+      "reset_filters": "Reset filters",
+      "min_read": "min",
+      "min_read_full": "min read",
+      "in_this_article": "In this article",
+      "prev_curriculum": "← Previous in course",
+      "next_curriculum": "Next in course →",
+      "prev_chronological": "← Previous",
+      "next_chronological": "Next →",
+      "updated": "updated",
+      "article_not_translated": "This article is only available in",
+      "view_in_lang": "View in",
+      "reading_order_mode": "curriculum order",
+      "other_group": "Other",
+      "page_not_found": "Page not found.",
+      "to_home": "Home",
+      "to_blog": "Blog",
+      "article_not_found": "Article not found.",
+      "back_to_blog": "Back to blog",
+      "category_not_found": "Category not found.",
+      "_lang_name": "English",
+      "_lang_short": "EN"
+    }
+  },
+
+  "categories": [
+    {
+      "id": "machine-learning",
+      "title": {
+        "ru": "Машинное обучение",
+        "en": "Machine Learning"
+      },
+      "description": {
+        "ru": "Основы, регрессия, классификация, метрики и интуиция за алгоритмами.",
+        "en": "Fundamentals, regression, classification, metrics, and the intuition behind the algorithms."
+      },
+      "icon": "chart",
+      "accent": "#D97706",
+      "tint": "#FEF3C7",
+      "order": 1
+    },
+    {
+      "id": "deep-learning",
+      "title": {
+        "ru": "Глубокое обучение",
+        "en": "Deep Learning"
+      },
+      "description": {
+        "ru": "Нейросети, CNN, RNN, трансформеры и современные архитектуры.",
+        "en": "Neural networks, CNNs, RNNs, transformers, and modern architectures."
+      },
+      "icon": "brain",
+      "accent": "#6366F1",
+      "tint": "#E0E7FF",
+      "order": 2,
+      "reading_order": [
+        {
+          "group": "neural-networks",
+          "label": { "ru": "Основы нейросетей", "en": "Neural network basics" },
+          "articles": [
+            "neural-networks-from-scratch",
+            "dropout-explained",
+            "batchnorm-explained",
+            "adam-optimizer"
+          ]
+        },
+        {
+          "group": "transformers",
+          "label": { "ru": "Трансформеры", "en": "Transformers" },
+          "articles": [
+            "attention-mechanism",
+            "positional-encoding",
+            "transformer-from-scratch"
+          ]
+        },
+        {
+          "group": "cnn",
+          "label": { "ru": "Свёрточные сети", "en": "Convolutional networks" },
+          "articles": [
+            "cnn-intuition",
+            "resnet-explained"
+          ]
+        },
+        {
+          "group": "generative",
+          "label": { "ru": "Генеративные модели", "en": "Generative models" },
+          "articles": [
+            "vae-intuition",
+            "diffusion-models"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "statistics",
+      "title": {
+        "ru": "Статистика и теория вероятностей",
+        "en": "Statistics & Probability"
+      },
+      "description": {
+        "ru": "Распределения, оценки, гипотезы и байесовский подход.",
+        "en": "Distributions, estimators, hypothesis testing, and the Bayesian view."
+      },
+      "icon": "sigma",
+      "accent": "#10B981",
+      "tint": "#D1FAE5",
+      "order": 3
+    }
+  ],
+
+  "tags": {
+    "intro":           { "ru": "Введение",            "en": "Intro" },
+    "ml-basics":       { "ru": "Основы ML",            "en": "ML basics" },
+    "regression":      { "ru": "Регрессия",            "en": "Regression" },
+    "classification":  { "ru": "Классификация",        "en": "Classification" },
+    "math":            { "ru": "Математика",           "en": "Math" },
+    "metrics":         { "ru": "Метрики",              "en": "Metrics" },
+    "neural-networks": { "ru": "Нейросети",            "en": "Neural networks" },
+    "from-scratch":    { "ru": "С нуля",               "en": "From scratch" },
+    "numpy":           { "ru": "NumPy",                "en": "NumPy" },
+    "transformers":    { "ru": "Трансформеры",         "en": "Transformers" },
+    "cnn":             { "ru": "CNN",                  "en": "CNN" },
+    "rnn":             { "ru": "RNN",                  "en": "RNN" },
+    "optimization":    { "ru": "Оптимизация",          "en": "Optimization" },
+    "generative":      { "ru": "Генеративные модели",  "en": "Generative" },
+    "bayes":           { "ru": "Байес",                "en": "Bayes" },
+    "probability":     { "ru": "Вероятность",          "en": "Probability" },
+    "distributions":   { "ru": "Распределения",        "en": "Distributions" },
+    "hypothesis":      { "ru": "Гипотезы",             "en": "Hypotheses" },
+    "meta":            { "ru": "Мета",                 "en": "Meta" },
+    "svg":             { "ru": "SVG",                  "en": "SVG" },
+    "interactive":     { "ru": "Интерактив",           "en": "Interactive" }
+  },
+
+  "articles": [
+    {
+      "slug": "ai-ml-intro",
+      "category": "machine-learning",
+      "title": {
+        "ru": "Что такое ИИ, машинное и глубокое обучение",
+        "en": "What is AI, machine learning, and deep learning"
+      },
+      "description": {
+        "ru": "Простое объяснение ИИ, ML, DL, компьютерного зрения и LLM через интерактивные SVG-визуализации.",
+        "en": "A simple walkthrough of AI, ML, DL, computer vision, and LLMs — with interactive SVG visualisations."
+      },
+      "date": "2026-05-13",
+      "reading_time": 12,
+      "tags": ["intro", "ml-basics"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/machine-learning/ai-ml-intro.ru.md"
+      }
+    },
+    {
+      "slug": "explicit-vs-ml",
+      "category": "machine-learning",
+      "title": {
+        "ru": "Explicit programming vs Machine Learning",
+        "en": "Explicit programming vs machine learning"
+      },
+      "description": {
+        "ru": "Разница между ручным программированием и обучением модели на примере S = v × t.",
+        "en": "The difference between hand-coded rules and learning from data, told through S = v × t."
+      },
+      "date": "2026-05-11",
+      "reading_time": 5,
+      "tags": ["intro", "ml-basics"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/machine-learning/explicit-vs-ml.ru.md",
+        "en": "content/articles/machine-learning/explicit-vs-ml.en.md"
+      }
+    },
+    {
+      "slug": "linear-regression-intuition",
+      "category": "machine-learning",
+      "title": {
+        "ru": "Линейная регрессия интуитивно"
+      },
+      "description": {
+        "ru": "Что модель делает с весами, ошибкой и линией прогноза."
+      },
+      "date": "2026-05-10",
+      "reading_time": 8,
+      "tags": ["regression", "ml-basics", "math"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/machine-learning/linear-regression.ru.md"
+      }
+    },
+    {
+      "slug": "logistic-regression",
+      "category": "machine-learning",
+      "title": {
+        "ru": "Логистическая регрессия: от линии к границе",
+        "en": "Logistic regression: from a line to a boundary"
+      },
+      "description": {
+        "ru": "Почему регрессия превращается в классификатор и при чём здесь сигмоида.",
+        "en": "Why regression becomes a classifier, and where the sigmoid comes from."
+      },
+      "date": "2026-04-22",
+      "reading_time": 7,
+      "tags": ["classification", "ml-basics", "math"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/machine-learning/explicit-vs-ml.ru.md",
+        "en": "content/articles/machine-learning/explicit-vs-ml.en.md"
+      }
+    },
+    {
+      "slug": "decision-trees",
+      "category": "machine-learning",
+      "title": {
+        "ru": "Деревья решений и почему они переобучаются"
+      },
+      "description": {
+        "ru": "Энтропия, Gini, и где кончается интерпретируемость."
+      },
+      "date": "2026-03-15",
+      "reading_time": 9,
+      "tags": ["classification", "ml-basics"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/machine-learning/explicit-vs-ml.ru.md"
+      }
+    },
+    {
+      "slug": "precision-recall",
+      "category": "machine-learning",
+      "title": {
+        "ru": "Precision, recall и F1 без боли"
+      },
+      "description": {
+        "ru": "Когда accuracy врёт и какую метрику брать на самом деле."
+      },
+      "date": "2026-02-08",
+      "reading_time": 6,
+      "tags": ["metrics", "classification"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/machine-learning/explicit-vs-ml.ru.md"
+      }
+    },
+    {
+      "slug": "gradient-boosting-intuition",
+      "category": "machine-learning",
+      "title": {
+        "ru": "Градиентный бустинг: интуиция"
+      },
+      "description": {
+        "ru": "Почему сумма слабых моделей сильнее одной сильной."
+      },
+      "date": "2025-12-19",
+      "reading_time": 10,
+      "tags": ["classification", "math"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/machine-learning/explicit-vs-ml.ru.md"
+      }
+    },
+    {
+      "slug": "k-means-deep-dive",
+      "category": "machine-learning",
+      "title": {
+        "ru": "K-means: алгоритм, ловушки, варианты"
+      },
+      "description": {
+        "ru": "Что делает Lloyd's algorithm и почему он любит круги."
+      },
+      "date": "2025-11-03",
+      "reading_time": 8,
+      "tags": ["ml-basics"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/machine-learning/explicit-vs-ml.ru.md"
+      }
+    },
+
+    {
+      "slug": "neural-networks-from-scratch",
+      "category": "deep-learning",
+      "title": {
+        "ru": "Нейросеть с нуля: один нейрон, одна задача",
+        "en": "Neural network from scratch: one neuron, one task"
+      },
+      "description": {
+        "ru": "Прямой и обратный проход на минимальной сети — без библиотек, только numpy.",
+        "en": "Forward and backward pass on a minimal network — no frameworks, just numpy."
+      },
+      "date": "2026-05-08",
+      "reading_time": 12,
+      "tags": ["neural-networks", "from-scratch", "numpy"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/deep-learning/neural-networks-intro.ru.md",
+        "en": "content/articles/deep-learning/neural-networks-intro.en.md"
+      }
+    },
+    {
+      "slug": "interactive-visuals",
+      "category": "deep-learning",
+      "title": {
+        "ru": "Интерактивные визуализации в статьях"
+      },
+      "description": {
+        "ru": "Три способа добавлять живые SVG, скрипты и iframe-демо прямо в markdown."
+      },
+      "date": "2026-05-09",
+      "reading_time": 4,
+      "tags": ["meta", "svg", "interactive"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/deep-learning/interactive-visuals.ru.md"
+      }
+    },
+    {
+      "slug": "attention-mechanism",
+      "category": "deep-learning",
+      "title": {
+        "ru": "Attention: запросы, ключи, значения",
+        "en": "Attention: queries, keys, values"
+      },
+      "description": {
+        "ru": "Зачем нужны Q, K, V и что именно делает softmax.",
+        "en": "Why we need Q, K, V — and what softmax actually does."
+      },
+      "date": "2026-04-30",
+      "reading_time": 11,
+      "tags": ["transformers"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/deep-learning/neural-networks-intro.ru.md",
+        "en": "content/articles/deep-learning/neural-networks-intro.en.md"
+      }
+    },
+    {
+      "slug": "transformer-from-scratch",
+      "category": "deep-learning",
+      "title": {
+        "ru": "Трансформер с нуля"
+      },
+      "description": {
+        "ru": "Полная архитектура — multi-head attention, FFN, residual, layer norm."
+      },
+      "date": "2026-04-12",
+      "reading_time": 18,
+      "tags": ["transformers", "from-scratch"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/deep-learning/neural-networks-intro.ru.md"
+      }
+    },
+    {
+      "slug": "positional-encoding",
+      "category": "deep-learning",
+      "title": {
+        "ru": "Positional encoding: почему sin и cos"
+      },
+      "description": {
+        "ru": "Откуда взялась эта формула и какие есть альтернативы."
+      },
+      "date": "2026-03-21",
+      "reading_time": 7,
+      "tags": ["transformers"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/deep-learning/neural-networks-intro.ru.md"
+      }
+    },
+    {
+      "slug": "cnn-intuition",
+      "category": "deep-learning",
+      "title": {
+        "ru": "CNN: как сети видят изображения"
+      },
+      "description": {
+        "ru": "Свёртки, пулинг и иерархия признаков."
+      },
+      "date": "2026-02-26",
+      "reading_time": 9,
+      "tags": ["cnn"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/deep-learning/neural-networks-intro.ru.md"
+      }
+    },
+    {
+      "slug": "resnet-explained",
+      "category": "deep-learning",
+      "title": {
+        "ru": "ResNet и identity shortcut"
+      },
+      "description": {
+        "ru": "Почему обход слоёв стал ключевой идеей в DL."
+      },
+      "date": "2026-01-30",
+      "reading_time": 8,
+      "tags": ["cnn"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/deep-learning/neural-networks-intro.ru.md"
+      }
+    },
+    {
+      "slug": "dropout-explained",
+      "category": "deep-learning",
+      "title": {
+        "ru": "Dropout: ансамбль внутри одной сети"
+      },
+      "description": {
+        "ru": "Зачем «выбивать» нейроны и при чём здесь Bayes."
+      },
+      "date": "2025-12-14",
+      "reading_time": 6,
+      "tags": ["optimization"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/deep-learning/neural-networks-intro.ru.md"
+      }
+    },
+    {
+      "slug": "batchnorm-explained",
+      "category": "deep-learning",
+      "title": {
+        "ru": "Batch Normalization без магии"
+      },
+      "description": {
+        "ru": "Что нормализуется, зачем, и где это ломается."
+      },
+      "date": "2025-11-28",
+      "reading_time": 7,
+      "tags": ["optimization"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/deep-learning/neural-networks-intro.ru.md"
+      }
+    },
+    {
+      "slug": "adam-optimizer",
+      "category": "deep-learning",
+      "title": {
+        "ru": "Adam: SGD с памятью"
+      },
+      "description": {
+        "ru": "Моментум, RMSProp и их объединение в один оптимизатор."
+      },
+      "date": "2025-10-11",
+      "reading_time": 8,
+      "tags": ["optimization"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/deep-learning/neural-networks-intro.ru.md"
+      }
+    },
+    {
+      "slug": "vae-intuition",
+      "category": "deep-learning",
+      "title": {
+        "ru": "VAE: между автокодировщиком и вероятностью"
+      },
+      "description": {
+        "ru": "Что значит «вариационный» и зачем сэмплировать в скрытом пространстве."
+      },
+      "date": "2025-09-04",
+      "reading_time": 12,
+      "tags": ["generative"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/deep-learning/neural-networks-intro.ru.md"
+      }
+    },
+    {
+      "slug": "diffusion-models",
+      "category": "deep-learning",
+      "title": {
+        "ru": "Diffusion модели: от шума к картинке"
+      },
+      "description": {
+        "ru": "Forward process, reverse process и почему это работает."
+      },
+      "date": "2025-08-15",
+      "reading_time": 14,
+      "tags": ["generative"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/deep-learning/neural-networks-intro.ru.md"
+      }
+    },
+
+    {
+      "slug": "bayes-theorem-intuition",
+      "category": "statistics",
+      "title": {
+        "ru": "Теорема Байеса: интуиция и применение",
+        "en": "Bayes' theorem: intuition and applications"
+      },
+      "description": {
+        "ru": "Как условные вероятности обновляют наше мнение, на примере медицинского теста.",
+        "en": "How conditional probabilities update our beliefs — walked through with a medical test."
+      },
+      "date": "2026-05-05",
+      "reading_time": 6,
+      "tags": ["bayes", "probability"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/statistics/bayes-theorem.ru.md",
+        "en": "content/articles/statistics/bayes-theorem.en.md"
+      }
+    },
+    {
+      "slug": "normal-distribution",
+      "category": "statistics",
+      "title": {
+        "ru": "Нормальное распределение и ЦПТ"
+      },
+      "description": {
+        "ru": "Почему столько вещей в природе оказываются гауссовыми."
+      },
+      "date": "2026-03-08",
+      "reading_time": 7,
+      "tags": ["distributions", "probability"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/statistics/bayes-theorem.ru.md"
+      }
+    },
+    {
+      "slug": "p-values-myth",
+      "category": "statistics",
+      "title": {
+        "ru": "Что НА САМОМ ДЕЛЕ значит p-value"
+      },
+      "description": {
+        "ru": "Самая часто неправильно интерпретируемая величина в науке."
+      },
+      "date": "2026-01-12",
+      "reading_time": 8,
+      "tags": ["hypothesis"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/statistics/bayes-theorem.ru.md"
+      }
+    },
+    {
+      "slug": "ab-testing-bayesian",
+      "category": "statistics",
+      "title": {
+        "ru": "Байесовские A/B-тесты"
+      },
+      "description": {
+        "ru": "Альтернатива классическим p-values, которая отвечает на вопрос, который вы реально задаёте."
+      },
+      "date": "2025-11-22",
+      "reading_time": 10,
+      "tags": ["bayes", "hypothesis"],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/statistics/bayes-theorem.ru.md"
+      }
+    }
+  ]
+}

@@ -1,0 +1,220 @@
+{
+  "site": {
+    "author": "Your Name",
+    "avatar": "assets/img/avatar.svg",
+    "bio": {
+      "ru": "Инженер-программист. Пишу про машинное и глубокое обучение, и математику за ними.",
+      "en": "Software engineer. I write about machine learning, deep learning, and the math behind them.",
+      "kk": "Бағдарламалық инженер. Машиналық оқыту, терең оқыту және олардың артындағы математика туралы жазамын."
+    },
+    "social": {
+      "github": "https://github.com/yourname",
+      "twitter": "https://twitter.com/yourname",
+      "email": "mailto:you@example.com",
+      "rss": "feed.xml"
+    },
+    "languages": [
+      "ru",
+      "en",
+      "kk"
+    ],
+    "defaultLanguage": "ru"
+  },
+  "i18n": {
+    "ru": {
+      "nav_about": "Обо мне",
+      "nav_blog": "Блог",
+      "blog_title": "Блог",
+      "blog_subtitle": "Статьи сгруппированы по направлениям. Выберите раздел и откройте материал.",
+      "back_to_categories": "Все категории",
+      "see_all": "Смотреть все",
+      "view_curriculum": "Учебный порядок",
+      "view_chronological": "По дате",
+      "search_placeholder": "Поиск по статьям, описанию и тегам…",
+      "sidebar_filter_placeholder": "Фильтр…",
+      "no_results": "Ничего не найдено.",
+      "reset_filters": "Сбросить фильтры",
+      "min_read": "мин",
+      "min_read_full": "мин чтения",
+      "in_this_article": "В этой статье",
+      "prev_curriculum": "← Назад в курсе",
+      "next_curriculum": "Дальше в курсе →",
+      "prev_chronological": "← Предыдущая",
+      "next_chronological": "Следующая →",
+      "updated": "обновлено",
+      "article_not_translated": "Эта статья пока доступна только на",
+      "view_in_lang": "Открыть на",
+      "reading_order_mode": "учебный порядок",
+      "other_group": "Прочее",
+      "page_not_found": "Такой страницы нет.",
+      "to_home": "На главную",
+      "to_blog": "В блог",
+      "article_not_found": "Статья не найдена.",
+      "back_to_blog": "Вернуться в блог",
+      "category_not_found": "Категория не найдена.",
+      "_lang_name": "Русский",
+      "_lang_short": "RU"
+    },
+    "en": {
+      "nav_about": "About",
+      "nav_blog": "Blog",
+      "blog_title": "Blog",
+      "blog_subtitle": "Articles grouped by topic. Pick a section and dive in.",
+      "back_to_categories": "All categories",
+      "see_all": "See all",
+      "view_curriculum": "Curriculum order",
+      "view_chronological": "By date",
+      "search_placeholder": "Search articles, descriptions, tags…",
+      "sidebar_filter_placeholder": "Filter…",
+      "no_results": "Nothing found.",
+      "reset_filters": "Reset filters",
+      "min_read": "min",
+      "min_read_full": "min read",
+      "in_this_article": "In this article",
+      "prev_curriculum": "← Previous in course",
+      "next_curriculum": "Next in course →",
+      "prev_chronological": "← Previous",
+      "next_chronological": "Next →",
+      "updated": "updated",
+      "article_not_translated": "This article is only available in",
+      "view_in_lang": "View in",
+      "reading_order_mode": "curriculum order",
+      "other_group": "Other",
+      "page_not_found": "Page not found.",
+      "to_home": "Home",
+      "to_blog": "Blog",
+      "article_not_found": "Article not found.",
+      "back_to_blog": "Back to blog",
+      "category_not_found": "Category not found.",
+      "_lang_name": "English",
+      "_lang_short": "EN"
+    },
+    "kk": {
+      "nav_about": "Мен туралы",
+      "nav_blog": "Блог",
+      "blog_title": "Блог",
+      "blog_subtitle": "Мақалалар тақырыптар бойынша топтастырылған. Бөлімді таңдап, материалды ашыңыз.",
+      "back_to_categories": "Барлық категориялар",
+      "see_all": "Барлығын көру",
+      "view_curriculum": "Оқу реті",
+      "view_chronological": "Күні бойынша",
+      "search_placeholder": "Мақалалар, сипаттама және тегтер бойынша іздеу…",
+      "sidebar_filter_placeholder": "Сүзгі…",
+      "no_results": "Ештеңе табылмады.",
+      "reset_filters": "Сүзгілерді тазалау",
+      "min_read": "мин",
+      "min_read_full": "мин оқу",
+      "in_this_article": "Бұл мақалада",
+      "prev_curriculum": "← Курстағы алдыңғы",
+      "next_curriculum": "Курстағы келесі →",
+      "prev_chronological": "← Алдыңғы",
+      "next_chronological": "Келесі →",
+      "updated": "жаңартылды",
+      "article_not_translated": "Бұл мақала әзірге тек мына тілде қолжетімді:",
+      "view_in_lang": "Ашу тілі:",
+      "reading_order_mode": "оқу реті",
+      "other_group": "Басқа",
+      "page_not_found": "Мұндай бет жоқ.",
+      "to_home": "Басты бетке",
+      "to_blog": "Блогқа",
+      "article_not_found": "Мақала табылмады.",
+      "back_to_blog": "Блогқа қайту",
+      "category_not_found": "Категория табылмады.",
+      "_lang_name": "Қазақша",
+      "_lang_short": "KK"
+    }
+  },
+  "categories": [
+    {
+      "id": "machine-learning",
+      "title": {
+        "ru": "Машинное обучение",
+        "en": "Machine Learning",
+        "kk": "Машиналық оқыту"
+      },
+      "description": {
+        "ru": "Основы, регрессия, классификация, метрики и интуиция за алгоритмами.",
+        "en": "Fundamentals, regression, classification, metrics, and the intuition behind the algorithms.",
+        "kk": "Негіздер, регрессия, классификация, метрикалар және алгоритмдердің интуициясы."
+      },
+      "icon": "chart",
+      "accent": "#D97706",
+      "tint": "#FEF3C7",
+      "order": 1
+    },
+    {
+      "id": "deep-learning",
+      "title": {
+        "ru": "Глубокое обучение",
+        "en": "Deep Learning",
+        "kk": "Терең оқыту"
+      },
+      "description": {
+        "ru": "Нейросети, CNN, RNN, трансформеры и современные архитектуры.",
+        "en": "Neural networks, CNNs, RNNs, transformers, and modern architectures.",
+        "kk": "Нейрондық желілер, CNN, RNN, трансформерлер және заманауи архитектуралар."
+      },
+      "icon": "brain",
+      "accent": "#6366F1",
+      "tint": "#E0E7FF",
+      "order": 2
+    }
+  ],
+  "tags": {
+    "intro": {
+      "ru": "Введение",
+      "en": "Intro",
+      "kk": "Кіріспе"
+    },
+    "ml-basics": {
+      "ru": "Основы ML",
+      "en": "ML basics",
+      "kk": "ML негіздері"
+    },
+    "deep-learning": {
+      "ru": "Глубокое обучение",
+      "en": "Deep learning",
+      "kk": "Терең оқыту"
+    },
+    "ai": {
+      "ru": "ИИ",
+      "en": "AI",
+      "kk": "ЖИ"
+    },
+    "computer-vision": {
+      "ru": "Компьютерное зрение",
+      "en": "Computer vision",
+      "kk": "Компьютерлік көру"
+    },
+    "llm": {
+      "ru": "LLM",
+      "en": "LLM",
+      "kk": "LLM"
+    }
+  },
+  "articles": [
+    {
+  "slug": "ai-ml-intro",
+  "category": "machine-learning",
+  "title": {
+    "ru": "Что такое ИИ, машинное и глубокое обучение",
+    "kk": "Жасанды интеллект, машиналық оқыту және терең оқыту деген не?",
+    "en": "What are AI, machine learning, and deep learning?"
+  },
+  "description": {
+    "ru": "Простое объяснение ИИ, ML, DL, компьютерного зрения и LLM через интерактивные SVG-визуализации.",
+    "kk": "AI, ML, DL, компьютерлік көру және LLM туралы интерактивті SVG-визуализациялар арқылы қарапайым түсіндіру.",
+    "en": "A simple explanation of AI, ML, DL, computer vision, and LLMs through interactive SVG visualizations."
+  },
+  "date": "2026-05-13",
+  "reading_time": 12,
+  "tags": ["intro", "ml-basics"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/ai-ml-intro.ru.md",
+    "kk": "content/articles/machine-learning/ai-ml-intro.kk.md",
+    "en": "content/articles/machine-learning/ai-ml-intro.en.md"
+  }
+}
+  ]
+}

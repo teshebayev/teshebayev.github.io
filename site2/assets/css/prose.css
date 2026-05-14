@@ -1,0 +1,174 @@
+/* =========================================================================
+   .prose — typography for rendered markdown
+   ========================================================================= */
+.prose {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--text);
+}
+
+.prose p { margin: 0 0 1.3em; }
+
+.prose h2 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin: 2.2em 0 0.6em;
+  line-height: 1.2;
+  scroll-margin-top: 24px;
+}
+.prose h3 {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 600;
+  margin: 1.8em 0 0.5em;
+  line-height: 1.3;
+  scroll-margin-top: 24px;
+}
+.prose h4 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 1.6em 0 0.4em;
+}
+.prose h2:first-child, .prose h3:first-child { margin-top: 0; }
+
+.prose a { color: var(--link); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+
+.prose ul, .prose ol { padding-left: 1.4em; margin: 0 0 1.4em; }
+.prose li { margin-bottom: 0.5em; }
+.prose li > p { margin-bottom: 0.4em; }
+
+.prose blockquote {
+  margin: 1.5em 0;
+  padding: 4px 0 4px 20px;
+  border-left: 3px solid var(--cat-accent, var(--border));
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--bg-subtle);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.prose pre {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+  overflow-x: auto;
+  margin: 1.5em 0;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.prose pre code {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+}
+
+.prose img {
+  border-radius: var(--radius-sm);
+  margin: 1.5em 0;
+  border: 1px solid var(--border-soft);
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: 14.5px;
+}
+.prose th, .prose td {
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.prose th {
+  font-weight: 600;
+  background: var(--bg-subtle);
+  font-family: var(--font-body);
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 2.5em auto;
+  width: 60%;
+}
+
+/* KaTeX display blocks need a bit of breathing room */
+.prose .katex-display { margin: 1.5em 0; overflow-x: auto; }
+
+/* Inline note callout — use blockquote with "Note:" or a custom div */
+.prose .callout {
+  margin: 1.5em 0;
+  padding: 16px 20px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--cat-accent, var(--text));
+  font-size: 15px;
+}
+.prose .callout strong:first-child { display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+
+/* Heading anchor link on hover */
+.prose h2, .prose h3 { position: relative; }
+.prose h2 .anchor, .prose h3 .anchor {
+  position: absolute;
+  left: -24px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  color: var(--text-faint);
+  font-weight: 400;
+  text-decoration: none;
+  transition: opacity var(--t-fast);
+}
+.prose h2:hover .anchor, .prose h3:hover .anchor { opacity: 1; }
+
+/* =========================================================================
+   Interactive demos (inline SVG with JS, custom widgets, iframes)
+   ========================================================================= */
+.prose .interactive-demo,
+.prose svg.demo,
+.prose figure.demo {
+  display: block;
+  margin: 1.8em auto;
+  max-width: 100%;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
+.prose figure.demo svg { display: block; margin: 0 auto; }
+.prose figure.demo figcaption {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+  font-family: var(--font-body);
+}
+.prose .demo-frame { display: block; margin: 1.8em 0; }
+.prose .demo-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  font-size: 14px;
+  font-family: var(--font-body);
+}
+.prose .demo-controls input[type="range"] { flex: 1; min-width: 120px; }
+.prose .demo-controls button {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+.prose .demo-controls button:hover { border-color: var(--text); }
