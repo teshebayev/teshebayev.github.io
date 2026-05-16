@@ -9,7 +9,7 @@
     },
     "social": {
       "github": "https://github.com/teshebayev",
-      "linkedin": "www.linkedin.com/in/nurdaulet-teshebayev-a224a8217",
+      "linkedin": "https://www.linkedin.com/in/nurdaulet-teshebayev-a224a8217",
       "email":   "teshebayevprof@gmail.com",
       "rss": "feed.xml"
     },
@@ -52,6 +52,7 @@
       "article_not_found": "Статья не найдена.",
       "back_to_blog": "Вернуться в блог",
       "category_not_found": "Категория не найдена.",
+      "download_cv": "Скачать резюме",
       "_lang_name": "Русский",
       "_lang_short": "RU"
     },
@@ -86,6 +87,7 @@
       "article_not_found": "Article not found.",
       "back_to_blog": "Back to blog",
       "category_not_found": "Category not found.",
+      "download_cv": "Download CV",
       "_lang_name": "English",
       "_lang_short": "EN"
     },
@@ -120,6 +122,7 @@
       "article_not_found": "Мақала табылмады.",
       "back_to_blog": "Блогқа қайту",
       "category_not_found": "Категория табылмады.",
+      "download_cv": "CV жүктеу",
       "_lang_name": "Қазақша",
       "_lang_short": "KK"
     }
