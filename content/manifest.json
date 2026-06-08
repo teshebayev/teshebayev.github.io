@@ -159,6 +159,23 @@
       "accent": "#6366F1",
       "tint": "#E0E7FF",
       "order": 2
+    },
+    {
+      "id": "computer-science",
+      "title": {
+        "ru": "Основы компьютерных технологий и программирования",
+        "en": "Computer science & programming basics",
+        "kk": "Компьютерлік технологиялар мен бағдарламалау негіздері"
+      },
+      "description": {
+        "ru": "Как устроен компьютер изнутри: от электронов и транзисторов до процессора, ОС и языков программирования.",
+        "en": "How a computer works under the hood: from electrons and transistors to the CPU, the OS, and programming languages.",
+        "kk": "Компьютер ішінен қалай жұмыс істейді: электрондар мен транзисторлардан процессорға, ОЖ-ге және бағдарламалау тілдеріне дейін."
+      },
+      "icon": "chip",
+      "accent": "#0EA5E9",
+      "tint": "#E0F2FE",
+      "order": 3
     }
   ],
   "tags": {
@@ -191,6 +208,21 @@
       "ru": "LLM",
       "en": "LLM",
       "kk": "LLM"
+    },
+    "computer-basics": {
+      "ru": "Как устроен компьютер",
+      "en": "How computers work",
+      "kk": "Компьютер құрылысы"
+    },
+    "hardware": {
+      "ru": "Железо",
+      "en": "Hardware",
+      "kk": "Аппараттық бөлік"
+    },
+    "programming": {
+      "ru": "Программирование",
+      "en": "Programming",
+      "kk": "Бағдарламалау"
     }
   },
   "articles": [
@@ -215,6 +247,40 @@
     "ru": "content/articles/machine-learning/ai-ml-intro.ru.md",
     "kk": "content/articles/machine-learning/ai-ml-intro.kk.md",
     "en": "content/articles/machine-learning/ai-ml-intro.en.md"
+  }
+},
+    {
+  "slug": "vhod-model-vyhod",
+  "category": "machine-learning",
+  "title": {
+    "ru": "Вход → Модель → Выход: смотрим на ML-модель как на чёрную коробку"
+  },
+  "description": {
+    "ru": "Любую ML-задачу можно разложить по двум осям: что подаём на вход и что хотим на выходе. Разбираем, как таблицы, картинки и текст превращаются в числа, и почему тип выхода определяет задачу — через 8 интерактивных визуализаций."
+  },
+  "date": "2026-06-08",
+  "reading_time": 18,
+  "tags": ["ml-basics", "intro"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/vhod-model-vyhod.ru.md"
+  }
+},
+    {
+  "slug": "how-computers-work",
+  "category": "computer-science",
+  "title": {
+    "ru": "Как устроен компьютер: от электронов до Python"
+  },
+  "description": {
+    "ru": "Полная цепочка работы компьютера снизу вверх: электроны, ток, транзисторы, логические вентили, двоичная система, процессор, ОС и языки программирования — через 19 интерактивных визуализаций."
+  },
+  "date": "2026-06-08",
+  "reading_time": 35,
+  "tags": ["computer-basics", "hardware", "programming"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/computer-science/how-computers-work.ru.md"
   }
 }
   ]
