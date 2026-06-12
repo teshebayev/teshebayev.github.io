@@ -267,6 +267,23 @@
   }
 },
     {
+  "slug": "linear-regression",
+  "category": "machine-learning",
+  "title": {
+    "ru": "Линейная регрессия и как обучаются все ML-модели"
+  },
+  "description": {
+    "ru": "Все ML-модели обучаются по одному циклу: forward → loss → backward → update. Разбираем его на линейной регрессии — функция потерь, градиентный спуск, backpropagation и путь до PyTorch — через 6 интерактивных визуализаций."
+  },
+  "date": "2026-06-12",
+  "reading_time": 22,
+  "tags": ["ml-basics"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/linear-regression.ru.md"
+  }
+},
+    {
   "slug": "how-computers-work",
   "category": "computer-science",
   "title": {
