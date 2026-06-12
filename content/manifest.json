@@ -284,6 +284,23 @@
   }
 },
     {
+  "slug": "logistic-regression",
+  "category": "machine-learning",
+  "title": {
+    "ru": "Логистическая регрессия и как модель учится классифицировать"
+  },
+  "description": {
+    "ru": "Логистическая регрессия — базовая модель классификации, обучаемая тем же циклом forward → loss → backward → update. Разбираем сигмоиду, binary cross-entropy, градиентный спуск, backpropagation и матричную форму для батча — через 7 интерактивных визуализаций и путь до кода на numpy и PyTorch."
+  },
+  "date": "2026-06-12",
+  "reading_time": 24,
+  "tags": ["ml-basics"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/logistic-regression.ru.md"
+  }
+},
+    {
   "slug": "how-computers-work",
   "category": "computer-science",
   "title": {
