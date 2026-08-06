@@ -316,6 +316,23 @@
   "content": {
     "ru": "content/articles/computer-science/how-computers-work.ru.md"
   }
+},
+    {
+  "slug": "mlp",
+  "category": "deep-learning",
+  "title": {
+    "ru": "Полносвязная нейросеть — от одного нейрона до универсального аппроксиматора"
+  },
+  "description": {
+    "ru": "Один нейрон → слой нейронов → стек слоёв. Зачем принципиально нужна активация, что такое скрытое представление, как идут forward и backward pass и как выглядит матричная форма для батча — через 8 интерактивных визуализаций и три версии одного кода: numpy, слои-объекты и PyTorch."
+  },
+  "date": "2026-08-06",
+  "reading_time": 26,
+  "tags": ["ml-basics", "deep-learning"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/deep-learning/mlp.ru.md"
+  }
 }
   ]
 }
