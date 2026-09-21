@@ -301,23 +301,6 @@
   }
 },
     {
-  "slug": "logistic-regression",
-  "category": "machine-learning",
-  "title": {
-    "ru": "Логистическая регрессия и как модель учится классифицировать"
-  },
-  "description": {
-    "ru": "Логистическая регрессия — базовая модель классификации, обучаемая тем же циклом forward → loss → backward → update. Разбираем сигмоиду, binary cross-entropy, градиентный спуск, backpropagation и матричную форму для батча — через 7 интерактивных визуализаций и путь до кода на numpy и PyTorch."
-  },
-  "date": "2026-06-12",
-  "reading_time": 24,
-  "tags": ["ml-basics"],
-  "draft": false,
-  "content": {
-    "ru": "content/articles/machine-learning/logistic-regression.ru.md"
-  }
-},
-    {
   "slug": "logistic-regression-full-cycle",
   "category": "machine-learning",
   "title": {
@@ -383,6 +366,40 @@
   "draft": false,
   "content": {
     "ru": "content/articles/deep-learning/mlp.ru.md"
+  }
+},
+    {
+  "slug": "mlp-full-cycle",
+  "category": "deep-learning",
+  "title": {
+    "ru": "Полносвязная нейросеть с нуля: forward и backpropagation по тем же правилам"
+  },
+  "description": {
+    "ru": "Полносвязная сеть как логистическая регрессия, повторённая несколько раз подряд с нелинейностью между слоями: полный forward, softmax и cross-entropy, backpropagation через все слои, батч и gradient descent на сквозном примере, карта размерностей от x до dW и db, три версии кода — numpy, слои и PyTorch."
+  },
+  "date": "2026-09-21",
+  "reading_time": 30,
+  "tags": ["ml-basics", "deep-learning"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/deep-learning/mlp-full-cycle.ru.md"
+  }
+},
+    {
+  "slug": "mlp-by-shapes",
+  "category": "deep-learning",
+  "title": {
+    "ru": "Полносвязная нейросеть: многослойный перцептрон по формам матриц"
+  },
+  "description": {
+    "ru": "Многослойный перцептрон, разобранный через формы матриц [B × d]: линейный слой Z = XW + b, ReLU, softmax, кросс-энтропия, что ломается без нелинейности и полный backprop — от глобальной карты градиентов до локальных формул одного слоя и численной проверки. Сквозной пример — ирисы Фишера и сеть 4 → 5 → 4 → 3."
+  },
+  "date": "2026-09-21",
+  "reading_time": 16,
+  "tags": ["ml-basics", "deep-learning"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/deep-learning/mlp-by-shapes.ru.md"
   }
 }
   ]
