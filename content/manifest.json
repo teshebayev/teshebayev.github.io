@@ -267,23 +267,6 @@
   }
 },
     {
-  "slug": "linear-regression",
-  "category": "machine-learning",
-  "title": {
-    "ru": "Линейная регрессия и как обучаются все ML-модели"
-  },
-  "description": {
-    "ru": "Все ML-модели обучаются по одному циклу: forward → loss → backward → update. Разбираем его на линейной регрессии — функция потерь, градиентный спуск, backpropagation и путь до PyTorch — через 6 интерактивных визуализаций."
-  },
-  "date": "2026-06-12",
-  "reading_time": 22,
-  "tags": ["ml-basics"],
-  "draft": false,
-  "content": {
-    "ru": "content/articles/machine-learning/linear-regression.ru.md"
-  }
-},
-    {
   "slug": "linear-regression-full-cycle",
   "category": "machine-learning",
   "title": {
@@ -298,6 +281,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/machine-learning/linear-regression-full-cycle.ru.md"
+  }
+},
+    {
+  "slug": "linear-regression-by-shapes",
+  "category": "machine-learning",
+  "title": {
+    "ru": "Линейная регрессия по формам матриц"
+  },
+  "description": {
+    "ru": "Линейная регрессия как один линейный слой без активации, разобранный через формы матриц [B × d]: данные, предсказание, MSE, трюк с единицей, геометрия проекции, нормальные уравнения, коллинеарность, градиент и шаг спуска. Каждая часть — сцена с блоками без чисел и следом за ней те же шаги на сквозном численном примере."
+  },
+  "date": "2026-09-21",
+  "reading_time": 16,
+  "tags": ["ml-basics"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/linear-regression-by-shapes.ru.md"
   }
 },
     {
