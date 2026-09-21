@@ -1,7 +1,4 @@
 <style>
-  .stage-figure #nn, .stage-figure #mx, .stage-figure #cy, .stage-figure #f1,
-  .stage-figure #fb, .stage-figure #fx, .stage-figure #bg, .stage-figure #bm,
-  .stage-figure #bx, .stage-figure #gd, .stage-figure #dm, .stage-figure #tk { min-width: 960px; }
   .console {
     background: #1D1B17; color: #E8E4DA; border-radius: 12px;
     padding: 15px 18px; margin: 22px 0; overflow-x: auto;
@@ -24,7 +21,7 @@
   .lr-live-head p { margin: 6px 0 0; font-size: 14px; color: #5E5850; }
   .lr-live-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(210px, 1fr); gap: 22px; margin-top: 16px; align-items: start; }
   .lr-live-figure { overflow-x: auto; }
-  .lr-live-figure svg, .stage-figure #lineFitSvg { width: 100%; min-width: 620px; display: block; }
+  .lr-live-figure svg, .stage-figure #lineFitSvg { width: 100%; display: block; }
   .lr-controls { display: flex; flex-direction: column; gap: 14px; }
   .lr-control label { display: flex; justify-content: space-between; font-size: 13px; color: #5E5850; margin-bottom: 6px; }
   .lr-control output { font-variant-numeric: tabular-nums; font-weight: 700; color: #111111; }
