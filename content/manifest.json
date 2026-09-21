@@ -537,6 +537,57 @@
   "content": {
     "ru": "content/articles/under-the-hood/backprop.ru.md"
   }
+},
+    {
+  "slug": "cnn-from-zero",
+  "category": "deep-learning",
+  "title": {
+    "ru": "Свёрточная нейронная сеть с нуля: от рукописной цифры до полной архитектуры"
+  },
+  "description": {
+    "ru": "Свёртка — не новая формула, а ответ на конкретную поломку: обычный полносвязный классификатор рукописных цифр даёт 97%, но сдвиньте картинку на один пиксель — и точность падает до 39%. От одного веса на пиксель через шаблоны, свёртку, каналы, padding, stride, pooling и рецептивное поле — до forward и backward руками на сети, которую можно посчитать вручную, и того же кода на NumPy, в объектном виде и на PyTorch."
+  },
+  "date": "2026-09-21",
+  "reading_time": 30,
+  "tags": ["ml-basics", "deep-learning"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/deep-learning/cnn-from-zero.ru.md"
+  }
+},
+    {
+  "slug": "cnn-by-shapes",
+  "category": "deep-learning",
+  "title": {
+    "ru": "Свёрточная нейросеть: CNN по формам тензоров"
+  },
+  "description": {
+    "ru": "CNN как полносвязный слой, который смотрит не на всю картинку, а на окно 3×3 одними и теми же весами — а если выложить окна строками, свёртка превращается в умножение матриц. Окно свёртки, каналы, im2col, ReLU, max-пулинг, классификатор и полный обратный проход — на сквозном примере с двумя картинками 6×6."
+  },
+  "date": "2026-09-21",
+  "reading_time": 21,
+  "tags": ["ml-basics", "deep-learning"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/deep-learning/cnn-by-shapes.ru.md"
+  }
+},
+    {
+  "slug": "conv-arithmetic",
+  "category": "deep-learning",
+  "title": {
+    "ru": "Арифметика свёртки: от скользящего окна до транспонированной свёртки"
+  },
+  "description": {
+    "ru": "Как размер входа, ядро, отступ, шаг и расширение определяют размер выхода свёртки, пулинга и транспонированной свёртки — с изометрическими схемами и сквозным числовым примером (карта 5×5, ядро 3×3), пересчитанным на NumPy. Три режима отступа, свёртка как матрица, дробный шаг и расширенная свёртка."
+  },
+  "date": "2026-09-21",
+  "reading_time": 32,
+  "tags": ["ml-basics", "deep-learning"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/deep-learning/conv-arithmetic.ru.md"
+  }
 }
   ]
 }
