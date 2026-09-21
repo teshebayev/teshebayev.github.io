@@ -491,7 +491,7 @@ function scopeSvgStyles(root) {
     const scope = `svg[data-svg-scope="${scopeId}"]`;
 
     styles.forEach((styleEl) => {
-      styleEl.textContent = rewriteCss(styleEl.textContent || "", scope);
+      styleEl.textContent = rewriteCss(styleEl.textContent || "", scope, svg.id);
     });
   });
 }
@@ -501,9 +501,15 @@ function scopeSvgStyles(root) {
  * Naive but works for the limited CSS you find inside inline SVG <style> tags
  * (no @media, no @keyframes, no nested rules).
  */
-function rewriteCss(css, scope) {
+function rewriteCss(css, scope, svgId) {
   // Strip comments first to simplify parsing.
   css = css.replace(/\/\*[\s\S]*?\*\//g, "");
+
+  // Authors also address "this svg" by its own id (`#eq { ... }`,
+  // `#eq .grid { ... }`) instead of the `svg` element — treat that leading
+  // `#<svgId>` the same as a leading `svg`, or it'd expand to a descendant
+  // combinator asking the svg to contain itself, which never matches.
+  const idPrefix = svgId ? new RegExp("^#" + svgId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "(\\s|$|\\.|\\[|:|>|~|\\+|,)") : null;
 
   // Walk through "selector-list { block }" pairs.
   return css.replace(/([^{}]+)\{([^}]*)\}/g, (_, selectors, body) => {
@@ -516,6 +522,9 @@ function rewriteCss(css, scope) {
         // svg specifically — replace "svg" with our scoped selector.
         if (/^svg(\s|$|\.|\[|:|>|~|\+|,)/.test(sel)) {
           return scope + sel.slice(3);
+        }
+        if (idPrefix && idPrefix.test(sel)) {
+          return scope + sel.slice(svgId.length + 1);
         }
         return `${scope} ${sel}`;
       })
