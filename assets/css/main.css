@@ -1258,7 +1258,7 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
   border-radius: var(--radius-sm);
   padding: 16px 18px;
 }
-.prose .contract-card span {
+.prose .contract-card > span {
   display: block;
   color: #3576c0;
   font-size: 12px;
