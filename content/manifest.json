@@ -588,6 +588,40 @@
   "content": {
     "ru": "content/articles/deep-learning/conv-arithmetic.ru.md"
   }
+},
+    {
+  "slug": "rnn-from-zero",
+  "category": "deep-learning",
+  "title": {
+    "ru": "Рекуррентная нейронная сеть с нуля: RNN, forward и BPTT"
+  },
+  "description": {
+    "ru": "RNN — не новый тип нейрона, а тот же полносвязный слой, которому дали второй вход: собственный результат с предыдущего шага. Из этой одной добавки вырастают и память, и развёртка во времени, и вся сложность обратного прохода. Ячейка, скрытое состояние, forward и BPTT руками на фразе целиком, затухающий градиент и клиппинг, формы тензоров, три версии кода — и LSTM как управляемая память."
+  },
+  "date": "2026-09-21",
+  "reading_time": 37,
+  "tags": ["ml-basics", "deep-learning"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/deep-learning/rnn-from-zero.ru.md"
+  }
+},
+    {
+  "slug": "rnn-by-shapes",
+  "category": "deep-learning",
+  "title": {
+    "ru": "Рекуррентная нейросеть: RNN и BPTT по формам матриц"
+  },
+  "description": {
+    "ru": "RNN как тот же полносвязный слой с общими для всех шагов весами и вторым входом — собственным выходом с прошлого шага. Ячейка, развёртка во времени, выход на каждом шаге, потеря и полный обратный проход во времени (BPTT) — на сквозном примере hello / olleh."
+  },
+  "date": "2026-09-21",
+  "reading_time": 27,
+  "tags": ["ml-basics", "deep-learning"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/deep-learning/rnn-by-shapes.ru.md"
+  }
 }
   ]
 }
