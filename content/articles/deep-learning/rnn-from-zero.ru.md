@@ -1,4 +1,26 @@
 <style>
+  .rnn-svg text { font-family: Helvetica, Arial, sans-serif; }
+  .rnn-svg .v-title { font-size: 19px; font-weight: 700; fill: #111; }
+  .rnn-svg .v-small { font-size: 13px; fill: #5E5850; }
+  .rnn-svg .v-lbl13 { font-size: 13px; fill: #111; }
+  .rnn-svg .v-lblb { font-size: 14px; fill: #2A5E9B; }
+  .rnn-svg .v-lblr { font-size: 14px; fill: #A30908; }
+  .rnn-svg .v-tlbl { font-size: 13px; fill: #C29E08; }
+  .rnn-svg .v-wlbl { font-size: 14px; font-weight: 700; fill: #8C7106; }
+  .rnn-svg .v-capy { font-size: 13px; fill: #8C7106; }
+  .rnn-svg .tensor-name { font-size: 13px; font-style: italic; fill: #111; }
+  .rnn-svg .box-blue   { fill:#EAF2FA; stroke:#3576C0; stroke-width:2; }
+  .rnn-svg .box-yellow { fill:#FFF8D9; stroke:#C29E08; stroke-width:2; }
+  .rnn-svg .box-green  { fill:#F0FAF0; stroke:#73B222; stroke-width:2; }
+  .rnn-svg .box-red    { fill:#FDECEC; stroke:#C30B0A; stroke-width:2; }
+  .rnn-svg .edge-green { stroke:#73B222; stroke-width:2; fill:none; }
+  .rnn-svg .edge-red   { stroke:#C30B0A; stroke-width:2; fill:none; }
+  .rnn-svg .thin       { stroke:#9A948C; stroke-width:1.4; fill:none; }
+  .rnn-svg .dash-y     { fill:none; stroke:#C29E08; stroke-width:1.5; stroke-dasharray:6 4; }
+  .rnn-svg .formula-bg { fill:#FAFAF8; stroke:#E4E1D7; stroke-width:1.5; }
+</style>
+
+<style>
 /* ===== Добавленные PDF-интерактивы: стили из референсов, локально по id ===== */
 #stage-pdf .svg-title, #stage-bptt .svg-title { font-size:28px; font-weight:400; fill:#111; font-family:Georgia,'Times New Roman',serif; }
 #stage-pdf .svg-word, #stage-bptt .svg-word { font-size:18px; fill:#111; }
