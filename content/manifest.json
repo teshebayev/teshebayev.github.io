@@ -352,20 +352,88 @@
   }
 },
     {
-  "slug": "mlp",
-  "category": "deep-learning",
+  "slug": "computer-architecture",
+  "category": "computer-science",
   "title": {
-    "ru": "Полносвязная нейросеть — от одного нейрона до универсального аппроксиматора"
+    "ru": "Из каких частей состоит компьютер и почему именно из таких"
   },
   "description": {
-    "ru": "Один нейрон → слой нейронов → стек слоёв. Зачем принципиально нужна активация, что такое скрытое представление, как идут forward и backward pass и как выглядит матричная форма для батча — через 8 интерактивных визуализаций и три версии одного кода: numpy, слои-объекты и PyTorch."
+    "ru": "Архитектура компьютера как ответ на один факт: процессор в сотни тысяч раз быстрее всего остального. Центральная часть и периферия, системная шина, фон Нейман и Гарвард, кэши и чипсет — и путь сигнала от клика мышью до кадра на мониторе, дважды пройденный целиком."
   },
-  "date": "2026-08-06",
-  "reading_time": 26,
-  "tags": ["ml-basics", "deep-learning"],
+  "date": "2026-09-21",
+  "reading_time": 20,
+  "tags": ["computer-basics", "hardware"],
   "draft": false,
   "content": {
-    "ru": "content/articles/deep-learning/mlp.ru.md"
+    "ru": "content/articles/computer-science/computer-architecture.ru.md"
+  }
+},
+    {
+  "slug": "cpu-what-processor-does",
+  "category": "computer-science",
+  "title": {
+    "ru": "Что делает процессор: двадцать байт от строчки на C до результата в регистре"
+  },
+  "description": {
+    "ru": "Процессор не «выполняет программу» — он в цикле тянет из памяти по одному байту и обновляет один счётчик. Регистры, цикл Fetch–Decode–Execute–Store, путь строки на C в 20 байт машинного кода x86-16 и полвека надстроек — конвейер, кэши, векторные блоки — на сквозном числовом примере."
+  },
+  "date": "2026-09-21",
+  "reading_time": 24,
+  "tags": ["computer-basics", "hardware"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/computer-science/cpu-what-processor-does.ru.md"
+  }
+},
+    {
+  "slug": "how-programs-run",
+  "category": "computer-science",
+  "title": {
+    "ru": "Как компьютер исполняет вашу программу"
+  },
+  "description": {
+    "ru": "Строчка total += x не исполняется — исполняется поток машинных команд, в который её превращают компилятор, цикл интерпретатора и сам процессор. Байткод, конвейер, кэш, несколько ядер, процессы, потоки и GIL — с измерениями на реальной машине на каждом этаже."
+  },
+  "date": "2026-09-21",
+  "reading_time": 25,
+  "tags": ["computer-basics", "programming"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/computer-science/how-programs-run.ru.md"
+  }
+},
+    {
+  "slug": "operating-system",
+  "category": "computer-science",
+  "title": {
+    "ru": "Зачем нужна операционная система и как она работает"
+  },
+  "description": {
+    "ru": "ОС — единственный код в машине, которому процессор разрешает трогать железо; всё остальное может только попросить через одни и те же ворота. Режимы процессора, системные вызовы, планировщик, IPC, файловая система, менеджер памяти и устройства — с настоящими интерактивными терминалами вместо статичных скриншотов."
+  },
+  "date": "2026-09-21",
+  "reading_time": 26,
+  "tags": ["computer-basics"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/computer-science/operating-system.ru.md"
+  }
+},
+    {
+  "slug": "programming-languages",
+  "category": "computer-science",
+  "title": {
+    "ru": "Как появились языки программирования"
+  },
+  "description": {
+    "ru": "Язык программирования — работающая программа-переводчик, написанная на языке этажом ниже. От 21 байта машинного кода через ассемблер, EDSAC, Short Code и Fortran до компиляторов и интерпретаторов — один и тот же факториал на семи этажах абстракции, с настоящими байтами и замерами."
+  },
+  "date": "2026-09-21",
+  "reading_time": 27,
+  "tags": ["computer-basics", "programming"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/computer-science/programming-languages.ru.md"
   }
 },
     {
