@@ -107,6 +107,11 @@ if (!slug) window.location.replace("blog.html");
     });
   }
 
+  // 8b. Interactive-article components: formulas authored as data-tex
+  //     (in prose and inside SVG scenes), and multi-step .stage figures.
+  renderDataTexMath(body);
+  initStageScenes(body);
+
   // 9. Prev/next
   renderPrevNext(manifest, article, lang);
 })();
@@ -533,5 +538,113 @@ function activateDemos(root) {
     iframe.style.borderRadius = "var(--radius-sm)";
     iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
     el.replaceWith(iframe);
+  });
+}
+
+/**
+ * Render every `[data-tex]` node (plain prose formulas via .math-display /
+ * .math-inline, and formulas set inside SVG scenes) with KaTeX. Authors write
+ * the LaTeX source directly in the attribute instead of `$...$` text, which
+ * sidesteps ambiguity with literal dollar signs (prices, etc.) and lets a
+ * step-through SVG re-render its own formulas as steps swap.
+ */
+function renderDataTexMath(root) {
+  if (!window.katex) return;
+  root.querySelectorAll("[data-tex]").forEach((node) => {
+    if (node.dataset.rendered === "1") return;
+    const display = node.classList.contains("math-display");
+    try {
+      window.katex.render(node.getAttribute("data-tex"), node, {
+        throwOnError: false,
+        displayMode: display,
+        strict: "ignore",
+      });
+      node.dataset.rendered = "1";
+    } catch {
+      node.textContent = node.getAttribute("data-tex");
+    }
+  });
+}
+
+/**
+ * Drive `.stage` figures: a persistent SVG plus a sequence of `.step-panel`
+ * text notes, stepped with Back/Next buttons. Each step's `data-on` /
+ * `data-focus` list names the SVG groups (by `data-key`) to show and to
+ * highlight; groups not listed dim out. Safe to call more than once — a
+ * stage already wired up (`data-ready`) is skipped.
+ */
+function initStageScenes(root) {
+  root.querySelectorAll(".stage").forEach((stage) => {
+    if (stage.dataset.ready === "1") return;
+    const svg = stage.querySelector(".stage-figure svg");
+    const figure = stage.querySelector(".stage-figure");
+    const panels = Array.from(stage.querySelectorAll(".step-panel"));
+    const groups = svg ? Array.from(svg.querySelectorAll("[data-key]")) : [];
+    const prev = stage.querySelector('[data-nav="prev"]');
+    const next = stage.querySelector('[data-nav="next"]');
+    const counter = stage.querySelector(".stage-counter");
+    const progress = stage.querySelector(".stage-progress");
+    if (!svg || !panels.length || !prev || !next || !counter || !progress) return;
+
+    let cur = 0;
+    panels.forEach(() => progress.appendChild(document.createElement("i")));
+    const ticks = Array.from(progress.querySelectorAll("i"));
+
+    function render() {
+      const panel = panels[cur];
+      const on = (panel.getAttribute("data-on") || "").split(/\s+/).filter(Boolean);
+      const focus = (panel.getAttribute("data-focus") || "").split(/\s+/).filter(Boolean);
+
+      groups.forEach((group) => {
+        const key = group.getAttribute("data-key");
+        const active = on.includes(key);
+        const only = group.hasAttribute("data-only");
+        group.classList.toggle("is-hidden", only && !active);
+        group.classList.toggle("is-dim", !active && !only);
+        group.classList.toggle("is-focus", focus.includes(key));
+      });
+
+      panels.forEach((panelNode, index) => panelNode.classList.toggle("active", index === cur));
+      ticks.forEach((tick, index) => tick.classList.toggle("done", index <= cur));
+
+      counter.textContent = `${cur + 1} из ${panels.length}`;
+      prev.disabled = cur === 0;
+      next.textContent = cur === panels.length - 1 ? "Сначала ↺" : "Далее →";
+      renderDataTexMath(stage);
+
+      requestAnimationFrame(() => {
+        if (!figure || figure.scrollWidth <= figure.clientWidth) return;
+        const focused = groups.filter(
+          (group) => focus.includes(group.getAttribute("data-key")) && !group.classList.contains("is-hidden")
+        );
+        if (!focused.length) { figure.scrollLeft = 0; return; }
+        const wrapRect = figure.getBoundingClientRect();
+        let left = Infinity, right = -Infinity;
+        focused.forEach((group) => {
+          const rect = group.getBoundingClientRect();
+          left = Math.min(left, rect.left - wrapRect.left + figure.scrollLeft);
+          right = Math.max(right, rect.right - wrapRect.left + figure.scrollLeft);
+        });
+        const target = (left + right) / 2 - figure.clientWidth / 2;
+        figure.scrollLeft = Math.max(0, Math.min(target, figure.scrollWidth - figure.clientWidth));
+      });
+    }
+
+    function move(delta) {
+      let target = cur + delta;
+      if (target < 0) return;
+      if (target >= panels.length) target = 0;
+      cur = target;
+      render();
+    }
+
+    prev.addEventListener("click", () => move(-1));
+    next.addEventListener("click", () => move(1));
+    stage.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") { move(1); event.preventDefault(); }
+      if (event.key === "ArrowLeft") { move(-1); event.preventDefault(); }
+    });
+    stage.dataset.ready = "1";
+    render();
   });
 }

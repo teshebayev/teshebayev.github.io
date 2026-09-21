@@ -284,6 +284,23 @@
   }
 },
     {
+  "slug": "linear-regression-full-cycle",
+  "category": "machine-learning",
+  "title": {
+    "ru": "Линейная регрессия: полный цикл обучения на трёх числах"
+  },
+  "description": {
+    "ru": "Линейная регрессия с нуля и без единой готовой формулы: градиент выводится из определения производной, прямой и обратный проход разобраны в числах и в матрицах на сквозном примере, а цикл обучения написан в трёх версиях — NumPy, объектный стиль и PyTorch. 14 частей и более десятка интерактивных схем, включая анатомию обучения, общую для всех ML-моделей."
+  },
+  "date": "2026-09-21",
+  "reading_time": 32,
+  "tags": ["ml-basics"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/linear-regression-full-cycle.ru.md"
+  }
+},
+    {
   "slug": "logistic-regression",
   "category": "machine-learning",
   "title": {

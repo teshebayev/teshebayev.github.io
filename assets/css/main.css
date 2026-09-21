@@ -1229,3 +1229,179 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
   .prose .stage-bar { gap: 10px; flex-wrap: wrap; }
   .prose .stage-notes { min-height: 0; }
 }
+
+.prose .callout-red { background: rgba(195, 11, 10, 0.08); border-left-color: #c30b0a; }
+.prose .math-inline .katex { font-size: 1.02em; }
+.prose .stage-hint { margin: 8px 0 26px; font-size: 13px; color: var(--text-muted); }
+.prose .tiny { font-size: 14px; color: var(--text-muted); }
+
+/* Fixed-size math set inside an SVG scene (rendered via data-tex + katex.render). */
+.prose .svg-math {
+  width: 100%; height: 100%; display: flex; align-items: center;
+  color: var(--text); line-height: 1; white-space: nowrap;
+}
+.prose .svg-math-center { justify-content: center; text-align: center; }
+.prose .svg-math-sm .katex { font-size: 14px; }
+.prose .svg-math-md .katex { font-size: 17px; }
+.prose .svg-math-lg .katex { font-size: 20px; }
+
+/* Reading-contract cards under the lead paragraph. */
+.prose .reading-contract {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 28px 0 34px;
+}
+.prose .contract-card {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+}
+.prose .contract-card span {
+  display: block;
+  color: #3576c0;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.prose .contract-card strong { display: block; font-size: 17px; line-height: 1.35; }
+.prose .contract-card p { font-size: 14.5px; color: var(--text-muted); line-height: 1.45; margin: 7px 0 0; }
+
+/* Colour-key legend for the semantic palette used across an article's SVGs. */
+.prose .semantic-key { display: flex; flex-wrap: wrap; gap: 9px; margin: 20px 0 8px; }
+.prose .semantic-key span { display: inline-flex; gap: 7px; align-items: center; font-size: 13.5px; color: var(--text-muted); }
+.prose .semantic-key i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+
+/* Numeric-example panel threaded through a section (worked-example). */
+.prose .worked-example {
+  margin: 18px 0 4px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-subtle);
+  overflow: hidden;
+}
+.prose .worked-label {
+  padding: 8px 13px;
+  color: #2a5e9b;
+  background: rgba(53, 118, 192, 0.1);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.065em;
+  text-transform: uppercase;
+}
+.prose .worked-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+}
+.prose .worked-cell {
+  min-width: 0;
+  padding: 12px 14px 9px;
+  border-right: 1px solid var(--border);
+}
+.prose .worked-cell:last-child { border-right: 0; }
+.prose .worked-cell > span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.prose .worked-result { background: rgba(115, 178, 34, 0.08); }
+.prose .worked-result > span { color: #5a8c1c; }
+.prose .worked-math {
+  margin: 7px 0 2px;
+  padding: 3px 0 5px;
+  font-size: 15px;
+  text-align: left;
+}
+.prose .worked-math .katex-display { margin: 0; text-align: left; }
+.prose .worked-math .katex { font-size: .94em; }
+.prose .worked-trace {
+  border-top: 1px solid var(--border);
+  background: rgba(194, 158, 8, 0.06);
+}
+.prose .worked-trace-title {
+  padding: 9px 14px 7px;
+  color: #8c7106;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.prose .worked-trace-row {
+  display: grid;
+  grid-template-columns: 84px minmax(240px, .95fr) minmax(220px, 1.05fr);
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  border-top: 1px solid var(--border-soft);
+}
+.prose .worked-trace-name {
+  justify-self: start;
+  padding: 3px 8px;
+  border: 1px solid #d8c474;
+  border-radius: 999px;
+  background: var(--bg-elev);
+  color: #8c7106;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.prose .worked-trace-math {
+  min-width: 0;
+  margin: 0;
+  padding: 2px 0;
+  text-align: left;
+  font-size: 14px;
+}
+.prose .worked-trace-math .katex-display { margin: 0; text-align: left; }
+.prose .worked-trace-math .katex { font-size: .92em; }
+.prose .worked-trace-note { color: var(--text-muted); font-size: 13.5px; line-height: 1.42; }
+.prose .worked-reading {
+  margin: 0 !important;
+  padding: 10px 14px 12px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-elev);
+  color: var(--text);
+  font-size: 14.5px !important;
+  line-height: 1.5;
+}
+
+/* Simple bordered table for matrix-shape summaries. */
+.prose .shape-table {
+  width: 100%; border-collapse: collapse; margin: 22px 0;
+  background: var(--bg-elev); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden;
+}
+.prose .shape-table th, .prose .shape-table td {
+  padding: 11px 13px; border-bottom: 1px solid var(--border-soft); text-align: left; font-size: 15px;
+}
+.prose .shape-table th { background: var(--bg-subtle); color: #244f81; font-weight: 800; }
+.prose .shape-table tr:last-child td { border-bottom: 0; }
+
+.prose .end-list {
+  background: var(--bg-elev); border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px 26px;
+}
+.prose .end-list li { margin: 11px 0; }
+
+@media (max-width: 720px) {
+  .prose .reading-contract { grid-template-columns: 1fr; }
+  .prose .worked-grid { grid-template-columns: 1fr; }
+  .prose .worked-cell { border-right: 0; border-bottom: 1px solid var(--border); }
+  .prose .worked-cell:last-child { border-bottom: 0; }
+  .prose .worked-math { font-size: 14px; }
+  .prose .worked-math .katex { font-size: .88em; }
+  .prose .worked-trace-row { grid-template-columns: 1fr; gap: 5px; align-items: start; }
+  .prose .worked-trace-name { margin-top: 2px; }
+  .prose .worked-trace-math { width: 100%; overflow-x: auto; padding: 3px 0 4px; }
+  .prose .worked-trace-math .katex { font-size: .86em; }
+  .prose .worked-trace-note { padding-bottom: 4px; }
+  .prose .shape-table { display: block; overflow-x: auto; }
+}
