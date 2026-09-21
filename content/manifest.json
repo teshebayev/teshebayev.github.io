@@ -176,6 +176,23 @@
       "accent": "#0EA5E9",
       "tint": "#E0F2FE",
       "order": 3
+    },
+    {
+      "id": "under-the-hood",
+      "title": {
+        "ru": "Под капотом",
+        "en": "Under the Hood",
+        "kk": "Капот астында"
+      },
+      "description": {
+        "ru": "Полные числовые разборы того, как модели на самом деле учатся: градиентный спуск, backpropagation и целиком прожитые циклы обучения.",
+        "en": "Full numeric walkthroughs of how models actually learn: gradient descent, backpropagation, and complete training cycles.",
+        "kk": "Модельдердің шын мәнінде қалай үйренетінінің толық сандық талдауы: градиенттік түсу, backpropagation және толық оқыту циклдары."
+      },
+      "icon": "sigma",
+      "accent": "#DC2626",
+      "tint": "#FEE2E2",
+      "order": 4
     }
   ],
   "tags": {
@@ -468,6 +485,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/deep-learning/mlp-by-shapes.ru.md"
+  }
+},
+    {
+  "slug": "how-network-learns",
+  "category": "under-the-hood",
+  "title": {
+    "ru": "Как обучается нейросеть: полный цикл на картинках 8 × 8"
+  },
+  "description": {
+    "ru": "Один и тот же цикл обучения из пяти действий, прожитый 1260 раз на настоящих данных: от рукописной цифры в 64 числа и случайных весов до 97,78% на картинках, которых сеть не видела. Прямой проход, потеря, вывод пяти формул обратного прохода со сверкой градиента, шаг спуска, эпохи, разбор ошибок и шесть экспериментов — с полным кодом на NumPy для самостоятельного воспроизведения."
+  },
+  "date": "2026-09-21",
+  "reading_time": 42,
+  "tags": ["ml-basics", "deep-learning"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/under-the-hood/how-network-learns.ru.md"
   }
 }
   ]
