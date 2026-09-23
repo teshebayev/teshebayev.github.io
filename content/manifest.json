@@ -622,6 +622,23 @@
   "content": {
     "ru": "content/articles/deep-learning/rnn-by-shapes.ru.md"
   }
+},
+    {
+  "slug": "self-attention",
+  "category": "deep-learning",
+  "title": {
+    "ru": "Self-attention: от RNN к query, key, value и матричной форме"
+  },
+  "description": {
+    "ru": "Self-attention проще понять не с готовой формулы, а как последовательность идей: сначала узкое место RNN с одним скрытым состоянием, затем обычный attention как взвешенная сумма, и только потом — запрос, ключ и значение для каждого слова. Один сквозной пример «Я видел котю на мате» проходит весь путь: оценки, масштабирование, softmax, матричная форма Q/K/V, forward и backward руками на числах, проверка градиента и три версии кода — numpy функциями, numpy классами и PyTorch."
+  },
+  "date": "2026-09-23",
+  "reading_time": 46,
+  "tags": ["ml-basics", "deep-learning"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/deep-learning/self-attention.ru.md"
+  }
 }
   ]
 }
