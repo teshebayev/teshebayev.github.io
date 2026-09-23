@@ -12,6 +12,8 @@
   .rnn-svg .edge-green { stroke:#73B222; stroke-width:2; fill:none; }
   .rnn-svg .edge-red   { stroke:#C30B0A; stroke-width:2; fill:none; }
   .rnn-svg .formula-bg { fill:#FAFAF8; stroke:#E4E1D7; stroke-width:1.5; }
+  /* Портретная схема ролей выше остальных — держим её в разумной ширине. */
+  .stage-figure #svgSaRoles { max-width: 430px; margin: 0 auto; }
 </style>
 
 <style>
@@ -641,6 +643,14 @@
 </svg>
   </div>
 
+  <div class="word-row" role="group" aria-label="Выберите слово, для которого собирается выход">
+    <button type="button" data-goto="0" aria-pressed="true">Я</button>
+    <button type="button" data-goto="1" aria-pressed="false">видел</button>
+    <button type="button" data-goto="2" aria-pressed="false">котю</button>
+    <button type="button" data-goto="3" aria-pressed="false">на</button>
+    <button type="button" data-goto="4" aria-pressed="false">мате</button>
+    <button type="button" data-goto="5" aria-pressed="false">&lt;eos&gt;</button>
+  </div>
   <div class="stage-bar">
     <button type="button" data-nav="prev">← Назад</button>
     <button type="button" data-nav="next">Далее →</button>
@@ -688,7 +698,7 @@
   </div>
 </div>
 
-<p class="stage-hint">Входные векторы не двигаются — перемещается только позиция, для которой собирается выход.</p><p>
+<p class="stage-hint">Нажмите на слово в нижнем ряду или используйте «Далее»: входные векторы не двигаются — перемещается только позиция, для которой собирается выход.</p><p>
   Связи на этой схеме нарисованы одинаково. На деле у каждой позиции-запроса свой набор весов: одни слова
   важны больше, другие меньше. Следующая схема показывает веса толщиной линий.
 </p>
@@ -705,6 +715,14 @@
 </svg>
   </div>
 
+  <div class="word-row" role="group" aria-label="Выберите слово — источник query">
+    <button type="button" data-goto="0" aria-pressed="true">Я</button>
+    <button type="button" data-goto="1" aria-pressed="false">видел</button>
+    <button type="button" data-goto="2" aria-pressed="false">котю</button>
+    <button type="button" data-goto="3" aria-pressed="false">на</button>
+    <button type="button" data-goto="4" aria-pressed="false">мате</button>
+    <button type="button" data-goto="5" aria-pressed="false">&lt;eos&gt;</button>
+  </div>
   <div class="stage-bar">
     <button type="button" data-nav="prev">← Назад</button>
     <button type="button" data-nav="next">Далее →</button>
@@ -746,7 +764,7 @@
   </div>
 </div>
 
-<p class="stage-hint">Нижний ряд — источник запроса, верхний — слова, на которые смотрит attention. Проценты в каждом шаге дают 100%.</p><div class="callout-blue">
+<p class="stage-hint">Нажмите на слово в нижнем ряду или используйте «Далее»: нижний ряд — источник запроса, верхний — слова, на которые смотрит attention. Проценты в каждом шаге дают 100%.</p><div class="callout-blue">
 <strong>Об этих процентах:</strong> в двух первых схемах веса — учебные распределения, придуманные для
   наглядности. Начиная с части 3 веса вычисляются из конкретных чисел q и k, поэтому для «Я» получится не 43%,
   а 39% на «видел». Важна не точная цифра, а то, что строка весов своя у каждого слова.

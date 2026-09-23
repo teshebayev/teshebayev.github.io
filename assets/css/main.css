@@ -1233,6 +1233,41 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
 .prose .callout-red { background: rgba(195, 11, 10, 0.08); border-left-color: #c30b0a; }
 .prose .math-inline .katex { font-size: 1.02em; }
 .prose .stage-hint { margin: 8px 0 26px; font-size: 13px; color: var(--text-muted); }
+
+/* Row of clickable tokens under a stage figure; each jumps to its own step. */
+.prose .word-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 0;
+  margin-top: 6px;
+}
+.prose .word-row button {
+  font-family: inherit;
+  font-size: clamp(14px, 2.2vw, 20px);
+  font-weight: 500;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  padding: 9px 0 11px;
+  position: relative;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+.prose .word-row button:hover { background: var(--bg-subtle); }
+.prose .word-row button[aria-pressed="true"] { color: #7b4ab5; font-weight: 700; }
+.prose .word-row button[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 26%;
+  right: 26%;
+  height: 3px;
+  border-radius: 2px;
+  background: #7b4ab5;
+}
 .prose .tiny { font-size: 14px; color: var(--text-muted); }
 
 /* Fixed-size math set inside an SVG scene (rendered via data-tex + katex.render). */

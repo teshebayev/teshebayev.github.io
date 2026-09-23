@@ -593,6 +593,7 @@ function initStageScenes(root) {
     const next = stage.querySelector('[data-nav="next"]');
     const counter = stage.querySelector(".stage-counter");
     const progress = stage.querySelector(".stage-progress");
+    const jumps = Array.from(stage.querySelectorAll("[data-goto]"));
     if (!svg || !panels.length || !prev || !next || !counter || !progress) return;
 
     let cur = 0;
@@ -615,6 +616,7 @@ function initStageScenes(root) {
 
       panels.forEach((panelNode, index) => panelNode.classList.toggle("active", index === cur));
       ticks.forEach((tick, index) => tick.classList.toggle("done", index <= cur));
+      jumps.forEach((jump) => jump.setAttribute("aria-pressed", String(Number(jump.dataset.goto) === cur)));
 
       counter.textContent = `${cur + 1} из ${panels.length}`;
       prev.disabled = cur === 0;
@@ -649,6 +651,14 @@ function initStageScenes(root) {
 
     prev.addEventListener("click", () => move(-1));
     next.addEventListener("click", () => move(1));
+    jumps.forEach((jump) => {
+      jump.addEventListener("click", () => {
+        const target = Number(jump.dataset.goto);
+        if (!Number.isInteger(target) || target < 0 || target >= panels.length) return;
+        cur = target;
+        render();
+      });
+    });
     stage.addEventListener("keydown", (event) => {
       if (event.key === "ArrowRight") { move(1); event.preventDefault(); }
       if (event.key === "ArrowLeft") { move(-1); event.preventDefault(); }
