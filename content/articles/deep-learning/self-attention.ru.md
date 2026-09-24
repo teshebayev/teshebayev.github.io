@@ -33,9 +33,21 @@
 <p class="lead">Self-attention проще понять не с готовой формулы, а как последовательность идей: сначала увидеть узкое место RNN, затем собрать контекст обычным attention и только после этого сделать запросом каждое слово.</p>
 <p>На одном сквозном примере «Я видел котю на мате» пройдём весь путь: рекуррентное состояние, взвешенная сумма, query/key/value, скалярные оценки, масштабирование, softmax, выход <code>z</code> и итоговая матричная запись.</p>
 <div class="reading-contract">
-<div class="rc-label">На входе</div>
-<div><strong>Векторы и скалярное произведение</strong><span>Достаточно понимать, что слово представлено вектором, а линейный слой — умножением на матрицу.</span></div>
-<div><strong>Что построим</strong><span>От последовательной RNN-схемы перейдём к полностью параллельному self-attention.</span></div>
+  <div class="contract-card">
+    <span>На входе</span>
+    <strong>Векторы и скалярное произведение</strong>
+    <p>Достаточно понимать, что слово представлено вектором, а линейный слой — умножением на матрицу.</p>
+  </div>
+  <div class="contract-card">
+    <span>Сквозной пример</span>
+    <strong>«Я видел котю на мате»</strong>
+    <p>На этой фразе построены схемы первых девяти глав; в численных частях счёт идёт на более коротком примере из трёх токенов.</p>
+  </div>
+  <div class="contract-card">
+    <span>Что построим</span>
+    <strong>От RNN к self-attention</strong>
+    <p>От последовательной RNN-схемы перейдём к полностью параллельному self-attention.</p>
+  </div>
 </div>
 <div class="semantic-key">
 <span><i class="sk-blue"></i>вход <code>x</code>, query <code>q</code></span>
@@ -2791,6 +2803,7 @@
 <p>Теперь тот же расчёт кодом. Первая версия — две функции: прямой проход возвращает выход и кэш,
 обратный проход берёт градиент по выходу и кэш и возвращает градиенты по входу и весам. Кэш — ровно таблица из части 12.
 Каждая строка обратного прохода — одна формула из части 13, в том же порядке.</p>
+
 ```python
 import numpy as np
 
@@ -2886,6 +2899,7 @@ dWq =
 <tr><td><code>SelfAttention</code></td><td>три <code>Linear</code>, <code>S</code>, маска, <code>A @ V</code></td><td>развилка на <code>dA</code> и <code>dV</code>, обмен <code>dQ</code>/<code>dK</code>, сумма трёх <code>dX</code></td><td><code>Q, K, V, A</code></td></tr>
 <tr><td><code>CrossEntropyLoss</code></td><td>среднее <code>−log p_y</code></td><td><code>(p − y)/B</code></td><td><code>p, y</code></td></tr>
 </tbody></table>
+
 ```python
 import numpy as np
 
@@ -3060,6 +3074,7 @@ L после шага η=0,5: 0.1776
 <p>В PyTorch backward писать не нужно: autograd строит граф во время forward и сам проходит его назад.
 Остаётся только прямой проход — ровно формула части 7. Чтобы сравнивать с numpy без потерь точности,
 считаем в <code>float64</code>; веса копируем те же.</p>
+
 ```python
 import torch
 import torch.nn as nn
@@ -3121,6 +3136,7 @@ print((Z_ref - model.attn(X)).abs().max().item())   # порядка 1e-16
 f = lambda X: F.cross_entropy(model(X), y)
 print(torch.autograd.gradcheck(f, (X,)))            # True
 ```
+
 <div class="callout-red"><strong>Главная ловушка — форма весов.</strong> <code>nn.Linear(d_in, d_out)</code> хранит
 <code>weight</code> формы <code>[d_out, d_in]</code> и считает <code>X @ weight.T</code>. Поэтому матрицы из статьи
 копируются с <code>.T</code>, а градиент <code>weight.grad</code> тоже транспонирован относительно нашего <code>dW</code>.
