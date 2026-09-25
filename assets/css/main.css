@@ -1260,7 +1260,7 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
   transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
 .prose .word-row button:hover { background: var(--bg-subtle); }
-.prose .word-row button[aria-pressed="true"] { color: #7b4ab5; font-weight: 700; }
+.prose .word-row button[aria-pressed="true"] { color: #d83bb9; font-weight: 700; }
 .prose .word-row button[aria-pressed="true"]::after {
   content: "";
   position: absolute;
@@ -1269,7 +1269,7 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
   right: 26%;
   height: 3px;
   border-radius: 2px;
-  background: #7b4ab5;
+  background: #d83bb9;
 }
 .prose .tiny { font-size: 14px; color: var(--text-muted); }
 
@@ -1312,6 +1312,13 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
 .prose .semantic-key { display: flex; flex-wrap: wrap; gap: 9px; margin: 20px 0 8px; }
 .prose .semantic-key span { display: inline-flex; gap: 7px; align-items: center; font-size: 13.5px; color: var(--text-muted); }
 .prose .semantic-key i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+/* The article palette, named. Diagrams use these same five values. */
+.prose .sk-blue   { background: #3576c0; }
+.prose .sk-yellow { background: #c29e08; }
+.prose .sk-red    { background: #c30b0a; }
+.prose .sk-green  { background: #73b222; }
+.prose .sk-pink   { background: #d83bb9; }
+.prose .sk-gray   { background: #5e5850; }
 
 /* Numeric-example panel threaded through a section (worked-example). */
 .prose .worked-example {
