@@ -656,6 +656,23 @@
   "content": {
     "ru": "content/articles/deep-learning/multi-head-attention.ru.md"
   }
+},
+    {
+  "slug": "transformer",
+  "category": "deep-learning",
+  "title": {
+    "ru": "Transformer: от токена до выходного слова"
+  },
+  "description": {
+    "ru": "Полный путь через классический encoder–decoder Transformer на одном сквозном примере «You are welcome → Добро пожаловать»: embedding и позиционный код, размерности батчей, энкодер с Add & Norm и Feed Forward, три места attention и источники Q, K, V, multi-head, маски, декодер, linear, softmax и cross-entropy на выходе — и вся модель на PyTorch с обучением и жадной генерацией."
+  },
+  "date": "2026-09-25",
+  "reading_time": 75,
+  "tags": ["ml-basics", "deep-learning"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/deep-learning/transformer.ru.md"
+  }
 }
   ]
 }
