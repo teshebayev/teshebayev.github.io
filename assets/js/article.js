@@ -542,7 +542,10 @@ function activateDemos(root) {
     iframe.loading = "lazy";
     iframe.className = "demo-frame";
     iframe.style.width = "100%";
-    iframe.style.height = (el.getAttribute("height") || "400") + "px";
+    // A bare number means pixels; anything else is a CSS length, e.g.
+    // height="min(88vh, 900px)" for full-screen apps that should fit the viewport.
+    const h = el.getAttribute("height") || "400";
+    iframe.style.height = /^\d+$/.test(h) ? h + "px" : h;
     iframe.style.border = "1px solid var(--border)";
     iframe.style.borderRadius = "var(--radius-sm)";
     iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Энкодер трансформера — карта</title>
+<style>
+:root{
+  --bg:#FFFFFF; --panel:#F4F5F7; --ink:#111111; --muted:#5E5850; --line:#D8D5CF; --grid:#BDB8B0; --dot:#E4E2DD;
+  --blue:#3576C0; --yellow:#C29E08; --red:#C30B0A; --green:#73B222; --violet:#8A4FB8; --neg:#6F6A62;
+  --h1:var(--blue); --h2:var(--yellow); --h3:var(--green); --h4:var(--violet);
+  --btn:#1B1D26; --btnink:#FFFFFF; --tip:#1B1D26; --tipink:#FFFFFF;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16181D; --panel:#1E2127; --ink:#ECECEE; --muted:#A39D94; --line:#34373F; --grid:#555A63; --dot:#262930;
+    --blue:#5E9CE3; --yellow:#DDB832; --red:#EF5350; --green:#8FCB48; --violet:#AB80DD; --neg:#8A857D;
+    --btn:#ECECEE; --btnink:#16181D; --tip:#ECECEE; --tipink:#16181D;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16181D; --panel:#1E2127; --ink:#ECECEE; --muted:#A39D94; --line:#34373F; --grid:#555A63; --dot:#262930;
+  --blue:#5E9CE3; --yellow:#DDB832; --red:#EF5350; --green:#8FCB48; --violet:#AB80DD; --neg:#8A857D;
+  --btn:#ECECEE; --btnink:#16181D; --tip:#ECECEE; --tipink:#16181D;
+}
+html{height:100%}
+body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:Helvetica,Arial,sans-serif;overflow:hidden}
+.app{display:grid;grid-template-columns:minmax(0,1fr) 400px;height:100%}
+#stage{position:relative;overflow:hidden;min-height:0;min-width:0}
+#map{display:block;width:100%;height:100%;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+#map.dragging{cursor:grabbing}
+
+/* SVG content */
+#map .rtitle{font-size:28px;font-weight:800;fill:var(--ink)}
+#map .sent{font-size:20px;fill:var(--ink)}
+#map .lbl{font-size:13px;fill:var(--muted);text-anchor:middle}
+#map .lbl-l{font-size:13px;fill:var(--muted)}
+#map .mname{font-family:"Times New Roman",Times,serif;font-style:italic;font-size:19px;fill:var(--ink);text-anchor:middle}
+#map .mname .ss{font-size:13px}
+#map .shape{font-size:11px;fill:var(--muted);text-anchor:middle}
+#map .op{font-family:"Times New Roman",Times,serif;font-size:28px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+#map .opl{font-size:14px;font-weight:700;text-anchor:middle}
+#map .c{stroke:var(--grid);stroke-width:.5}
+#map .cv{text-anchor:middle;dominant-baseline:central;pointer-events:none;font-family:Helvetica,Arial,sans-serif}
+#map .frame{fill:none;stroke:var(--ink);stroke-width:1.2}
+#map .rowl{font-size:10px;fill:var(--muted);text-anchor:end;dominant-baseline:central}
+#map .chip{stroke-width:1.2}
+#map .chipt{font-size:13px;text-anchor:middle;dominant-baseline:central;fill:var(--ink);pointer-events:none}
+#map .idt{font-size:11px;text-anchor:middle;dominant-baseline:central;fill:var(--ink);pointer-events:none}
+#map .conn{fill:none;stroke:var(--muted);stroke-width:1.6}
+#map .dash{stroke-dasharray:6 5}
+#map .lanel{font-size:17px;font-weight:800}
+#map .sum{font-size:9px;fill:var(--muted);dominant-baseline:central}
+#map [data-k]{transition:opacity .35s}
+#map .dim{opacity:.13}
+#map[data-hl] .c{opacity:.45}
+@media (prefers-reduced-motion: reduce){ #map [data-k]{transition:none} }
+
+/* panel */
+aside{background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.progress{display:flex;gap:3px;padding:16px 22px 0}
+.progress button{flex:1;height:8px;border:0;border-radius:2px;background:var(--line);padding:0;cursor:pointer}
+.progress button.done{background:var(--muted)}
+.progress button.cur{background:var(--ink)}
+.scroll{flex:1;overflow:auto;padding:18px 22px 8px}
+.count{font-size:14px;color:var(--muted)}
+h1{font-size:25px;line-height:1.15;margin:6px 0 12px;font-weight:800}
+.text{font-size:15.5px;line-height:1.5;margin:0 0 14px;max-width:62ch}
+.text b{font-weight:700}
+.formula{font-family:"Times New Roman",Times,serif;font-size:21px;line-height:1.5;padding:12px 14px;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin:0 0 14px;overflow-x:auto}
+.formula:empty{display:none}
+.formula .frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.9em;margin:0 .15em}
+.formula .frac>span:first-child{border-bottom:1px solid currentColor;padding:0 .2em}
+.formula .rm{font-style:normal}
+.formula .note{display:block;font-family:Helvetica,Arial,sans-serif;font-size:13px;color:var(--muted);margin-top:4px}
+.live{font-size:14px;line-height:1.45;margin:0 0 10px;padding-left:12px;border-left:3px solid var(--blue)}
+.live:empty{display:none}
+.legend{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;font-size:13.5px;align-items:center;margin:4px 0 12px}
+.sw{width:18px;height:14px;border-radius:3px;display:inline-block}
+.sw.ramp{background:linear-gradient(90deg,color-mix(in srgb,var(--blue) 10%,transparent),var(--blue))}
+.controls{border-top:1px solid var(--line);padding:12px 22px;display:grid;gap:10px;font-size:14px}
+.crow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.crow .k{color:var(--muted);min-width:58px}
+.heads{display:flex;gap:6px}
+.heads button{width:36px;height:30px;border-radius:7px;border:2px solid var(--hc);background:transparent;color:var(--ink);font-weight:800;cursor:pointer;font-size:14px}
+.heads button[aria-pressed="true"]{background:var(--hc);color:#fff}
+.tog{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.tog input{width:16px;height:16px;accent-color:var(--blue)}
+.ghost{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:7px;padding:6px 10px;font-size:13.5px;cursor:pointer}
+nav{display:flex;gap:10px;padding:12px 22px 18px;align-items:center}
+nav .prev{width:52px;height:48px;border-radius:12px;border:1.5px solid var(--btn);background:transparent;color:var(--ink);font-size:22px;font-weight:800;cursor:pointer}
+nav .next{flex:1;height:48px;border-radius:12px;border:0;background:var(--btn);color:var(--btnink);font-size:17px;font-weight:800;cursor:pointer}
+button:focus-visible,input:focus-visible,#map:focus-visible{outline:2.5px solid var(--blue);outline-offset:2px}
+#tip{position:absolute;pointer-events:none;background:var(--tip);color:var(--tipink);font-size:13px;padding:6px 9px;border-radius:7px;white-space:nowrap;opacity:0;transition:opacity .12s;z-index:5}
+#recenter{position:absolute;right:14px;top:14px;display:none;z-index:4}
+.hint{position:absolute;left:14px;bottom:12px;font-size:12.5px;color:var(--muted);background:color-mix(in srgb,var(--bg) 85%,transparent);padding:4px 8px;border-radius:6px;pointer-events:none}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr;grid-template-rows:minmax(0,52%) minmax(0,48%)}
+  aside{border-left:0;border-top:1px solid var(--line)}
+  h1{font-size:21px}
+  .hint{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="stage">
+    <svg id="map" tabindex="0" aria-label="Карта энкодера трансформера" viewBox="0 0 2200 2150" preserveAspectRatio="xMidYMid meet"></svg>
+    <div id="tip"></div>
+    <button id="recenter" class="ghost">Вернуть камеру к шагу</button>
+    <div class="hint">Тяни — двигать, колесо — масштаб, наведи на клетку — значение</div>
+  </div>
+  <aside>
+    <div class="progress" id="progress"></div>
+    <div class="scroll">
+      <div class="count" id="count"></div>
+      <h1 id="title"></h1>
+      <div class="text" id="text"></div>
+      <div class="formula" id="formula"></div>
+      <p class="live" id="live"></p>
+    </div>
+    <div class="controls">
+      <div class="crow"><span class="k">Голова</span><div class="heads" id="heads"></div></div>
+      <div class="crow">
+        <label class="tog"><input type="checkbox" id="optMask" checked> маска паддинга</label>
+        <label class="tog"><input type="checkbox" id="optScale" checked> делить на √d<sub>k</sub></label>
+      </div>
+      <div class="crow"><button class="ghost" id="reseed">Новые случайные веса</button><span class="k" id="seedl"></span></div>
+    </div>
+    <nav>
+      <button class="prev" id="prev" aria-label="Назад">←</button>
+      <button class="next" id="next">Далее</button>
+    </nav>
+  </aside>
+</div>
+
+<script>
+(function(){
+"use strict";
+const TOK=['кошка','спит','на','окне','<PAD>','<PAD>'];
+const IDS=[4127,1873,27,905,0,0];
+const REAL=[1,1,1,1,0,0];
+const L=6,D=8,NH=4,DK=2,DFF=16;
+const HC=['var(--h1)','var(--h2)','var(--h3)','var(--h4)'];
+const state={step:0,head:0,mask:true,scale:true,seed:42,free:false};
+const svg=document.getElementById('map');
+const NS='http://www.w3.org/2000/svg';
+
+/* ---------- math ---------- */
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function gauss(r){let u=0;while(!u)u=r();const v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+const randM=(r,n,m,s)=>Array.from({length:n},()=>Array.from({length:m},()=>gauss(r)*s));
+const mm=(A,B)=>A.map(row=>B[0].map((_,j)=>row.reduce((s,a,k)=>s+a*B[k][j],0)));
+const T=A=>A[0].map((_,j)=>A.map(r=>r[j]));
+const add=(A,B)=>A.map((r,i)=>r.map((v,j)=>v+B[i][j]));
+const cols=(A,a,b)=>A.map(r=>r.slice(a,b));
+const mean=r=>r.reduce((s,v)=>s+v,0)/r.length;
+const std=r=>{const m=mean(r);return Math.sqrt(mean(r.map(x=>(x-m)**2)));};
+const ln=A=>A.map(r=>{const m=mean(r),s=Math.sqrt(mean(r.map(x=>(x-m)**2))+1e-6);return r.map(x=>(x-m)/s);});
+
+function compute(){
+  const r=rng(state.seed);
+  const E=randM(r,L,D,0.9); E[5]=E[4].slice();           // оба PAD — один и тот же id 0
+  const PE=[...Array(L)].map((_,p)=>[...Array(D)].map((_,i)=>{const k=Math.floor(i/2);const a=p/Math.pow(10000,2*k/D);return i%2?Math.cos(a):Math.sin(a);}));
+  const X=add(E,PE);
+  const WQ=randM(r,D,D,.55),WK=randM(r,D,D,.55),WV=randM(r,D,D,.55);
+  const Q=mm(X,WQ),K=mm(X,WK),V=mm(X,WV);
+  const mask=REAL.map(x=>x?0:-1e9);
+  const heads=[];
+  for(let h=0;h<NH;h++){
+    const q=cols(Q,h*DK,h*DK+DK),k=cols(K,h*DK,h*DK+DK),v=cols(V,h*DK,h*DK+DK);
+    const S=mm(q,T(k));
+    const sc=state.scale?Math.sqrt(DK):1;
+    const S1=S.map(rw=>rw.map(x=>x/sc));
+    const S2=S1.map(rw=>rw.map((x,j)=>state.mask?x+mask[j]:x));
+    const A=S2.map(rw=>{const m=Math.max(...rw);const e=rw.map(x=>Math.exp(x-m));const z=e.reduce((a,b)=>a+b,0);return e.map(x=>x/z);});
+    heads.push({q,k,kt:T(k),v,S,S1,S2,A,O:mm(A,v)});
+  }
+  const C=heads[0].O.map((_,i)=>heads.flatMap(hd=>hd.O[i]));
+  const WO=randM(r,D,D,.45);
+  const M=mm(C,WO);
+  const R1=add(X,M), Z=ln(R1);
+  const W1=randM(r,D,DFF,.5);
+  const Hpre=mm(Z,W1), H=Hpre.map(rw=>rw.map(x=>Math.max(0,x)));
+  const W2=randM(r,DFF,D,.3);
+  const F=mm(H,W2), R2=add(Z,F), Out=ln(R2);
+  return {E,PE,X,WQ,WK,WV,Q,K,V,mask,heads,C,WO,M,R1,Z,W1,H,Hpre,W2,F,R2,Out};
+}
+
+/* ---------- svg builders ---------- */
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function nm(s){ // "W^Q", "Q_1", "K_2^T", "X_{emb}"
+  let out='',i=0;
+  while(i<s.length){
+    const ch=s[i];
+    if(ch==='_'||ch==='^'){
+      let t;
+      if(s[i+1]==='{'){const e=s.indexOf('}',i);t=s.slice(i+2,e);i=e+1;}else{t=s[i+1];i+=2;}
+      const dy=ch==='_'?5:-8;
+      out+=`<tspan class="ss" dy="${dy}">${esc(t)}</tspan><tspan dy="${-dy}">\u200a</tspan>`;
+    }else{
+      let j=i;while(j<s.length&&s[j]!=='_'&&s[j]!=='^')j++;
+      out+=`<tspan>${esc(s.slice(i,j))}</tspan>`;i=j;
+    }
+  }
+  return out;
+}
+function fmt(v){
+  if(v<=-1e8)return '−∞';
+  const a=Math.abs(v);
+  let s=a<1?a.toFixed(2).slice(1):(a<10?a.toFixed(1):a.toFixed(0));
+  if(s==='.00')return '0';
+  return (v<0?'−':'')+s;
+}
+const MATS={};
+const isDark=()=>{const t=document.documentElement.dataset.theme;return t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;};
+function mat(key,id,M,x,y,o){
+  const c=o.c||22,n=M.length,m=M[0].length;
+  const fin=M.flat().filter(v=>v>-1e8).map(Math.abs);
+  const mx=o.max||Math.max(1e-9,...fin);
+  MATS[id]={M,label:o.label||o.name,rowTok:!!o.rowTok,colTok:!!o.colTok,colDesc:o.colDesc,rowDesc:o.rowDesc};
+  let s=`<g data-k="${key}">`;
+  if(o.name)s+=`<text class="mname" x="${x+m*c/2}" y="${y-10}">${nm(o.name)}</text>`;
+  s+=`<text class="shape" x="${x+m*c/2}" y="${y+n*c+14}">${n} × ${m}</text>`;
+  for(let i=0;i<n;i++)for(let j=0;j<m;j++){
+    const v=M[i][j];let fill,op;
+    if(v<=-1e8){fill='var(--red)';op=.92;}
+    else{const a=Math.min(1,Math.abs(v)/mx);fill=v<0?'var(--neg)':o.hue(i,j);op=isDark()?.14+.84*a:.07+.83*a;}
+    const tc=op>.52?'#fff':'var(--ink)';
+    const X0=x+j*c,Y0=y+i*c;
+    s+=`<rect class="c" x="${X0}" y="${Y0}" width="${c}" height="${c}" style="fill:${fill};fill-opacity:${op.toFixed(3)}" data-m="${id}" data-i="${i}" data-j="${j}"${o.rowTok?` data-tr="${i}"`:''}${o.colTok?` data-tc="${j}"`:''}/>`;
+    s+=`<text class="cv" x="${X0+c/2}" y="${Y0+c/2+.5}" style="fill:${tc};font-size:${(c*.34).toFixed(1)}px">${fmt(v)}</text>`;
+  }
+  if(o.padCols&&state.mask){REAL.forEach((r,j)=>{if(!r)s+=`<rect x="${x+j*c}" y="${y}" width="${c}" height="${n*c}" style="fill:none;stroke:var(--red);stroke-width:1.6"/>`;});}
+  s+=`<rect class="frame" x="${x}" y="${y}" width="${m*c}" height="${n*c}"/>`;
+  if(o.rowLabels)for(let i=0;i<n;i++)s+=`<text class="rowl" x="${x-5}" y="${y+i*c+c/2}">${esc(TOK[i])}</text>`;
+  if(o.rowSums){const A=M;for(let i=0;i<n;i++)s+=`<text class="sum" x="${x+m*c+5}" y="${y+i*c+c/2}">Σ${A[i].reduce((a,b)=>a+b,0).toFixed(2).replace(/^1\.00$/,'1')}</text>`;}
+  return s+'</g>';
+}
+const g=(key,inner)=>`<g data-k="${key}">${inner}</g>`;
+const op=(x,y,t,col)=>`<text class="op" x="${x}" y="${y}"${col?` style="fill:${col}"`:''}>${t}</text>`;
+function arrow(x1,y,x2,label,col,below){
+  col=col||'var(--muted)';
+  const mk=col.includes('red')?'ar-red':'ar-gray';
+  return `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" class="conn" style="stroke:${col}" marker-end="url(#${mk})"/>`+
+    (label?`<text class="opl" x="${(x1+x2)/2}" y="${below?y+20:y-9}" style="fill:${col}">${label}</text>`:'');
+}
+const path=(d,col,cls,mk)=>`<path d="${d}" class="conn ${cls||''}" style="stroke:${col}"${mk?` marker-end="url(#${mk})"`:''}/>`;
+const headHue=w=>(i,j)=>HC[Math.floor(j/DK)%NH];
+const flat=col=>()=>col;
+
+function build(){
+  for(const k in MATS)delete MATS[k];
+  const d=compute();state.d=d;
+  let s='';
+  s+=`<defs>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" style="fill:var(--dot)"/></pattern>
+    <marker id="ar-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:var(--muted)"/></marker>
+    <marker id="ar-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:var(--red)"/></marker>
+    ${HC.map((c,h)=>`<marker id="ar-h${h}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:${c}"/></marker>`).join('')}
+  </defs>
+  <rect x="-3000" y="-3000" width="9000" height="9000" fill="url(#dots)"/>`;
+
+  /* ===== A. Вход ===== */
+  const y0=150;
+  s+=g('titleA',`<text class="rtitle" x="60" y="60">Вход</text>`);
+  s+=g('sent',`<text class="sent" x="60" y="100">«кошка спит на окне»</text>`);
+  let t=`<text class="lbl" x="103" y="${y0-10}">токен</text>`;
+  TOK.forEach((w,i)=>{const pad=!REAL[i];
+    t+=`<rect class="chip" data-tr="${i}" x="60" y="${y0+i*22+2}" width="86" height="18" rx="5" style="fill:${pad?'var(--neg)':'var(--blue)'};fill-opacity:.14;stroke:${pad?'var(--neg)':'var(--blue)'}"/><text class="chipt" x="103" y="${y0+i*22+11.5}">${esc(w)}</text>`;});
+  s+=g('tok',t);
+  t=`<text class="lbl" x="178" y="${y0-10}">id</text>`;
+  IDS.forEach((v,i)=>{t+=`<rect x="156" y="${y0+i*22}" width="44" height="22" style="fill:var(--bg);stroke:var(--grid)"/><text class="idt" x="178" y="${y0+i*22+11.5}">${v}</text>`;});
+  t+=`<rect class="frame" x="156" y="${y0}" width="44" height="132"/>`;
+  s+=g('ids',t);
+  // mask row vector
+  const my=y0+132+72;
+  t=`<text class="lbl-l" x="60" y="${my+15}" style="fill:var(--red);font-weight:700">маска m</text>`;
+  REAL.forEach((r,j)=>{t+=`<rect x="${160+j*22}" y="${my}" width="22" height="22" style="fill:${r?'var(--bg)':'var(--red)'};fill-opacity:${r?1:.9};stroke:var(--grid)"/><text class="idt" x="${171+j*22}" y="${my+11.5}" style="fill:${r?'var(--ink)':'#fff'}">${r?'0':'−∞'}</text>`;});
+  t+=`<rect class="frame" x="160" y="${my}" width="132" height="22"/><text class="lbl-l" x="160" y="${my+42}">0 — слово, −∞ (на деле −1e9) — PAD</text>`;
+  if(!state.mask)t+=`<line x1="156" y1="${my+11}" x2="296" y2="${my+11}" style="stroke:var(--ink);stroke-width:2"/>`;
+  s+=g('mask',t);
+  s+=g('emb',arrow(204,y0+66,294,'E[id]'));
+  s+=mat('emb','E',d.E,300,y0,{name:'X_{emb}',hue:flat('var(--blue)'),rowTok:1,label:'эмбеддинг'});
+  s+=g('pe',op(519,y0+66,'+'));
+  s+=mat('pe','PE',d.PE,540,y0,{name:'PE',hue:flat('var(--yellow)'),rowTok:1,label:'PE',colDesc:j=>j%2?`cos, частота ${Math.floor(j/2)}`:`sin, частота ${Math.floor(j/2)}`});
+  s+=g('x',op(739,y0+66,'='));
+  s+=mat('x','X',d.X,760,y0,{name:'X',hue:flat('var(--blue)'),rowTok:1,label:'X'});
+
+  /* ===== B. Проекции ===== */
+  s+=g('titleB',`<text class="rtitle" x="1000" y="60">Проекции Q, K, V</text>`);
+  const PN=['Q','K','V'],PM=[d.Q,d.K,d.V],WM=[d.WQ,d.WK,d.WV];
+  let cx='';
+  PN.forEach((p,pi)=>{
+    const y=120+pi*236;
+    s+=g('w-'+pi,`<text class="mname" x="1036" y="${y+94}" style="font-size:22px">X ·</text>`);
+    s+=mat('w-'+pi,'W'+p,WM[pi],1062,y,{name:'W^'+p,hue:headHue(),label:'W^'+p,colDesc:j=>`голова ${Math.floor(j/DK)+1}`});
+    s+=g('p-'+pi,op(1261,y+88,'='));
+    s+=mat('p-'+pi,p,PM[pi],1282,y+22,{name:p,hue:headHue(),rowTok:1,label:p,colDesc:j=>`голова ${Math.floor(j/DK)+1}`});
+    s+=g('sp-'+pi,arrow(1462,y+88,1494,''));
+    for(let h=0;h<NH;h++)s+=mat('sp-'+pi,p+h,cols(PM[pi],h*DK,h*DK+DK),1502+h*64,y+22,{name:p+'_'+(h+1),hue:flat(HC[h]),rowTok:1,label:p+'_'+(h+1)});
+    cx+=path(`M940,${y0+66} C985,${y0+66} 975,${y+88} 1004,${y+88}`,'var(--muted)','', 'ar-gray');
+  });
+  s+=g('c-xb',cx);
+
+  /* ===== C. Головы ===== */
+  const LY=h=>920+h*190;
+  s+=g('titleC',`<text class="rtitle" x="60" y="880">Внимание: 4 головы параллельно</text>`);
+  // шина от проекций к головам
+  let bus='';
+  for(let h=0;h<NH;h++){
+    const sx=1502+h*64+22, by=776+h*8, lx=20+h*8, ly=LY(h)+66;
+    bus+=path(`M${sx},752 V${by} H${lx} V${ly} H150`,HC[h],'','ar-h'+h);
+  }
+  s+=g('bus',bus);
+  // маска → все головы
+  s+=g('maskline',path(`M226,${my+22} V${my+70} H240 V836 H830 V${LY(3)+56}`,'var(--red)','dash')+
+    [0,1,2,3].map(h=>`<circle cx="830" cy="${LY(h)+66}" r="4" style="fill:var(--red)"/>`).join(''));
+  for(let h=0;h<NH;h++){
+    const y=LY(h),hd=d.heads[h],hc=HC[h],K='L'+h;
+    s+=g(K,`<text class="lanel" x="60" y="${y+72}" style="fill:${hc}">голова ${h+1}</text>`);
+    s+=mat(K+'-q','q'+h,hd.q,170,y,{name:'Q_'+(h+1),hue:flat(hc),rowTok:1,label:'Q_'+(h+1)});
+    s+=g(K+'-kt',op(233,y+66,'·'));
+    s+=mat(K+'-kt','kt'+h,hd.kt,250,y+44,{name:'K_'+(h+1)+'^T',hue:flat(hc),colTok:1,label:'K_'+(h+1)+'ᵀ'});
+    s+=g(K+'-s',op(401,y+66,'='));
+    s+=mat(K+'-s','S'+h,hd.S,420,y,{name:'QK^T',hue:flat(hc),rowTok:1,colTok:1,label:'QKᵀ'});
+    s+=g(K+'-ss',arrow(560,y+66,642,state.scale?'÷ √d<tspan dy="4" style="font-size:10px">k</tspan>':'÷ 1 (выкл.)'));
+    s+=mat(K+'-ss','S1'+h,hd.S1,650,y,{name:state.scale?'S/√d_k':'S',hue:flat(hc),rowTok:1,colTok:1,label:'QKᵀ/√dₖ'});
+    s+=g(K+'-sm',arrow(790,y+66,872,state.mask?'+ m':'маска выкл.','var(--red)',true));
+    s+=mat(K+'-sm','S2'+h,hd.S2,880,y,{name:state.mask?'S/√d_k + m':'без маски',hue:flat(hc),rowTok:1,colTok:1,label:'с маской'});
+    s+=g(K+'-a',arrow(1020,y+66,1102,'softmax'));
+    s+=mat(K+'-a','A'+h,hd.A,1110,y,{name:'A',hue:flat(hc),rowTok:1,colTok:1,label:'веса внимания A',max:1,rowSums:1,padCols:1});
+    s+=g(K+'-v',op(1291,y+66,'·'));
+    s+=mat(K+'-v','v'+h,hd.v,1308,y,{name:'V_'+(h+1),hue:flat(hc),rowTok:1,label:'V_'+(h+1)});
+    s+=g(K+'-o',op(1371,y+66,'='));
+    s+=mat(K+'-o','O'+h,hd.O,1390,y,{name:'head_'+(h+1),hue:flat(hc),rowTok:1,label:'head_'+(h+1)});
+  }
+
+  /* ===== D. Склейка ===== */
+  const cy=1205;
+  s+=g('titleD',`<text class="rtitle" x="1520" y="1115">Склейка голов</text>`);
+  let oc='';
+  for(let h=0;h<NH;h++)oc+=path(`M1440,${LY(h)+66} C1480,${LY(h)+66} 1470,${cy+30+h*24} 1512,${cy+30+h*24}`,HC[h],'','ar-h'+h);
+  s+=g('c-oc',oc);
+  s+=mat('concat','C',d.C,1520,cy,{name:'Concat',hue:headHue(),rowTok:1,label:'Concat(head₁…head₄)',colDesc:j=>`голова ${Math.floor(j/DK)+1}`});
+  s+=g('wo',op(1714,cy+66,'·'));
+  s+=mat('wo','WO',d.WO,1732,cy-22,{name:'W^O',hue:flat('var(--blue)'),label:'Wᴼ'});
+  s+=g('mha',op(1927,cy+66,'='));
+  s+=mat('mha','M',d.M,1946,cy,{name:'MHA(X)',hue:flat('var(--blue)'),rowTok:1,label:'MultiHead(X)'});
+
+  /* ===== E. Add & Norm, FFN ===== */
+  const ey=1800;
+  s+=g('titleE',`<text class="rtitle" x="300" y="1730">Add &amp; Norm и feed-forward</text>`);
+  s+=g('c-mr',path(`M2034,${cy+150} V1690 H188 V${ey-26}`,'var(--muted)','','ar-gray'));
+  s+=g('skip1',path(`M848,124 V116 H8 V${ey+66} H52`,'var(--muted)','dash','ar-gray')+`<text class="lbl-l" x="430" y="110">остаточная связь: X идёт в обход внимания</text>`);
+  s+=mat('r1','R1',d.R1,100,ey,{name:'X + MHA(X)',hue:flat('var(--blue)'),rowTok:1,rowLabels:1,label:'X + MHA(X)'});
+  s+=g('ln1',arrow(282,ey+66,352,'LayerNorm'));
+  s+=mat('ln1','Z',d.Z,360,ey,{name:'Z',hue:flat('var(--blue)'),rowTok:1,label:'Z = LayerNorm(X + MHA)'});
+  s+=g('w1',op(553,ey+66,'·'));
+  s+=mat('w1','W1',d.W1,570,ey,{c:16,name:'W_1',hue:flat('var(--yellow)'),label:'W₁'});
+  s+=g('h',arrow(832,ey+66,902,'ReLU'));
+  s+=mat('h','H',d.H,910,ey,{c:16,name:'H',hue:flat('var(--yellow)'),rowTok:1,label:'H = ReLU(Z W₁)'});
+  s+=g('w2',op(1183,ey+66,'·'));
+  s+=mat('w2','W2',d.W2,1200,ey,{c:16,name:'W_2',hue:flat('var(--yellow)'),label:'W₂'});
+  s+=g('f',op(1347,ey+66,'='));
+  s+=mat('f','F',d.F,1366,ey,{name:'FFN(Z)',hue:flat('var(--blue)'),rowTok:1,label:'FFN(Z)'});
+  s+=g('skip2',path(`M448,${ey-30} V${ey-44} H1716 V${ey-30}`,'var(--muted)','dash','ar-gray'));
+  s+=g('r2',arrow(1548,ey+66,1620,'+ Z'));
+  s+=mat('r2','R2',d.R2,1628,ey,{name:'Z + FFN(Z)',hue:flat('var(--blue)'),rowTok:1,label:'Z + FFN(Z)'});
+  s+=g('out',arrow(1810,ey+66,1880,'LayerNorm'));
+  s+=mat('out','Out',d.Out,1888,ey,{name:'X′',hue:flat('var(--green)'),rowTok:1,label:'выход слоя X′'});
+  s+=g('next',`<text class="lbl-l" x="1888" y="${ey+170}" style="fill:var(--green);font-weight:700;font-size:15px">→ вход следующего слоя (×N)</text><text class="lbl-l" x="1888" y="${ey+190}">после последнего — в декодер</text>`);
+
+  svg.innerHTML=s;
+}
+
+/* ---------- steps ---------- */
+const lane=h=>['L'+h,'L'+h+'-q','L'+h+'-kt','L'+h+'-s','L'+h+'-ss','L'+h+'-sm','L'+h+'-a','L'+h+'-v','L'+h+'-o'];
+const allLanes=()=>[0,1,2,3].flatMap(lane);
+const q=(w)=>`«${w}»`;
+const f2=v=>v.toFixed(2).replace('-','−');
+const HN=()=>`голове ${state.head+1}`;
+const hsw=h=>`<b style="color:${HC[h]}">голова ${h+1}</b>`;
+
+const STEPS=[
+ {t:'Один слой энкодера целиком',cam:null,focus:[],
+  text:()=>`Карта показывает весь путь фразы через один слой энкодера на игрушечном примере: 4 слова, <b>seq_len = 6</b>, <b>d_model = 8</b>, <b>4 головы</b> по <b>d<sub>k</sub> = 2</b>. Все числа посчитаны прямо в браузере.
+  <div class="legend">
+   <span class="sw ramp"></span><span>насыщенность цвета — модуль значения</span>
+   <span class="sw" style="background:var(--neg)"></span><span>серый — отрицательные значения</span>
+   <span class="sw" style="background:var(--yellow)"></span><span>жёлтый — преобразования (PE, FFN)</span>
+   <span class="sw" style="background:var(--red)"></span><span>красный — маска паддинга</span>
+   <span class="sw" style="background:var(--green)"></span><span>зелёный — выход слоя</span>
+  </div>
+  Четыре головы окрашены в свои цвета везде, где встречаются. Наведи на клетку любой матрицы, привязанной к токенам: строка этого токена подсветится по всей карте.`,
+  formula:()=>'',live:()=>`Слова, id и веса условные (случайная инициализация, seed ${state.seed}): это иллюстрация механики, а не обученная модель.`},
+ {t:'Токены и паддинг',cam:['sent','tok','ids','mask'],focus:['sent','tok','ids'],
+  text:()=>`Фраза разбивается на токены, и каждый получает <b>id</b> из словаря. В батче все последовательности должны быть одной длины, поэтому короткую фразу добивают служебным токеном <b>&lt;PAD&gt;</b> с id 0 до <b>seq_len = 6</b>.`,
+  formula:()=>'',live:()=>`4 настоящих токена + 2 PAD = 6 позиций.`},
+ {t:'Маска паддинга',cam:['sent','tok','ids','mask'],focus:['tok','mask'],
+  text:()=>`Маска — вектор длины seq_len: <b>0</b> для настоящих токенов и <b style="color:var(--red)">−∞</b> (на практике −1e9) для PAD. Она строится один раз и потом прибавляется к оценкам внимания <b>в каждой голове</b>, чтобы никто не смотрел на пустые позиции.`,
+  formula:()=>`m<sub>j</sub> = 0, если токен j настоящий; &nbsp;m<sub>j</sub> = −∞, если PAD`,live:()=>''},
+ {t:'Эмбеддинги',cam:['tok','ids','emb'],focus:['tok','ids','emb'],
+  text:()=>`Каждый id выбирает свою строку из обучаемой таблицы <b>E</b> размера vocab × d_model. Получаем матрицу 6 × 8: по вектору на позицию. Оба PAD дают одну и ту же строку, потому что у них один id.`,
+  formula:()=>`X<sub>emb</sub>[i] = E[id<sub>i</sub>]<span class="note">В оригинальной статье эмбеддинг ещё умножают на √d_model — здесь опущено.</span>`,live:()=>''},
+ {t:'Позиционное кодирование',cam:['emb','pe','x'],focus:['pe'],
+  text:()=>`Внимание само по себе не знает порядок слов: перестановка токенов переставит строки результата, и только. Поэтому к каждой позиции прибавляют фиксированный вектор из синусов и косинусов разной частоты. Левые столбцы меняются от строки к строке быстро, правые — медленно.`,
+  formula:()=>`PE<sub>(pos, 2i)</sub> = sin(pos / 10000<sup>2i/d</sup>)<br>PE<sub>(pos, 2i+1)</sub> = cos(pos / 10000<sup>2i/d</sup>)`,
+  live:()=>`У позиции 0 все синусы равны 0, а косинусы 1 — видно в первой строке PE.`},
+ {t:'Вход слоя X',cam:['emb','pe','x'],focus:['emb','pe','x'],
+  text:()=>`Складываем поэлементно: смысл токена плюс его позиция. Матрица <b>X</b> размера 6 × 8 — вход, который пройдёт через N одинаковых слоёв энкодера. Дальше на карте разобран один такой слой.`,
+  formula:()=>`X = X<sub>emb</sub> + PE`,live:()=>''},
+ {t:'Три проекции из одного X',cam:['x','w-0','p-0','w-1','p-1','w-2','p-2'],focus:['x','c-xb','w-0','p-0','w-1','p-1','w-2','p-2'],
+  text:()=>`В self-attention запросы, ключи и значения строятся из одного и того же X, но тремя разными обучаемыми матрицами. <b>Q</b> — что токен ищет, <b>K</b> — по чему его находят, <b>V</b> — что он отдаёт, когда его нашли.`,
+  formula:()=>`Q = XW<sup>Q</sup>, &nbsp;K = XW<sup>K</sup>, &nbsp;V = XW<sup>V</sup><span class="note">(6 × 8) · (8 × 8) = 6 × 8</span>`,live:()=>''},
+ {t:'Разрез на головы',cam:['w-0','p-0','sp-0','w-2','sp-2'],focus:['w-0','w-1','w-2','p-0','p-1','p-2','sp-0','sp-1','sp-2'],
+  text:()=>`Каждая голова получает свою полосу из <b>d<sub>k</sub> = d_model / h = 2</b> столбцов. Резать готовую проекцию 8 × 8 по столбцам — то же самое, что держать для каждой головы свою матрицу 8 × 2. Цвет столбца в W показывает, какой голове он принадлежит.`,
+  formula:()=>`Q<sub>i</sub> = XW<sub>i</sub><sup>Q</sup>, &nbsp;W<sub>i</sub><sup>Q</sup> ∈ ℝ<sup>8×2</sup>`,live:()=>''},
+ {t:'Оценки QKᵀ',head:1,cam:()=>['L'+state.head,'L'+state.head+'-q','L'+state.head+'-kt','L'+state.head+'-s'],focus:()=>['L'+state.head,'L'+state.head+'-q','L'+state.head+'-kt','L'+state.head+'-s'],
+  text:()=>`Дальше смотрим одну голову — ${hsw(state.head)}, переключается внизу. Клетка <b>(i, j)</b> — скалярное произведение запроса токена i и ключа токена j: насколько токену i «интересен» токен j.`,
+  formula:()=>`S = Q<sub>i</sub>K<sub>i</sub><sup>T</sup><span class="note">(6 × 2) · (2 × 6) = 6 × 6</span>`,
+  live:()=>{const S=state.d.heads[state.head].S;let b=[-1e9,0,0];for(let i=0;i<4;i++)for(let j=0;j<4;j++)if(S[i][j]>b[0])b=[S[i][j],i,j];return `Самая высокая оценка среди слов: ${q(TOK[b[1]])} → ${q(TOK[b[2]])} = ${f2(b[0])}.`;}},
+ {t:'Масштабирование на √dₖ',head:1,cam:()=>['L'+state.head+'-s','L'+state.head+'-ss'],focus:()=>['L'+state.head+'-s','L'+state.head+'-ss'],
+  text:()=>`Делим оценки на √d<sub>k</sub>. Скалярное произведение суммирует d<sub>k</sub> слагаемых, и его разброс растёт вместе с d<sub>k</sub>. Без деления softmax становится почти one-hot, а градиенты через него затухают. Сними галочку «делить на √d<sub>k</sub>» и сравни веса на шаге softmax.`,
+  formula:()=>`<span class="frac"><span>QK<sup>T</sup></span><span>√d<sub>k</sub></span></span> <span class="note">здесь √2 ≈ 1.41</span>`,
+  live:()=>{const h=state.d.heads[state.head],r=h.S[0].slice(0,4),r1=h.S1[0].slice(0,4);const rg=a=>f2(Math.max(...a)-Math.min(...a));return state.scale?`Размах строки ${q('кошка')}: ${rg(r)} → ${rg(r1)}.`:`Деление выключено: оценки идут в softmax как есть.`;}},
+ {t:'Маска перед softmax',head:1,cam:()=>['L'+state.head+'-ss','L'+state.head+'-sm'],focus:()=>['L'+state.head+'-ss','L'+state.head+'-sm','maskline'],
+  text:()=>`Прибавляем маску m к каждой строке: столбцы PAD превращаются в −∞. Красная линия идёт от одного вектора ко всем четырём головам — маска общая. Маскируются именно <b>столбцы</b> (ключи): на PAD нельзя смотреть. Строки PAD считаются, но потом просто игнорируются.`,
+  formula:()=>`S′ = <span class="frac"><span>QK<sup>T</sup></span><span>√d<sub>k</sub></span></span> + m`,
+  live:()=>{if(state.mask)return 'Маска включена: после softmax на PAD уйдёт ровно 0 внимания.';const A=state.d.heads[state.head].A;const leak=mean([0,1,2,3].map(i=>A[i][4]+A[i][5]));return `Маска выключена: слова отдают PAD в среднем ${(leak*100).toFixed(0)}% своего внимания — это шум.`;}},
+ {t:'Softmax по строкам',head:1,cam:()=>['L'+state.head+'-sm','L'+state.head+'-a'],focus:()=>['L'+state.head+'-sm','L'+state.head+'-a'],
+  text:()=>`Softmax превращает каждую строку в распределение: все веса неотрицательны, сумма по строке равна 1 (Σ справа). Строка i матрицы <b>A</b> — это ответ на вопрос «куда смотрит токен i».`,
+  formula:()=>`A<sub>ij</sub> = <span class="frac"><span>exp(S′<sub>ij</sub>)</span><span>Σ<sub>j′</sub> exp(S′<sub>ij′</sub>)</span></span>`,
+  live:()=>{const a=state.d.heads[state.head].A[0];return `${q('кошка')} в ${HN()}: `+TOK.map((w,j)=>`${esc(w)} ${a[j].toFixed(2)}`).join(', ')+'.';}},
+ {t:'Взвешенная сумма V',head:1,cam:()=>['L'+state.head+'-a','L'+state.head+'-v','L'+state.head+'-o'],focus:()=>['L'+state.head+'-a','L'+state.head+'-v','L'+state.head+'-o'],
+  text:()=>`Каждый токен получает смесь векторов значений всех токенов с весами из своей строки A. Выход головы — снова по вектору на позицию, но теперь в нём есть информация о соседях.`,
+  formula:()=>`head<sub>i</sub> = A V<sub>i</sub><span class="note">(6 × 6) · (6 × 2) = 6 × 2</span>`,
+  live:()=>{const o=state.d.heads[state.head].O[0];return `head${state.head+1}[${q('кошка')}] = [${o.map(f2).join(', ')}]`;}},
+ {t:'Четыре головы параллельно',cam:allLanes,focus:()=>[...allLanes(),'bus','maskline'],
+  text:()=>`Все головы делают одно и то же, но со своими весами — и замечают разные связи. Слева к каждой полосе подходит её кусок Q, K, V, сверху — общая маска. Головы не зависят друг от друга, поэтому считаются одновременно.`,
+  formula:()=>`head<sub>i</sub> = Attention(XW<sub>i</sub><sup>Q</sup>, XW<sub>i</sub><sup>K</sup>, XW<sub>i</sub><sup>V</sup>)`,
+  live:()=>`Куда сильнее всего смотрит ${q('кошка')}: `+state.d.heads.map((hd,h)=>{const a=hd.A[0];const j=a.indexOf(Math.max(...a));return `<b style="color:${HC[h]}">${h+1}</b> → ${q(TOK[j])}`;}).join(', ')+'.'},
+ {t:'Склейка и Wᴼ',cam:['L0-o','L3-o','concat','wo','mha'],focus:['L0-o','L1-o','L2-o','L3-o','c-oc','concat','wo','mha'],
+  text:()=>`Выходы голов (по 6 × 2) склеиваются обратно в 6 × 8 — цвет столбцов показывает, откуда каждый. Матрица <b>W<sup>O</sup></b> смешивает их, чтобы результат голов мог влиять на все измерения.`,
+  formula:()=>`MultiHead(X) = Concat(head<sub>1</sub>, …, head<sub>4</sub>) W<sup>O</sup>`,live:()=>''},
+ {t:'Residual и LayerNorm',cam:['r1','ln1','w1'],focus:['r1','ln1','skip1','c-mr'],
+  text:()=>`К выходу внимания прибавляется сам вход X — остаточная связь (пунктир через всю карту). Потом каждая строка нормируется: среднее 0, дисперсия 1, дальше обучаемые γ и β (здесь γ = 1, β = 0). Dropout перед сложением работает только при обучении. Это post-LN, как в оригинальной статье; в большинстве современных моделей LayerNorm стоит перед вниманием (pre-LN).`,
+  formula:()=>`Z = LayerNorm(X + MultiHead(X))`,
+  live:()=>{const a=state.d.R1[0],b=state.d.Z[0];return `Строка ${q('кошка')}: среднее ${f2(mean(a))} → ${f2(mean(b))}, σ ${f2(std(a))} → ${f2(std(b))}.`;}},
+ {t:'Feed-forward',cam:['ln1','w1','h','w2','f'],focus:['ln1','w1','h','w2','f'],
+  text:()=>`Два Dense-слоя, которые применяются к каждой позиции отдельно и одинаково: расширение 8 → 16 с ReLU, затем сжатие 16 → 8. Здесь токены уже не общаются — это «обдумывание» каждого вектора по отдельности. Бледные нули в H — работа ReLU.`,
+  formula:()=>`FFN(z) = max(0, zW<sub>1</sub> + b<sub>1</sub>) W<sub>2</sub> + b<sub>2</sub><span class="note">(6×8)(8×16) → 6×16 → (6×16)(16×8) → 6×8; здесь b = 0</span>`,
+  live:()=>{const z=state.d.H.flat().filter(v=>v===0).length;return `ReLU обнулил ${z} из ${L*DFF} значений H.`;}},
+ {t:'Выход слоя',cam:['f','r2','out','next'],focus:['f','r2','out','skip2','next'],
+  text:()=>`Вторая остаточная связь и второй LayerNorm. Форма выхода та же, что у входа — <b>6 × 8</b>, поэтому слои можно ставить друг за другом N раз. Выход последнего слоя идёт в декодер как K и V для cross-attention.`,
+  formula:()=>`X′ = LayerNorm(Z + FFN(Z))`,live:()=>`Нажми ↻, чтобы вернуться к общей карте.`}
+];
+const N=STEPS.length;
+
+/* ---------- camera ---------- */
+let vb={x:0,y:0,w:2200,h:2150};
+function setVB(b){vb=b;svg.setAttribute('viewBox',`${b.x} ${b.y} ${b.w} ${b.h}`);}
+function bboxKeys(keys){
+  let x1=1e9,y1=1e9,x2=-1e9,y2=-1e9;
+  const els=keys?keys.flatMap(k=>[...svg.querySelectorAll(`[data-k="${k}"]`)]):[...svg.querySelectorAll('[data-k]')];
+  els.forEach(el=>{const b=el.getBBox();if(!b.width&&!b.height)return;x1=Math.min(x1,b.x);y1=Math.min(y1,b.y);x2=Math.max(x2,b.x+b.width);y2=Math.max(y2,b.y+b.height);});
+  return {x:x1,y:y1,w:x2-x1,h:y2-y1};
+}
+function fit(b){
+  const r=svg.getBoundingClientRect();const ar=r.width/Math.max(1,r.height);
+  const pad=Math.max(b.w,b.h)*.06+36;
+  let x=b.x-pad,y=b.y-pad,w=b.w+2*pad,h=b.h+2*pad;
+  if(w<600){x-=(600-w)/2;w=600;}
+  if(w/h>ar){const nh=w/ar;y-=(nh-h)/2;h=nh;}else{const nw=h*ar;x-=(nw-w)/2;w=nw;}
+  return {x,y,w,h};
+}
+let anim=null;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function flyTo(t){
+  if(anim)cancelAnimationFrame(anim);
+  if(reduce){setVB(t);return;}
+  const f={...vb},t0=performance.now(),dur=750;
+  const ease=u=>u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;
+  const tick=now=>{const u=Math.min(1,(now-t0)/dur),e=ease(u);
+    setVB({x:f.x+(t.x-f.x)*e,y:f.y+(t.y-f.y)*e,w:f.w+(t.w-f.w)*e,h:f.h+(t.h-f.h)*e});
+    if(u<1)anim=requestAnimationFrame(tick);};
+  anim=requestAnimationFrame(tick);
+}
+const val=v=>typeof v==='function'?v():v;
+function camera(){const st=STEPS[state.step];flyTo(fit(bboxKeys(val(st.cam))));}
+
+/* ---------- render ---------- */
+const $=id=>document.getElementById(id);
+function applyFocus(){
+  const F=new Set(val(STEPS[state.step].focus)||[]);
+  svg.querySelectorAll('[data-k]').forEach(el=>{const k=el.dataset.k;el.classList.toggle('dim',F.size>0&&!F.has(k)&&!k.startsWith('title'));});
+}
+function panel(){
+  const st=STEPS[state.step];
+  $('count').textContent=`${state.step+1} из ${N}`;
+  $('title').textContent=st.t;
+  $('text').innerHTML=st.text();
+  $('formula').innerHTML=st.formula();
+  $('live').innerHTML=st.live();
+  $('prev').style.visibility=state.step===0?'hidden':'visible';
+  $('next').textContent=state.step===N-1?'↻':'Далее';
+  $('next').setAttribute('aria-label',state.step===N-1?'В начало':'Далее');
+  [...$('progress').children].forEach((b,i)=>{b.className=i===state.step?'cur':(i<state.step?'done':'');});
+  [...$('heads').children].forEach((b,h)=>b.setAttribute('aria-pressed',String(h===state.head)));
+  $('seedl').textContent=`seed ${state.seed}`;
+}
+function go(i){state.step=(i+N)%N;state.free=false;$('recenter').style.display='none';panel();applyFocus();camera();}
+function rebuild(){build();applyFocus();panel();}
+
+// progress & heads UI
+STEPS.forEach((s,i)=>{const b=document.createElement('button');b.title=`${i+1}. ${s.t}`;b.setAttribute('aria-label',`Шаг ${i+1}: ${s.t}`);b.onclick=()=>go(i);$('progress').appendChild(b);});
+HC.forEach((c,h)=>{const b=document.createElement('button');b.textContent=h+1;b.style.setProperty('--hc',c);b.setAttribute('aria-label',`Голова ${h+1}`);
+  b.onclick=()=>{state.head=h;panel();applyFocus();if(STEPS[state.step].head&&!state.free)camera();};$('heads').appendChild(b);});
+$('prev').onclick=()=>go(state.step-1);
+$('next').onclick=()=>go(state.step+1);
+$('optMask').onchange=e=>{state.mask=e.target.checked;rebuild();};
+$('optScale').onchange=e=>{state.scale=e.target.checked;rebuild();};
+$('reseed').onclick=()=>{state.seed=1+Math.floor(Math.random()*9999);rebuild();};
+$('recenter').onclick=()=>go(state.step);
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT')return;
+  if(e.key==='ArrowRight'){go(state.step+1);e.preventDefault();}
+  if(e.key==='ArrowLeft'&&state.step>0){go(state.step-1);e.preventDefault();}
+});
+
+/* ---------- hover ---------- */
+const tip=$('tip'),stage=$('stage');
+function hl(t){if(t==null)delete svg.dataset.hl;else svg.dataset.hl=t;}
+(function(){let css='';for(let t=0;t<L;t++)css+=`#map[data-hl="${t}"] .c[data-tr="${t}"],#map[data-hl="${t}"] .c[data-tc="${t}"]{opacity:1;stroke:var(--ink);stroke-width:1.4}#map[data-hl="${t}"] .chip[data-tr="${t}"]{stroke-width:3}`;
+  const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);})();
+svg.addEventListener('pointermove',e=>{
+  if(drag)return;
+  const el=e.target;
+  if(el.classList&&el.classList.contains('c')){
+    const m=MATS[el.dataset.m],i=+el.dataset.i,j=+el.dataset.j,v=m.M[i][j];
+    const rn=m.rowTok?q(TOK[i]):`строка ${i+1}`;
+    const cn=m.colTok?q(TOK[j]):`столбец ${j+1}`+(m.colDesc?` (${m.colDesc(j)})`:'');
+    tip.innerHTML=`${esc(m.label)} · ${esc(rn)}, ${esc(cn)} = <b>${v<=-1e8?'−∞':v.toFixed(3).replace('-','−')}</b>`;
+    const r=stage.getBoundingClientRect();let x=e.clientX-r.left+14,y=e.clientY-r.top+14;
+    tip.style.opacity=1;const tw=tip.offsetWidth;if(x+tw>r.width-8)x=e.clientX-r.left-tw-14;
+    tip.style.left=x+'px';tip.style.top=y+'px';
+    hl(m.rowTok?i:(m.colTok?j:null));
+  }else if(el.classList&&el.classList.contains('chip')){hl(+el.dataset.tr);tip.style.opacity=0;}
+  else{tip.style.opacity=0;hl(null);}
+});
+svg.addEventListener('pointerleave',()=>{tip.style.opacity=0;hl(null);});
+
+/* ---------- pan / zoom ---------- */
+let drag=null;
+function toFree(){if(!state.free){state.free=true;$('recenter').style.display='block';}}
+svg.addEventListener('pointerdown',e=>{if(e.button!==0)return;if(anim)cancelAnimationFrame(anim);drag={x:e.clientX,y:e.clientY,vb:{...vb},moved:false};svg.setPointerCapture(e.pointerId);});
+svg.addEventListener('pointermove',e=>{
+  if(!drag)return;const r=svg.getBoundingClientRect();
+  const s=Math.max(drag.vb.w/r.width,drag.vb.h/r.height);
+  const dx=(e.clientX-drag.x)*s,dy=(e.clientY-drag.y)*s;
+  if(Math.abs(dx)+Math.abs(dy)>3){drag.moved=true;svg.classList.add('dragging');toFree();tip.style.opacity=0;}
+  if(drag.moved)setVB({...drag.vb,x:drag.vb.x-dx,y:drag.vb.y-dy});
+});
+const end=()=>{drag=null;svg.classList.remove('dragging');};
+svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',end);
+/* Встроенная в статью карта не должна перехватывать прокрутку страницы:
+   масштаб там только с Ctrl/⌘ (щипок на тачпаде тоже приходит с ctrlKey). */
+const embedded=window.self!==window.top;
+if(embedded)document.querySelector('.hint').textContent='Тяни — двигать, Ctrl + колесо — масштаб, наведи на клетку — значение';
+svg.addEventListener('wheel',e=>{
+  if(embedded&&!e.ctrlKey&&!e.metaKey)return;
+  e.preventDefault();if(anim)cancelAnimationFrame(anim);
+  const r=svg.getBoundingClientRect();const s=Math.max(vb.w/r.width,vb.h/r.height);
+  const ox=vb.x+(vb.w-r.width*s)/2,oy=vb.y+(vb.h-r.height*s)/2;
+  const px=ox+(e.clientX-r.left)*s,py=oy+(e.clientY-r.top)*s;
+  const k=Math.min(4,Math.max(.25,Math.pow(1.0018,e.deltaY)));
+  const nw=Math.min(6000,Math.max(200,vb.w*k)),kk=nw/vb.w;
+  setVB({x:px-(px-vb.x)*kk,y:py-(py-vb.y)*kk,w:vb.w*kk,h:vb.h*kk});toFree();
+},{passive:false});
+let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(!state.free)camera();},120);});
+
+/* ---------- theme ----------
+   Сайт хранит выбранную тему в localStorage.theme; iframe того же origin
+   читает её при загрузке и ловит переключение через событие storage.
+   Цвета клеток считаются в build() через isDark(), поэтому нужен rebuild(). */
+function siteTheme(){try{return localStorage.getItem('theme');}catch(e){return null;}}
+function applyTheme(t){if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;else delete document.documentElement.dataset.theme;}
+applyTheme(siteTheme());
+window.addEventListener('storage',e=>{if(e.key==='theme'){applyTheme(e.newValue);rebuild();}});
+
+/* ---------- start ---------- */
+build();panel();applyFocus();
+setVB(fit(bboxKeys(null)));
+})();
+</script>
+</body>
+</html>

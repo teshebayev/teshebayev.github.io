@@ -193,6 +193,23 @@
       "accent": "#DC2626",
       "tint": "#FEE2E2",
       "order": 4
+    },
+    {
+      "id": "interactive-maps",
+      "title": {
+        "ru": "Интерактивные карты",
+        "en": "Interactive Maps",
+        "kk": "Интерактивті карталар"
+      },
+      "description": {
+        "ru": "Целые модели на одном холсте: двигай, масштабируй, наводи на клетки и проходи вычисление шаг за шагом на живых числах.",
+        "en": "Whole models on a single canvas: pan, zoom, hover over cells, and step through the computation on live numbers.",
+        "kk": "Бүкіл модель бір кенепте: жылжыт, масштабта, ұяшықтарға меңзе және есептеуді тірі сандармен қадам-қадаммен өт."
+      },
+      "icon": "map",
+      "accent": "#059669",
+      "tint": "#D1FAE5",
+      "order": 5
     }
   ],
   "tags": {
@@ -672,6 +689,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/deep-learning/transformer.ru.md"
+  }
+},
+    {
+  "slug": "transformer-encoder-map",
+  "category": "interactive-maps",
+  "title": {
+    "ru": "Карта энкодера трансформера"
+  },
+  "description": {
+    "ru": "Один слой энкодера целиком на одном холсте: фраза «кошка спит на окне» с паддингом проходит через эмбеддинги, позиционное кодирование, Q/K/V, четыре головы внимания, маску, softmax, residual, LayerNorm и feed-forward. Восемнадцать шагов; любое число можно навести и посмотреть, маску и деление на √dₖ — выключить, веса — перегенерировать."
+  },
+  "date": "2026-09-25",
+  "reading_time": 15,
+  "tags": ["deep-learning", "llm"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/interactive-maps/transformer-encoder-map.ru.md"
   }
 }
   ]
