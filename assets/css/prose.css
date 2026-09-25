@@ -101,7 +101,7 @@
 }
 
 /* KaTeX display blocks need a bit of breathing room */
-.prose .katex-display { margin: 1.5em 0; overflow-x: auto; }
+.prose .katex-display { margin: 1.5em 0; overflow-x: auto; overflow-y: hidden; }
 
 /* Inline note callout — use blockquote with "Note:" or a custom div */
 .prose .callout {

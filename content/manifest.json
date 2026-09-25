@@ -639,6 +639,23 @@
   "content": {
     "ru": "content/articles/deep-learning/self-attention.ru.md"
   }
+},
+    {
+  "slug": "multi-head-attention",
+  "category": "deep-learning",
+  "title": {
+    "ru": "Multi-head attention: несколько голов вместо одной"
+  },
+  "description": {
+    "ru": "Multi-head attention — тот же self-attention, в котором q, k и v разрезаны на h частей: каждая голова считает свою softmax-строку весов, а W_O переводит ответы голов в общее пространство модели и складывает. На той же фразе «Я видел котю на мате» и тех же матрицах Q, K, V: разрез на головы, независимые softmax, сетка запросов и ключей, что делает W_O, forward и backward матрицами, Feed Forward после внимания, формы тензоров и код на numpy и PyTorch."
+  },
+  "date": "2026-09-25",
+  "reading_time": 42,
+  "tags": ["ml-basics", "deep-learning"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/deep-learning/multi-head-attention.ru.md"
+  }
 }
   ]
 }

@@ -1217,7 +1217,8 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
 /* Coloured callouts (used inside step panels). */
 .prose .callout,
 .prose .callout-blue,
-.prose .callout-yellow {
+.prose .callout-yellow,
+.prose .callout-red {
   margin: 16px 0;
   padding: 12px 18px;
   border-left: 3px solid;
