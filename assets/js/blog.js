@@ -3,6 +3,7 @@ import {
   renderProfileSidebar,
   initTheme,
   publishedArticles,
+  readingOrderSequence,
   pluralizeArticles,
   shortDate,
   currentLang,
@@ -38,7 +39,8 @@ loadManifest().then((manifest) => {
     .slice()
     .sort((a, b) => (a.order || 99) - (b.order || 99))
     .forEach((cat) => {
-      const all = articles.filter((a) => a.category === cat.id);
+      // Categories with a reading_order preview in curriculum order, not by date.
+      const all = readingOrderSequence(manifest, cat, lang) || articles.filter((a) => a.category === cat.id);
       if (all.length === 0) return;
 
       const preview = all.slice(0, PREVIEW_COUNT);
