@@ -261,8 +261,8 @@
 <p class="stage-hint">Цель интерактива: увидеть, откуда берётся матрица W и почему слой называется полносвязным.</p>
 
 <div class="callout">
-  <strong>Главная мысль:</strong> полносвязный слой — это не новая математика, а
-  <em>O</em> нейронов из предыдущей сцены, записанных вместе. Дальше мы просто
+  <strong>Главная мысль:</strong> полносвязный слой — это <em>O</em> нейронов из
+  предыдущей сцены, чьи веса записаны столбцами одной матрицы. Дальше мы
   ставим несколько таких слоёв друг за другом.
 </div>
 
@@ -1331,7 +1331,7 @@
   </div>
   <div class="stage-notes">
     <div class="step-panel" data-on="mm0 uf-theta" data-focus="uf-theta"><div class="step-kicker">Шаг 1 &#183; текущее состояние</div><h4>Все обучаемые числа собраны в один набор &#952;</h4><div class="math-display" data-tex="\boldsymbol\theta=\{\mathbf W^{(1)},\mathbf b^{(1)},\mathbf W^{(2)},\mathbf b^{(2)},\mathbf W^{(3)},\mathbf b^{(3)}\}"></div><p>Входы, активации и вероятности в &#952; не входят: они пересчитываются заново на каждом forward.</p></div>
-    <div class="step-panel" data-on="mm1 uf-theta uf-grad uf-arrow1" data-focus="uf-grad"><div class="step-kicker">Шаг 2 &#183; направление</div><h4>Backward вернул матрицы ровно тех же форм</h4><div class="math-display" data-tex="\nabla_{\boldsymbol\theta}L=\{d\mathbf W^{(1)},d\mathbf b^{(1)},d\mathbf W^{(2)},d\mathbf b^{(2)},d\mathbf W^{(3)},d\mathbf b^{(3)}\}"></div><p>Совпадение форм — не совпадение, а проверка: если формы разошлись, где-то забыто транспонирование или суммирование по батчу.</p></div>
+    <div class="step-panel" data-on="mm1 uf-theta uf-grad uf-arrow1" data-focus="uf-grad"><div class="step-kicker">Шаг 2 &#183; направление</div><h4>Backward вернул матрицы ровно тех же форм</h4><div class="math-display" data-tex="\nabla_{\boldsymbol\theta}L=\{d\mathbf W^{(1)},d\mathbf b^{(1)},d\mathbf W^{(2)},d\mathbf b^{(2)},d\mathbf W^{(3)},d\mathbf b^{(3)}\}"></div><p>Совпадение форм градиента и параметра — проверка: если формы разошлись, где-то забыто транспонирование или суммирование по батчу.</p></div>
     <div class="step-panel" data-on="mm2 uf-theta uf-grad uf-new uf-arrow1 uf-arrow2 uf-rule uf-hl" data-focus="uf-rule"><div class="step-kicker">Шаг 3 &#183; правило клетки</div><h4>Каждое число уменьшается на свою производную с множителем &#951;</h4><div class="math-display" data-tex="w^{(l)}_{ij}\;\leftarrow\;w^{(l)}_{ij}-\eta\,\frac{\partial L}{\partial w^{(l)}_{ij}}"></div><p>Градиент показывает направление роста loss, поэтому мы идём в противоположную сторону. Клетка не знает ни про слой, ни про соседей — правило локальное.</p></div>
     <div class="step-panel" data-on="mm3 uf-theta uf-grad uf-new uf-arrow1 uf-arrow2 uf-all" data-focus="uf-all"><div class="step-kicker">Шаг 4 &#183; обновление</div><h4>Одно и то же вычитание применяется ко всем слоям</h4><div class="math-display" data-tex="\boldsymbol\theta' = \boldsymbol\theta-\eta\,\nabla_{\boldsymbol\theta}L"></div><p>Никакой очерёдности нет: слои обновляются из градиентов, посчитанных до шага, а не по цепочке друг за другом.</p></div>
     <div class="step-panel" data-on="mm4 uf-theta uf-grad uf-new uf-arrow1 uf-arrow2 uf-check" data-focus="uf-check"><div class="step-kicker">Шаг 5 &#183; проверка</div><h4>Новый loss узнаём только новым forward</h4><div class="math-display" data-tex="L(\boldsymbol\theta')&lt;L(\boldsymbol\theta)\quad\text{при достаточно малом }\eta"></div><p>Слишком большой шаг перескакивает через область уменьшения: правило не обещает спад при любом &#951;, оно обещает верное направление.</p></div>
