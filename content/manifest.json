@@ -221,6 +221,23 @@
           "articles": ["mlp-map", "cnn-map", "rnn-map", "transformer-encoder-map"]
         }
       ]
+    },
+    {
+      "id": "llm",
+      "title": {
+        "ru": "Большие языковые модели",
+        "en": "Large Language Models",
+        "kk": "Үлкен тілдік модельдер"
+      },
+      "description": {
+        "ru": "Как устроены LLM: предсказание следующего токена, обучение, трансформер внутри и генерация текста.",
+        "en": "How LLMs work: next-token prediction, training, the transformer inside, and text generation.",
+        "kk": "LLM қалай жұмыс істейді: келесі токенді болжау, оқыту, ішіндегі трансформер және мәтін генерациясы."
+      },
+      "icon": "chat",
+      "accent": "#9333EA",
+      "tint": "#F3E8FF",
+      "order": 6
     }
   ],
   "tags": {
@@ -785,6 +802,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/interactive-maps/rnn-map.ru.md"
+  }
+},
+    {
+  "slug": "language-models-intro",
+  "category": "llm",
+  "title": {
+    "ru": "Языковые модели: от понятия модели до генерации текста"
+  },
+  "description": {
+    "ru": "Что именно моделирует языковая модель и как из предсказания одного слова получается чат-бот: распределение по словарю, текстовая обёртка ассистента, обучение на следующем слове, параметры и обратный проход, объём вычислений, предобучение и RLHF, трансформер на GPU и авторегрессионный вывод — 13 пошаговых интерактивов."
+  },
+  "date": "2026-09-25",
+  "reading_time": 30,
+  "tags": ["intro", "llm"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/llm/language-models-intro.ru.md"
   }
 }
   ]
