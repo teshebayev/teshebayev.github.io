@@ -702,6 +702,23 @@
     "ru": "content/articles/deep-learning/transformer.ru.md"
   }
 },
+{
+  "slug": "attention-is-all-you-need",
+  "category": "deep-learning",
+  "title": {
+    "ru": "Attention Is All You Need: конспект трансформера по формам матриц"
+  },
+  "description": {
+    "ru": "Конспект «Attention Is All You Need» слайд за слайдом: эмбеддинги, позиционное кодирование, многоголовое внимание, Add & Norm, Feed Forward, маскированное внимание и кросс-внимание декодера — с пошаговыми интерактивами, числовым примером на маленькой модели и обратным проходом через весь трансформер."
+  },
+  "date": "2026-09-25",
+  "reading_time": 60,
+  "tags": ["ml-basics", "deep-learning"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/deep-learning/attention-is-all-you-need.ru.md"
+  }
+},
     {
   "slug": "transformer-encoder-map",
   "category": "interactive-maps",
