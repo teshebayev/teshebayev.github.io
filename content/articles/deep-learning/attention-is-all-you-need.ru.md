@@ -6,7 +6,7 @@ softmax по строке, сложения с самим собой и норм
 </p>
 <p>
 Это восстановленный по слайдам конспект лекции <em>Attention Is All You Need — Lecture
-Notes</em> (Valery Marchenko): 28 слайдов, от общей схемы до предсказания следующего
+Notes</em> (<a href="https://www.linkedin.com/in/vmarchenkoff/" target="_blank" rel="noopener">Valery Marchenko</a>): 28 слайдов, от общей схемы до предсказания следующего
 слова. Порядок частей, обозначения, цвета матриц, сноски автора и сквозной пример —
 предложение <strong>Attention Is All You Need</strong> и его перевод
 <strong>L’attention est tout ce dont vous avez besoin</strong> — взяты из конспекта
@@ -1759,7 +1759,7 @@ one-hot <code>[L × V]</code>, умножается на обучаемую та
 </div>
 <p class="tiny">
 Все схемы, обозначения, цвета и сноски воспроизводят конспект «Attention Is All You Need —
-Lecture Notes» (Valery Marchenko), 28 слайдов. На рисунках L = 5, T = 8,
+Lecture Notes» (<a href="https://www.linkedin.com/in/vmarchenkoff/" target="_blank" rel="noopener">Valery Marchenko</a>), 28 слайдов. На рисунках L = 5, T = 8,
 d<sub>model</sub> = 4 и d<sub>k</sub> = d<sub>v</sub> = 3 — иллюстративные размеры, выбранные так,
 чтобы матрицы помещались на экран; числовые значения d<sub>model</sub> = 512, h = 8,
 d<sub>k</sub> = d<sub>v</sub> = 64, d<sub>ff</sub> = 2048, N = 6 взяты из статьи Vaswani et al. (2017).
