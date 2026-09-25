@@ -707,6 +707,23 @@
   "content": {
     "ru": "content/articles/interactive-maps/transformer-encoder-map.ru.md"
   }
+},
+    {
+  "slug": "mlp-map",
+  "category": "interactive-maps",
+  "title": {
+    "ru": "Карта полносвязной сети"
+  },
+  "description": {
+    "ru": "Один полный шаг обучения сети 4 → 8 → 5 → 3 на шести ирисах, на одном холсте: стандартизация, нейрон и слой как умножение матриц, смещение, активация, логиты, softmax, потеря, обратный проход слой за слоем и шаг градиентного спуска. Двадцать шагов; любое число можно навести и посмотреть, активацию и скорость обучения — поменять, а обучение — прокрутить вперёд и увидеть, как падает потеря."
+  },
+  "date": "2026-09-25",
+  "reading_time": 15,
+  "tags": ["deep-learning", "ml-basics"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/interactive-maps/mlp-map.ru.md"
+  }
 }
   ]
 }

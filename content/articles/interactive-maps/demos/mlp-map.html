@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Полносвязная сеть — карта</title>
+<style>
+:root{
+  --bg:#FFFFFF; --panel:#F4F5F7; --ink:#111111; --muted:#5E5850; --line:#D8D5CF; --grid:#BDB8B0; --dot:#E4E2DD;
+  --blue:#3576C0; --yellow:#C29E08; --red:#C30B0A; --green:#73B222; --violet:#8A4FB8; --neg:#6F6A62;
+  --btn:#1B1D26; --btnink:#FFFFFF; --tip:#1B1D26; --tipink:#FFFFFF;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16181D; --panel:#1E2127; --ink:#ECECEE; --muted:#A39D94; --line:#34373F; --grid:#555A63; --dot:#262930;
+    --blue:#5E9CE3; --yellow:#DDB832; --red:#EF5350; --green:#8FCB48; --violet:#AB80DD; --neg:#8A857D;
+    --btn:#ECECEE; --btnink:#16181D; --tip:#ECECEE; --tipink:#16181D;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16181D; --panel:#1E2127; --ink:#ECECEE; --muted:#A39D94; --line:#34373F; --grid:#555A63; --dot:#262930;
+  --blue:#5E9CE3; --yellow:#DDB832; --red:#EF5350; --green:#8FCB48; --violet:#AB80DD; --neg:#8A857D;
+  --btn:#ECECEE; --btnink:#16181D; --tip:#ECECEE; --tipink:#16181D;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:Helvetica,Arial,sans-serif;overflow:hidden}
+.app{display:grid;grid-template-columns:minmax(0,1fr) 400px;height:100%}
+#stage{position:relative;overflow:hidden;min-height:0;min-width:0}
+#map{display:block;width:100%;height:100%;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+#map.dragging{cursor:grabbing}
+
+/* SVG content */
+#map .rtitle{font-size:28px;font-weight:800;fill:var(--ink)}
+#map .sent{font-size:20px;fill:var(--ink)}
+#map .lbl{font-size:13px;fill:var(--muted);text-anchor:middle}
+#map .lbl-l{font-size:13px;fill:var(--muted)}
+#map .mname{font-family:"Times New Roman",Times,serif;font-style:italic;font-size:19px;fill:var(--ink);text-anchor:middle}
+#map .mname .ss{font-size:13px}
+#map .shape{font-size:11px;fill:var(--muted);text-anchor:middle}
+#map .op{font-family:"Times New Roman",Times,serif;font-size:28px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+#map .opl{font-size:14px;font-weight:700;text-anchor:middle}
+#map .c{stroke:var(--grid);stroke-width:.5}
+#map .cv{text-anchor:middle;dominant-baseline:central;pointer-events:none;font-family:Helvetica,Arial,sans-serif}
+#map .frame{fill:none;stroke:var(--ink);stroke-width:1.2;pointer-events:none}
+#map .sidel{font-family:"Times New Roman",Times,serif;font-style:italic;font-size:19px;fill:var(--ink);text-anchor:end;dominant-baseline:central}
+#map .chip{stroke-width:1.2}
+#map .chipt{font-size:12.5px;text-anchor:middle;dominant-baseline:central;fill:var(--ink);pointer-events:none}
+#map .conn{fill:none;stroke:var(--muted);stroke-width:1.6}
+#map .dash{stroke-dasharray:6 5}
+#map .edge{transition:opacity .15s}
+#map .ehit{stroke:transparent;stroke-width:9;cursor:default}
+#map .node circle{stroke:var(--ink);stroke-width:1.2}
+#map .nodev{font-size:10px;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+#map .nlab{font-size:14px;fill:var(--ink);dominant-baseline:central}
+#map .gcap{font-size:14px;fill:var(--muted);text-anchor:middle}
+#map .axis{stroke:var(--muted);stroke-width:1}
+#map [data-k]{transition:opacity .35s}
+#map .dim{opacity:.13}
+#map[data-hl] .c{opacity:.5}
+#map[data-hl] .edge{opacity:.12}
+#map .c.hot{opacity:1;stroke:var(--ink);stroke-width:1.5}
+#map .edge.hot{opacity:1;stroke-width:4px !important}
+#map .node.hot circle{stroke-width:3.5}
+#map .chip.hot{stroke-width:3}
+@media (prefers-reduced-motion: reduce){ #map [data-k],#map .edge{transition:none} }
+
+/* panel */
+aside{background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.progress{display:flex;gap:3px;padding:16px 22px 0}
+.progress button{flex:1;height:8px;border:0;border-radius:2px;background:var(--line);padding:0;cursor:pointer}
+.progress button.done{background:var(--muted)}
+.progress button.cur{background:var(--ink)}
+.scroll{flex:1;overflow:auto;padding:18px 22px 8px}
+.count{font-size:14px;color:var(--muted)}
+h1{font-size:25px;line-height:1.15;margin:6px 0 12px;font-weight:800}
+.text{font-size:15.5px;line-height:1.5;margin:0 0 14px;max-width:62ch}
+.text b{font-weight:700}
+.formula{font-family:"Times New Roman",Times,serif;font-size:21px;line-height:1.5;padding:12px 14px;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin:0 0 14px;overflow-x:auto}
+.formula:empty{display:none}
+.formula .frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.9em;margin:0 .15em}
+.formula .frac>span:first-child{border-bottom:1px solid currentColor;padding:0 .2em}
+.formula .note{display:block;font-family:Helvetica,Arial,sans-serif;font-size:13px;color:var(--muted);margin-top:4px}
+.live{font-size:14px;line-height:1.45;margin:0 0 10px;padding-left:12px;border-left:3px solid var(--blue)}
+.live:empty{display:none}
+.legend{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;font-size:13.5px;align-items:center;margin:4px 0 12px}
+.sw{width:18px;height:14px;border-radius:3px;display:inline-block}
+.sw.ramp{background:linear-gradient(90deg,color-mix(in srgb,var(--blue) 10%,transparent),var(--blue))}
+.controls{border-top:1px solid var(--line);padding:12px 22px;display:grid;gap:10px;font-size:14px}
+.crow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.crow .k{color:var(--muted);min-width:70px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{min-width:34px;height:30px;padding:0 9px;border-radius:7px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font-weight:700;cursor:pointer;font-size:13.5px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--green)}
+.ghost{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:7px;padding:6px 10px;font-size:13.5px;cursor:pointer}
+.ghost.go{border-color:var(--green);font-weight:700}
+.stat{color:var(--muted);font-size:13px}
+nav{display:flex;gap:10px;padding:12px 22px 18px;align-items:center}
+nav .prev{width:52px;height:48px;border-radius:12px;border:1.5px solid var(--btn);background:transparent;color:var(--ink);font-size:22px;font-weight:800;cursor:pointer}
+nav .next{flex:1;height:48px;border-radius:12px;border:0;background:var(--btn);color:var(--btnink);font-size:17px;font-weight:800;cursor:pointer}
+button:focus-visible,input:focus-visible,#map:focus-visible{outline:2.5px solid var(--blue);outline-offset:2px}
+#tip{position:absolute;pointer-events:none;background:var(--tip);color:var(--tipink);font-size:13px;padding:6px 9px;border-radius:7px;white-space:nowrap;opacity:0;transition:opacity .12s;z-index:5}
+#recenter{position:absolute;right:14px;top:14px;display:none;z-index:4}
+.hint{position:absolute;left:14px;bottom:12px;font-size:12.5px;color:var(--muted);background:color-mix(in srgb,var(--bg) 85%,transparent);padding:4px 8px;border-radius:6px;pointer-events:none}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr;grid-template-rows:minmax(0,50%) minmax(0,50%)}
+  aside{border-left:0;border-top:1px solid var(--line)}
+  h1{font-size:21px}
+  .hint{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="stage">
+    <svg id="map" tabindex="0" aria-label="Карта полносвязной сети: прямой проход, обратный проход и шаг обучения" viewBox="0 0 3400 1500" preserveAspectRatio="xMidYMid meet"></svg>
+    <div id="tip"></div>
+    <button id="recenter" class="ghost">Вернуть камеру к шагу</button>
+    <div class="hint">Тяни — двигать, колесо — масштаб, наведи на клетку, нейрон или связь — значение</div>
+  </div>
+  <aside>
+    <div class="progress" id="progress"></div>
+    <div class="scroll">
+      <div class="count" id="count"></div>
+      <h1 id="title"></h1>
+      <div class="text" id="text"></div>
+      <div class="formula" id="formula"></div>
+      <p class="live" id="live"></p>
+    </div>
+    <div class="controls">
+      <div class="crow"><span class="k">Цветок</span><div class="seg" id="samples"></div></div>
+      <div class="crow"><span class="k">Активация</span><div class="seg" id="acts"></div></div>
+      <div class="crow"><span class="k" id="etal">η = 0.50</span><input type="range" id="eta" min="0.05" max="3" step="0.05" value="0.5" aria-label="Скорость обучения η"></div>
+      <div class="crow">
+        <button class="ghost go" id="train1">Шаг обучения</button>
+        <button class="ghost go" id="train10">×10</button>
+        <button class="ghost" id="reseed">Новые веса</button>
+        <span class="stat" id="stat"></span>
+      </div>
+    </div>
+    <nav>
+      <button class="prev" id="prev" aria-label="Назад">←</button>
+      <button class="next" id="next">Далее</button>
+    </nav>
+  </aside>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- data: 6 цветков из набора Iris (UCI), 2 каждого вида ---------- */
+const IDN=['№1','№51','№101','№2','№52','№102'];
+const CLS=[0,1,2,0,1,2];
+const CN=['setosa','versicolor','virginica'];
+const FEAT=['длина чашелистика','ширина чашелистика','длина лепестка','ширина лепестка'];
+const RAW=[[5.1,3.5,1.4,0.2],[7.0,3.2,4.7,1.4],[6.3,3.3,6.0,2.5],[4.9,3.0,1.4,0.2],[6.4,3.2,4.5,1.5],[5.8,2.7,5.1,1.9]];
+const MU=[5.843,3.057,3.758,1.199];      // средние по всем 150 цветкам
+const SG=[0.825,0.434,1.759,0.760];      // стандартные отклонения по 150 цветкам
+const DIMS=[4,8,5,3],N=6,C=22;
+const ACTS={
+  relu:{n:'ReLU',f:z=>Math.max(0,z),d:z=>z>0?1:0},
+  tanh:{n:'tanh',f:z=>Math.tanh(z),d:z=>{const t=Math.tanh(z);return 1-t*t;}},
+  sig:{n:'σ',f:z=>1/(1+Math.exp(-z)),d:z=>{const s=1/(1+Math.exp(-z));return s*(1-s);}}
+};
+const X=RAW.map(r=>r.map((v,j)=>(v-MU[j])/SG[j]));
+const Y=CLS.map(c=>[0,1,2].map(k=>k===c?1:0));
+const state={step:0,sample:1,act:'relu',eta:.5,seed:42,free:false,P:null,hist:[],iter:0};
+const svg=document.getElementById('map');
+
+/* ---------- math ---------- */
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function gauss(r){let u=0;while(!u)u=r();const v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+const randM=(r,n,m,s)=>Array.from({length:n},()=>Array.from({length:m},()=>gauss(r)*s));
+const mm=(A,B)=>A.map(row=>B[0].map((_,j)=>row.reduce((s,a,k)=>s+a*B[k][j],0)));
+const T=A=>A[0].map((_,j)=>A.map(r=>r[j]));
+const addRow=(A,b)=>A.map(r=>r.map((v,j)=>v+b[0][j]));
+const map2=(A,f)=>A.map(r=>r.map(f));
+const zip2=(A,B,f)=>A.map((r,i)=>r.map((v,j)=>f(v,B[i][j])));
+const colsum=A=>[A[0].map((_,j)=>A.reduce((s,r)=>s+r[j],0))];
+const mean=r=>r.reduce((s,v)=>s+v,0)/r.length;
+const norm=A=>Math.sqrt(A.flat().reduce((s,v)=>s+v*v,0));
+
+function init(){
+  const r=rng(state.seed);const P={W:[],b:[]};
+  for(let k=1;k<=3;k++){
+    const fin=DIMS[k-1];
+    const s=(state.act==='relu'&&k<3)?Math.sqrt(2/fin):Math.sqrt(1/fin);   // He для ReLU, LeCun для tanh/σ и выхода
+    P.W[k]=randM(r,fin,DIMS[k],s);
+    P.b[k]=randM(r,1,DIMS[k],.1);
+  }
+  state.P=P;state.iter=0;state.hist=[forward(P).L];
+}
+function forward(P){
+  const A=ACTS[state.act];
+  const Z1=addRow(mm(X,P.W[1]),P.b[1]),H1=map2(Z1,A.f);
+  const Z2=addRow(mm(H1,P.W[2]),P.b[2]),H2=map2(Z2,A.f);
+  const Z3=addRow(mm(H2,P.W[3]),P.b[3]);
+  const Pr=Z3.map(r=>{const m=Math.max(...r);const e=r.map(v=>Math.exp(v-m));const z=e.reduce((a,b)=>a+b,0);return e.map(v=>v/z);});
+  const l=Pr.map((r,i)=>[-Math.log(r[CLS[i]])]);
+  return {Z1,H1,Z2,H2,Z3,Pr,l,L:mean(l.map(r=>r[0]))};
+}
+function compute(){
+  const P=state.P,A=ACTS[state.act];
+  const f=forward(P);
+  const PmY=zip2(f.Pr,Y,(p,y)=>p-y);
+  const dZ3=map2(PmY,v=>v/N);
+  const dW3=mm(T(f.H2),dZ3),db3=colsum(dZ3);
+  const dH2=mm(dZ3,T(P.W[3]));
+  const F2=map2(f.Z2,A.d),dZ2=zip2(dH2,F2,(a,b)=>a*b);
+  const dW2=mm(T(f.H1),dZ2),db2=colsum(dZ2);
+  const dH1=mm(dZ2,T(P.W[2]));
+  const F1=map2(f.Z1,A.d),dZ1=zip2(dH1,F1,(a,b)=>a*b);
+  const dW1=mm(T(X),dZ1),db1=colsum(dZ1);
+  const dW=[null,dW1,dW2,dW3],db=[null,db1,db2,db3];
+  const U={W:[],b:[]};
+  for(let k=1;k<=3;k++){U.W[k]=zip2(P.W[k],dW[k],(w,g)=>w-state.eta*g);U.b[k]=zip2(P.b[k],db[k],(w,g)=>w-state.eta*g);}
+  const Lnext=forward(U).L;
+  return {...f,P,PmY,dZ3,dW3,db3,dH2,F2,dZ2,dW2,db2,dH1,F1,dZ1,dW1,db1,dW,db,U,Lnext};
+}
+function trainSteps(n){for(let t=0;t<n;t++){const d=compute();state.P=d.U;state.iter++;state.hist.push(d.Lnext);}}
+
+/* ---------- svg builders ---------- */
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function nm(s){
+  let out='',i=0;
+  while(i<s.length){
+    const ch=s[i];
+    if(ch==='_'||ch==='^'){
+      let t;
+      if(s[i+1]==='{'){const e=s.indexOf('}',i);t=s.slice(i+2,e);i=e+1;}else{t=s[i+1];i+=2;}
+      const dy=ch==='_'?5:-8;
+      out+=`<tspan class="ss" dy="${dy}">${esc(t)}</tspan><tspan dy="${-dy}">\u200a</tspan>`;
+    }else{
+      let j=i;while(j<s.length&&s[j]!=='_'&&s[j]!=='^')j++;
+      out+=`<tspan>${esc(s.slice(i,j))}</tspan>`;i=j;
+    }
+  }
+  return out;
+}
+function fmt(v){
+  const a=Math.abs(v);
+  let s=a<.995?a.toFixed(2).slice(1):(a<9.95?a.toFixed(1):a.toFixed(0));
+  if(s==='.00')return '0';
+  return (v<0?'−':'')+s;
+}
+const f2=v=>v.toFixed(2).replace('-','−');
+const f3=v=>v.toFixed(3).replace('-','−');
+const isDark=()=>{const t=document.documentElement.dataset.theme;return t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;};
+const MATS={};
+const sKey=i=>'s'+i, nKey=(k,j)=>`n${k}-${j}`, eKey=(k,i,j)=>`e${k}-${i}-${j}`;
+const sDesc=i=>`цветок ${IDN[i]} (${CN[CLS[i]]})`;
+const nDesc=(k,j)=>k===0?`«${FEAT[j]}»`:(k===3?`класс ${CN[j]}`:`нейрон ${j+1} слоя ${k}`);
+/* o: name,label,hue,max,rowK,colK,rowD,colD,edge(k) */
+function mat(key,id,M,x,yc,o){
+  const n=M.length,m=M[0].length,y=yc-n*C/2;
+  const mx=o.max||Math.max(1e-9,...M.flat().map(Math.abs));
+  MATS[id]={M,label:o.label||o.name,rowD:o.rowD,colD:o.colD};
+  let s=`<g data-k="${key}">`;
+  if(o.name)s+=`<text class="mname" x="${x+m*C/2}" y="${y-10}">${nm(o.name)}</text>`;
+  if(!o.noShape)s+=`<text class="shape" x="${x+m*C/2}" y="${y+n*C+14}">${n} × ${m}</text>`;
+  for(let i=0;i<n;i++)for(let j=0;j<m;j++){
+    const v=M[i][j];
+    const a=Math.min(1,Math.abs(v)/mx);
+    const fill=v<0?'var(--neg)':o.hue;
+    const op=isDark()?.14+.84*a:.07+.83*a;
+    const tc=op>.52?'#fff':'var(--ink)';
+    const X0=x+j*C,Y0=y+i*C;
+    const h=[o.rowK?o.rowK(i):'',o.colK?o.colK(j):'',o.edge?eKey(o.edge,i,j):''].filter(Boolean);
+    const trig=o.edge?[eKey(o.edge,i,j)]:h;
+    s+=`<rect class="c" x="${X0}" y="${Y0}" width="${C}" height="${C}" style="fill:${fill};fill-opacity:${op.toFixed(3)}" data-m="${id}" data-i="${i}" data-j="${j}" data-h="${h.join(' ')}" data-t="${trig.join(' ')}"/>`;
+    s+=`<text class="cv" x="${X0+C/2}" y="${Y0+C/2+.5}" style="fill:${tc};font-size:${(C*.34).toFixed(1)}px">${o.int?String(v):fmt(v)}</text>`;
+  }
+  s+=`<rect class="frame" x="${x}" y="${y}" width="${m*C}" height="${n*C}"/>`;
+  if(o.side)s+=`<text class="sidel" x="${x-8}" y="${yc}">${nm(o.side)}</text>`;
+  return s+'</g>';
+}
+const g=(key,inner)=>`<g data-k="${key}">${inner}</g>`;
+const op=(x,y,t,col)=>`<text class="op" x="${x}" y="${y}"${col?` style="fill:${col}"`:''}>${t}</text>`;
+const MK={red:'ar-red',green:'ar-green',yellow:'ar-yellow'};
+const mkFor=col=>{for(const k in MK)if(col.includes(k))return MK[k];return 'ar-gray';};
+function arrow(x1,y,x2,label,col,below){
+  col=col||'var(--muted)';
+  return `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" class="conn" style="stroke:${col}" marker-end="url(#${mkFor(col)})"/>`+
+    (label?`<text class="opl" x="${(x1+x2)/2}" y="${below?y+22:y-10}" style="fill:${col}">${label}</text>`:'');
+}
+const path=(d,col,cls)=>`<path d="${d}" class="conn ${cls||''}" style="stroke:${col}" marker-end="url(#${mkFor(col)})"/>`;
+
+/* ---------- layout ---------- */
+const LAY=(()=>{let x=60;const o={};
+  const put=(k,w,gap)=>{o[k]={x,w,c:x+w/2,r:x+w};x+=w+gap;};
+  put('chips',120,86); put('xraw',88,120); put('x',88,40);
+  put('w1',176,40); put('b1',176,90); put('z1',176,276); put('h1',176,40);
+  put('w2',110,40); put('b2',110,90); put('z2',110,210); put('h2',110,40);
+  put('w3',66,40);  put('b3',66,90);  put('z3',66,130); put('p',66,40); put('y',66,120);
+  put('l',22,100); put('L',22,0);
+  o.end=x;return o;})();
+const mid=(a,b)=>(LAY[a].r+LAY[b].x)/2;
+const YG=330,YF=760,YB=1080,YU=1430;
+const half=n=>n*C/2;
+
+function build(){
+  for(const k in MATS)delete MATS[k];
+  const d=compute();state.d=d;
+  const A=ACTS[state.act],s0=state.sample;
+  const BL='var(--blue)',YE='var(--yellow)',RE='var(--red)',GR='var(--green)',VI='var(--violet)';
+  let s=`<defs>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" style="fill:var(--dot)"/></pattern>
+    <marker id="ar-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:var(--muted)"/></marker>
+    <marker id="ar-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:var(--red)"/></marker>
+    <marker id="ar-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:var(--green)"/></marker>
+    <marker id="ar-yellow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:var(--yellow)"/></marker>
+  </defs>
+  <rect x="-3000" y="-3000" width="10000" height="8000" fill="url(#dots)"/>`;
+  const sK=sKey, rowS={rowK:sK,rowD:sDesc};
+  const colN=k=>({colK:j=>nKey(k,j),colD:j=>nDesc(k,j)});
+
+  /* ===== G. Граф ===== */
+  s+=g('titleG',`<text class="rtitle" x="60" y="80">Сеть 4 → 8 → 5 → 3</text><text class="sent" x="60" y="118">каждый нейрон связан со всеми нейронами соседнего слоя</text>`);
+  const GX=[380,680,980,1280];
+  const ny=(k,j)=>YG+(j-(DIMS[k]-1)/2)*46;
+  const actv=[X[s0],d.H1[s0],d.H2[s0],d.Pr[s0]];
+  for(let k=1;k<=3;k++){
+    const W=d.P.W[k],mx=Math.max(...W.flat().map(Math.abs));
+    let e='';
+    for(let i=0;i<DIMS[k-1];i++)for(let j=0;j<DIMS[k];j++){
+      const w=W[i][j],a=Math.abs(w)/mx,ek=eKey(k,i,j);
+      const x1=GX[k-1]+18,y1=ny(k-1,i),x2=GX[k]-18,y2=ny(k,j);
+      e+=`<line class="edge" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" style="stroke:${w<0?'var(--neg)':YE};stroke-width:${(.5+3*a).toFixed(2)};opacity:${(.2+.65*a).toFixed(2)}" data-h="${ek}"/>`;
+      e+=`<line class="ehit" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" data-edge="${k},${i},${j}" data-t="${ek}"/>`;
+    }
+    s+=g('g-e'+k,e);
+  }
+  for(let k=0;k<=3;k++){
+    const mx=k===3?1:Math.max(1e-9,...(k===0?X.flat():(k===1?d.H1:d.H2).flat()).map(Math.abs));
+    let t='';
+    for(let j=0;j<DIMS[k];j++){
+      const v=actv[k][j],a=Math.min(1,Math.abs(v)/mx),o=isDark()?.14+.84*a:.07+.83*a;
+      const col=v<0?'var(--neg)':(k===3?GR:BL);
+      const edges=[];
+      if(k>0)for(let i=0;i<DIMS[k-1];i++)edges.push(eKey(k,i,j));
+      if(k<3)for(let i=0;i<DIMS[k+1];i++)edges.push(eKey(k+1,j,i));
+      t+=`<g class="node" data-node="${k},${j}" data-h="${nKey(k,j)} ${edges.join(' ')}" data-t="${nKey(k,j)}"><circle cx="${GX[k]}" cy="${ny(k,j)}" r="17" style="fill:${col};fill-opacity:${o.toFixed(3)}"/><text class="nodev" x="${GX[k]}" y="${ny(k,j)+.5}" style="fill:${o>.52?'#fff':'var(--ink)'}">${fmt(v)}</text></g>`;
+      if(k===0)t+=`<text class="nlab" x="${GX[0]-26}" y="${ny(0,j)}" text-anchor="end">${FEAT[j]}</text>`;
+      if(k===3)t+=`<text class="nlab" x="${GX[3]+26}" y="${ny(3,j)}">${CN[j]} ${(v*100).toFixed(0)}%</text>`;
+    }
+    s+=g('g-n'+k,t);
+  }
+  const capY=YG+half(0)+46*4+34;
+  s+=g('gcap',[`вход · 4`,`скрытый 1 · 8 · ${A.n}`,`скрытый 2 · 5 · ${A.n}`,`выход · 3 · softmax`].map((c,k)=>`<text class="gcap" x="${GX[k]}" y="${capY}">${c}</text>`).join('')+
+    `<text class="lbl-l" x="${GX[3]+26}" y="${ny(3,0)-40}" style="font-weight:700;fill:var(--ink)">цветок ${IDN[s0]}, на самом деле ${CN[CLS[s0]]}</text>`);
+
+  /* ===== F. Прямой проход ===== */
+  s+=g('titleF',`<text class="rtitle" x="60" y="560">Прямой проход</text>`);
+  let t=`<text class="lbl" x="${LAY.chips.c}" y="${YF-half(6)-10}">цветок</text>`;
+  const clsCol=['var(--violet)','var(--blue)','var(--green)'];
+  IDN.forEach((w,i)=>{t+=`<rect class="chip" data-h="${sK(i)}" data-t="${sK(i)}" x="${LAY.chips.x}" y="${YF-half(6)+i*C+2}" width="120" height="18" rx="5" style="fill:var(--bg);stroke:${i===s0?'var(--ink)':'var(--grid)'};stroke-width:${i===s0?2:1.2}"/><text class="chipt" x="${LAY.chips.c}" y="${YF-half(6)+i*C+11.5}">${w} ${CN[CLS[i]]}</text>`;});
+  s+=g('chips',t);
+  s+=mat('musig','MU',[MU],LAY.xraw.x,628,{hue:'var(--neg)',noShape:1,side:'μ',label:'μ (по 150 цветкам)',colK:j=>nKey(0,j),colD:j=>nDesc(0,j)})
+    .replace('</g>','')+mat('musig','SG',[SG],LAY.xraw.x,662,{hue:'var(--neg)',noShape:1,side:'σ',label:'σ (по 150 цветкам)',colK:j=>nKey(0,j),colD:j=>nDesc(0,j)}).replace('<g data-k="musig">','');
+  s+=mat('xraw','XR',RAW,LAY.xraw.x,YF,{name:'X_{см}',hue:BL,label:'признаки, см',...rowS,...colN(0),max:7});
+  s+=g('std',arrow(LAY.xraw.r+6,YF,LAY.x.x-8,'(x − μ) / σ'));
+  s+=mat('x','X',X,LAY.x.x,YF,{name:'X',hue:BL,label:'X (стандартизован)',...rowS,...colN(0)});
+  const LNAME=k=>k===1?'X':'H_'+(k-1);
+  const Zs=[null,d.Z1,d.Z2,d.Z3],Hs=[null,d.H1,d.H2];
+  for(let k=1;k<=3;k++){
+    const w='w'+k,b='b'+k,z='z'+k;
+    s+=g(w,op((LAY[k===1?'x':'h'+(k-1)].r+LAY[w].x)/2,YF,'·'));
+    s+=mat(w,'W'+k,d.P.W[k],LAY[w].x,YF,{name:'W_'+k,hue:YE,label:'W'+'₁₂₃'[k-1],rowK:j=>nKey(k-1,j),rowD:j=>'из '+nDesc(k-1,j),colK:j=>nKey(k,j),colD:j=>'в '+nDesc(k,j),edge:k});
+    s+=g(b,op(mid(w,b),YF,'+'));
+    s+=mat(b,'b'+k,d.P.b[k],LAY[b].x,YF,{name:'b_'+k,hue:YE,label:'b'+'₁₂₃'[k-1],...colN(k),rowD:()=>'одна строка на всех'});
+    s+=g(z,op(mid(b,z),YF,'='));
+    s+=mat(z,'Z'+k,Zs[k],LAY[z].x,YF,{name:k===3?'Z_3 (логиты)':'Z_'+k,hue:BL,label:k===3?'логиты Z₃':'Z'+'₁₂'[k-1],...rowS,...colN(k)});
+    if(k<3){
+      s+=g('f'+k,arrow(LAY[z].r+6,YF,LAY['h'+k].x-8,A.n,YE)+`<text class="lbl" x="${(LAY[z].r+LAY['h'+k].x)/2}" y="${YF+22}">поэлементно</text>`);
+      s+=mat('h'+k,'H'+k,Hs[k],LAY['h'+k].x,YF,{name:'H_'+k,hue:BL,label:'H'+'₁₂'[k-1],...rowS,...colN(k)});
+    }
+  }
+  s+=g('sm',arrow(LAY.z3.r+6,YF,LAY.p.x-8,'softmax',YE)+`<text class="lbl" x="${mid('z3','p')}" y="${YF+22}">по строкам</text>`);
+  s+=mat('p','P',d.Pr,LAY.p.x,YF,{name:'P',hue:GR,label:'вероятности P',max:1,...rowS,...colN(3)});
+  s+=mat('y','Y',Y,LAY.y.x,YF,{name:'Y',int:1,hue:VI,label:'цель Y (one-hot)',max:1,...rowS,...colN(3)});
+  s+=g('ce',arrow(LAY.y.r+6,YF,LAY.l.x-8,'−log P[y]',RE));
+  s+=mat('l','l',d.l,LAY.l.x,YF,{name:'ℓ',hue:RE,label:'потеря на цветке ℓ',...rowS,colD:()=>'−log p истинного класса'});
+  s+=g('mean',arrow(LAY.l.r+6,YF,LAY.L.x-8,'среднее',RE));
+  s+=mat('L','L',[[d.L]],LAY.L.x,YF,{name:'L',hue:RE,label:'потеря L',rowD:()=>'среднее по 6 цветкам',colD:()=>''});
+
+  /* ===== B. Обратный проход ===== */
+  s+=g('titleB',`<text class="rtitle" x="60" y="950" style="fill:var(--red)">Обратный проход</text>`);
+  s+=g('nodx',`<text class="lbl" x="${LAY.x.c}" y="${YB-10}">dX не нужен:</text><text class="lbl" x="${LAY.x.c}" y="${YB+8}">X — данные,</text><text class="lbl" x="${LAY.x.c}" y="${YB+26}">их не обучают</text>`);
+  s+=mat('start','ONE',[[1]],LAY.L.x,YB,{name:'∂L/∂L',int:1,hue:RE,label:'∂L/∂L',noShape:1,rowD:()=>'старт',colD:()=>''});
+  s+=g('pmy',path(`M${LAY.L.x-6},${YB} H${LAY.p.r+8}`,RE)+`<text class="opl" x="${(LAY.L.x+LAY.p.r)/2}" y="${YB-10}" style="fill:var(--red)">softmax + CE</text>`);
+  s+=mat('pmy','PmY',d.PmY,LAY.p.x,YB,{name:'P − Y',hue:RE,label:'P − Y',...rowS,...colN(3)});
+  s+=g('dz3',`<text class="op" x="${mid('z3','p')}" y="${YB}" style="font-size:22px">= ⅙ ·</text>`);
+  const dZs=[null,d.dZ1,d.dZ2,d.dZ3],dHs=[null,d.dH1,d.dH2],Fs=[null,d.F1,d.F2];
+  for(let k=3;k>=1;k--){
+    const z=LAY['z'+k],b=LAY['b'+k],w=LAY['w'+k];
+    s+=mat('dz'+k,'dZ'+k,dZs[k],z.x,YB,{name:'dZ_'+k,hue:RE,label:'dZ'+'₁₂₃'[k-1]+' = ∂L/∂Z',...rowS,...colN(k)});
+    if(k<3){
+      const fx=z.r+50;
+      s+=g('fp'+k,op((z.r+fx)/2,YB,'=')+op((fx+z.w+LAY['h'+k].x)/2,YB,'⊙'));
+      s+=mat('fp'+k,'F'+k,Fs[k],fx,YB,{name:`f′(Z_${k})`,hue:YE,int:state.act==='relu'?1:0,label:`${A.n}′(Z${'₁₂'[k-1]})`,max:state.act==='relu'?1:(state.act==='sig'?.25:1),...rowS,...colN(k)});
+      s+=mat('dh'+k,'dH'+k,dHs[k],LAY['h'+k].x,YB,{name:'dH_'+k,hue:RE,label:'dH'+'₁₂'[k-1]+' = ∂L/∂H',...rowS,...colN(k)});
+    }
+    s+=g('db'+k,arrow(z.x-6,YB,b.r+8,'Σ',RE));
+    s+=mat('db'+k,'db'+k,d.db[k],b.x,YB,{name:'db_'+k,hue:RE,label:'db'+'₁₂₃'[k-1],...colN(k),rowD:()=>'сумма по цветкам'});
+    const ry=YB+40;
+    s+=g('r-dw'+k,path(`M${z.x},${ry} H${w.r+8}`,RE)+`<text class="opl" x="${b.c}" y="${ry+20}" style="fill:var(--red)">${k===1?'X':'H'+'₁₂'[k-2]}ᵀ · dZ${'₁₂₃'[k-1]}</text>`);
+    s+=mat('dw'+k,'dW'+k,d.dW[k],w.x,YB,{name:'dW_'+k,hue:RE,label:'dW'+'₁₂₃'[k-1],rowK:j=>nKey(k-1,j),rowD:j=>'из '+nDesc(k-1,j),colK:j=>nKey(k,j),colD:j=>'в '+nDesc(k,j),edge:k});
+    if(k>1){
+      const hp=LAY['h'+(k-1)],sx=z.x+12,by=YB+132;
+      s+=g('r-dh'+(k-1),path(`M${sx},${YB+half(6)} V${by} H${hp.c} V${YB+half(6)+22}`,RE)+`<text class="opl" x="${(sx+hp.c)/2}" y="${by+20}" style="fill:var(--red)">dZ${'₁₂₃'[k-1]} · W${'₁₂₃'[k-1]}ᵀ</text>`);
+    }
+  }
+
+  /* ===== U. Шаг градиентного спуска ===== */
+  s+=g('titleU',`<text class="rtitle" x="60" y="${YU-70}" style="fill:var(--green)">Шаг градиентного спуска</text><text class="sent" x="60" y="${YU-34}">η = ${state.eta.toFixed(2)}</text>`);
+  for(let k=1;k<=3;k++){
+    const w=LAY['w'+k],b=LAY['b'+k];
+    const hw=half(DIMS[k-1]);
+    s+=g('ua'+k,path(`M${w.c},${YB+hw+22} V${YU-hw-30}`,GR,'dash')+path(`M${b.c},${YB+half(1)+22} V${YU-half(1)-30}`,GR,'dash')+
+      `<text class="opl" x="${w.c+8}" y="${(YB+hw+YU-hw)/2+26}" style="fill:var(--green);text-anchor:start">− η·</text>`);
+    s+=mat('u'+k,'U'+k,d.U.W[k],w.x,YU,{name:`W′_${k}`,hue:GR,label:`W${'₁₂₃'[k-1]} − η·dW${'₁₂₃'[k-1]}`,rowK:j=>nKey(k-1,j),rowD:j=>'из '+nDesc(k-1,j),colK:j=>nKey(k,j),colD:j=>'в '+nDesc(k,j),edge:k});
+    s+=mat('ub'+k,'Ub'+k,d.U.b[k],b.x,YU,{name:`b′_${k}`,hue:GR,label:`b${'₁₂₃'[k-1]} − η·db${'₁₂₃'[k-1]}`,...colN(k),rowD:()=>'обновлённое смещение'});
+  }
+  // график потерь
+  const cx0=LAY.z3.x,cx1=LAY.end-10,cy0=YU-90,cy1=YU+80;
+  const H=state.hist,ymax=Math.max(Math.log(3),...H)*1.08;
+  const px=i=>cx0+(H.length<2?0:i/(H.length-1))*(cx1-cx0),py=v=>cy1-v/ymax*(cy1-cy0);
+  let ch=`<text class="mname" x="${cx0}" y="${cy0-24}" style="text-anchor:start">L по итерациям</text>`;
+  ch+=`<line class="axis" x1="${cx0}" y1="${cy1}" x2="${cx1}" y2="${cy1}"/><line class="axis" x1="${cx0}" y1="${cy0}" x2="${cx0}" y2="${cy1}"/>`;
+  ch+=`<line x1="${cx0}" y1="${py(Math.log(3))}" x2="${cx1}" y2="${py(Math.log(3))}" style="stroke:var(--muted);stroke-dasharray:4 4"/><text class="lbl-l" x="${cx1}" y="${py(Math.log(3))-6}" text-anchor="end">ln 3 — угадывание наугад</text>`;
+  ch+=`<text class="lbl-l" x="${cx0-6}" y="${cy1}" text-anchor="end">0</text><text class="lbl-l" x="${cx0-6}" y="${cy0+10}" text-anchor="end">${ymax.toFixed(1)}</text>`;
+  ch+=`<text class="lbl-l" x="${cx1}" y="${cy1+18}" text-anchor="end">итерация ${state.iter}</text>`;
+  ch+=`<polyline points="${H.map((v,i)=>px(i).toFixed(1)+','+py(v).toFixed(1)).join(' ')}" style="fill:none;stroke:var(--red);stroke-width:2.2"/>`;
+  ch+=`<circle cx="${px(H.length-1)}" cy="${py(H[H.length-1])}" r="4.5" style="fill:var(--red)"/><text class="lbl-l" x="${px(H.length-1)-8}" y="${py(H[H.length-1])-10}" text-anchor="${H.length<2?'start':'end'}" style="fill:var(--red);font-weight:700">${f3(H[H.length-1])}</text>`;
+  s+=g('chart',ch);
+
+  svg.innerHTML=s;
+  indexHover();
+}
+
+/* ---------- steps ---------- */
+const q=w=>`«${w}»`;
+const SN=()=>`<b>${IDN[state.sample]}</b> (${CN[CLS[state.sample]]})`;
+const AN=()=>ACTS[state.act].n;
+const argmax=r=>r.indexOf(Math.max(...r));
+const acc=()=>state.d.Pr.filter((r,i)=>argmax(r)===CLS[i]).length;
+const FWD=['x','w1','b1','z1','f1','h1','w2','b2','z2','f2','h2','w3','b3','z3','sm','p','y','ce','l','mean','L'];
+const BWD=['start','pmy','dz3','db3','r-dw3','dw3','r-dh2','dh2','fp2','dz2','db2','r-dw2','dw2','r-dh1','dh1','fp1','dz1','db1','r-dw1','dw1','nodx'];
+const UPD=['ua1','ua2','ua3','u1','ub1','u2','ub2','u3','ub3'];
+const GRAPH=['g-e1','g-e2','g-e3','g-n0','g-n1','g-n2','g-n3','gcap'];
+const SH=()=>[sKey(state.sample)];
+const actFormula=()=>({relu:'ReLU(z) = max(0, z)',tanh:'tanh(z) = <span class="frac"><span>e<sup>z</sup> − e<sup>−z</sup></span><span>e<sup>z</sup> + e<sup>−z</sup></span></span>',sig:'σ(z) = <span class="frac"><span>1</span><span>1 + e<sup>−z</sup></span></span>'})[state.act];
+const derFormula=()=>({relu:'ReLU′(z) = 1, если z &gt; 0, иначе 0',tanh:'tanh′(z) = 1 − tanh<sup>2</sup>(z)',sig:'σ′(z) = σ(z)(1 − σ(z)) ≤ 0.25'})[state.act];
+
+const STEPS=[
+ {t:'Полносвязная сеть целиком',cam:null,focus:[],
+  text:()=>`Карта показывает один полный шаг обучения маленькой сети на 6 цветках ириса: <b>4 признака → 8 → 5 → 3 вида</b>. Сверху — сеть в привычном виде кружков и линий, под ней те же вычисления матрицами. Три ряда: <b>прямой проход</b>, <b>обратный проход</b> и <b>обновление весов</b>. Каждый градиент стоит ровно под тем, по чему он взят.
+  <div class="legend">
+   <span class="sw ramp"></span><span>насыщенность цвета — модуль значения</span>
+   <span class="sw" style="background:var(--blue)"></span><span>синий — данные и активации</span>
+   <span class="sw" style="background:var(--yellow)"></span><span>жёлтый — веса, смещения и функции активации</span>
+   <span class="sw" style="background:var(--green)"></span><span>зелёный — вероятности на выходе и обновлённые веса</span>
+   <span class="sw" style="background:var(--red)"></span><span>красный — потеря и градиенты</span>
+   <span class="sw" style="background:var(--violet)"></span><span>фиолетовый — правильные ответы</span>
+   <span class="sw" style="background:var(--neg)"></span><span>серый — отрицательные значения</span>
+  </div>
+  Наведи на клетку: подсветятся её цветок (строка) и её нейрон (столбец) по всей карте. Наведи на клетку весов — подсветится линия в графе.`,
+  formula:()=>'',live:()=>`Веса случайные (seed ${state.seed}), числа пересчитываются прямо в браузере. После обзора нажимай «Шаг обучения» и смотри, как меняется вся карта.`},
+ {t:'Данные: 6 ирисов',cam:['chips','xraw','musig'],focus:['chips','xraw'],
+  text:()=>`Набор Фишера: у каждого цветка измерены 4 величины в сантиметрах, и известен вид — setosa, versicolor или virginica. Берём по два цветка каждого вида. Сеть обрабатывает их все разом: <b>строка — один цветок, столбец — один признак</b>. Такая пачка примеров называется батчем.`,
+  formula:()=>`X<sub>см</sub> ∈ ℝ<sup>N × d<sub>in</sub></sup> = ℝ<sup>6 × 4</sup>`,
+  live:()=>{const r=RAW[state.sample];return `Цветок ${SN()}: `+FEAT.map((f,j)=>`${f} ${r[j]}`).join(', ')+' см.';}},
+ {t:'Стандартизация',cam:['musig','xraw','std','x'],focus:['musig','xraw','std','x'],
+  text:()=>`Из каждого столбца вычитаем его среднее и делим на стандартное отклонение. μ и σ посчитаны по всем 150 цветкам набора и дальше не меняются. Теперь все признаки в одном масштабе: около нуля, разброс порядка 1. Иначе длина лепестка (до 7 см) заглушала бы ширину (до 2.5 см) уже на старте, при случайных весах.`,
+  formula:()=>`x̃<sub>ij</sub> = <span class="frac"><span>x<sub>ij</sub> − μ<sub>j</sub></span><span>σ<sub>j</sub></span></span>`,
+  live:()=>{const j=2,i=state.sample;return `${IDN[i]}, длина лепестка: (${RAW[i][j]} − ${MU[j]}) / ${SG[j]} = ${f2(X[i][j])}.`;}},
+ {t:'Сеть как граф',cam:['titleG',...GRAPH],focus:GRAPH,
+  text:()=>`Привычная картинка: кружки — нейроны, линии — веса. «Полносвязная» значит, что каждый нейрон слоя получает сигнал от <b>всех</b> нейронов предыдущего. Толщина линии — модуль веса, жёлтая — положительный, серая — отрицательный. В кружках — значения для выбранного цветка (переключается внизу). Смещения на графе не нарисованы, но они есть у каждого нейрона.`,
+  formula:()=>`4 → 8 → 5 → 3<span class="note">параметров: (4·8 + 8) + (8·5 + 5) + (5·3 + 3) = 40 + 45 + 18 = 103</span>`,
+  live:()=>{const p=state.d.Pr[state.sample];return `Сейчас сеть считает, что ${IDN[state.sample]} — это ${CN[argmax(p)]} (${(Math.max(...p)*100).toFixed(0)}%). На самом деле — ${CN[CLS[state.sample]]}.`;}},
+ {t:'Один нейрон',hl:()=>[nKey(1,0),sKey(state.sample),...[0,1,2,3].map(i=>eKey(1,i,0))],cam:['x','w1','b1','z1','g-n0','g-n1','g-e1'],focus:['x','w1','b1','z1','g-n0','g-n1','g-e1'],
+  text:()=>`Нейрон берёт все входы, умножает каждый на свой вес, складывает и прибавляет смещение. Четыре линии, входящие в нейрон 1 первого слоя, — это <b>первый столбец W₁</b>. Строка i матрицы W₁ — все линии, выходящие из входа i. Наведи на клетку W₁ и найди её линию на графе.`,
+  formula:()=>`z<sub>j</sub> = x<sub>1</sub>w<sub>1j</sub> + x<sub>2</sub>w<sub>2j</sub> + x<sub>3</sub>w<sub>3j</sub> + x<sub>4</sub>w<sub>4j</sub> + b<sub>j</sub>`,
+  live:()=>{const i=state.sample,W=state.d.P.W[1],b=state.d.P.b[1][0][0];const terms=X[i].map((x,k)=>`${f2(x)}·(${f2(W[k][0])})`).join(' + ');return `${IDN[i]}, нейрон 1: ${terms} + ${f2(b)} = <b>${f2(state.d.Z1[i][0])}</b>`;}},
+ {t:'Слой — одно умножение матриц',cam:['x','w1','b1','z1'],focus:['x','w1','b1','z1'],
+  text:()=>`Поставим 8 нейронов столбцами рядом — получится W₁ размера 4 × 8. Поставим 6 цветков строками — получится X. Тогда одно умножение считает все 8 нейронов для всех 6 цветков сразу. Клетка (i, j) в Z₁ — это строка i из X, умноженная на столбец j из W₁. Поэтому видеокарта считает слой так быстро.`,
+  formula:()=>`Z<sub>1</sub> = XW<sub>1</sub> + b<sub>1</sub><span class="note">(6 × 4) · (4 × 8) = 6 × 8. В PyTorch nn.Linear хранит вес как 8 × 4 и считает X·Wᵀ — это та же матрица, транспонированная.</span>`,
+  live:()=>''},
+ {t:'Смещение и broadcasting',hl:()=>[nKey(1,0)],cam:['w1','b1','z1'],focus:['b1','z1'],
+  text:()=>`Смещение b₁ — одна строка 1 × 8, а в XW₁ шесть строк. Одну и ту же строку прибавляют к каждому цветку: это и есть broadcasting. Смещение сдвигает порог нейрона — насколько большой должна быть взвешенная сумма, чтобы он «включился». Обычно b инициализируют нулями; здесь чуть-чуть случайные, чтобы сложение было видно.`,
+  formula:()=>`Z<sub>1</sub>[i, :] = X[i, :]W<sub>1</sub> + b<sub>1</sub>, &nbsp; i = 1…6`,
+  live:()=>`Столбец 1: одно и то же b = ${f2(state.d.P.b[1][0][0])} прибавлено ко всем 6 цветкам.`},
+ {t:'Активация',cam:['z1','f1','h1'],focus:['z1','f1','h1'],
+  text:()=>`Функция применяется к каждой клетке отдельно. Без неё сеть бесполезно глубокая: X·W₁·W₂·W₃ — это снова умножение на одну матрицу, то есть обычная линейная модель. Нелинейность между слоями даёт сети гнуть разделяющие границы. Переключи активацию внизу и сравни H₁.`,
+  formula:()=>actFormula(),
+  live:()=>{const H=state.d.H1.flat();if(state.act==='relu')return `ReLU обнулил ${H.filter(v=>v===0).length} из ${H.length} значений H₁ — эти нейроны на этих цветках «молчат».`;return `Все значения H₁ сжаты в (${state.act==='tanh'?'−1':'0'}, 1): от ${f2(Math.min(...H))} до ${f2(Math.max(...H))}.`;}},
+ {t:'Второй скрытый слой',cam:['h1','w2','b2','z2','f2','h2'],focus:['h1','w2','b2','z2','f2','h2','g-e2','g-n2'],
+  text:()=>`Тот же рецепт, другие веса: выход слоя становится входом следующего. Теперь каждый цветок описан не 4 измерениями, а 8 признаками, которые сеть придумала сама, и они сжимаются до 5. Внутреннее число столбцов в произведении всегда совпадает: 8 у H₁ и 8 строк у W₂.`,
+  formula:()=>`H<sub>2</sub> = ${AN()}(H<sub>1</sub>W<sub>2</sub> + b<sub>2</sub>)<span class="note">(6 × 8) · (8 × 5) = 6 × 5</span>`,live:()=>''},
+ {t:'Выходной слой: логиты',hl:SH,cam:['h2','w3','b3','z3'],focus:['h2','w3','b3','z3','g-e3','g-n3'],
+  text:()=>`Последний слой даёт по одному числу на класс — <b>логиты</b>. Активации здесь нет: логиты могут быть любого знака и не обязаны складываться в 1. Это просто баллы «насколько похоже на setosa, versicolor, virginica».`,
+  formula:()=>`Z<sub>3</sub> = H<sub>2</sub>W<sub>3</sub> + b<sub>3</sub><span class="note">(6 × 5) · (5 × 3) = 6 × 3</span>`,
+  live:()=>{const z=state.d.Z3[state.sample];return `Логиты ${IDN[state.sample]}: `+CN.map((c,j)=>`${c} ${f2(z[j])}`).join(', ')+'.';}},
+ {t:'Softmax',hl:SH,cam:['z3','sm','p'],focus:['z3','sm','p','g-n3'],
+  text:()=>`Softmax превращает каждую строку логитов в распределение вероятностей: экспонента делает всё положительным, деление на сумму — сумму равной 1. Порядок сохраняется: больший логит даёт большую вероятность. Если прибавить ко всем логитам строки одно число, P не изменится.`,
+  formula:()=>`p<sub>c</sub> = <span class="frac"><span>e<sup>z<sub>c</sub></sup></span><span>Σ<sub>c′</sub> e<sup>z<sub>c′</sub></sup></span></span>`,
+  live:()=>{const p=state.d.Pr[state.sample];return `P для ${IDN[state.sample]}: `+CN.map((c,j)=>`${c} ${p[j].toFixed(2)}`).join(', ')+`. Угадано ${acc()} из 6 цветков.`;}},
+ {t:'Функция потерь',cam:['p','y','ce','l','mean','L'],focus:['p','y','ce','l','mean','L'],
+  text:()=>`Правильный ответ записан как one-hot: единица в столбце истинного вида. Кросс-энтропия для цветка — минус логарифм вероятности, которую сеть дала <b>правильному</b> классу. Уверенно и верно — потеря около 0; уверенно и неверно — огромная. Усредняем по батчу и получаем одно число L: его и будем уменьшать.`,
+  formula:()=>`ℓ<sub>i</sub> = −log P[i, y<sub>i</sub>], &nbsp; L = <span class="frac"><span>1</span><span>N</span></span> Σ<sub>i</sub> ℓ<sub>i</sub>`,
+  live:()=>`L = <b>${f3(state.d.L)}</b>. Если бы сеть всем классам давала 1/3, было бы ln 3 ≈ 1.099.`},
+ {t:'Обратный проход',cam:BWD,focus:BWD,
+  text:()=>`Цель — для каждого из 103 параметров узнать ∂L/∂w: куда и насколько изменится потеря, если чуть сдвинуть этот вес. Идём от конца к началу по цепному правилу и переиспользуем значения из прямого прохода — поэтому X, Z и H хранят в памяти до конца шага. Главное правило формы: <b>градиент имеет ту же форму, что и переменная</b>, поэтому dW₁ стоит точно под W₁.`,
+  formula:()=>`<span class="frac"><span>∂L</span><span>∂L</span></span> = 1 &nbsp;— старт в правом конце`,live:()=>''},
+ {t:'Градиент по логитам',hl:SH,cam:['p','y','start','pmy','dz3','z3'],focus:['p','y','start','pmy','dz3'],
+  text:()=>`У пары softmax + кросс-энтропия производная получается очень простой: <b>P − Y</b>. В столбце истинного класса стоит p − 1 < 0: логит надо поднять. В остальных стоит p > 0: эти логиты надо опустить. Деление на N — из-за среднего в L.`,
+  formula:()=>`dZ<sub>3</sub> = <span class="frac"><span>∂L</span><span>∂Z<sub>3</sub></span></span> = <span class="frac"><span>1</span><span>N</span></span>(P − Y)`,
+  live:()=>{const r=state.d.PmY[state.sample];return `${IDN[state.sample]}: P − Y = [${r.map(f2).join(', ')}] — тянет вверх ${CN[CLS[state.sample]]}, остальные вниз.`;}},
+ {t:'Градиенты выходного слоя',cam:['h2','w3','b3','z3','dw3','db3','dz3','r-dw3'],focus:['h2','dw3','db3','dz3','r-dw3'],
+  text:()=>`Вес w<sub>ij</sub> связывает нейрон i с выходом j, поэтому его градиент — это «активность i × ошибка j», просуммированная по цветкам. В матричной форме: H₂ᵀ · dZ₃. Смещение в прямом проходе прибавлялось к каждой строке, поэтому в обратном его градиенты по строкам <b>складываются</b> — broadcasting наоборот.`,
+  formula:()=>`dW<sub>3</sub> = H<sub>2</sub><sup>T</sup> dZ<sub>3</sub>, &nbsp; db<sub>3</sub> = Σ<sub>i</sub> dZ<sub>3</sub>[i, :]<span class="note">(5 × 6) · (6 × 3) = 5 × 3 — ровно форма W₃</span>`,
+  live:()=>`Самый большой по модулю градиент в dW₃: ${(()=>{const M=state.d.dW3;let b=[0,0,0];M.forEach((r,i)=>r.forEach((v,j)=>{if(Math.abs(v)>Math.abs(b[0]))b=[v,i,j];}));return `нейрон ${b[1]+1} → ${CN[b[2]]}, ${f3(b[0])}`;})()}.`},
+ {t:'Градиент уходит назад',cam:['w3','dh2','dw3','db3','dz3','r-dh2'],focus:['w3','dh2','r-dh2','dz3'],
+  text:()=>`Чтобы учить предыдущие слои, нужен градиент по их выходу H₂. Каждый скрытый нейрон получает ошибки выходов, взвешенные <b>теми же весами</b>, по которым он отправлял свой сигнал вперёд. Те же линии графа, только в обратную сторону — отсюда транспонирование W₃.`,
+  formula:()=>`dH<sub>2</sub> = dZ<sub>3</sub>W<sub>3</sub><sup>T</sup><span class="note">(6 × 3) · (3 × 5) = 6 × 5 — форма H₂</span>`,live:()=>''},
+ {t:'Через активацию',cam:['z2','f2','h2','dz2','fp2','dh2'],focus:['z2','fp2','dh2','dz2'],
+  text:()=>`Функция активации применялась поэлементно, значит и градиент через неё проходит поэлементно: умножаем на её наклон в той точке, где был Z₂. У ReLU наклон 0 или 1 — там, где нейрон молчал, градиент <b>не проходит вообще</b>. У σ наклон не больше 0.25, и в глубоких сетях градиент тает от слоя к слою.`,
+  formula:()=>`dZ<sub>2</sub> = dH<sub>2</sub> ⊙ f′(Z<sub>2</sub>)<span class="note">${derFormula()}</span>`,
+  live:()=>{const F=state.d.F2.flat();if(state.act==='relu')return `${F.filter(v=>v===0).length} из ${F.length} клеток f′(Z₂) равны 0 — там градиент перекрыт.`;return `Наклоны f′(Z₂): от ${f2(Math.min(...F))} до ${f2(Math.max(...F))} — градиент везде немного сжимается.`;}},
+ {t:'Тот же узор ещё два раза',cam:['nodx','dw1','db1','dz1','fp1','dh1','dw2','db2','dz2','r-dh1'],focus:['dw1','db1','dz1','fp1','dh1','dw2','db2','dz2','r-dw1','r-dw2','r-dh1','nodx'],
+  text:()=>`Дальше повторяется то же самое: из dZ получаем dW, db и градиент для слоя ниже, проходим через активацию и снова. На первом слое останавливаемся: dX не нужен, потому что входы — данные, а не параметры. Если бы перед сетью стоял обучаемый слой, например эмбеддинги, dX пришлось бы посчитать.`,
+  formula:()=>`dW<sub>2</sub> = H<sub>1</sub><sup>T</sup>dZ<sub>2</sub>, &nbsp; dH<sub>1</sub> = dZ<sub>2</sub>W<sub>2</sub><sup>T</sup><br>dZ<sub>1</sub> = dH<sub>1</sub> ⊙ f′(Z<sub>1</sub>), &nbsp; dW<sub>1</sub> = X<sup>T</sup>dZ<sub>1</sub>`,
+  live:()=>`Нормы градиентов: ‖dW₁‖ = ${f3(norm(state.d.dW1))}, ‖dW₂‖ = ${f3(norm(state.d.dW2))}, ‖dW₃‖ = ${f3(norm(state.d.dW3))}.`},
+ {t:'Шаг градиентного спуска',cam:['w3','b3','dw3','db3','ua3','u3','ub3'],focus:['w3','b3','dw1','db1','dw2','db2','dw3','db3',...UPD],
+  text:()=>`Градиент показывает, куда потеря растёт быстрее всего, поэтому двигаемся в обратную сторону. Здесь крупно выходной слой: W₃ сверху, dW₃ под ним, новое W₃′ ещё ниже — клетка в клетку. Так же одновременно обновляются W₁, W₂ и все смещения, всего 103 параметра. <b>η</b> — скорость обучения, её можно менять ползунком внизу.`,
+  formula:()=>`W ← W − η·dW, &nbsp; b ← b − η·db`,
+  live:()=>{const d=state.d;return `С η = ${state.eta.toFixed(2)} потеря после шага: ${f3(d.L)} → <b>${f3(d.Lnext)}</b>${d.Lnext>d.L?' — выросла: шаг слишком большой':''}.`;}},
+ {t:'Обучение — это повторение',cam:['z3','p','y','chart','u3','ub3'],focus:['chart','p','y','u3','ub3'],
+  text:()=>`Нажимай «Шаг обучения» или «×10»: каждый раз карта заново делает прямой проход, обратный и обновление. Смотри, как P приближается к Y, а кривая L падает. Попробуй η = 3 — потеря начнёт скакать. Здесь все 6 цветков — весь «набор», это полный градиентный спуск; на настоящих 150 цветках брали бы случайные мини-батчи — это и есть SGD.`,
+  formula:()=>`прямой проход → L → обратный → W ← W − η·dW<span class="note">и так по кругу, пока L падает</span>`,
+  live:()=>`Итерация ${state.iter}: L = <b>${f3(state.d.L)}</b>, угадано ${acc()} из 6. Нажми ↻, чтобы вернуться к общей карте.`}
+];
+const NS=STEPS.length;
+
+/* ---------- camera ---------- */
+let vb={x:0,y:0,w:3400,h:1500};
+function setVB(b){vb=b;svg.setAttribute('viewBox',`${b.x} ${b.y} ${b.w} ${b.h}`);}
+function bboxKeys(keys){
+  let x1=1e9,y1=1e9,x2=-1e9,y2=-1e9;
+  const els=keys?keys.flatMap(k=>[...svg.querySelectorAll(`[data-k="${k}"]`)]):[...svg.querySelectorAll('[data-k]')];
+  els.forEach(el=>{const b=el.getBBox();if(!b.width&&!b.height)return;x1=Math.min(x1,b.x);y1=Math.min(y1,b.y);x2=Math.max(x2,b.x+b.width);y2=Math.max(y2,b.y+b.height);});
+  return {x:x1,y:y1,w:x2-x1,h:y2-y1};
+}
+function fit(b){
+  const r=svg.getBoundingClientRect();const ar=r.width/Math.max(1,r.height);
+  const pad=Math.max(b.w,b.h)*.05+36;
+  let x=b.x-pad,y=b.y-pad,w=b.w+2*pad,h=b.h+2*pad;
+  if(w<600){x-=(600-w)/2;w=600;}
+  if(w/h>ar){const nh=w/ar;y-=(nh-h)/2;h=nh;}else{const nw=h*ar;x-=(nw-w)/2;w=nw;}
+  return {x,y,w,h};
+}
+let anim=null;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function flyTo(t){
+  if(anim)cancelAnimationFrame(anim);
+  if(reduce){setVB(t);return;}
+  const f={...vb},t0=performance.now(),dur=750;
+  const ease=u=>u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;
+  const tick=now=>{const u=Math.min(1,(now-t0)/dur),e=ease(u);
+    setVB({x:f.x+(t.x-f.x)*e,y:f.y+(t.y-f.y)*e,w:f.w+(t.w-f.w)*e,h:f.h+(t.h-f.h)*e});
+    if(u<1)anim=requestAnimationFrame(tick);};
+  anim=requestAnimationFrame(tick);
+}
+const val=v=>typeof v==='function'?v():v;
+function camera(){const st=STEPS[state.step];flyTo(fit(bboxKeys(val(st.cam))));}
+
+/* ---------- render ---------- */
+const $=id=>document.getElementById(id);
+function applyFocus(){
+  const F=new Set(val(STEPS[state.step].focus)||[]);
+  svg.querySelectorAll('[data-k]').forEach(el=>{const k=el.dataset.k;el.classList.toggle('dim',F.size>0&&!F.has(k)&&!k.startsWith('title'));});
+  hl(null);
+}
+function panel(){
+  const st=STEPS[state.step];
+  $('count').textContent=`${state.step+1} из ${NS}`;
+  $('title').textContent=st.t;
+  $('text').innerHTML=st.text();
+  $('formula').innerHTML=st.formula();
+  $('live').innerHTML=st.live();
+  $('prev').style.visibility=state.step===0?'hidden':'visible';
+  $('next').textContent=state.step===NS-1?'↻':'Далее';
+  $('next').setAttribute('aria-label',state.step===NS-1?'В начало':'Далее');
+  [...$('progress').children].forEach((b,i)=>{b.className=i===state.step?'cur':(i<state.step?'done':'');});
+  [...$('samples').children].forEach((b,i)=>b.setAttribute('aria-pressed',String(i===state.sample)));
+  [...$('acts').children].forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.a===state.act)));
+  $('etal').textContent=`η = ${state.eta.toFixed(2)}`;
+  $('stat').textContent=`итерация ${state.iter} · seed ${state.seed}`;
+}
+function go(i){state.step=(i+NS)%NS;state.free=false;$('recenter').style.display='none';panel();applyFocus();camera();}
+function rebuild(){build();applyFocus();panel();}
+
+STEPS.forEach((s,i)=>{const b=document.createElement('button');b.title=`${i+1}. ${s.t}`;b.setAttribute('aria-label',`Шаг ${i+1}: ${s.t}`);b.onclick=()=>go(i);$('progress').appendChild(b);});
+IDN.forEach((n,i)=>{const b=document.createElement('button');b.textContent=i+1;b.title=`${n} ${CN[CLS[i]]}`;b.setAttribute('aria-label',`Цветок ${n}, ${CN[CLS[i]]}`);b.onclick=()=>{state.sample=i;rebuild();};$('samples').appendChild(b);});
+Object.keys(ACTS).forEach(a=>{const b=document.createElement('button');b.textContent=ACTS[a].n;b.dataset.a=a;b.onclick=()=>{if(state.act===a)return;state.act=a;init();rebuild();};$('acts').appendChild(b);});
+$('prev').onclick=()=>go(state.step-1);
+$('next').onclick=()=>go(state.step+1);
+$('eta').oninput=e=>{state.eta=+e.target.value;rebuild();};
+$('train1').onclick=()=>{trainSteps(1);rebuild();};
+$('train10').onclick=()=>{trainSteps(10);rebuild();};
+$('reseed').onclick=()=>{state.seed=1+Math.floor(Math.random()*9999);init();rebuild();};
+$('recenter').onclick=()=>go(state.step);
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT')return;
+  if(e.key==='ArrowRight'){go(state.step+1);e.preventDefault();}
+  if(e.key==='ArrowLeft'&&state.step>0){go(state.step-1);e.preventDefault();}
+});
+
+/* ---------- hover ---------- */
+const tip=$('tip'),stage=$('stage');
+let IDX=new Map(),hot=[];
+function indexHover(){
+  IDX=new Map();hot=[];
+  svg.querySelectorAll('[data-h]').forEach(el=>{el.dataset.h.split(' ').forEach(k=>{if(!k)return;if(!IDX.has(k))IDX.set(k,[]);IDX.get(k).push(el);});});
+}
+function hl(keys){
+  hot.forEach(el=>el.classList.remove('hot'));hot=[];
+  if(!keys)keys=val(STEPS[state.step].hl)||null;
+  if(!keys||!keys.length){delete svg.dataset.hl;return;}
+  svg.dataset.hl='1';
+  keys.forEach(k=>(IDX.get(k)||[]).forEach(el=>{el.classList.add('hot');hot.push(el);}));
+}
+function showTip(e,html){
+  tip.innerHTML=html;
+  const r=stage.getBoundingClientRect();let x=e.clientX-r.left+14,y=e.clientY-r.top+14;
+  tip.style.opacity=1;const tw=tip.offsetWidth;if(x+tw>r.width-8)x=e.clientX-r.left-tw-14;
+  tip.style.left=x+'px';tip.style.top=y+'px';
+}
+svg.addEventListener('pointermove',e=>{
+  if(drag)return;
+  let el=e.target;
+  if(el.closest&&el.closest('.node'))el=el.closest('.node');
+  const cls=el.classList;
+  if(cls&&cls.contains('c')){
+    const m=MATS[el.dataset.m],i=+el.dataset.i,j=+el.dataset.j,v=m.M[i][j];
+    const rn=m.rowD?m.rowD(i):`строка ${i+1}`,cn=m.colD?m.colD(j):`столбец ${j+1}`;
+    showTip(e,`${esc(m.label)} · ${esc(rn)}${cn?', '+esc(cn):''} = <b>${f3(v)}</b>`);
+    hl(el.dataset.t.split(' ').filter(Boolean));
+  }else if(cls&&cls.contains('ehit')){
+    const [k,i,j]=el.dataset.edge.split(',').map(Number),w=state.d.P.W[k][i][j];
+    showTip(e,`W${'₁₂₃'[k-1]}[${i+1}, ${j+1}] = <b>${f3(w)}</b> · ${esc(nDesc(k-1,i))} → ${esc(nDesc(k,j))}`);
+    hl([eKey(k,i,j)]);
+  }else if(cls&&cls.contains('node')){
+    const [k,j]=el.dataset.node.split(',').map(Number);
+    const v=[X,state.d.H1,state.d.H2,state.d.Pr][k][state.sample][j];
+    const nmv=k===0?'x̃':(k===3?'p':'h');
+    showTip(e,`${esc(k===0?'вход '+nDesc(0,j):nDesc(k,j))}: ${nmv} = <b>${f3(v)}</b> для ${IDN[state.sample]}`);
+    hl([nKey(k,j)]);
+  }else if(cls&&cls.contains('chip')){tip.style.opacity=0;hl([el.dataset.t]);}
+  else{tip.style.opacity=0;hl(null);}
+});
+svg.addEventListener('pointerleave',()=>{tip.style.opacity=0;hl(null);});
+
+/* ---------- pan / zoom ---------- */
+let drag=null;
+function toFree(){if(!state.free){state.free=true;$('recenter').style.display='block';}}
+svg.addEventListener('pointerdown',e=>{if(e.button!==0)return;if(anim)cancelAnimationFrame(anim);drag={x:e.clientX,y:e.clientY,vb:{...vb},moved:false};svg.setPointerCapture(e.pointerId);});
+svg.addEventListener('pointermove',e=>{
+  if(!drag)return;const r=svg.getBoundingClientRect();
+  const s=Math.max(drag.vb.w/r.width,drag.vb.h/r.height);
+  const dx=(e.clientX-drag.x)*s,dy=(e.clientY-drag.y)*s;
+  if(Math.abs(dx)+Math.abs(dy)>3){drag.moved=true;svg.classList.add('dragging');toFree();tip.style.opacity=0;hl(null);}
+  if(drag.moved)setVB({...drag.vb,x:drag.vb.x-dx,y:drag.vb.y-dy});
+});
+const end=()=>{drag=null;svg.classList.remove('dragging');};
+svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',end);
+/* Встроенная в статью карта не должна перехватывать прокрутку страницы:
+   масштаб там только с Ctrl/⌘ (щипок на тачпаде тоже приходит с ctrlKey). */
+const embedded=window.self!==window.top;
+if(embedded)document.querySelector('.hint').textContent='Тяни — двигать, Ctrl + колесо — масштаб, наведи на клетку, нейрон или связь — значение';
+svg.addEventListener('wheel',e=>{
+  if(embedded&&!e.ctrlKey&&!e.metaKey)return;
+  e.preventDefault();if(anim)cancelAnimationFrame(anim);
+  const r=svg.getBoundingClientRect();const s=Math.max(vb.w/r.width,vb.h/r.height);
+  const ox=vb.x+(vb.w-r.width*s)/2,oy=vb.y+(vb.h-r.height*s)/2;
+  const px=ox+(e.clientX-r.left)*s,py=oy+(e.clientY-r.top)*s;
+  const k=Math.min(4,Math.max(.25,Math.pow(1.0018,e.deltaY)));
+  const nw=Math.min(8000,Math.max(200,vb.w*k)),kk=nw/vb.w;
+  setVB({x:px-(px-vb.x)*kk,y:py-(py-vb.y)*kk,w:vb.w*kk,h:vb.h*kk});toFree();
+},{passive:false});
+let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(!state.free)camera();},120);});
+
+/* ---------- theme ----------
+   Сайт хранит выбранную тему в localStorage.theme; iframe того же origin
+   читает её при загрузке и ловит переключение через событие storage.
+   Цвета клеток считаются в build() через isDark(), поэтому нужен rebuild(). */
+function siteTheme(){try{return localStorage.getItem('theme');}catch(e){return null;}}
+function applyTheme(t){if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;else delete document.documentElement.dataset.theme;}
+applyTheme(siteTheme());
+window.addEventListener('storage',e=>{if(e.key==='theme'){applyTheme(e.newValue);rebuild();}});
+
+/* ---------- start ---------- */
+init();build();panel();applyFocus();
+setVB(fit(bboxKeys(null)));
+})();
+</script>
+</body>
+</html>
