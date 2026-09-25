@@ -209,7 +209,18 @@
       "icon": "map",
       "accent": "#059669",
       "tint": "#D1FAE5",
-      "order": 5
+      "order": 5,
+      "reading_order": [
+        {
+          "group": "maps",
+          "label": {
+            "ru": "От MLP к трансформеру",
+            "en": "From MLP to transformer",
+            "kk": "MLP-ден трансформерге дейін"
+          },
+          "articles": ["mlp-map", "cnn-map", "rnn-map", "transformer-encoder-map"]
+        }
+      ]
     }
   ],
   "tags": {
@@ -723,6 +734,40 @@
   "draft": false,
   "content": {
     "ru": "content/articles/interactive-maps/mlp-map.ru.md"
+  }
+},
+    {
+  "slug": "cnn-map",
+  "category": "interactive-maps",
+  "title": {
+    "ru": "Карта свёрточной сети"
+  },
+  "description": {
+    "ru": "Один полный шаг обучения свёрточной сети на шести рукописных цифрах 8 × 8, на одном холсте: ядро и скользящее окно, несколько фильтров, ReLU, вторая свёртка во всю глубину, max pooling, flatten, Dense и softmax, затем обратный проход — градиент ядра как сумма по всем позициям — и шаг градиентного спуска. Двадцать шагов; окно свёртки можно прокрутить, любую клетку — навести и увидеть, из какого окна она посчитана, а обучение — прогнать вперёд."
+  },
+  "date": "2026-09-25",
+  "reading_time": 15,
+  "tags": ["deep-learning", "computer-vision"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/interactive-maps/cnn-map.ru.md"
+  }
+},
+    {
+  "slug": "rnn-map",
+  "category": "interactive-maps",
+  "title": {
+    "ru": "Карта рекуррентной сети"
+  },
+  "description": {
+    "ru": "Один полный шаг обучения RNN Элмана на слове «молоко», на одном холсте: сеть читает букву за буквой и угадывает следующую, ячейка развёрнута во времени, one-hot вход, память через предыдущее состояние, tanh и потеря на каждом шаге, затем обратный проход во времени (BPTT), градиенты общих весов как сумма по времени и почему RNN забывает. Восемнадцать шагов; время можно прокручивать, любую клетку — навести, а обучение — прогнать вперёд."
+  },
+  "date": "2026-09-25",
+  "reading_time": 15,
+  "tags": ["deep-learning"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/interactive-maps/rnn-map.ru.md"
   }
 }
   ]

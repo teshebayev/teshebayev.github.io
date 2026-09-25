@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Свёрточная сеть — карта</title>
+<style>
+:root{
+  --bg:#FFFFFF; --panel:#F4F5F7; --ink:#111111; --muted:#5E5850; --line:#D8D5CF; --grid:#BDB8B0; --dot:#E4E2DD;
+  --blue:#3576C0; --yellow:#C29E08; --red:#C30B0A; --green:#73B222; --violet:#8A4FB8; --neg:#6F6A62;
+  --btn:#1B1D26; --btnink:#FFFFFF; --tip:#1B1D26; --tipink:#FFFFFF;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16181D; --panel:#1E2127; --ink:#ECECEE; --muted:#A39D94; --line:#34373F; --grid:#555A63; --dot:#262930;
+    --blue:#5E9CE3; --yellow:#DDB832; --red:#EF5350; --green:#8FCB48; --violet:#AB80DD; --neg:#8A857D;
+    --btn:#ECECEE; --btnink:#16181D; --tip:#ECECEE; --tipink:#16181D;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16181D; --panel:#1E2127; --ink:#ECECEE; --muted:#A39D94; --line:#34373F; --grid:#555A63; --dot:#262930;
+  --blue:#5E9CE3; --yellow:#DDB832; --red:#EF5350; --green:#8FCB48; --violet:#AB80DD; --neg:#8A857D;
+  --btn:#ECECEE; --btnink:#16181D; --tip:#ECECEE; --tipink:#16181D;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:Helvetica,Arial,sans-serif;overflow:hidden}
+.app{display:grid;grid-template-columns:minmax(0,1fr) 400px;height:100%}
+#stage{position:relative;overflow:hidden;min-height:0;min-width:0}
+#map{display:block;width:100%;height:100%;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+#map.dragging{cursor:grabbing}
+
+/* SVG content */
+#map .rtitle{font-size:28px;font-weight:800;fill:var(--ink)}
+#map .sent{font-size:20px;fill:var(--ink)}
+#map .lbl{font-size:13px;fill:var(--muted);text-anchor:middle}
+#map .lbl-l{font-size:13px;fill:var(--muted)}
+#map .mname{font-family:"Times New Roman",Times,serif;font-style:italic;font-size:19px;fill:var(--ink);text-anchor:middle}
+#map .mname .ss{font-size:13px}
+#map .shape{font-size:11px;fill:var(--muted);text-anchor:middle}
+#map .op{font-family:"Times New Roman",Times,serif;font-size:28px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+#map .opl{font-size:14px;font-weight:700;text-anchor:middle}
+#map .c{stroke:var(--grid);stroke-width:.5}
+#map .cv{text-anchor:middle;dominant-baseline:central;pointer-events:none;font-family:Helvetica,Arial,sans-serif}
+#map .frame{fill:none;stroke:var(--ink);stroke-width:1.2;pointer-events:none}
+#map .blk{stroke:var(--ink);stroke-width:2.2;pointer-events:none;opacity:.8}
+#map .win{fill:none;stroke:var(--ink);stroke-width:1.6;pointer-events:none}
+#map .chl{font-size:13px;fill:var(--muted);text-anchor:end;dominant-baseline:central}
+#map .conn{fill:none;stroke:var(--muted);stroke-width:1.6}
+#map .dash{stroke-dasharray:6 5}
+#map .px{pointer-events:none}
+#map .thumb{fill:transparent;stroke:var(--grid);stroke-width:1.2;cursor:pointer}
+#map .thumb.sel{stroke:var(--ink);stroke-width:2.5}
+#map .slab{stroke:var(--ink);stroke-width:1}
+#map .axis{stroke:var(--muted);stroke-width:1}
+#map [data-k]{transition:opacity .35s}
+#map .dim{opacity:.13}
+#map[data-hl] .c{opacity:.45}
+#map .c.hot{opacity:1;stroke:var(--ink);stroke-width:1.5}
+#map .thumb.hot{stroke:var(--blue);stroke-width:3}
+@media (prefers-reduced-motion: reduce){ #map [data-k]{transition:none} }
+
+/* panel */
+aside{background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.progress{display:flex;gap:3px;padding:16px 22px 0}
+.progress button{flex:1;height:8px;border:0;border-radius:2px;background:var(--line);padding:0;cursor:pointer}
+.progress button.done{background:var(--muted)}
+.progress button.cur{background:var(--ink)}
+.scroll{flex:1;overflow:auto;padding:18px 22px 8px}
+.count{font-size:14px;color:var(--muted)}
+h1{font-size:25px;line-height:1.15;margin:6px 0 12px;font-weight:800}
+.text{font-size:15.5px;line-height:1.5;margin:0 0 14px;max-width:62ch}
+.text b{font-weight:700}
+.formula{font-family:"Times New Roman",Times,serif;font-size:21px;line-height:1.5;padding:12px 14px;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin:0 0 14px;overflow-x:auto}
+.formula:empty{display:none}
+.formula .frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.9em;margin:0 .15em}
+.formula .frac>span:first-child{border-bottom:1px solid currentColor;padding:0 .2em}
+.formula .note{display:block;font-family:Helvetica,Arial,sans-serif;font-size:13px;color:var(--muted);margin-top:4px}
+.live{font-size:14px;line-height:1.45;margin:0 0 10px;padding-left:12px;border-left:3px solid var(--blue)}
+.live:empty{display:none}
+.legend{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;font-size:13.5px;align-items:center;margin:4px 0 12px}
+.sw{width:18px;height:14px;border-radius:3px;display:inline-block}
+.sw.ramp{background:linear-gradient(90deg,color-mix(in srgb,var(--blue) 10%,transparent),var(--blue))}
+.controls{border-top:1px solid var(--line);padding:12px 22px;display:grid;gap:10px;font-size:14px}
+.crow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.crow .k{color:var(--muted);min-width:70px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{min-width:34px;height:30px;padding:0 9px;border-radius:7px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font-weight:700;cursor:pointer;font-size:13.5px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.seg button:disabled{opacity:.3;cursor:default}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--green)}
+.ghost{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:7px;padding:6px 10px;font-size:13.5px;cursor:pointer}
+.ghost.go{border-color:var(--green);font-weight:700}
+.stat{color:var(--muted);font-size:13px}
+nav{display:flex;gap:10px;padding:12px 22px 18px;align-items:center}
+nav .prev{width:52px;height:48px;border-radius:12px;border:1.5px solid var(--btn);background:transparent;color:var(--ink);font-size:22px;font-weight:800;cursor:pointer}
+nav .next{flex:1;height:48px;border-radius:12px;border:0;background:var(--btn);color:var(--btnink);font-size:17px;font-weight:800;cursor:pointer}
+button:focus-visible,input:focus-visible,#map:focus-visible{outline:2.5px solid var(--blue);outline-offset:2px}
+#tip{position:absolute;pointer-events:none;background:var(--tip);color:var(--tipink);font-size:13px;padding:6px 9px;border-radius:7px;white-space:nowrap;opacity:0;transition:opacity .12s;z-index:5}
+#recenter{position:absolute;right:14px;top:14px;display:none;z-index:4}
+.hint{position:absolute;left:14px;bottom:12px;font-size:12.5px;color:var(--muted);background:color-mix(in srgb,var(--bg) 85%,transparent);padding:4px 8px;border-radius:6px;pointer-events:none}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr;grid-template-rows:minmax(0,50%) minmax(0,50%)}
+  aside{border-left:0;border-top:1px solid var(--line)}
+  h1{font-size:21px}
+  .hint{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="stage">
+    <svg id="map" tabindex="0" aria-label="Карта свёрточной сети: прямой проход, обратный проход и шаг обучения" viewBox="0 0 3300 1800" preserveAspectRatio="xMidYMid meet"></svg>
+    <div id="tip"></div>
+    <button id="recenter" class="ghost">Вернуть камеру к шагу</button>
+    <div class="hint">Тяни — двигать, колесо — масштаб, наведи на клетку — окно, из которого она посчитана</div>
+  </div>
+  <aside>
+    <div class="progress" id="progress"></div>
+    <div class="scroll">
+      <div class="count" id="count"></div>
+      <h1 id="title"></h1>
+      <div class="text" id="text"></div>
+      <div class="formula" id="formula"></div>
+      <p class="live" id="live"></p>
+    </div>
+    <div class="controls">
+      <div class="crow"><span class="k">Картинка</span><div class="seg" id="samples"></div></div>
+      <div class="crow"><span class="k">Окно</span><div class="seg" id="wins">
+        <button id="wprev" aria-label="Окно назад">‹</button><button id="wplay" aria-label="Пауза">❚❚</button><button id="wnext" aria-label="Окно вперёд">›</button>
+      </div><span class="stat" id="wstat"></span></div>
+      <div class="crow"><span class="k" id="etal">η = 0.50</span><input type="range" id="eta" min="0.05" max="3" step="0.05" value="0.5" aria-label="Скорость обучения η"></div>
+      <div class="crow">
+        <button class="ghost go" id="train1">Шаг обучения</button>
+        <button class="ghost go" id="train10">×10</button>
+        <button class="ghost" id="reseed">Новые веса</button>
+        <span class="stat" id="stat"></span>
+      </div>
+    </div>
+    <nav>
+      <button class="prev" id="prev" aria-label="Назад">←</button>
+      <button class="next" id="next">Далее</button>
+    </nav>
+  </aside>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- data: 6 картинок 8×8 из набора digits (UCI / scikit-learn), значения 0…16 ---------- */
+const IDN=['№0','№1','№7','№10','№11','№17'];
+const CLS=[0,1,2,0,1,2];
+const CN=['0','1','7'];
+const RAW=[
+ [[0,0,5,13,9,1,0,0],[0,0,13,15,10,15,5,0],[0,3,15,2,0,11,8,0],[0,4,12,0,0,8,8,0],[0,5,8,0,0,9,8,0],[0,4,11,0,1,12,7,0],[0,2,14,5,10,12,0,0],[0,0,6,13,10,0,0,0]],
+ [[0,0,0,12,13,5,0,0],[0,0,0,11,16,9,0,0],[0,0,3,15,16,6,0,0],[0,7,15,16,16,2,0,0],[0,0,1,16,16,3,0,0],[0,0,1,16,16,6,0,0],[0,0,1,16,16,6,0,0],[0,0,0,11,16,10,0,0]],
+ [[0,0,7,8,13,16,15,1],[0,0,7,7,4,11,12,0],[0,0,0,0,8,13,1,0],[0,4,8,8,15,15,6,0],[0,2,11,15,15,4,0,0],[0,0,0,16,5,0,0,0],[0,0,9,15,1,0,0,0],[0,0,13,5,0,0,0,0]],
+ [[0,0,1,9,15,11,0,0],[0,0,11,16,8,14,6,0],[0,2,16,10,0,9,9,0],[0,1,16,4,0,8,8,0],[0,4,16,4,0,8,8,0],[0,1,16,5,1,11,3,0],[0,0,12,12,10,10,0,0],[0,0,1,10,13,3,0,0]],
+ [[0,0,0,0,14,13,1,0],[0,0,0,5,16,16,2,0],[0,0,0,14,16,12,0,0],[0,1,10,16,16,12,0,0],[0,3,12,14,16,9,0,0],[0,0,0,5,16,15,0,0],[0,0,0,4,16,14,0,0],[0,0,0,1,13,16,1,0]],
+ [[0,0,1,8,15,10,0,0],[0,3,13,15,14,14,0,0],[0,5,10,0,10,12,0,0],[0,0,3,5,15,10,2,0],[0,0,16,16,16,16,12,0],[0,1,8,12,14,8,3,0],[0,0,0,10,13,0,0,0],[0,0,0,11,9,0,0,0]]
+];
+const N=6,C=22,C1=2,C2=3,NF=12;
+const XS=RAW.map(im=>im.map(r=>r.map(v=>v/16)));
+const Y=CLS.map(c=>[0,1,2].map(k=>k===c?1:0));
+const state={step:0,sample:0,eta:.5,seed:141,free:false,P:null,hist:[],iter:0,win:0,playing:true};
+const svg=document.getElementById('map');
+
+/* ---------- math ---------- */
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function gauss(r){let u=0;while(!u)u=r();const v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+const randM=(r,n,m,s)=>Array.from({length:n},()=>Array.from({length:m},()=>gauss(r)*s));
+const mm=(A,B)=>A.map(row=>B[0].map((_,j)=>row.reduce((s,a,k)=>s+a*B[k][j],0)));
+const T=A=>A[0].map((_,j)=>A.map(r=>r[j]));
+const zeros=(...d)=>d.length===1?Array(d[0]).fill(0):Array.from({length:d[0]},()=>zeros(...d.slice(1)));
+const mean=r=>r.reduce((s,v)=>s+v,0)/r.length;
+const norm=A=>Math.sqrt(A.flat(4).reduce((s,v)=>s+v*v,0));
+const relu=v=>Math.max(0,v);
+const mapD=(A,f)=>Array.isArray(A)?A.map(a=>mapD(a,f)):f(A);
+const zipD=(A,B,f)=>Array.isArray(A)?A.map((a,i)=>zipD(a,B[i],f)):f(A,B);
+
+// «свёртка» в смысле DL — взаимная корреляция: без разворота ядра
+function conv(Xin,K,b){
+  const Cin=Xin.length,H=Xin[0].length,Ho=H-2;
+  return K.map((kk,k)=>Array.from({length:Ho},(_,i)=>Array.from({length:Ho},(_,j)=>{
+    let s=b[k];for(let c=0;c<Cin;c++)for(let u=0;u<3;u++)for(let v=0;v<3;v++)s+=Xin[c][i+u][j+v]*kk[c][u][v];return s;})));
+}
+function init(){
+  const r=rng(state.seed);
+  state.P={
+    K1:Array.from({length:C1},()=>[randM(r,3,3,Math.sqrt(2/9))]),
+    b1:Array.from({length:C1},()=>gauss(r)*.05),
+    K2:Array.from({length:C2},()=>Array.from({length:C1},()=>randM(r,3,3,Math.sqrt(2/18)))),
+    b2:Array.from({length:C2},()=>gauss(r)*.05),
+    W:randM(r,NF,3,Math.sqrt(1/NF)),
+    b3:[Array.from({length:3},()=>gauss(r)*.05)]
+  };
+  state.iter=0;state.hist=[forward(state.P).L];
+}
+function fwdImg(P,x){
+  const X=[x];
+  const Z1=conv(X,P.K1,P.b1),A1=mapD(Z1,relu);
+  const Z2=conv(A1,P.K2,P.b2),A2=mapD(Z2,relu);
+  const P2=[],AM=[];
+  for(let k=0;k<C2;k++){P2.push([]);AM.push([]);for(let i=0;i<2;i++){P2[k].push([]);AM[k].push([]);for(let j=0;j<2;j++){
+    let best=-1e9,bi=0,bj=0;for(let a=0;a<2;a++)for(let c=0;c<2;c++){const v=A2[k][2*i+a][2*j+c];if(v>best){best=v;bi=2*i+a;bj=2*j+c;}}
+    P2[k][i].push(best);AM[k][i].push([bi,bj]);}}}
+  const f=P2.flat(2);          // порядок: фильтр, строка, столбец (как view(N,-1) в PyTorch)
+  return {X,Z1,A1,Z2,A2,P2,AM,f};
+}
+function forward(P){
+  const im=XS.map(x=>fwdImg(P,x));
+  const F=im.map(o=>o.f);
+  const Z3=mm(F,P.W).map(r=>r.map((v,j)=>v+P.b3[0][j]));
+  const Pr=Z3.map(r=>{const m=Math.max(...r);const e=r.map(v=>Math.exp(v-m));const z=e.reduce((a,b)=>a+b,0);return e.map(v=>v/z);});
+  const l=Pr.map((r,i)=>[-Math.log(r[CLS[i]])]);
+  return {im,F,Z3,Pr,l,L:mean(l.map(r=>r[0]))};
+}
+function compute(){
+  const P=state.P,f=forward(P);
+  const PmY=f.Pr.map((r,i)=>r.map((p,j)=>p-Y[i][j]));
+  const dZ3=PmY.map(r=>r.map(v=>v/N));
+  const dW=mm(T(f.F),dZ3),db3=[dZ3[0].map((_,j)=>dZ3.reduce((s,r)=>s+r[j],0))];
+  const dF=mm(dZ3,T(P.W));
+  const dK2=zeros(C2,C1,3,3),db2=zeros(C2),dK1=zeros(C1,1,3,3),db1=zeros(C1);
+  const bim=f.im.map((o,n)=>{
+    const dP2=[0,1,2].map(k=>[0,1].map(i=>[0,1].map(j=>dF[n][k*4+i*2+j])));
+    const dA2=zeros(C2,4,4);
+    for(let k=0;k<C2;k++)for(let i=0;i<2;i++)for(let j=0;j<2;j++){const [a,b]=o.AM[k][i][j];dA2[k][a][b]+=dP2[k][i][j];}
+    const M2=mapD(o.Z2,v=>v>0?1:0),dZ2=zipD(dA2,M2,(a,b)=>a*b);
+    const dA1=zeros(C1,6,6);
+    for(let k=0;k<C2;k++)for(let i=0;i<4;i++)for(let j=0;j<4;j++){
+      const g=dZ2[k][i][j];db2[k]+=g;
+      for(let c=0;c<C1;c++)for(let u=0;u<3;u++)for(let v=0;v<3;v++){dK2[k][c][u][v]+=g*o.A1[c][i+u][j+v];dA1[c][i+u][j+v]+=g*P.K2[k][c][u][v];}
+    }
+    const M1=mapD(o.Z1,v=>v>0?1:0),dZ1=zipD(dA1,M1,(a,b)=>a*b);
+    for(let k=0;k<C1;k++)for(let i=0;i<6;i++)for(let j=0;j<6;j++){
+      const g=dZ1[k][i][j];db1[k]+=g;
+      for(let u=0;u<3;u++)for(let v=0;v<3;v++)dK1[k][0][u][v]+=g*o.X[0][i+u][j+v];
+    }
+    return {dP2,dA2,M2,dZ2,dA1,M1,dZ1};
+  });
+  const G={K1:dK1,b1:db1,K2:dK2,b2:db2,W:dW,b3:db3};
+  const U={};for(const k in P)U[k]=zipD(P[k],G[k],(w,g)=>w-state.eta*g);
+  const Lnext=forward(U).L;
+  return {...f,P,PmY,dZ3,dW,db3,dF,bim,G,U,Lnext};
+}
+function trainSteps(n){for(let t=0;t<n;t++){const d=compute();state.P=d.U;state.iter++;state.hist.push(d.Lnext);}}
+
+/* ---------- ключи подсветки ---------- */
+const kx=(r,c)=>`x:${r}:${c}`, kc1=(k,i,j)=>`c1:${k}:${i}:${j}`, kk1=(k,u,v)=>`k1:${k}:${u}:${v}`, kb1=k=>`b1:${k}`;
+const kc2=(k,i,j)=>`c2:${k}:${i}:${j}`, kk2=(k,c,u,v)=>`k2:${k}:${c}:${u}:${v}`, kb2=k=>`b2:${k}`, kp=(k,i,j)=>`p:${k}:${i}:${j}`;
+const ks=n=>`s:${n}`, km=m=>`m:${m}`, kcl=c=>`c:${c}`, ksm=(n,m)=>`sm:${n}:${m}`;
+const R=n=>[...Array(n).keys()];
+function related(p){
+  const a=p.split(':'),t=a[0],v=a.slice(1).map(Number),o=[p];
+  if(t==='x'){const [r,c]=v;R(C1).forEach(k=>R(6).forEach(i=>R(6).forEach(j=>{if(r-i>=0&&r-i<3&&c-j>=0&&c-j<3)o.push(kc1(k,i,j));})));}
+  else if(t==='c1'){const [k,i,j]=v;R(3).forEach(u=>R(3).forEach(w=>{o.push(kx(i+u,j+w),kk1(k,u,w));}));o.push(kb1(k));}
+  else if(t==='k1'){const [k,u,w]=v;R(6).forEach(i=>R(6).forEach(j=>o.push(kc1(k,i,j),kx(i+u,j+w))));}
+  else if(t==='b1'){R(6).forEach(i=>R(6).forEach(j=>o.push(kc1(v[0],i,j))));}
+  else if(t==='c2'){const [k,i,j]=v;R(C1).forEach(c=>R(3).forEach(u=>R(3).forEach(w=>o.push(kc1(c,i+u,j+w),kk2(k,c,u,w)))));o.push(kb2(k));}
+  else if(t==='k2'){const [k,c,u,w]=v;R(4).forEach(i=>R(4).forEach(j=>o.push(kc2(k,i,j),kc1(c,i+u,j+w))));}
+  else if(t==='b2'){R(4).forEach(i=>R(4).forEach(j=>o.push(kc2(v[0],i,j))));}
+  else if(t==='p'){const [k,i,j]=v;R(2).forEach(x=>R(2).forEach(y=>o.push(kc2(k,2*i+x,2*j+y))));o.push(ksm(state.sample,k*4+i*2+j));}
+  return o;
+}
+
+/* ---------- svg builders ---------- */
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function nm(s){
+  let out='',i=0;
+  while(i<s.length){
+    const ch=s[i];
+    if(ch==='_'||ch==='^'){
+      let t;
+      if(s[i+1]==='{'){const e=s.indexOf('}',i);t=s.slice(i+2,e);i=e+1;}else{t=s[i+1];i+=2;}
+      const dy=ch==='_'?5:-8;
+      out+=`<tspan class="ss" dy="${dy}">${esc(t)}</tspan><tspan dy="${-dy}">\u200a</tspan>`;
+    }else{
+      let j=i;while(j<s.length&&s[j]!=='_'&&s[j]!=='^')j++;
+      out+=`<tspan>${esc(s.slice(i,j))}</tspan>`;i=j;
+    }
+  }
+  return out;
+}
+function fmt(v){
+  const a=Math.abs(v);
+  let s=a<.995?a.toFixed(2).slice(1):(a<9.95?a.toFixed(1):a.toFixed(0));
+  if(s==='.00')return '0';
+  return (v<0?'−':'')+s;
+}
+const f2=v=>(Math.abs(v)<.005?0:v).toFixed(2).replace('-','−');
+const f3=v=>v.toFixed(3).replace('-','−');
+const isDark=()=>{const t=document.documentElement.dataset.theme;return t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;};
+const MATS={};
+const uniq=a=>[...new Set(a)];
+/* grid: o = {hue,max,int,label,desc(i,j),h(i,j)→ключи-членство,t(i,j)→ключи-триггер,blocks,mark(i,j)} */
+function grid(id,M,x,y,o){
+  const n=M.length,m=M[0].length;
+  const mx=o.max||Math.max(1e-9,...M.flat().map(Math.abs));
+  MATS[id]={M,label:o.label,desc:o.desc};
+  let s='';
+  for(let i=0;i<n;i++)for(let j=0;j<m;j++){
+    const v=M[i][j],a=Math.min(1,Math.abs(v)/mx);
+    const fill=v<0?'var(--neg)':o.hue;
+    const op=isDark()?.14+.84*a:.07+.83*a;
+    const tc=op>.52?'#fff':'var(--ink)';
+    const X0=x+j*C,Y0=y+i*C;
+    const h=o.h?o.h(i,j):[];
+    const t=o.t?o.t(i,j):uniq(h.flatMap(related));
+    s+=`<rect class="c" x="${X0}" y="${Y0}" width="${C}" height="${C}" style="fill:${fill};fill-opacity:${op.toFixed(3)}" data-m="${id}" data-i="${i}" data-j="${j}" data-h="${h.join(' ')}" data-t="${t.join(' ')}"/>`;
+    s+=`<text class="cv" x="${X0+C/2}" y="${Y0+C/2+.5}" style="fill:${tc};font-size:${(C*.34).toFixed(1)}px">${o.int?String(v):fmt(v)}</text>`;
+  }
+  if(o.blocks){for(let q=o.blocks;q<n;q+=o.blocks)s+=`<line class="blk" x1="${x}" y1="${y+q*C}" x2="${x+m*C}" y2="${y+q*C}"/>`;for(let q=o.blocks;q<m;q+=o.blocks)s+=`<line class="blk" x1="${x+q*C}" y1="${y}" x2="${x+q*C}" y2="${y+n*C}"/>`;}
+  if(o.mark)for(let i=0;i<n;i++)for(let j=0;j<m;j++)if(o.mark(i,j))s+=`<rect class="win" x="${x+j*C+2}" y="${y+i*C+2}" width="${C-4}" height="${C-4}" rx="3"/>`;
+  s+=`<rect class="frame" x="${x}" y="${y}" width="${m*C}" height="${n*C}"/>`;
+  return s;
+}
+const g=(key,inner)=>`<g data-k="${key}">${inner}</g>`;
+const mname=(x,y,name)=>`<text class="mname" x="${x}" y="${y}">${nm(name)}</text>`;
+const shape=(x,y,t)=>`<text class="shape" x="${x}" y="${y}">${t}</text>`;
+/* одиночная матрица, центр по вертикали yc */
+function mat(key,id,M,x,yc,o){
+  const n=M.length,m=M[0].length,y=yc-n*C/2;
+  return g(key,(o.name?mname(x+m*C/2,y-10,o.name):'')+(o.noShape?'':shape(x+m*C/2,y+n*C+14,o.shape||`${n} × ${m}`))+grid(id,M,x,y,o));
+}
+/* стопка каналов: maps[k] — 2D, центры по вертикали cy[k] */
+function stack(key,id,maps,x,cy,o){
+  const mx=o.max||Math.max(1e-9,...maps.flat(2).map(Math.abs));
+  const n=maps[0].length,w=maps[0][0].length*C;
+  let s=o.name?mname(x+w/2,cy[0]-n*C/2-10,o.name):'';
+  s+=shape(x+w/2,cy[cy.length-1]+n*C/2+14,o.shape);
+  maps.forEach((M,k)=>{
+    s+=grid(id+k,M,x,cy[k]-n*C/2,{...o,max:mx,label:o.label(k),desc:(i,j)=>o.desc(k,i,j),h:(i,j)=>o.h(k,i,j),mark:o.mark?(i,j)=>o.mark(k,i,j):null});
+    if(o.chl)s+=`<text class="chl" x="${x-7}" y="${cy[k]}">${o.chl(k)}</text>`;
+  });
+  return g(key,s);
+}
+const op=(x,y,t,st)=>`<text class="op" x="${x}" y="${y}"${st?` style="${st}"`:''}>${t}</text>`;
+const MK={red:'ar-red',green:'ar-green',yellow:'ar-yellow'};
+const mkFor=col=>{for(const k in MK)if(col.includes(k))return MK[k];return 'ar-gray';};
+function arrow(x1,y,x2,label,col,below){
+  col=col||'var(--muted)';
+  return `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" class="conn" style="stroke:${col}" marker-end="url(#${mkFor(col)})"/>`+
+    (label?`<text class="opl" x="${(x1+x2)/2}" y="${below?y+22:y-10}" style="fill:${col}">${label}</text>`:'');
+}
+const path=(d,col,cls)=>`<path d="${d}" class="conn ${cls||''}" style="stroke:${col}" marker-end="url(#${mkFor(col)})"/>`;
+
+/* ---------- layout ---------- */
+const LAY=(()=>{let x=60;const o={};
+  const put=(k,w,gap)=>{o[k]={x,w,c:x+w/2,r:x+w};x+=w+gap;};
+  put('x',176,48); put('k1',66,40); put('b1',22,90); put('z1',132,232); put('a1',132,80);
+  put('k2',152,40); put('b2',22,90); put('z2',88,188); put('a2',88,150); put('p2',44,160);
+  put('f',264,40); put('w',66,40); put('b3',66,90); put('z3',66,130); put('p',66,40); put('y',66,120);
+  put('l',22,100); put('L',22,0);
+  o.end=x;return o;})();
+const mid=(a,b)=>(LAY[a].r+LAY[b].x)/2;
+const YF=720,YB=1160,YU=1590;
+const CY1=yc=>R(C1).map(k=>yc+(k-.5)*156), CY2=yc=>R(C2).map(k=>yc+(k-1)*112);
+const half=n=>n*C/2;
+const S1=['₁','₂','₃'];
+
+function build(){
+  for(const k in MATS)delete MATS[k];
+  const d=compute();state.d=d;
+  const n0=state.sample,im=d.im[n0],bi=d.bim[n0];
+  const BL='var(--blue)',YE='var(--yellow)',RE='var(--red)',GR='var(--green)',VI='var(--violet)';
+  let s=`<defs>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" style="fill:var(--dot)"/></pattern>
+    <marker id="ar-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:var(--muted)"/></marker>
+    <marker id="ar-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:var(--red)"/></marker>
+    <marker id="ar-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:var(--green)"/></marker>
+    <marker id="ar-yellow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:var(--yellow)"/></marker>
+  </defs>
+  <rect x="-3000" y="-3000" width="10000" height="8000" fill="url(#dots)"/>`;
+
+  /* ===== T. Данные и архитектура ===== */
+  s+=g('titleT',`<text class="rtitle" x="60" y="80">Свёрточная сеть</text><text class="sent" x="60" y="118">6 рукописных цифр 8 × 8 → три класса: 0, 1 или 7</text>`);
+  let t='';
+  RAW.forEach((img,n)=>{
+    const x0=60+n*96,y0=160;
+    img.forEach((r,i)=>r.forEach((v,j)=>{t+=`<rect class="px" x="${x0+j*9}" y="${y0+i*9}" width="9" height="9" style="fill:var(--ink);fill-opacity:${(v/16).toFixed(3)}"/>`;}));
+    t+=`<rect class="thumb${n===n0?' sel':''}" x="${x0-3}" y="${y0-3}" width="78" height="78" rx="4" data-sel="${n}" data-h="${ks(n)}" data-t="${ks(n)}"/>`;
+    t+=`<text class="lbl" x="${x0+36}" y="${y0+96}">${IDN[n]} · «${CN[CLS[n]]}»</text>`;
+  });
+  s+=g('thumbs',t);
+  // схема архитектуры: «слябы» каналов
+  const sch=[{c:1,h:8,l:'1 × 8 × 8'},{c:2,h:6,l:'2 × 6 × 6'},{c:3,h:4,l:'3 × 4 × 4'},{c:3,h:2,l:'3 × 2 × 2'},{v:12,l:'12'},{v:3,l:'3'}];
+  const sop=[['свёртка 3×3','2 фильтра + ReLU'],['свёртка 3×3','3 фильтра + ReLU'],['max pool','2×2, шаг 2'],['flatten',''],['Dense','+ softmax']];
+  let sx=700;t='';const scy=200;
+  sch.forEach((b,i)=>{
+    if(b.v){const h=b.v*10;t+=`<rect class="slab" x="${sx}" y="${scy-h/2}" width="14" height="${h}" style="fill:${i===5?GR:BL};fill-opacity:.25"/><text class="lbl" x="${sx+7}" y="${scy+h/2+20}">${b.l}</text>`;sx+=14;}
+    else{const sz=b.h*12;for(let k=b.c-1;k>=0;k--)t+=`<rect class="slab" x="${sx+k*8}" y="${scy-sz/2-k*8}" width="${sz}" height="${sz}" style="fill:var(--bg)"/><rect x="${sx+k*8}" y="${scy-sz/2-k*8}" width="${sz}" height="${sz}" style="fill:${BL};fill-opacity:.18;pointer-events:none"/>`;
+      t+=`<text class="lbl" x="${sx+sz/2+(b.c-1)*4}" y="${scy+sz/2+20}">${b.l}</text>`;sx+=sz+(b.c-1)*8;}
+    if(i<sop.length){t+=arrow(sx+14,scy,sx+146,'',YE)+`<text class="lbl" x="${sx+80}" y="${scy-30}" style="fill:var(--ink)">${sop[i][0]}</text><text class="lbl" x="${sx+80}" y="${scy-12}">${sop[i][1]}</text>`;sx+=162;}
+  });
+  t+=`<text class="lbl-l" x="700" y="330">параметров: свёртка 1 — 2·(3·3) + 2 = 20, свёртка 2 — 3·(2·3·3) + 3 = 57, Dense — 12·3 + 3 = 39; всего 116</text>`;
+  s+=g('schema',t);
+
+  /* ===== F. Прямой проход ===== */
+  s+=g('titleF',`<text class="rtitle" x="60" y="${YF-210}">Прямой проход</text><text class="sent" x="60" y="${YF-176}">картинка ${IDN[n0]} — цифра ${CN[CLS[n0]]}</text>`);
+  const c1=CY1(YF),c2=CY2(YF);
+  const dX=(i,j)=>`пиксель (${i+1}, ${j+1}) = ${RAW[n0][i][j]}/16`;
+  s+=mat('x','X',im.X[0],LAY.x.x,YF,{name:'X',hue:BL,max:1,label:'X',desc:dX,h:(i,j)=>[kx(i,j)]});
+  // conv 1
+  s+=g('k1',op(mid('x','k1'),YF,'∗'));
+  s+=stack('k1','K1_',d.P.K1.map(k=>k[0]),LAY.k1.x,c1,{name:'K_1',shape:'2 × 1 × 3 × 3',hue:YE,chl:k=>'ф'+(k+1),label:k=>`K₁, фильтр ${k+1}`,desc:(k,u,v)=>`вес (${u+1}, ${v+1})`,h:(k,u,v)=>[kk1(k,u,v)]});
+  s+=g('b1',op(mid('k1','b1'),YF,'+'));
+  s+=stack('b1','B1_',d.P.b1.map(v=>[[v]]),LAY.b1.x,c1,{name:'b_1',shape:'2',hue:YE,label:k=>`b₁, фильтр ${k+1}`,desc:()=>'одно смещение на всю карту',h:k=>[kb1(k)]});
+  s+=g('z1',op(mid('b1','z1'),YF,'='));
+  const dPos=(k,i,j)=>`фильтр ${k+1}, позиция (${i+1}, ${j+1})`;
+  s+=stack('z1','Z1_',im.Z1,LAY.z1.x,c1,{name:'Z_1',shape:'2 × 6 × 6',hue:BL,label:k=>`Z₁`,desc:dPos,h:(k,i,j)=>[kc1(k,i,j)]});
+  s+=g('r1',arrow(LAY.z1.r+6,YF,LAY.a1.x-8,'ReLU',YE)+`<text class="lbl" x="${mid('z1','a1')}" y="${YF+22}">поэлементно</text>`);
+  s+=stack('a1','A1_',im.A1,LAY.a1.x,c1,{name:'A_1',shape:'2 × 6 × 6',hue:BL,label:k=>`A₁`,desc:dPos,h:(k,i,j)=>[kc1(k,i,j)]});
+  // conv 2
+  s+=g('k2',op(mid('a1','k2'),YF,'∗'));
+  {let kt=mname(LAY.k2.c,c2[0]-half(3)-30,'K_2')+shape(LAY.k2.c,c2[2]+half(3)+14,'3 × 2 × 3 × 3');
+   const mx=Math.max(...d.P.K2.flat(3).map(Math.abs));
+   kt+=`<text class="lbl" x="${LAY.k2.x+33}" y="${c2[0]-half(3)-8}">канал 1</text><text class="lbl" x="${LAY.k2.x+119}" y="${c2[0]-half(3)-8}">канал 2</text>`;
+   d.P.K2.forEach((kk,k)=>{kt+=`<text class="chl" x="${LAY.k2.x-7}" y="${c2[k]}">ф${k+1}</text>`;
+     kk.forEach((sl,c)=>{kt+=grid(`K2_${k}_${c}`,sl,LAY.k2.x+c*86,c2[k]-half(3),{hue:YE,max:mx,label:`K₂, фильтр ${k+1}, входной канал ${c+1}`,desc:(u,v)=>`вес (${u+1}, ${v+1})`,h:(u,v)=>[kk2(k,c,u,v)]});});
+     kt+=`<text class="op" x="${LAY.k2.x+76}" y="${c2[k]}" style="font-size:18px">+</text>`;});
+   s+=g('k2',kt);}
+  s+=g('b2',op(mid('k2','b2'),YF,'+'));
+  s+=stack('b2','B2_',d.P.b2.map(v=>[[v]]),LAY.b2.x,c2,{name:'b_2',shape:'3',hue:YE,label:k=>`b₂, фильтр ${k+1}`,desc:()=>'одно смещение на всю карту',h:k=>[kb2(k)]});
+  s+=g('z2',op(mid('b2','z2'),YF,'='));
+  s+=stack('z2','Z2_',im.Z2,LAY.z2.x,c2,{name:'Z_2',shape:'3 × 4 × 4',hue:BL,label:k=>'Z₂',desc:dPos,h:(k,i,j)=>[kc2(k,i,j)]});
+  s+=g('r2',arrow(LAY.z2.r+6,YF,LAY.a2.x-8,'ReLU',YE)+`<text class="lbl" x="${mid('z2','a2')}" y="${YF+22}">поэлементно</text>`);
+  const isMax=(k,i,j)=>{const [a,b]=im.AM[k][i>>1][j>>1];return a===i&&b===j;};
+  s+=stack('a2','A2_',im.A2,LAY.a2.x,c2,{name:'A_2',shape:'3 × 4 × 4',hue:BL,blocks:2,mark:isMax,label:k=>'A₂',desc:(k,i,j)=>dPos(k,i,j)+(isMax(k,i,j)?' · максимум своего окна':''),h:(k,i,j)=>[kc2(k,i,j)]});
+  s+=g('pool',arrow(LAY.a2.r+6,YF,LAY.p2.x-8,'max 2×2',YE)+`<text class="lbl" x="${mid('a2','p2')}" y="${YF+22}">шаг 2</text>`);
+  s+=stack('p2','P2_',im.P2,LAY.p2.x,c2,{name:'A_p',shape:'3 × 2 × 2',hue:BL,label:k=>'после пулинга',desc:(k,i,j)=>`фильтр ${k+1}, клетка (${i+1}, ${j+1}) → признак ${k*4+i*2+j+1}`,h:(k,i,j)=>[kp(k,i,j)]});
+  const fy=n=>YF-half(6)+n*C+C/2;
+  s+=g('flat',path(`M${LAY.p2.r+6},${YF} C${LAY.p2.r+80},${YF} ${LAY.f.x-80},${fy(n0)} ${LAY.f.x-8},${fy(n0)}`,YE)+`<text class="opl" x="${mid('p2','f')}" y="${YF-40}" style="fill:var(--yellow)">flatten</text><text class="lbl" x="${mid('p2','f')}" y="${YF+50}">3·2·2 = 12</text>`);
+  const dS=n=>`картинка ${IDN[n]} («${CN[CLS[n]]}»)`, dM=m=>`признак ${m+1} (фильтр ${Math.floor(m/4)+1})`;
+  const hFM=(n,m)=>[ks(n),km(m),ksm(n,m)];
+  s+=mat('f','F',d.F,LAY.f.x,YF,{name:'F',hue:BL,label:'F — все 6 картинок',desc:(n,m)=>`${dS(n)}, ${dM(m)}`,h:hFM});
+  s+=g('w',op(mid('f','w'),YF,'·'));
+  s+=mat('w','W',d.P.W,LAY.w.x,YF,{name:'W',hue:YE,label:'W',desc:(m,c)=>`${dM(m)} → класс «${CN[c]}»`,h:(m,c)=>[km(m),kcl(c)]});
+  s+=g('b3',op(mid('w','b3'),YF,'+'));
+  s+=mat('b3','b3',d.P.b3,LAY.b3.x,YF,{name:'b_3',hue:YE,label:'b₃',desc:(i,c)=>`класс «${CN[c]}»`,h:(i,c)=>[kcl(c)]});
+  s+=g('z3',op(mid('b3','z3'),YF,'='));
+  const hSC=(n,c)=>[ks(n),kcl(c)],dSC=(n,c)=>`${dS(n)}, класс «${CN[c]}»`;
+  s+=mat('z3','Z3',d.Z3,LAY.z3.x,YF,{name:'Z_3',hue:BL,label:'логиты Z₃',desc:dSC,h:hSC});
+  s+=g('sm',arrow(LAY.z3.r+6,YF,LAY.p.x-8,'softmax',YE)+`<text class="lbl" x="${mid('z3','p')}" y="${YF+22}">по строкам</text>`);
+  s+=mat('p','Pr',d.Pr,LAY.p.x,YF,{name:'P',hue:GR,max:1,label:'вероятности P',desc:dSC,h:hSC});
+  s+=mat('y','Y',Y,LAY.y.x,YF,{name:'Y',int:1,hue:VI,max:1,label:'цель Y',desc:dSC,h:hSC});
+  s+=g('ce',arrow(LAY.y.r+6,YF,LAY.l.x-8,'−log P[y]',RE));
+  s+=mat('l','l',d.l,LAY.l.x,YF,{name:'ℓ',hue:RE,label:'потеря на картинке ℓ',desc:n=>dS(n),h:n=>[ks(n)]});
+  s+=g('mean',arrow(LAY.l.r+6,YF,LAY.L.x-8,'среднее',RE));
+  s+=mat('L','L',[[d.L]],LAY.L.x,YF,{name:'L',hue:RE,label:'потеря L',desc:()=>'среднее по 6 картинкам'});
+
+  /* ===== B. Обратный проход ===== */
+  s+=g('titleB',`<text class="rtitle" x="60" y="${YB-210}" style="fill:var(--red)">Обратный проход</text><text class="sent" x="60" y="${YB-176}">карты — для ${IDN[n0]}, градиенты весов — сумма по 6 картинкам</text>`);
+  const b1=CY1(YB),b2=CY2(YB);
+  s+=g('nodx',`<text class="lbl" x="${LAY.x.c}" y="${YB-10}">dX не нужен:</text><text class="lbl" x="${LAY.x.c}" y="${YB+8}">пиксели — данные,</text><text class="lbl" x="${LAY.x.c}" y="${YB+26}">их не обучают</text>`);
+  s+=mat('start','ONE',[[1]],LAY.L.x,YB,{name:'∂L/∂L',int:1,noShape:1,hue:RE,label:'∂L/∂L',desc:()=>'старт обратного прохода'});
+  s+=g('pmy',path(`M${LAY.L.x-6},${YB} H${LAY.p.r+8}`,RE)+`<text class="opl" x="${(LAY.L.x+LAY.p.r)/2}" y="${YB-10}" style="fill:var(--red)">softmax + CE</text>`);
+  s+=mat('pmy','PmY',d.PmY,LAY.p.x,YB,{name:'P − Y',hue:RE,label:'P − Y',desc:dSC,h:hSC});
+  s+=g('dz3',op(mid('z3','p'),YB,'= ⅙ ·','font-size:22px'));
+  s+=mat('dz3','dZ3',d.dZ3,LAY.z3.x,YB,{name:'dZ_3',hue:RE,label:'dZ₃',desc:dSC,h:hSC});
+  s+=g('db3',arrow(LAY.z3.x-6,YB,LAY.b3.r+8,'Σ',RE));
+  s+=mat('db3','db3',d.db3,LAY.b3.x,YB,{name:'db_3',hue:RE,label:'db₃',desc:(i,c)=>`класс «${CN[c]}»`,h:(i,c)=>[kcl(c)]});
+  s+=g('r-dw',path(`M${LAY.z3.x},${YB+40} H${LAY.w.r+8}`,RE)+`<text class="opl" x="${LAY.b3.c}" y="${YB+60}" style="fill:var(--red)">Fᵀ · dZ₃</text>`);
+  s+=mat('dw','dW',d.dW,LAY.w.x,YB,{name:'dW',hue:RE,label:'dW',desc:(m,c)=>`${dM(m)} → класс «${CN[c]}»`,h:(m,c)=>[km(m),kcl(c)]});
+  s+=g('r-df',path(`M${LAY.z3.x+12},${YB+half(6)} V${YB+190} H${LAY.f.c} V${YB+half(6)+22}`,RE)+`<text class="opl" x="${(LAY.z3.x+LAY.f.c)/2}" y="${YB+210}" style="fill:var(--red)">dZ₃ · Wᵀ</text>`);
+  s+=mat('df','dF',d.dF,LAY.f.x,YB,{name:'dF',hue:RE,label:'dF',desc:(n,m)=>`${dS(n)}, ${dM(m)}`,h:hFM});
+  s+=g('unflat',path(`M${LAY.f.x-6},${fy(n0)-YF+YB} C${LAY.f.x-80},${fy(n0)-YF+YB} ${LAY.p2.r+80},${YB} ${LAY.p2.r+8},${YB}`,RE)+`<text class="opl" x="${mid('p2','f')}" y="${YB-40}" style="fill:var(--red)">обратно в 3 × 2 × 2</text>`);
+  s+=stack('dp2','dP2_',bi.dP2,LAY.p2.x,b2,{name:'dA_p',shape:'3 × 2 × 2',hue:RE,label:k=>'dA_p',desc:(k,i,j)=>`фильтр ${k+1}, клетка (${i+1}, ${j+1})`,h:(k,i,j)=>[kp(k,i,j)]});
+  s+=g('upool',arrow(LAY.p2.x-6,YB,LAY.a2.r+8,'к максимумам',RE)+`<text class="lbl" x="${mid('a2','p2')}" y="${YB+22}">остальным 0</text>`);
+  s+=stack('da2','dA2_',bi.dA2,LAY.a2.x,b2,{name:'dA_2',shape:'3 × 4 × 4',hue:RE,blocks:2,label:k=>'dA₂',desc:dPos,h:(k,i,j)=>[kc2(k,i,j)]});
+  // слой 2 назад
+  {const mx=LAY.z2.r+50;
+   s+=g('m2',op((LAY.z2.r+mx)/2,YB,'=')+op((mx+88+LAY.a2.x)/2,YB,'⊙'));
+   s+=stack('m2','M2_',bi.M2,mx,b2,{name:'ReLU′(Z_2)',shape:'3 × 4 × 4',int:1,max:1,hue:YE,label:k=>'ReLU′(Z₂)',desc:dPos,h:(k,i,j)=>[kc2(k,i,j)]});}
+  s+=stack('dz2','dZ2_',bi.dZ2,LAY.z2.x,b2,{name:'dZ_2',shape:'3 × 4 × 4',hue:RE,label:k=>'dZ₂',desc:dPos,h:(k,i,j)=>[kc2(k,i,j)]});
+  s+=g('db2',b2.map(y=>arrow(LAY.z2.x-6,y,LAY.b2.r+8,'',RE)).join('')+`<text class="opl" x="${mid('b2','z2')}" y="${b2[0]-10}" style="fill:var(--red)">Σ</text>`);
+  s+=stack('db2','dB2_',d.G.b2.map(v=>[[v]]),LAY.b2.x,b2,{name:'db_2',shape:'3',hue:RE,label:k=>`db₂, фильтр ${k+1}`,desc:()=>'сумма dZ₂ по позициям и картинкам',h:k=>[kb2(k)]});
+  s+=g('r-dk2',path(`M${LAY.z2.x},${YB+56} H${LAY.k2.r+8}`,RE)+`<text class="opl" x="${LAY.b2.c}" y="${YB+76}" style="fill:var(--red)">A₁ ⋆ dZ₂</text>`);
+  {let kt=mname(LAY.k2.c,b2[0]-half(3)-30,'dK_2')+shape(LAY.k2.c,b2[2]+half(3)+14,'3 × 2 × 3 × 3');
+   const mx=Math.max(...d.G.K2.flat(3).map(Math.abs));
+   d.G.K2.forEach((kk,k)=>{kt+=`<text class="chl" x="${LAY.k2.x-7}" y="${b2[k]}">ф${k+1}</text>`;
+     kk.forEach((sl,c)=>{kt+=grid(`dK2_${k}_${c}`,sl,LAY.k2.x+c*86,b2[k]-half(3),{hue:RE,max:mx,label:`dK₂, фильтр ${k+1}, канал ${c+1}`,desc:(u,v)=>`вес (${u+1}, ${v+1}) · сумма по 16 позициям и 6 картинкам`,h:(u,v)=>[kk2(k,c,u,v)]});});});
+   s+=g('dk2',kt);}
+  s+=g('r-da1',path(`M${LAY.z2.x+12},${b2[2]+half(4)} V${YB+200} H${LAY.a1.c} V${b1[1]+half(6)+22}`,RE)+`<text class="opl" x="${(LAY.z2.x+LAY.a1.c)/2}" y="${YB+220}" style="fill:var(--red)">полная свёртка dZ₂ с развёрнутым K₂</text>`);
+  s+=stack('da1','dA1_',bi.dA1,LAY.a1.x,b1,{name:'dA_1',shape:'2 × 6 × 6',hue:RE,label:k=>'dA₁',desc:dPos,h:(k,i,j)=>[kc1(k,i,j)]});
+  // слой 1 назад
+  {const mx=LAY.z1.r+50;
+   s+=g('m1',op((LAY.z1.r+mx)/2,YB,'=')+op((mx+132+LAY.a1.x)/2,YB,'⊙'));
+   s+=stack('m1','M1_',bi.M1,mx,b1,{name:'ReLU′(Z_1)',shape:'2 × 6 × 6',int:1,max:1,hue:YE,label:k=>'ReLU′(Z₁)',desc:dPos,h:(k,i,j)=>[kc1(k,i,j)]});}
+  s+=stack('dz1','dZ1_',bi.dZ1,LAY.z1.x,b1,{name:'dZ_1',shape:'2 × 6 × 6',hue:RE,label:k=>'dZ₁',desc:dPos,h:(k,i,j)=>[kc1(k,i,j)]});
+  s+=g('db1',b1.map(y=>arrow(LAY.z1.x-6,y,LAY.b1.r+8,'',RE)).join('')+`<text class="opl" x="${mid('b1','z1')}" y="${b1[0]-10}" style="fill:var(--red)">Σ</text>`);
+  s+=stack('db1','dB1_',d.G.b1.map(v=>[[v]]),LAY.b1.x,b1,{name:'db_1',shape:'2',hue:RE,label:k=>`db₁, фильтр ${k+1}`,desc:()=>'сумма dZ₁ по позициям и картинкам',h:k=>[kb1(k)]});
+  s+=g('r-dk1',path(`M${LAY.z1.x},${YB} H${LAY.k1.r+8}`,RE)+`<text class="opl" x="${LAY.b1.c}" y="${YB+20}" style="fill:var(--red)">X ⋆ dZ₁</text>`);
+  s+=stack('dk1','dK1_',d.G.K1.map(k=>k[0]),LAY.k1.x,b1,{name:'dK_1',shape:'2 × 1 × 3 × 3',hue:RE,chl:k=>'ф'+(k+1),label:k=>`dK₁, фильтр ${k+1}`,desc:(k,u,v)=>`вес (${u+1}, ${v+1}) · сумма по 36 позициям и 6 картинкам`,h:(k,u,v)=>[kk1(k,u,v)]});
+
+  /* ===== U. Шаг градиентного спуска ===== */
+  s+=g('titleU',`<text class="rtitle" x="60" y="${YU-200}" style="fill:var(--green)">Шаг градиентного спуска</text><text class="sent" x="60" y="${YU-164}">η = ${state.eta.toFixed(2)}</text>`);
+  const u1=CY1(YU),u2=CY2(YU),U=d.U;
+  const down=(x,y1,y2)=>path(`M${x},${y1} V${y2}`,GR,'dash');
+  s+=g('ua1',down(LAY.k1.c,b1[1]+half(3)+22,u1[0]-half(3)-30)+down(LAY.b1.c,b1[1]+half(1)+22,u1[0]-half(1)-30));
+  s+=g('ua2',down(LAY.k2.c,b2[2]+half(3)+22,u2[0]-half(3)-46)+down(LAY.b2.c,b2[2]+half(1)+22,u2[0]-half(1)-30));
+  s+=g('ua3',down(LAY.w.c,YB+half(12)+22,YU-half(12)-30)+down(LAY.b3.c,YB+half(1)+22,YU-half(1)-30));
+  s+=stack('uk1','uK1_',U.K1.map(k=>k[0]),LAY.k1.x,u1,{name:'K′_1',shape:'2 × 1 × 3 × 3',hue:GR,chl:k=>'ф'+(k+1),label:k=>`K₁ − η·dK₁, фильтр ${k+1}`,desc:(k,u,v)=>`вес (${u+1}, ${v+1})`,h:(k,u,v)=>[kk1(k,u,v)]});
+  s+=stack('ub1','uB1_',U.b1.map(v=>[[v]]),LAY.b1.x,u1,{name:'b′_1',shape:'2',hue:GR,label:k=>`b₁ − η·db₁, фильтр ${k+1}`,desc:()=>'',h:k=>[kb1(k)]});
+  {let kt=mname(LAY.k2.c,u2[0]-half(3)-30,'K′_2')+shape(LAY.k2.c,u2[2]+half(3)+14,'3 × 2 × 3 × 3');
+   const mx=Math.max(...U.K2.flat(3).map(Math.abs));
+   U.K2.forEach((kk,k)=>{kt+=`<text class="chl" x="${LAY.k2.x-7}" y="${u2[k]}">ф${k+1}</text>`;
+     kk.forEach((sl,c)=>{kt+=grid(`uK2_${k}_${c}`,sl,LAY.k2.x+c*86,u2[k]-half(3),{hue:GR,max:mx,label:`K₂ − η·dK₂, фильтр ${k+1}, канал ${c+1}`,desc:(u,v)=>`вес (${u+1}, ${v+1})`,h:(u,v)=>[kk2(k,c,u,v)]});});});
+   s+=g('uk2',kt);}
+  s+=stack('ub2','uB2_',U.b2.map(v=>[[v]]),LAY.b2.x,u2,{name:'b′_2',shape:'3',hue:GR,label:k=>`b₂ − η·db₂, фильтр ${k+1}`,desc:()=>'',h:k=>[kb2(k)]});
+  s+=mat('uw','uW',U.W,LAY.w.x,YU,{name:'W′',hue:GR,label:'W − η·dW',desc:(m,c)=>`${dM(m)} → класс «${CN[c]}»`,h:(m,c)=>[km(m),kcl(c)]});
+  s+=mat('ub3','ub3',U.b3,LAY.b3.x,YU,{name:'b′_3',hue:GR,label:'b₃ − η·db₃',desc:(i,c)=>`класс «${CN[c]}»`,h:(i,c)=>[kcl(c)]});
+  // график потерь
+  const cx0=LAY.z3.x,cx1=LAY.end-10,cy0=YU-90,cy1=YU+80;
+  const H=state.hist,ymax=Math.max(Math.log(3),...H)*1.08;
+  const px=i=>cx0+(H.length<2?0:i/(H.length-1))*(cx1-cx0),py=v=>cy1-v/ymax*(cy1-cy0);
+  let ch=`<text class="mname" x="${cx0}" y="${cy0-24}" style="text-anchor:start">L по итерациям</text>`;
+  ch+=`<line class="axis" x1="${cx0}" y1="${cy1}" x2="${cx1}" y2="${cy1}"/><line class="axis" x1="${cx0}" y1="${cy0}" x2="${cx0}" y2="${cy1}"/>`;
+  ch+=`<line x1="${cx0}" y1="${py(Math.log(3))}" x2="${cx1}" y2="${py(Math.log(3))}" style="stroke:var(--muted);stroke-dasharray:4 4"/><text class="lbl-l" x="${cx1}" y="${py(Math.log(3))-6}" text-anchor="end">ln 3 — угадывание наугад</text>`;
+  ch+=`<text class="lbl-l" x="${cx0-6}" y="${cy1}" text-anchor="end">0</text><text class="lbl-l" x="${cx0-6}" y="${cy0+10}" text-anchor="end">${ymax.toFixed(1)}</text>`;
+  ch+=`<text class="lbl-l" x="${cx1}" y="${cy1+18}" text-anchor="end">итерация ${state.iter}</text>`;
+  ch+=`<polyline points="${H.map((v,i)=>px(i).toFixed(1)+','+py(v).toFixed(1)).join(' ')}" style="fill:none;stroke:var(--red);stroke-width:2.2"/>`;
+  ch+=`<circle cx="${px(H.length-1)}" cy="${py(H[H.length-1])}" r="4.5" style="fill:var(--red)"/><text class="lbl-l" x="${px(H.length-1)-8}" y="${py(H[H.length-1])-10}" text-anchor="${H.length<2?'start':'end'}" style="fill:var(--red);font-weight:700">${f3(H[H.length-1])}</text>`;
+  s+=g('chart',ch);
+
+  svg.innerHTML=s;
+  indexHover();
+  drawWin();
+}
+function drawWin(){
+  const old=svg.querySelector('#winov');if(old)old.remove();
+  const st=STEPS[state.step];if(!st.win)return;
+  const [i,j]=winIJ();let r='';
+  const box=(x,y,w,h)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="3" style="fill:none;stroke:var(--ink);stroke-width:3"/>`;
+  const c1=CY1(YF),c2=CY2(YF);
+  if(st.win===1)r+=box(LAY.x.x+j*C,YF-half(8)+i*C,3*C,3*C)+box(LAY.z1.x+j*C,c1[0]-half(6)+i*C,C,C)+box(LAY.k1.x,c1[0]-half(3),3*C,3*C);
+  else{for(let c=0;c<C1;c++)r+=box(LAY.a1.x+j*C,c1[c]-half(6)+i*C,3*C,3*C)+box(LAY.k2.x+c*86,c2[0]-half(3),3*C,3*C);r+=box(LAY.z2.x+j*C,c2[0]-half(4)+i*C,C,C);}
+  svg.insertAdjacentHTML('beforeend',`<g id="winov" style="pointer-events:none">${r}</g>`);
+}
+
+/* ---------- steps ---------- */
+const SN=()=>`${IDN[state.sample]} («${CN[CLS[state.sample]]}»)`;
+const argmax=r=>r.indexOf(Math.max(...r));
+const acc=()=>state.d.Pr.filter((r,i)=>argmax(r)===CLS[i]).length;
+const BWD=['start','pmy','dz3','db3','r-dw','dw','r-df','df','unflat','dp2','upool','da2','m2','dz2','db2','r-dk2','dk2','r-da1','da1','m1','dz1','db1','r-dk1','dk1','nodx'];
+const UPD=['ua1','ua2','ua3','uk1','ub1','uk2','ub2','uw','ub3'];
+const WIN=[null,{n:36,w:6},{n:16,w:4}];
+const winIJ=()=>{const st=STEPS[state.step],W=WIN[st.win];const p=state.win%W.n;return [Math.floor(p/W.w),p%W.w];};
+function winLive(){
+  const [i,j]=winIJ(),st=STEPS[state.step],d=state.d,o=d.im[state.sample];
+  if(st.win===1){
+    const K=d.P.K1[0][0],terms=[];
+    for(let u=0;u<3;u++)for(let v=0;v<3;v++){const w=K[u][v];terms.push(`${f2(o.X[0][i+u][j+v])}·${w<0?'('+f2(w)+')':f2(w)}`);}
+    return `Окно (${i+1}…${i+3}, ${j+1}…${j+3}) → Z₁[ф1](${i+1}, ${j+1}) = ${terms.join(' + ')} + ${f2(d.P.b1[0])} = <b>${f2(o.Z1[0][i][j])}</b>`;
+  }
+  let s1=0,s2=0;const K=d.P.K2[0];
+  for(let u=0;u<3;u++)for(let v=0;v<3;v++){s1+=o.A1[0][i+u][j+v]*K[0][u][v];s2+=o.A1[1][i+u][j+v]*K[1][u][v];}
+  return `Окно (${i+1}…${i+3}, ${j+1}…${j+3}) в обоих каналах A₁ → Z₂[ф1](${i+1}, ${j+1}): канал 1 даёт ${f2(s1)}, канал 2 даёт ${f2(s2)}, плюс b = ${f2(d.P.b2[0])}, итого <b>${f2(o.Z2[0][i][j])}</b>`;
+}
+const STEPS=[
+ {t:'Свёрточная сеть целиком',cam:null,focus:[],
+  text:()=>`Карта показывает один шаг обучения маленькой свёрточной сети на 6 настоящих рукописных цифрах 8 × 8. Сверху — картинки и схема: <b>две свёртки → max pooling → flatten → Dense</b>. Ниже три ряда: прямой проход, обратный проход и обновление весов. Каждый градиент стоит ровно под тем, по чему он взят.
+  <div class="legend">
+   <span class="sw ramp"></span><span>насыщенность цвета — модуль значения</span>
+   <span class="sw" style="background:var(--blue)"></span><span>синий — пиксели, карты признаков, активации</span>
+   <span class="sw" style="background:var(--yellow)"></span><span>жёлтый — ядра, веса, смещения и операции</span>
+   <span class="sw" style="background:var(--green)"></span><span>зелёный — вероятности и обновлённые веса</span>
+   <span class="sw" style="background:var(--red)"></span><span>красный — потеря и градиенты</span>
+   <span class="sw" style="background:var(--violet)"></span><span>фиолетовый — правильные ответы</span>
+   <span class="sw" style="background:var(--neg)"></span><span>серый — отрицательные значения</span>
+  </div>
+  Наведи на любую клетку карты признаков — подсветится окно, из которого она посчитана, и ядро. Наведи на вес ядра — подсветятся все места, где он работал.`,
+  formula:()=>'',live:()=>`Веса случайные (seed ${state.seed}), всё считается в браузере. Картинку можно выбрать внизу или кликом по миниатюре.`},
+ {t:'Данные: картинка — это матрица',cam:['thumbs','x'],focus:['thumbs','x'],
+  text:()=>`Набор digits (UCI): цифры, отсканированные в сетку 8 × 8, каждый пиксель — яркость от 0 до 16. Берём по две картинки нулей, единиц и семёрок. Делим на 16, чтобы значения были от 0 до 1. Дальше подробно разобрана одна картинка — выбранная, — но сеть обрабатывает все шесть одинаково.`,
+  formula:()=>`X ∈ ℝ<sup>C × H × W</sup> = ℝ<sup>1 × 8 × 8</sup><span class="note">батч целиком: 6 × 1 × 8 × 8 (N × C × H × W, как в PyTorch)</span>`,
+  live:()=>`Выбрана ${SN()}. Яркие клетки X — это штрихи цифры.`},
+ {t:'Ядро свёртки',hl:()=>related(kk1(0,1,1)),cam:['x','k1','b1','z1'],focus:['x','k1','b1','z1'],
+  text:()=>`Ядро — маленькая таблица весов 3 × 3. Оно смотрит не на всю картинку, а только на кусочек 3 × 3, и <b>одни и те же 9 весов</b> применяются в каждом месте картинки. Это разделение весов: признак «штрих такого наклона» полезен везде, и учить его заново для каждого места не нужно.`,
+  formula:()=>`9 весов + 1 смещение на фильтр<span class="note">Полносвязный слой 64 → 36 потребовал бы 64·36 = 2304 веса.</span>`,
+  live:()=>`Подсвечен центральный вес фильтра 1 (${f2(state.d.P.K1[0][0][1][1])}): он умножается на каждый пиксель области 6 × 6 и участвует во всех 36 клетках карты Z₁. Наведи на любой другой вес ядра.`},
+ {t:'Скользящее окно',win:1,cam:['x','k1','b1','z1'],focus:['x','k1','b1','z1'],
+  text:()=>`Окно 3 × 3 проходит по картинке с шагом 1. В каждом положении 9 пикселей умножаются на 9 весов ядра, всё складывается, прибавляется смещение — получается одно число карты. Окно помещается 6 раз по горизонтали и 6 по вертикали, поэтому карта 6 × 6. Управлять окном можно кнопками внизу.`,
+  formula:()=>`Z[i, j] = Σ<sub>u,v</sub> X[i+u, j+v] · K[u, v] + b<span class="note">В нейросетях это взаимная корреляция: ядро не разворачивают, в отличие от свёртки в математике.</span>`,
+  live:winLive},
+ {t:'Несколько фильтров — несколько каналов',cam:['k1','b1','z1'],focus:['k1','b1','z1'],
+  text:()=>`Фильтров два, у каждого своё ядро и своё смещение, поэтому получаются две карты признаков. Их складывают в стопку — это <b>каналы</b> выхода. Каждый фильтр учится реагировать на свой узор: вертикальный штрих, изгиб, край.`,
+  formula:()=>`1 × 8 × 8 &nbsp;→&nbsp; 2 × 6 × 6<span class="note">H<sub>out</sub> = (H − k + 2p) / s + 1 = (8 − 3 + 0) / 1 + 1 = 6</span>`,
+  live:()=>{const o=state.d.im[state.sample];const mx=k=>Math.max(...o.Z1[k].flat());return `Самый сильный отклик на ${SN()}: фильтр 1 — ${f2(mx(0))}, фильтр 2 — ${f2(mx(1))}.`;}},
+ {t:'ReLU',cam:['z1','r1','a1'],focus:['z1','r1','a1'],
+  text:()=>`Как и в полносвязной сети, после линейной операции идёт нелинейность, клетка за клеткой. Отрицательные отклики обнуляются: «узора здесь нет».`,
+  formula:()=>`A<sub>1</sub> = max(0, Z<sub>1</sub>)`,
+  live:()=>{const A=state.d.im[state.sample].A1.flat(2);return `Обнулено ${A.filter(v=>v===0).length} из ${A.length} клеток.`;}},
+ {t:'Вторая свёртка: ядро во всю глубину',win:2,cam:['a1','k2','b2','z2'],focus:['a1','k2','b2','z2'],
+  text:()=>`На входе уже 2 канала, поэтому каждое ядро второго слоя — не 3 × 3, а <b>2 × 3 × 3</b>: по срезу на каждый входной канал. Окно берёт кусок 3 × 3 сразу из обеих карт, каждый срез умножается на свою карту, и всё складывается в <b>одно</b> число. Один фильтр — одна выходная карта, сколько бы ни было входных каналов.`,
+  formula:()=>`Z<sub>2</sub>[k, i, j] = Σ<sub>c</sub> Σ<sub>u,v</sub> A<sub>1</sub>[c, i+u, j+v] · K<sub>2</sub>[k, c, u, v] + b<sub>2</sub>[k]<span class="note">K₂: 3 фильтра × 2 канала × 3 × 3 = 54 веса + 3 смещения. 2 × 6 × 6 → 3 × 4 × 4</span>`,
+  live:winLive},
+ {t:'Max pooling',cam:['z2','r2','a2','pool','p2'],focus:['r2','a2','pool','p2'],
+  text:()=>`После ReLU каждую карту 4 × 4 делим на окна 2 × 2 и из каждого берём максимум. Размер уменьшается вдвое, обучаемых параметров нет. Сеть сохраняет «узор здесь был», но забывает точное место — так она спокойнее переносит сдвиг штриха на пиксель. Победители в каждом окне обведены.`,
+  formula:()=>`A<sub>p</sub>[k, i, j] = max<sub>a,b ∈ {0,1}</sub> A<sub>2</sub>[k, 2i+a, 2j+b]<span class="note">3 × 4 × 4 → 3 × 2 × 2</span>`,
+  live:()=>`Наведи на клетку после пулинга — подсветится её окно 2 × 2.`},
+ {t:'Flatten: из стопки в строку',hl:()=>[ks(state.sample)],cam:['p2','flat','f'],focus:['p2','flat','f'],
+  text:()=>`Три карты 2 × 2 вытягиваются в вектор из 12 чисел: сначала фильтр 1, потом 2, потом 3. Это одна строка матрицы <b>F</b>, остальные строки — те же 12 признаков других картинок. Дальше всё как в полносвязной сети: свёрточная часть просто подготовила признаки.`,
+  formula:()=>`3 × 2 × 2 → 12<span class="note">F ∈ ℝ<sup>6 × 12</sup>: строка — картинка, столбец — признак</span>`,
+  live:()=>`Строка ${state.sample+1} матрицы F — это ${SN()}.`},
+ {t:'Dense и softmax',hl:()=>[ks(state.sample)],cam:['f','w','b3','z3','sm','p'],focus:['f','w','b3','z3','sm','p'],
+  text:()=>`Полносвязный слой переводит 12 признаков в 3 логита — по одному на цифру 0, 1, 7. Softmax превращает каждую строку логитов в вероятности. Это ровно то, что было в карте полносвязной сети.`,
+  formula:()=>`Z<sub>3</sub> = FW + b<sub>3</sub>, &nbsp; P = softmax(Z<sub>3</sub>)<span class="note">(6 × 12) · (12 × 3) = 6 × 3</span>`,
+  live:()=>{const p=state.d.Pr[state.sample];return `${SN()}: `+CN.map((c,j)=>`«${c}» ${p[j].toFixed(2)}`).join(', ')+`. Угадано ${acc()} из 6.`;}},
+ {t:'Функция потерь',cam:['p','y','ce','l','mean','L'],focus:['p','y','ce','l','mean','L'],
+  text:()=>`Кросс-энтропия: минус логарифм вероятности правильной цифры, усреднённый по 6 картинкам. Это одно число L, и всё обучение — это попытка его уменьшить.`,
+  formula:()=>`ℓ<sub>n</sub> = −log P[n, y<sub>n</sub>], &nbsp; L = <span class="frac"><span>1</span><span>N</span></span> Σ<sub>n</sub> ℓ<sub>n</sub>`,
+  live:()=>`L = <b>${f3(state.d.L)}</b>; наугад было бы ln 3 ≈ 1.099.`},
+ {t:'Обратный проход',cam:BWD,focus:BWD,
+  text:()=>`Идём от L назад по цепному правилу. Полносвязная часть знакома. Новое — два места: как градиент проходит <b>через пулинг</b> и <b>через свёртку</b>. Карты градиентов показаны для выбранной картинки. Градиенты весов — сумма вкладов всех шести картинок, потому что веса у них общие.`,
+  formula:()=>`<span class="frac"><span>∂L</span><span>∂L</span></span> = 1 &nbsp;— старт в правом конце`,live:()=>''},
+ {t:'Полносвязная часть — как в MLP',cam:['start','pmy','dz3','db3','r-dw','dw','r-df','df'],focus:['start','pmy','dz3','db3','r-dw','dw','r-df','df'],
+  text:()=>`Ничего нового: dZ₃ = (P − Y)/N, по нему градиенты W и b₃, и градиент по входу слоя dF. Строка dF выбранной картинки говорит, как потеря зависит от каждого из её 12 признаков.`,
+  formula:()=>`dW = F<sup>T</sup>dZ<sub>3</sub>, &nbsp; db<sub>3</sub> = Σ<sub>n</sub> dZ<sub>3</sub>[n, :], &nbsp; dF = dZ<sub>3</sub>W<sup>T</sup>`,
+  live:()=>`Строка dF для ${SN()}: [${state.d.dF[state.sample].map(f2).join(', ')}]`},
+ {t:'Назад через flatten и pooling',cam:['a2','pool','p2','dp2','unflat','upool','da2'],focus:['a2','p2','dp2','unflat','upool','da2'],
+  text:()=>`Flatten ничего не считал, он только переложил числа — поэтому строку dF просто складываем обратно в 3 × 2 × 2. Pooling пропустил дальше только максимум окна, значит только максимум и влиял на потерю. Градиент уходит <b>в ту клетку, которая победила</b>, остальные три получают 0. Сравни обведённые клетки A₂ и ненулевые клетки dA₂.`,
+  formula:()=>`dA<sub>2</sub>[k, a, b] = dA<sub>p</sub>[k, i, j], если (a, b) — argmax окна (i, j), иначе 0`,
+  live:()=>{const A=state.d.bim[state.sample].dA2.flat(2);return `Ненулевых клеток в dA₂: ${A.filter(v=>v!==0).length} из ${A.length} — по одной на окно.`;}},
+ {t:'Через ReLU',cam:['z2','dz2','m2','da2'],focus:['z2','m2','da2','dz2'],
+  text:()=>`Как в MLP: умножаем поэлементно на производную ReLU. Где Z₂ было отрицательным, градиент дальше не идёт.`,
+  formula:()=>`dZ<sub>2</sub> = dA<sub>2</sub> ⊙ ReLU′(Z<sub>2</sub>)`,
+  live:()=>{const Z=state.d.bim[state.sample].dZ2.flat(2);return `Ненулевых клеток в dZ₂: ${Z.filter(v=>v!==0).length} из ${Z.length}.`;}},
+ {t:'Градиент ядра: сумма по всем позициям',cam:['a1','k2','dk2','db2','dz2','r-dk2'],focus:['a1','dk2','db2','dz2','r-dk2'],
+  text:()=>`Каждый вес ядра работал в 16 позициях окна. В каждой он умножался на свой пиксель A₁ и влиял на свою клетку Z₂. Поэтому его градиент — <b>сумма 16 вкладов</b> «пиксель × градиент клетки», и ещё сумма по 6 картинкам. Получается снова свёртка: A₁ со «скользящим ядром» dZ₂. db₂ — просто сумма dZ₂.`,
+  formula:()=>`dK<sub>2</sub>[k, c, u, v] = Σ<sub>n</sub> Σ<sub>i,j</sub> dZ<sub>2</sub>[k, i, j] · A<sub>1</sub>[c, i+u, j+v]<span class="note">форма 3 × 2 × 3 × 3 — ровно как у K₂</span>`,
+  live:()=>`Наведи на клетку dK₂: подсветится область A₁ 4 × 4, с которой этот вес умножался, и вся карта dZ₂.`},
+ {t:'Градиент ко входу слоя',cam:['k2','da1','dz2','r-da1'],focus:['k2','da1','dz2','r-da1'],
+  text:()=>`Пиксель A₁ попадал в несколько окон, до 9, и в каждом умножался на разный вес ядра. Поэтому он собирает градиенты от всех клеток Z₂, чьё окно его накрывало, и от всех трёх фильтров. В сумме это «полная» свёртка dZ₂ с развёрнутым на 180° ядром. В фреймворках её называют транспонированной свёрткой.`,
+  formula:()=>`dA<sub>1</sub>[c, r, s] = Σ<sub>k</sub> Σ<sub>u,v</sub> dZ<sub>2</sub>[k, r−u, s−v] · K<sub>2</sub>[k, c, u, v]<span class="note">3 × 4 × 4 → 2 × 6 × 6: форма вернулась к A₁</span>`,
+  live:()=>{const A=state.d.bim[state.sample].dA1;return `У угловых пикселей A₁ только одно окно, у центральных — 9. Например, dA₁[ф1](1, 1) = ${f3(A[0][0][0])}, dA₁[ф1](3, 3) = ${f3(A[0][2][2])}.`;}},
+ {t:'Первый слой — тот же узор',cam:['nodx','dk1','db1','dz1','m1','da1'],focus:['nodx','dk1','db1','dz1','m1','da1','r-dk1'],
+  text:()=>`Через ReLU получаем dZ₁, из него — dK₁ (свёртка X с dZ₁, сумма по 36 позициям и 6 картинкам) и db₁. На этом всё: градиент по пикселям не нужен, их не обучают.`,
+  formula:()=>`dZ<sub>1</sub> = dA<sub>1</sub> ⊙ ReLU′(Z<sub>1</sub>), &nbsp; dK<sub>1</sub> = X ⋆ dZ<sub>1</sub>`,
+  live:()=>{const G=state.d.G;return `Нормы градиентов: ‖dK₁‖ = ${f3(norm(G.K1))}, ‖dK₂‖ = ${f3(norm(G.K2))}, ‖dW‖ = ${f3(norm(G.W))}.`;}},
+ {t:'Шаг градиентного спуска',cam:['k1','b1','dk1','db1','ua1','uk1','ub1'],focus:['k1','b1','dk1','db1','dk2','db2','dw','db3',...UPD],
+  text:()=>`Крупно — первый слой: K₁ сверху, dK₁ под ним, новое K₁′ ещё ниже, клетка в клетку. Так же одновременно обновляются K₂, W и все смещения — все 116 параметров.`,
+  formula:()=>`K ← K − η·dK, &nbsp; W ← W − η·dW, &nbsp; b ← b − η·db`,
+  live:()=>{const d=state.d;return `С η = ${state.eta.toFixed(2)} потеря после шага: ${f3(d.L)} → <b>${f3(d.Lnext)}</b>${d.Lnext>d.L?' — выросла: шаг слишком большой':''}.`;}},
+ {t:'Обучение — это повторение',cam:['p','y','chart'],focus:['chart','p','y'],
+  text:()=>`Нажимай «Шаг обучения» или «×10». Каждый раз заново считаются все карты, градиенты и обновления. Смотри, как P приближается к Y, как меняются ядра K₁ и какие места картинки начинают «зажигать» фильтры. На 6 картинках сеть быстро выучит их наизусть; на настоящих данных брали бы тысячи картинок мини-батчами.`,
+  formula:()=>`прямой проход → L → обратный → K, W ← … − η·∇<span class="note">и так по кругу, пока L падает</span>`,
+  live:()=>`Итерация ${state.iter}: L = <b>${f3(state.d.L)}</b>, угадано ${acc()} из 6. Нажми ↻, чтобы вернуться к общей карте.`}
+];
+const NS=STEPS.length;
+
+/* ---------- camera ---------- */
+let vb={x:0,y:0,w:3300,h:1800};
+function setVB(b){vb=b;svg.setAttribute('viewBox',`${b.x} ${b.y} ${b.w} ${b.h}`);}
+function bboxKeys(keys){
+  let x1=1e9,y1=1e9,x2=-1e9,y2=-1e9;
+  const els=keys?keys.flatMap(k=>[...svg.querySelectorAll(`[data-k="${k}"]`)]):[...svg.querySelectorAll('[data-k]')];
+  els.forEach(el=>{const b=el.getBBox();if(!b.width&&!b.height)return;x1=Math.min(x1,b.x);y1=Math.min(y1,b.y);x2=Math.max(x2,b.x+b.width);y2=Math.max(y2,b.y+b.height);});
+  return {x:x1,y:y1,w:x2-x1,h:y2-y1};
+}
+function fit(b){
+  const r=svg.getBoundingClientRect();const ar=r.width/Math.max(1,r.height);
+  const pad=Math.max(b.w,b.h)*.05+36;
+  let x=b.x-pad,y=b.y-pad,w=b.w+2*pad,h=b.h+2*pad;
+  if(w<600){x-=(600-w)/2;w=600;}
+  if(w/h>ar){const nh=w/ar;y-=(nh-h)/2;h=nh;}else{const nw=h*ar;x-=(nw-w)/2;w=nw;}
+  return {x,y,w,h};
+}
+let anim=null;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function flyTo(t){
+  if(anim)cancelAnimationFrame(anim);
+  if(reduce){setVB(t);return;}
+  const f={...vb},t0=performance.now(),dur=750;
+  const ease=u=>u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;
+  const tick=now=>{const u=Math.min(1,(now-t0)/dur),e=ease(u);
+    setVB({x:f.x+(t.x-f.x)*e,y:f.y+(t.y-f.y)*e,w:f.w+(t.w-f.w)*e,h:f.h+(t.h-f.h)*e});
+    if(u<1)anim=requestAnimationFrame(tick);};
+  anim=requestAnimationFrame(tick);
+}
+const val=v=>typeof v==='function'?v():v;
+function camera(){const st=STEPS[state.step];flyTo(fit(bboxKeys(val(st.cam))));}
+
+/* ---------- render ---------- */
+const $=id=>document.getElementById(id);
+function stepKeys(){
+  const st=STEPS[state.step];
+  if(st.win){const [i,j]=winIJ();return related(st.win===1?kc1(0,i,j):kc2(0,i,j));}
+  return val(st.hl)||null;
+}
+function applyFocus(){
+  const F=new Set(val(STEPS[state.step].focus)||[]);
+  svg.querySelectorAll('[data-k]').forEach(el=>{const k=el.dataset.k;el.classList.toggle('dim',F.size>0&&!F.has(k)&&!k.startsWith('title'));});
+  hl(null);
+}
+function panel(){
+  const st=STEPS[state.step];
+  $('count').textContent=`${state.step+1} из ${NS}`;
+  $('title').textContent=st.t;
+  $('text').innerHTML=st.text();
+  $('formula').innerHTML=st.formula();
+  $('live').innerHTML=st.live();
+  $('prev').style.visibility=state.step===0?'hidden':'visible';
+  $('next').textContent=state.step===NS-1?'↻':'Далее';
+  $('next').setAttribute('aria-label',state.step===NS-1?'В начало':'Далее');
+  [...$('progress').children].forEach((b,i)=>{b.className=i===state.step?'cur':(i<state.step?'done':'');});
+  [...$('samples').children].forEach((b,i)=>b.setAttribute('aria-pressed',String(i===state.sample)));
+  ['wprev','wplay','wnext'].forEach(id=>$(id).disabled=!st.win);
+  $('wplay').textContent=state.playing?'❚❚':'▶';$('wplay').setAttribute('aria-label',state.playing?'Пауза':'Запустить');
+  $('wstat').textContent=st.win?`позиция ${state.win%WIN[st.win].n+1} из ${WIN[st.win].n}`:'на шагах со свёрткой';
+  $('etal').textContent=`η = ${state.eta.toFixed(2)}`;
+  $('stat').textContent=`итерация ${state.iter} · seed ${state.seed}`;
+}
+function go(i){state.step=(i+NS)%NS;state.free=false;state.win=0;$('recenter').style.display='none';panel();applyFocus();drawWin();camera();}
+function rebuild(){build();applyFocus();panel();}
+function selectSample(n){state.sample=n;rebuild();}
+
+STEPS.forEach((s,i)=>{const b=document.createElement('button');b.title=`${i+1}. ${s.t}`;b.setAttribute('aria-label',`Шаг ${i+1}: ${s.t}`);b.onclick=()=>go(i);$('progress').appendChild(b);});
+IDN.forEach((n,i)=>{const b=document.createElement('button');b.textContent=CN[CLS[i]];b.title=`Картинка ${n}`;b.setAttribute('aria-label',`Картинка ${n}, цифра ${CN[CLS[i]]}`);b.onclick=()=>selectSample(i);$('samples').appendChild(b);});
+function moveWin(dx){const st=STEPS[state.step];if(!st.win)return;const n=WIN[st.win].n;state.win=(state.win+dx+n)%n;if(!hovering)hl(null);drawWin();$('live').innerHTML=st.live();$('wstat').textContent=`позиция ${state.win+1} из ${n}`;}
+$('wprev').onclick=()=>{state.playing=false;moveWin(-1);panel();};
+$('wnext').onclick=()=>{state.playing=false;moveWin(1);panel();};
+$('wplay').onclick=()=>{state.playing=!state.playing;panel();};
+if(reduce)state.playing=false;
+setInterval(()=>{if(state.playing&&!hovering&&STEPS[state.step].win&&!document.hidden)moveWin(1);},900);
+$('prev').onclick=()=>go(state.step-1);
+$('next').onclick=()=>go(state.step+1);
+$('eta').oninput=e=>{state.eta=+e.target.value;rebuild();};
+$('train1').onclick=()=>{trainSteps(1);rebuild();};
+$('train10').onclick=()=>{trainSteps(10);rebuild();};
+$('reseed').onclick=()=>{state.seed=1+Math.floor(Math.random()*9999);init();rebuild();};
+$('recenter').onclick=()=>go(state.step);
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT')return;
+  if(e.key==='ArrowRight'){go(state.step+1);e.preventDefault();}
+  if(e.key==='ArrowLeft'&&state.step>0){go(state.step-1);e.preventDefault();}
+});
+
+/* ---------- hover ---------- */
+const tip=$('tip'),stage=$('stage');
+let IDX=new Map(),hot=[],hovering=false;
+function indexHover(){
+  IDX=new Map();hot=[];
+  svg.querySelectorAll('[data-h]').forEach(el=>{el.dataset.h.split(' ').forEach(k=>{if(!k)return;if(!IDX.has(k))IDX.set(k,[]);IDX.get(k).push(el);});});
+}
+function hl(keys){
+  hot.forEach(el=>el.classList.remove('hot'));hot=[];
+  if(!keys)keys=stepKeys();
+  if(!keys||!keys.length){delete svg.dataset.hl;return;}
+  svg.dataset.hl='1';
+  keys.forEach(k=>(IDX.get(k)||[]).forEach(el=>{el.classList.add('hot');hot.push(el);}));
+}
+function showTip(e,html){
+  tip.innerHTML=html;
+  const r=stage.getBoundingClientRect();let x=e.clientX-r.left+14,y=e.clientY-r.top+14;
+  tip.style.opacity=1;const tw=tip.offsetWidth;if(x+tw>r.width-8)x=e.clientX-r.left-tw-14;
+  tip.style.left=x+'px';tip.style.top=y+'px';
+}
+svg.addEventListener('pointermove',e=>{
+  if(drag)return;
+  const el=e.target,cls=el.classList;
+  if(cls&&cls.contains('c')){
+    const m=MATS[el.dataset.m],i=+el.dataset.i,j=+el.dataset.j,v=m.M[i][j];
+    const ds=m.desc?m.desc(i,j):'';
+    showTip(e,`${esc(m.label)}${ds?' · '+esc(ds):''} = <b>${f3(v)}</b>`);
+    hovering=true;hl(el.dataset.t.split(' ').filter(Boolean));
+  }else if(cls&&cls.contains('thumb')){
+    const n=+el.dataset.sel;showTip(e,`картинка ${IDN[n]}, цифра ${CN[CLS[n]]} — клик, чтобы выбрать`);
+    hovering=true;hl([ks(n)]);
+  }else{tip.style.opacity=0;if(hovering){hovering=false;hl(null);}}
+});
+svg.addEventListener('pointerleave',()=>{tip.style.opacity=0;hovering=false;hl(null);});
+svg.addEventListener('click',e=>{if(dragMoved)return;const el=e.target;if(el.classList&&el.classList.contains('thumb'))selectSample(+el.dataset.sel);});
+
+/* ---------- pan / zoom ---------- */
+let drag=null,dragMoved=false;
+function toFree(){if(!state.free){state.free=true;$('recenter').style.display='block';}}
+svg.addEventListener('pointerdown',e=>{if(e.button!==0)return;if(anim)cancelAnimationFrame(anim);dragMoved=false;drag={x:e.clientX,y:e.clientY,vb:{...vb},moved:false,id:e.pointerId};});
+svg.addEventListener('pointermove',e=>{
+  if(!drag)return;const r=svg.getBoundingClientRect();
+  const s=Math.max(drag.vb.w/r.width,drag.vb.h/r.height);
+  const dx=(e.clientX-drag.x)*s,dy=(e.clientY-drag.y)*s;
+  if(!drag.moved&&Math.abs(dx)+Math.abs(dy)>3){drag.moved=true;dragMoved=true;svg.setPointerCapture(drag.id);svg.classList.add('dragging');toFree();tip.style.opacity=0;hovering=false;hl(null);}
+  if(drag.moved)setVB({...drag.vb,x:drag.vb.x-dx,y:drag.vb.y-dy});
+});
+const end=()=>{drag=null;svg.classList.remove('dragging');};
+svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',end);
+/* Встроенная в статью карта не должна перехватывать прокрутку страницы:
+   масштаб там только с Ctrl/⌘ (щипок на тачпаде тоже приходит с ctrlKey). */
+const embedded=window.self!==window.top;
+if(embedded){const h=document.querySelector('.hint');h.textContent=h.textContent.replace('колесо','Ctrl + колесо');}
+svg.addEventListener('wheel',e=>{
+  if(embedded&&!e.ctrlKey&&!e.metaKey)return;
+  e.preventDefault();if(anim)cancelAnimationFrame(anim);
+  const r=svg.getBoundingClientRect();const s=Math.max(vb.w/r.width,vb.h/r.height);
+  const ox=vb.x+(vb.w-r.width*s)/2,oy=vb.y+(vb.h-r.height*s)/2;
+  const px=ox+(e.clientX-r.left)*s,py=oy+(e.clientY-r.top)*s;
+  const k=Math.min(4,Math.max(.25,Math.pow(1.0018,e.deltaY)));
+  const nw=Math.min(8000,Math.max(200,vb.w*k)),kk=nw/vb.w;
+  setVB({x:px-(px-vb.x)*kk,y:py-(py-vb.y)*kk,w:vb.w*kk,h:vb.h*kk});toFree();
+},{passive:false});
+let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(!state.free)camera();},120);});
+
+/* ---------- theme ----------
+   Сайт хранит выбранную тему в localStorage.theme; iframe того же origin
+   читает её при загрузке и ловит переключение через событие storage.
+   Цвета клеток считаются в build() через isDark(), поэтому нужен rebuild(). */
+function siteTheme(){try{return localStorage.getItem('theme');}catch(e){return null;}}
+function applyTheme(t){if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;else delete document.documentElement.dataset.theme;}
+applyTheme(siteTheme());
+window.addEventListener('storage',e=>{if(e.key==='theme'){applyTheme(e.newValue);rebuild();}});
+
+/* ---------- start ---------- */
+init();build();panel();applyFocus();
+setVB(fit(bboxKeys(null)));
+})();
+</script>
+</body>
+</html>

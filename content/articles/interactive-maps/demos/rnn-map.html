@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Рекуррентная сеть — карта</title>
+<style>
+:root{
+  --bg:#FFFFFF; --panel:#F4F5F7; --ink:#111111; --muted:#5E5850; --line:#D8D5CF; --grid:#BDB8B0; --dot:#E4E2DD;
+  --blue:#3576C0; --yellow:#C29E08; --red:#C30B0A; --green:#73B222; --violet:#8A4FB8; --neg:#6F6A62;
+  --btn:#1B1D26; --btnink:#FFFFFF; --tip:#1B1D26; --tipink:#FFFFFF;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16181D; --panel:#1E2127; --ink:#ECECEE; --muted:#A39D94; --line:#34373F; --grid:#555A63; --dot:#262930;
+    --blue:#5E9CE3; --yellow:#DDB832; --red:#EF5350; --green:#8FCB48; --violet:#AB80DD; --neg:#8A857D;
+    --btn:#ECECEE; --btnink:#16181D; --tip:#ECECEE; --tipink:#16181D;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16181D; --panel:#1E2127; --ink:#ECECEE; --muted:#A39D94; --line:#34373F; --grid:#555A63; --dot:#262930;
+  --blue:#5E9CE3; --yellow:#DDB832; --red:#EF5350; --green:#8FCB48; --violet:#AB80DD; --neg:#8A857D;
+  --btn:#ECECEE; --btnink:#16181D; --tip:#ECECEE; --tipink:#16181D;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:Helvetica,Arial,sans-serif;overflow:hidden}
+.app{display:grid;grid-template-columns:minmax(0,1fr) 400px;height:100%}
+#stage{position:relative;overflow:hidden;min-height:0;min-width:0}
+#map{display:block;width:100%;height:100%;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+#map.dragging{cursor:grabbing}
+
+/* SVG content */
+#map .rtitle{font-size:28px;font-weight:800;fill:var(--ink)}
+#map .sent{font-size:20px;fill:var(--ink)}
+#map .lbl{font-size:13px;fill:var(--muted);text-anchor:middle}
+#map .lbl-l{font-size:13px;fill:var(--muted)}
+#map .mname{font-family:"Times New Roman",Times,serif;font-style:italic;font-size:19px;fill:var(--ink);text-anchor:middle}
+#map .mname .ss{font-size:13px}
+#map .shape{font-size:11px;fill:var(--muted);text-anchor:middle}
+#map .op{font-family:"Times New Roman",Times,serif;font-size:28px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+#map .opl{font-size:14px;font-weight:700;text-anchor:middle}
+#map .c{stroke:var(--grid);stroke-width:.5}
+#map .cv{text-anchor:middle;dominant-baseline:central;pointer-events:none;font-family:Helvetica,Arial,sans-serif}
+#map .frame{fill:none;stroke:var(--ink);stroke-width:1.2;pointer-events:none}
+#map .blk{stroke:var(--ink);stroke-width:2.2;pointer-events:none;opacity:.8}
+#map .win{fill:none;stroke:var(--ink);stroke-width:1.6;pointer-events:none}
+#map .chl{font-size:13px;fill:var(--muted);text-anchor:end;dominant-baseline:central}
+#map .chip{stroke-width:1.2}
+#map .chipt{font-size:14px;text-anchor:middle;dominant-baseline:central;fill:var(--ink);pointer-events:none}
+#map .chip.hot{stroke:var(--ink);stroke-width:2.5}
+#map .conn{fill:none;stroke:var(--muted);stroke-width:1.6}
+#map .dash{stroke-dasharray:6 5}
+#map .px{pointer-events:none}
+#map .thumb{fill:transparent;stroke:var(--grid);stroke-width:1.2;cursor:pointer}
+#map .thumb.sel{stroke:var(--ink);stroke-width:2.5}
+#map .slab{stroke:var(--ink);stroke-width:1}
+#map .axis{stroke:var(--muted);stroke-width:1}
+#map [data-k]{transition:opacity .35s}
+#map .dim{opacity:.13}
+#map[data-hl] .c{opacity:.45}
+#map .c.hot{opacity:1;stroke:var(--ink);stroke-width:1.5}
+#map .thumb.hot{stroke:var(--blue);stroke-width:3}
+@media (prefers-reduced-motion: reduce){ #map [data-k]{transition:none} }
+
+/* panel */
+aside{background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.progress{display:flex;gap:3px;padding:16px 22px 0}
+.progress button{flex:1;height:8px;border:0;border-radius:2px;background:var(--line);padding:0;cursor:pointer}
+.progress button.done{background:var(--muted)}
+.progress button.cur{background:var(--ink)}
+.scroll{flex:1;overflow:auto;padding:18px 22px 8px}
+.count{font-size:14px;color:var(--muted)}
+h1{font-size:25px;line-height:1.15;margin:6px 0 12px;font-weight:800}
+.text{font-size:15.5px;line-height:1.5;margin:0 0 14px;max-width:62ch}
+.text b{font-weight:700}
+.formula{font-family:"Times New Roman",Times,serif;font-size:21px;line-height:1.5;padding:12px 14px;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin:0 0 14px;overflow-x:auto}
+.formula:empty{display:none}
+.formula .frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.9em;margin:0 .15em}
+.formula .frac>span:first-child{border-bottom:1px solid currentColor;padding:0 .2em}
+.formula .note{display:block;font-family:Helvetica,Arial,sans-serif;font-size:13px;color:var(--muted);margin-top:4px}
+.live{font-size:14px;line-height:1.45;margin:0 0 10px;padding-left:12px;border-left:3px solid var(--blue)}
+.live:empty{display:none}
+.legend{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;font-size:13.5px;align-items:center;margin:4px 0 12px}
+.sw{width:18px;height:14px;border-radius:3px;display:inline-block}
+.sw.ramp{background:linear-gradient(90deg,color-mix(in srgb,var(--blue) 10%,transparent),var(--blue))}
+.controls{border-top:1px solid var(--line);padding:12px 22px;display:grid;gap:10px;font-size:14px}
+.crow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.crow .k{color:var(--muted);min-width:70px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{min-width:34px;height:30px;padding:0 9px;border-radius:7px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font-weight:700;cursor:pointer;font-size:13.5px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.seg button:disabled{opacity:.3;cursor:default}
+input[type=range]{flex:1;min-width:120px;accent-color:var(--green)}
+.ghost{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:7px;padding:6px 10px;font-size:13.5px;cursor:pointer}
+.ghost.go{border-color:var(--green);font-weight:700}
+.stat{color:var(--muted);font-size:13px}
+nav{display:flex;gap:10px;padding:12px 22px 18px;align-items:center}
+nav .prev{width:52px;height:48px;border-radius:12px;border:1.5px solid var(--btn);background:transparent;color:var(--ink);font-size:22px;font-weight:800;cursor:pointer}
+nav .next{flex:1;height:48px;border-radius:12px;border:0;background:var(--btn);color:var(--btnink);font-size:17px;font-weight:800;cursor:pointer}
+button:focus-visible,input:focus-visible,#map:focus-visible{outline:2.5px solid var(--blue);outline-offset:2px}
+#tip{position:absolute;pointer-events:none;background:var(--tip);color:var(--tipink);font-size:13px;padding:6px 9px;border-radius:7px;white-space:nowrap;opacity:0;transition:opacity .12s;z-index:5}
+#recenter{position:absolute;right:14px;top:14px;display:none;z-index:4}
+.hint{position:absolute;left:14px;bottom:12px;font-size:12.5px;color:var(--muted);background:color-mix(in srgb,var(--bg) 85%,transparent);padding:4px 8px;border-radius:6px;pointer-events:none}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr;grid-template-rows:minmax(0,50%) minmax(0,50%)}
+  aside{border-left:0;border-top:1px solid var(--line)}
+  h1{font-size:21px}
+  .hint{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div id="stage">
+    <svg id="map" tabindex="0" aria-label="Карта рекуррентной сети: прямой проход, обратный проход во времени и шаг обучения" viewBox="0 0 2600 1700" preserveAspectRatio="xMidYMid meet"></svg>
+    <div id="tip"></div>
+    <button id="recenter" class="ghost">Вернуть камеру к шагу</button>
+    <div class="hint">Тяни — двигать, колесо — масштаб, наведи на клетку — её шаг времени и нейрон</div>
+  </div>
+  <aside>
+    <div class="progress" id="progress"></div>
+    <div class="scroll">
+      <div class="count" id="count"></div>
+      <h1 id="title"></h1>
+      <div class="text" id="text"></div>
+      <div class="formula" id="formula"></div>
+      <p class="live" id="live"></p>
+    </div>
+    <div class="controls">
+      <div class="crow"><span class="k">Время</span><div class="seg" id="wins">
+        <button id="wprev" aria-label="Шаг времени назад">‹</button><button id="wplay" aria-label="Пауза">❚❚</button><button id="wnext" aria-label="Шаг времени вперёд">›</button>
+      </div><span class="stat" id="wstat"></span></div>
+      <div class="crow"><span class="k" id="etal">η = 0.30</span><input type="range" id="eta" min="0.05" max="3" step="0.05" value="0.3" aria-label="Скорость обучения η"></div>
+      <div class="crow">
+        <button class="ghost go" id="train1">Шаг обучения</button>
+        <button class="ghost go" id="train10">×10</button>
+        <button class="ghost" id="reseed">Новые веса</button>
+        <span class="stat" id="stat"></span>
+      </div>
+    </div>
+    <nav>
+      <button class="prev" id="prev" aria-label="Назад">←</button>
+      <button class="next" id="next">Далее</button>
+    </nav>
+  </aside>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- данные: слово «молоко», предсказываем следующую букву ---------- */
+const V=['м','о','л','к'];
+const IN=[...'молок'],OUT=[...'олоко'];
+const XIN=IN.map(c=>V.indexOf(c)),TGT=OUT.map(c=>V.indexOf(c));
+const T=5,HN=6,NV=4,C=22;
+const X=XIN.map(c=>V.map((_,k)=>k===c?1:0)),Y=TGT.map(c=>V.map((_,k)=>k===c?1:0));
+const state={step:0,eta:.3,seed:5,free:false,P:null,hist:[],iter:0,win:0,playing:true};
+const svg=document.getElementById('map');
+
+/* ---------- math ---------- */
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function gauss(r){let u=0;while(!u)u=r();const v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+const randM=(r,n,m,s)=>Array.from({length:n},()=>Array.from({length:m},()=>gauss(r)*s));
+const mm=(A,B)=>A.map(row=>B[0].map((_,j)=>row.reduce((s,a,k)=>s+a*B[k][j],0)));
+const TR=A=>A[0].map((_,j)=>A.map(r=>r[j]));
+const colsum=A=>[A[0].map((_,j)=>A.reduce((s,r)=>s+r[j],0))];
+const vn=v=>Math.sqrt(v.reduce((s,x)=>s+x*x,0));
+const norm=A=>vn(A.flat());
+function init(){
+  const r=rng(state.seed);
+  state.P={Wxh:randM(r,NV,HN,.8),Whh:randM(r,HN,HN,1/Math.sqrt(HN)),bh:randM(r,1,HN,.1),Why:randM(r,HN,NV,1/Math.sqrt(HN)),by:randM(r,1,NV,.1)};
+  state.iter=0;state.hist=[forward(state.P).L];
+}
+function forward(P){
+  const H=[],Hp=[],A=[];let h=Array(HN).fill(0);
+  for(let t=0;t<T;t++){
+    Hp.push(h);
+    const a=h.map((_,j)=>P.bh[0][j]+X[t].reduce((s,x,k)=>s+x*P.Wxh[k][j],0)+h.reduce((s,v,i)=>s+v*P.Whh[i][j],0));
+    A.push(a);h=a.map(Math.tanh);H.push(h);
+  }
+  const Z=mm(H,P.Why).map(r=>r.map((v,j)=>v+P.by[0][j]));
+  const Pr=Z.map(r=>{const m=Math.max(...r);const e=r.map(v=>Math.exp(v-m));const s=e.reduce((a,b)=>a+b,0);return e.map(v=>v/s);});
+  const l=Pr.map((r,t)=>[-Math.log(r[TGT[t]])]);
+  return {H,Hp,A,Z,Pr,l,L:l.reduce((s,r)=>s+r[0],0)/T};
+}
+function compute(){
+  const P=state.P,f=forward(P);
+  const PmY=f.Pr.map((r,t)=>r.map((p,j)=>p-Y[t][j]));
+  const dZ=PmY.map(r=>r.map(v=>v/T));
+  const dWhy=mm(TR(f.H),dZ),dby=colsum(dZ);
+  const dHo=mm(dZ,TR(P.Why));
+  const dH=[],dHf=[],dA=[],dHp=[],Tp=f.H.map(r=>r.map(h=>1-h*h));
+  let nx=Array(HN).fill(0);
+  for(let t=T-1;t>=0;t--){               // BPTT: от последнего шага к первому
+    dHf[t]=nx;
+    const dh=dHo[t].map((v,j)=>v+nx[j]);dH[t]=dh;
+    const da=dh.map((v,j)=>v*Tp[t][j]);dA[t]=da;
+    dHp[t]=P.Whh.map(row=>row.reduce((s,w,j)=>s+w*da[j],0));
+    nx=dHp[t];
+  }
+  const dWhh=mm(TR(f.Hp),dA),dWxh=mm(TR(X),dA),dbh=colsum(dA);
+  // затухание: как градиент только от ℓ₅ доходит до h₅, h₄, …, h₁
+  const decay=[];{let dh=P.Why.map(row=>row.reduce((s,w,j)=>s+w*PmY[T-1][j],0));
+    for(let t=T-1;t>=0;t--){decay[t]=vn(dh);const da=dh.map((v,j)=>v*Tp[t][j]);dh=P.Whh.map(row=>row.reduce((s,w,j)=>s+w*da[j],0));}}
+  const G={Wxh:dWxh,Whh:dWhh,bh:dbh,Why:dWhy,by:dby};
+  const U={};for(const k in P)U[k]=P[k].map((r,i)=>r.map((v,j)=>v-state.eta*G[k][i][j]));
+  return {...f,P,PmY,dZ,dHo,dHf,dH,Tp,dA,dHp,G,U,decay,Lnext:forward(U).L};
+}
+function trainSteps(n){for(let t=0;t<n;t++){const d=compute();state.P=d.U;state.iter++;state.hist.push(d.Lnext);}}
+
+/* ---------- ключи подсветки ---------- */
+// t:k — шаг времени k; st:k — состояние h_k (h_0 — начальное); h:j — нейрон скрытого слоя; v:c — буква словаря
+const kt=t=>`t:${t}`, kst=k=>`st:${k}`, kh=j=>`h:${j}`, kv=c=>`v:${c}`;
+
+/* ---------- svg builders ---------- */
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function nm(s){
+  let out='',i=0;
+  while(i<s.length){
+    const ch=s[i];
+    if(ch==='_'||ch==='^'){
+      let t;
+      if(s[i+1]==='{'){const e=s.indexOf('}',i);t=s.slice(i+2,e);i=e+1;}else{t=s[i+1];i+=2;}
+      const dy=ch==='_'?5:-8;
+      out+=`<tspan class="ss" dy="${dy}">${esc(t)}</tspan><tspan dy="${-dy}">\u200a</tspan>`;
+    }else{
+      let j=i;while(j<s.length&&s[j]!=='_'&&s[j]!=='^')j++;
+      out+=`<tspan>${esc(s.slice(i,j))}</tspan>`;i=j;
+    }
+  }
+  return out;
+}
+function fmt(v){
+  const a=Math.abs(v);
+  let s=a<.995?a.toFixed(2).slice(1):(a<9.95?a.toFixed(1):a.toFixed(0));
+  if(s==='.00')return '0';
+  return (v<0?'−':'')+s;
+}
+const f2=v=>(Math.abs(v)<.005?0:v).toFixed(2).replace('-','−');
+const f3=v=>(Math.abs(v)<.0005?0:v).toFixed(3).replace('-','−');
+const isDark=()=>{const t=document.documentElement.dataset.theme;return t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches;};
+const MATS={};
+const uniq=a=>[...new Set(a)];
+function grid(id,M,x,y,o){
+  const n=M.length,m=M[0].length;
+  const mx=o.max||Math.max(1e-9,...M.flat().map(Math.abs));
+  MATS[id]={M,label:o.label,desc:o.desc,x,y,n,m};
+  let s='';
+  for(let i=0;i<n;i++)for(let j=0;j<m;j++){
+    const v=M[i][j],a=Math.min(1,Math.abs(v)/mx);
+    const fill=v<0?'var(--neg)':o.hue;
+    const op=isDark()?.14+.84*a:.07+.83*a;
+    const tc=op>.52?'#fff':'var(--ink)';
+    const X0=x+j*C,Y0=y+i*C;
+    const h=o.h?o.h(i,j):[];
+    s+=`<rect class="c" x="${X0}" y="${Y0}" width="${C}" height="${C}" style="fill:${fill};fill-opacity:${op.toFixed(3)}" data-m="${id}" data-i="${i}" data-j="${j}" data-h="${h.join(' ')}" data-t="${uniq(h).join(' ')}"/>`;
+    s+=`<text class="cv" x="${X0+C/2}" y="${Y0+C/2+.5}" style="fill:${tc};font-size:${(C*.34).toFixed(1)}px">${o.int?String(v):fmt(v)}</text>`;
+  }
+  s+=`<rect class="frame" x="${x}" y="${y}" width="${m*C}" height="${n*C}"/>`;
+  if(o.colHead)o.colHead.forEach((t,j)=>{s+=`<text class="lbl" x="${x+j*C+C/2}" y="${y-6}" style="font-size:12px;fill:var(--ink)">${esc(t)}</text>`;});
+  return s;
+}
+const g=(key,inner)=>`<g data-k="${key}">${inner}</g>`;
+const mname=(x,y,name)=>`<text class="mname" x="${x}" y="${y}">${nm(name)}</text>`;
+const shape=(x,y,t)=>`<text class="shape" x="${x}" y="${y}">${t}</text>`;
+function mat(key,id,M,x,yc,o){
+  const n=M.length,m=M[0].length,y=yc-n*C/2;
+  return g(key,(o.name?mname(x+m*C/2,y-(o.colHead?24:10),o.name):'')+(o.noShape?'':shape(x+m*C/2,y+n*C+14,o.shape||`${n} × ${m}`))+grid(id,M,x,y,o));
+}
+const op=(x,y,t,st)=>`<text class="op" x="${x}" y="${y}"${st?` style="${st}"`:''}>${t}</text>`;
+const MK={red:'ar-red',green:'ar-green',yellow:'ar-yellow',blue:'ar-blue'};
+const mkFor=col=>{for(const k in MK)if(col.includes(k))return MK[k];return 'ar-gray';};
+function arrow(x1,y,x2,label,col,below){
+  col=col||'var(--muted)';
+  return `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" class="conn" style="stroke:${col}" marker-end="url(#${mkFor(col)})"/>`+
+    (label?`<text class="opl" x="${(x1+x2)/2}" y="${below?y+22:y-10}" style="fill:${col}">${label}</text>`:'');
+}
+const path=(d,col,cls)=>`<path d="${d}" class="conn ${cls||''}" style="stroke:${col}" marker-end="url(#${mkFor(col)})"/>`;
+
+/* ---------- layout ---------- */
+const LAY=(()=>{let x=60;const o={};
+  const put=(k,w,gap)=>{o[k]={x,w,c:x+w/2,r:x+w};x+=w+gap;};
+  put('ch',40,30); put('x',88,40); put('wxh',132,40); put('hp',132,40); put('whh',132,40); put('bh',132,90);
+  put('a',132,232); put('h',132,40); put('why',88,40); put('by',88,90); put('z',88,130); put('p',88,40); put('y',88,110);
+  put('l',22,100); put('L',22,0);
+  o.end=x;return o;})();
+const mid=(a,b)=>(LAY[a].r+LAY[b].x)/2;
+const YF=820,YB=1220,YU=1620;
+const half=n=>n*C/2;
+const GX=t=>600+t*250, GY={p:196,h:330,x:452};
+
+function build(){
+  for(const k in MATS)delete MATS[k];
+  const d=compute();state.d=d;const P=d.P;
+  const BL='var(--blue)',YE='var(--yellow)',RE='var(--red)',GR='var(--green)',VI='var(--violet)';
+  let s=`<defs>
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.3" style="fill:var(--dot)"/></pattern>
+    ${['gray:muted','red:red','green:green','yellow:yellow','blue:blue'].map(p=>{const [n,c]=p.split(':');return `<marker id="ar-${n}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" style="fill:var(--${c})"/></marker>`;}).join('')}
+  </defs>
+  <rect x="-3000" y="-3000" width="9000" height="8000" fill="url(#dots)"/>`;
+  const dT=t=>`шаг ${t+1}: «${IN[t]}» → «${OUT[t]}»`;
+  const dN=j=>`нейрон ${j+1}`, dV=c=>`буква «${V[c]}»`;
+
+  /* ===== G. Развёрнутая во времени сеть ===== */
+  s+=g('titleG',`<text class="rtitle" x="60" y="80">Рекуррентная сеть</text><text class="sent" x="60" y="118">читает «молок» по букве и на каждом шаге угадывает следующую: «олоко»</text>`);
+  // свёрнутый вид
+  let t=`<rect x="75" y="${GY.h-4}" width="90" height="38" rx="8" style="fill:var(--blue);fill-opacity:.15;stroke:var(--ink);stroke-width:1.2"/>
+    <text class="mname" x="120" y="${GY.h+21}">h</text>
+    <path d="M165,${GY.h+8} C215,${GY.h+8} 215,${GY.h-50} 120,${GY.h-50} C40,${GY.h-50} 30,${GY.h+8} 70,${GY.h+8}" class="conn" style="stroke:var(--yellow)" marker-end="url(#ar-yellow)"/>
+    <text class="opl" x="120" y="${GY.h-58}" style="fill:var(--yellow)">W_hh</text>
+    <line x1="120" y1="${GY.x}" x2="120" y2="${GY.h+42}" class="conn" style="stroke:var(--yellow)" marker-end="url(#ar-yellow)"/>
+    <text class="mname" x="120" y="${GY.x+22}">x_t</text>
+    <line x1="120" y1="${GY.h-8}" x2="120" y2="${GY.p+30}" class="conn" style="stroke:var(--yellow)" marker-end="url(#ar-yellow)"/>
+    <text class="mname" x="120" y="${GY.p+16}">p_t</text>
+    <text class="op" x="235" y="${GY.h+15}">=</text>`;
+  s+=g('gF',t);
+  t='';
+  const h0=Array(HN).fill(0);
+  t+=mname(GX(-1),GY.h-10,'h_0')+grid('G_h0',[h0],GX(-1)-66,GY.h,{hue:BL,max:1,label:'h₀',desc:()=>'начальное состояние — нули',h:()=>[kst(0)]});
+  for(let k=0;k<T;k++){
+    const cx=GX(k);
+    t+=`<text class="lbl" x="${cx}" y="${GY.p-30}" style="fill:var(--ink);font-size:14px">цель «${OUT[k]}»</text>`;
+    t+=grid(`G_p${k}`,[d.Pr[k]],cx-44,GY.p,{hue:GR,max:1,colHead:V,label:`p${'₁₂₃₄₅'[k]}`,desc:(i,c)=>`${dT(k)}, ${dV(c)}`,h:(i,c)=>[kt(k),kv(c)]});
+    t+=`<line x1="${cx}" y1="${GY.h-4}" x2="${cx}" y2="${GY.p+C+6}" class="conn" style="stroke:var(--yellow)" marker-end="url(#ar-yellow)"/>`;
+    t+=mname(cx-44,GY.h-10,'h_'+(k+1));
+    t+=grid(`G_h${k}`,[d.H[k]],cx-66,GY.h,{hue:BL,max:1,label:`h${'₁₂₃₄₅'[k]}`,desc:(i,j)=>`${dT(k)}, ${dN(j)}`,h:(i,j)=>[kt(k),kst(k+1),kh(j)]});
+    t+=`<line x1="${cx}" y1="${GY.x-4}" x2="${cx}" y2="${GY.h+C+6}" class="conn" style="stroke:var(--yellow)" marker-end="url(#ar-yellow)"/>`;
+    t+=grid(`G_x${k}`,[X[k]],cx-44,GY.x,{hue:BL,max:1,int:1,label:`x${'₁₂₃₄₅'[k]}`,desc:(i,c)=>`${dT(k)}, ${dV(c)}`,h:(i,c)=>[kt(k),kv(c)]});
+    t+=`<text class="lbl" x="${cx}" y="${GY.x+46}" style="fill:var(--ink);font-size:14px">вход «${IN[k]}»</text><text class="lbl" x="${cx}" y="${GY.x+66}">t = ${k+1}</text>`;
+    t+=`<line x1="${GX(k-1)+70}" y1="${GY.h+11}" x2="${cx-72}" y2="${GY.h+11}" class="conn" style="stroke:var(--yellow)" marker-end="url(#ar-yellow)"/>`;
+    t+=`<text class="opl" x="${(GX(k-1)+cx)/2}" y="${GY.h}" style="fill:var(--yellow)">W_hh</text>`;
+  }
+  t+=`<text class="lbl-l" x="${GX(0)-66}" y="${GY.x+96}">W_xh ↑, W_hh →, W_hy ↑ — одни и те же матрицы на всех пяти шагах</text>`;
+  s+=g('gU',t);
+
+  /* ===== F. Прямой проход ===== */
+  s+=g('titleF',`<text class="rtitle" x="60" y="${YF-220}">Прямой проход</text><text class="sent" x="60" y="${YF-186}">все шаги времени — строки матриц</text>`);
+  let ch='';IN.forEach((c,k)=>{ch+=`<rect class="chip" x="${LAY.ch.x}" y="${YF-half(T)+k*C+2}" width="40" height="18" rx="5" style="fill:var(--bg);stroke:var(--grid)" data-h="${kt(k)}" data-t="${kt(k)}"/><text class="chipt" x="${LAY.ch.c}" y="${YF-half(T)+k*C+11.5}">${c}</text>`;});
+  s+=g('ch',`<text class="lbl" x="${LAY.ch.c}" y="${YF-half(T)-10}">t</text>`+ch);
+  const rowT=(i,j)=>[kt(i)];
+  s+=mat('x','X',X,LAY.x.x,YF,{name:'X',int:1,max:1,colHead:V,hue:BL,label:'X (one-hot)',desc:(k,c)=>`${dT(k)}, ${dV(c)}`,h:(k,c)=>[kt(k),kv(c)]});
+  s+=g('wxh',op(mid('x','wxh'),YF,'·'));
+  s+=mat('wxh','Wxh',P.Wxh,LAY.wxh.x,YF,{name:'W_{xh}',hue:YE,label:'W_xh',desc:(c,j)=>`${dV(c)} → ${dN(j)}`,h:(c,j)=>[kv(c),kh(j)]});
+  s+=g('hp',op(mid('wxh','hp'),YF,'+'));
+  s+=mat('hp','Hp',d.Hp,LAY.hp.x,YF,{name:'H_{prev}',hue:BL,max:1,label:'H_prev (h₀…h₄)',desc:(k,j)=>`h${'₀₁₂₃₄'[k]} — вход шага ${k+1}, ${dN(j)}`,h:(k,j)=>[kt(k),kst(k),kh(j)]});
+  s+=g('whh',op(mid('hp','whh'),YF,'·'));
+  s+=mat('whh','Whh',P.Whh,LAY.whh.x,YF,{name:'W_{hh}',hue:YE,label:'W_hh',desc:(i,j)=>`${dN(i)} в момент t−1 → ${dN(j)} в момент t`,h:(i,j)=>[kh(i),kh(j)]});
+  s+=g('bh',op(mid('whh','bh'),YF,'+'));
+  s+=mat('bh','bh',P.bh,LAY.bh.x,YF,{name:'b_h',hue:YE,label:'b_h',desc:(i,j)=>dN(j),h:(i,j)=>[kh(j)]});
+  s+=g('a',op(mid('bh','a'),YF,'='));
+  const hTJ=(k,j)=>[kt(k),kh(j)];
+  s+=mat('a','A',d.A,LAY.a.x,YF,{name:'A',hue:BL,label:'A (до tanh)',desc:(k,j)=>`${dT(k)}, ${dN(j)}`,h:hTJ});
+  s+=g('th',arrow(LAY.a.r+6,YF,LAY.h.x-8,'tanh',YE)+`<text class="lbl" x="${mid('a','h')}" y="${YF+22}">поэлементно</text>`);
+  s+=mat('h','H',d.H,LAY.h.x,YF,{name:'H',hue:BL,max:1,label:'H (h₁…h₅)',desc:(k,j)=>`h${'₁₂₃₄₅'[k]}, ${dN(j)}`,h:(k,j)=>[kt(k),kst(k+1),kh(j)]});
+  // петля: h_t становится h_{t-1} следующего шага
+  s+=g('loopF',path(`M${LAY.h.c},${YF-half(T)-26} V${YF-130} H${LAY.hp.c} V${YF-half(T)-30}`,BL)+
+    `<text class="opl" x="${(LAY.hp.c+LAY.h.c)/2}" y="${YF-140}" style="fill:var(--blue)">сдвиг на шаг: строка t из H становится строкой t+1 в H_prev</text>`);
+  s+=g('why',op(mid('h','why'),YF,'·'));
+  s+=mat('why','Why',P.Why,LAY.why.x,YF,{name:'W_{hy}',hue:YE,colHead:V,label:'W_hy',desc:(j,c)=>`${dN(j)} → ${dV(c)}`,h:(j,c)=>[kh(j),kv(c)]});
+  s+=g('by',op(mid('why','by'),YF,'+'));
+  s+=mat('by','by',P.by,LAY.by.x,YF,{name:'b_y',hue:YE,colHead:V,label:'b_y',desc:(i,c)=>dV(c),h:(i,c)=>[kv(c)]});
+  s+=g('z',op(mid('by','z'),YF,'='));
+  const hTC=(k,c)=>[kt(k),kv(c)],dTC=(k,c)=>`${dT(k)}, ${dV(c)}`;
+  s+=mat('z','Z',d.Z,LAY.z.x,YF,{name:'Z',hue:BL,colHead:V,label:'логиты Z',desc:dTC,h:hTC});
+  s+=g('sm',arrow(LAY.z.r+6,YF,LAY.p.x-8,'softmax',YE)+`<text class="lbl" x="${mid('z','p')}" y="${YF+22}">по строкам</text>`);
+  s+=mat('p','Pr',d.Pr,LAY.p.x,YF,{name:'P',hue:GR,max:1,colHead:V,label:'вероятности P',desc:dTC,h:hTC});
+  s+=mat('y','Y',Y,LAY.y.x,YF,{name:'Y',hue:VI,int:1,max:1,colHead:V,label:'цель Y',desc:dTC,h:hTC});
+  s+=g('ce',arrow(LAY.y.r+6,YF,LAY.l.x-8,'−log P[y]',RE));
+  s+=mat('l','l',d.l,LAY.l.x,YF,{name:'ℓ',hue:RE,label:'потеря на шаге ℓ',desc:k=>dT(k),h:k=>[kt(k)]});
+  s+=g('mean',arrow(LAY.l.r+6,YF,LAY.L.x-8,'среднее',RE));
+  s+=mat('L','L',[[d.L]],LAY.L.x,YF,{name:'L',hue:RE,label:'потеря L',desc:()=>'среднее по 5 шагам'});
+
+  /* ===== B. Обратный проход во времени ===== */
+  s+=g('titleB',`<text class="rtitle" x="60" y="${YB-230}" style="fill:var(--red)">Обратный проход во времени</text><text class="sent" x="60" y="${YB-196}">BPTT: от последнего шага к первому</text>`);
+  s+=g('nodx',`<text class="lbl" x="${LAY.x.c}" y="${YB-10}">dX не нужен:</text><text class="lbl" x="${LAY.x.c}" y="${YB+8}">буквы — данные</text>`);
+  s+=mat('start','ONE',[[1]],LAY.L.x,YB,{name:'∂L/∂L',int:1,noShape:1,hue:RE,label:'∂L/∂L',desc:()=>'старт обратного прохода'});
+  s+=g('pmy',path(`M${LAY.L.x-6},${YB} H${LAY.p.r+8}`,RE)+`<text class="opl" x="${(LAY.L.x+LAY.p.r)/2}" y="${YB-10}" style="fill:var(--red)">softmax + CE</text>`);
+  s+=mat('pmy','PmY',d.PmY,LAY.p.x,YB,{name:'P − Y',hue:RE,colHead:V,label:'P − Y',desc:dTC,h:hTC});
+  s+=g('dz',op(mid('z','p'),YB,'= ⅕ ·','font-size:22px'));
+  s+=mat('dz','dZ',d.dZ,LAY.z.x,YB,{name:'dZ',hue:RE,colHead:V,label:'dZ',desc:dTC,h:hTC});
+  s+=g('dby',arrow(LAY.z.x-6,YB,LAY.by.r+8,'Σ',RE));
+  s+=mat('dby','dby',d.G.by,LAY.by.x,YB,{name:'db_y',hue:RE,label:'db_y',desc:(i,c)=>dV(c)+' · сумма по 5 шагам',h:(i,c)=>[kv(c)]});
+  s+=g('r-dwhy',path(`M${LAY.z.x},${YB+40} H${LAY.why.r+8}`,RE)+`<text class="opl" x="${LAY.by.c}" y="${YB+60}" style="fill:var(--red)">Hᵀ · dZ</text>`);
+  s+=mat('dwhy','dWhy',d.G.Why,LAY.why.x,YB,{name:'dW_{hy}',hue:RE,label:'dW_hy',desc:(j,c)=>`${dN(j)} → ${dV(c)} · сумма по 5 шагам`,h:(j,c)=>[kh(j),kv(c)]});
+  s+=g('r-dh',path(`M${LAY.z.x+12},${YB+half(T)} V${YB+140} H${LAY.h.c} V${YB+half(T)+22}`,RE)+`<text class="opl" x="${(LAY.z.x+LAY.h.c)/2}" y="${YB+158}" style="fill:var(--red)">dZ · W_hyᵀ — из выхода</text>`);
+  s+=mat('dh','dH',d.dH,LAY.h.x,YB,{name:'dH',hue:RE,label:'dH',desc:(k,j)=>`h${'₁₂₃₄₅'[k]}, ${dN(j)}: из выхода ${f3(d.dHo[k][j])} + из будущего ${f3(d.dHf[k][j])}`,h:(k,j)=>[kt(k),kst(k+1),kh(j)]});
+  {const tx=LAY.a.r+50;
+   s+=g('tp',op((LAY.a.r+tx)/2,YB,'=')+op((tx+132+LAY.h.x)/2,YB,'⊙'));
+   s+=mat('tp','Tp',d.Tp,tx,YB,{name:'1 − H^2',hue:YE,max:1,label:'tanh′(A) = 1 − H²',desc:(k,j)=>`${dT(k)}, ${dN(j)}`,h:hTJ});}
+  s+=mat('da','dA',d.dA,LAY.a.x,YB,{name:'dA',hue:RE,label:'dA',desc:(k,j)=>`${dT(k)}, ${dN(j)}`,h:hTJ});
+  s+=g('dbh',arrow(LAY.a.x-6,YB,LAY.bh.r+8,'Σ',RE));
+  s+=mat('dbh','dbh',d.G.bh,LAY.bh.x,YB,{name:'db_h',hue:RE,label:'db_h',desc:(i,j)=>dN(j)+' · сумма по 5 шагам',h:(i,j)=>[kh(j)]});
+  s+=g('r-dwhh',path(`M${LAY.a.x},${YB+40} H${LAY.whh.r+8}`,RE)+`<text class="opl" x="${LAY.bh.c}" y="${YB+60}" style="fill:var(--red)">H_prevᵀ · dA</text>`);
+  s+=mat('dwhh','dWhh',d.G.Whh,LAY.whh.x,YB,{name:'dW_{hh}',hue:RE,label:'dW_hh',desc:(i,j)=>`${dN(i)} (t−1) → ${dN(j)} (t) · сумма по 5 шагам`,h:(i,j)=>[kh(i),kh(j)]});
+  s+=g('r-dhp',path(`M${LAY.a.x+12},${YB+half(T)} V${YB+140} H${LAY.hp.c} V${YB+half(T)+22}`,RE)+`<text class="opl" x="${(LAY.a.x+LAY.hp.c)/2}" y="${YB+158}" style="fill:var(--red)">dA · W_hhᵀ</text>`);
+  s+=mat('dhp','dHp',d.dHp,LAY.hp.x,YB,{name:'dH_{prev}',hue:RE,label:'dH_prev',desc:(k,j)=>`градиент по h${'₀₁₂₃₄'[k]} от шага ${k+1}, ${dN(j)}`,h:(k,j)=>[kt(k),kst(k),kh(j)]});
+  s+=g('loopB',path(`M${LAY.hp.c},${YB-half(T)-30} V${YB-130} H${LAY.h.c} V${YB-half(T)-26}`,RE)+
+    `<text class="opl" x="${(LAY.hp.c+LAY.h.c)/2}" y="${YB-140}" style="fill:var(--red)">сдвиг обратно: строка t из dH_prev добавляется в строку t−1 из dH — «из будущего»</text>`);
+  s+=g('r-dwxh',path(`M${LAY.a.x+34},${YB+half(T)} V${YB+190} H${LAY.wxh.c} V${YB+half(NV)+22}`,RE)+`<text class="opl" x="${(LAY.a.x+LAY.wxh.c)/2}" y="${YB+208}" style="fill:var(--red)">Xᵀ · dA</text>`);
+  s+=mat('dwxh','dWxh',d.G.Wxh,LAY.wxh.x,YB,{name:'dW_{xh}',hue:RE,label:'dW_xh',desc:(c,j)=>`${dV(c)} → ${dN(j)} · сумма по шагам с этой буквой`,h:(c,j)=>[kv(c),kh(j)]});
+
+  /* ===== U. Шаг градиентного спуска ===== */
+  s+=g('titleU',`<text class="rtitle" x="60" y="${YU-150}" style="fill:var(--green)">Шаг градиентного спуска</text><text class="sent" x="60" y="${YU-116}">η = ${state.eta.toFixed(2)}</text>`);
+  const U=d.U;
+  const down=(x,y1,y2)=>path(`M${x},${y1} V${y2}`,GR,'dash');
+  const ups=[['wxh','Wxh',NV],['whh','Whh',HN],['bh','bh',1],['why','Why',HN],['by','by',1]];
+  ups.forEach(([k,id,n])=>{s+=g('ua-'+k,down(LAY[k].c+(n>1?20:0),YB+half(n)+22,YU-half(n)-30));});
+  s+=mat('u-wxh','uWxh',U.Wxh,LAY.wxh.x,YU,{name:'W′_{xh}',hue:GR,label:'W_xh − η·dW_xh',desc:(c,j)=>`${dV(c)} → ${dN(j)}`,h:(c,j)=>[kv(c),kh(j)]});
+  s+=mat('u-whh','uWhh',U.Whh,LAY.whh.x,YU,{name:'W′_{hh}',hue:GR,label:'W_hh − η·dW_hh',desc:(i,j)=>`${dN(i)} (t−1) → ${dN(j)} (t)`,h:(i,j)=>[kh(i),kh(j)]});
+  s+=mat('u-bh','ubh',U.bh,LAY.bh.x,YU,{name:'b′_h',hue:GR,label:'b_h − η·db_h',desc:(i,j)=>dN(j),h:(i,j)=>[kh(j)]});
+  s+=mat('u-why','uWhy',U.Why,LAY.why.x,YU,{name:'W′_{hy}',hue:GR,label:'W_hy − η·dW_hy',desc:(j,c)=>`${dN(j)} → ${dV(c)}`,h:(j,c)=>[kh(j),kv(c)]});
+  s+=mat('u-by','uby',U.by,LAY.by.x,YU,{name:'b′_y',hue:GR,label:'b_y − η·db_y',desc:(i,c)=>dV(c),h:(i,c)=>[kv(c)]});
+  // график потерь
+  const cx0=LAY.z.x,cx1=LAY.end-10,cy0=YU-90,cy1=YU+80;
+  const H=state.hist,ymax=Math.max(Math.log(4),...H)*1.08;
+  const px=i=>cx0+(H.length<2?0:i/(H.length-1))*(cx1-cx0),py=v=>cy1-v/ymax*(cy1-cy0);
+  let chs=`<text class="mname" x="${cx0}" y="${cy0-24}" style="text-anchor:start">L по итерациям</text>`;
+  chs+=`<line class="axis" x1="${cx0}" y1="${cy1}" x2="${cx1}" y2="${cy1}"/><line class="axis" x1="${cx0}" y1="${cy0}" x2="${cx0}" y2="${cy1}"/>`;
+  chs+=`<line x1="${cx0}" y1="${py(Math.log(4))}" x2="${cx1}" y2="${py(Math.log(4))}" style="stroke:var(--muted);stroke-dasharray:4 4"/><text class="lbl-l" x="${cx1}" y="${py(Math.log(4))-6}" text-anchor="end">ln 4 — угадывание наугад</text>`;
+  chs+=`<text class="lbl-l" x="${cx0-6}" y="${cy1}" text-anchor="end">0</text><text class="lbl-l" x="${cx0-6}" y="${cy0+10}" text-anchor="end">${ymax.toFixed(1)}</text>`;
+  chs+=`<text class="lbl-l" x="${cx1}" y="${cy1+18}" text-anchor="end">итерация ${state.iter}</text>`;
+  chs+=`<polyline points="${H.map((v,i)=>px(i).toFixed(1)+','+py(v).toFixed(1)).join(' ')}" style="fill:none;stroke:var(--red);stroke-width:2.2"/>`;
+  chs+=`<circle cx="${px(H.length-1)}" cy="${py(H[H.length-1])}" r="4.5" style="fill:var(--red)"/><text class="lbl-l" x="${px(H.length-1)-8}" y="${py(H[H.length-1])-10}" text-anchor="${H.length<2?'start':'end'}" style="fill:var(--red);font-weight:700">${f3(H[H.length-1])}</text>`;
+  s+=g('chart',chs);
+
+  svg.innerHTML=s;
+  indexHover();
+  drawCursor();
+}
+
+/* ---------- курсор времени ---------- */
+function curT(){const st=STEPS[state.step];if(!st.time)return null;const p=state.win%T;return st.time==='b'?T-1-p:p;}
+function drawCursor(){
+  const old=svg.querySelector('#curov');if(old)old.remove();
+  const t=curT();if(t===null)return;
+  const st=STEPS[state.step];
+  const box=(id,r,dash)=>{const m=MATS[id];if(!m)return '';return `<rect x="${m.x-2}" y="${m.y+r*C-2}" width="${m.m*C+4}" height="${C+4}" rx="3" style="fill:none;stroke:var(--ink);stroke-width:3${dash?';stroke-dasharray:5 4':''}"/>`;};
+  let r='';
+  if(st.time==='f'){['X','Hp','A','H','Z','Pr'].forEach(id=>r+=box(id,t));if(t>0)r+=box('H',t-1,1);
+    r+=`<rect x="${GX(t)-80}" y="${GY.p-48}" width="160" height="${GY.x+80-GY.p}" rx="10" style="fill:none;stroke:var(--ink);stroke-width:2.5"/>`;}
+  else{['dZ','PmY','dH','Tp','dA','dHp'].forEach(id=>r+=box(id,t));if(t>0)r+=box('dH',t-1,1);}
+  svg.insertAdjacentHTML('beforeend',`<g id="curov" style="pointer-events:none">${r}</g>`);
+}
+function timeLive(){
+  const t=curT(),d=state.d,st=STEPS[state.step];
+  if(st.time==='f'){
+    const j=0,xw=d.P.Wxh[XIN[t]][j],hw=d.Hp[t].reduce((s,v,i)=>s+v*d.P.Whh[i][j],0);
+    return `Шаг ${t+1}: читаем «${IN[t]}». Нейрон 1: x·W_xh = ${f2(xw)} (строка «${IN[t]}» из W_xh) + h${'₀₁₂₃₄'[t]}·W_hh = ${f2(hw)}${t===0?' (h₀ = 0)':''} + b = ${f2(d.P.bh[0][j])} → a = ${f2(d.A[t][j])} → h = tanh(a) = <b>${f2(d.H[t][j])}</b>. Сеть ставит на «${OUT[t]}» ${(d.Pr[t][TGT[t]]*100).toFixed(0)}%.`;
+  }
+  const j=0;
+  return `Шаг ${t+1} (идём назад): dh${'₁₂₃₄₅'[t]} нейрона 1 = из выхода ${f3(d.dHo[t][j])} + из будущего ${f3(d.dHf[t][j])}${t===T-1?' (будущего нет)':''} = <b>${f3(d.dH[t][j])}</b>; после tanh′ это ${f3(d.dA[t][j])}, и через W_hhᵀ градиент уходит в h${'₀₁₂₃₄'[t]}${t===0?' — это h₀, дальше некуда':''}.`;
+}
+
+/* ---------- steps ---------- */
+const argmax=r=>r.indexOf(Math.max(...r));
+const predStr=()=>state.d.Pr.map(r=>V[argmax(r)]).join('');
+const BWD=['start','pmy','dz','dby','r-dwhy','dwhy','r-dh','dh','tp','da','dbh','r-dwhh','dwhh','r-dhp','dhp','loopB','r-dwxh','dwxh','nodx'];
+const UPD=['ua-wxh','ua-whh','ua-bh','ua-why','ua-by','u-wxh','u-whh','u-bh','u-why','u-by'];
+const FWDR=['ch','x','wxh','hp','whh','bh','a','th','h','loopF'];
+const STEPS=[
+ {t:'Рекуррентная сеть целиком',cam:null,focus:[],
+  text:()=>`Карта показывает один шаг обучения простой рекуррентной сети (RNN Элмана). Сеть читает слово «молоко» по одной букве и на каждом шаге угадывает следующую. Сверху — та же сеть, развёрнутая во времени. Ниже три ряда: прямой проход, обратный проход во времени (BPTT) и обновление весов. <b>Строка любой матрицы — один шаг времени</b>, каждый градиент стоит под своей переменной.
+  <div class="legend">
+   <span class="sw ramp"></span><span>насыщенность цвета — модуль значения</span>
+   <span class="sw" style="background:var(--blue)"></span><span>синий — входы и скрытые состояния</span>
+   <span class="sw" style="background:var(--yellow)"></span><span>жёлтый — веса, смещения и операции</span>
+   <span class="sw" style="background:var(--green)"></span><span>зелёный — вероятности и обновлённые веса</span>
+   <span class="sw" style="background:var(--red)"></span><span>красный — потеря и градиенты</span>
+   <span class="sw" style="background:var(--violet)"></span><span>фиолетовый — правильные ответы</span>
+   <span class="sw" style="background:var(--neg)"></span><span>серый — отрицательные значения</span>
+  </div>
+  Наведи на клетку — подсветятся её шаг времени (строка) и её нейрон или буква (столбец).`,
+  formula:()=>'',live:()=>`Веса случайные (seed ${state.seed}). Сейчас сеть предсказывает «${predStr()}» вместо «олоко».`},
+ {t:'Задача: следующая буква',cam:['gU','ch','x','p','y'],focus:['gU','ch','x','y'],
+  text:()=>`Вход — «молок», цель — то же слово со сдвигом на букву: «олоко». Букв всего 4, каждая кодируется one-hot: вектор из нулей с единицей на месте буквы. Главная трудность в двух «о»: после первой идёт «л», после второй — «к». По одной текущей букве их не различить. Сеть должна <b>помнить</b>, что было раньше.`,
+  formula:()=>`x<sub>t</sub> ∈ {0, 1}<sup>4</sup>, &nbsp; словарь: м, о, л, к<span class="note">X — 5 шагов × 4 буквы, Y — то же для целей</span>`,
+  live:()=>`Шаг 2: «о» → «л». Шаг 4: «о» → «к». Одинаковый вход, разные ответы.`},
+ {t:'Одна ячейка, развёрнутая во времени',cam:['gF','gU'],focus:['gF','gU'],
+  text:()=>`Слева — свёрнутый вид: одна ячейка с петлёй. Справа — та же ячейка, развёрнутая на 5 шагов. На каждом шаге она получает новую букву и своё же предыдущее состояние h<sub>t−1</sub>. <b>Веса на всех шагах одни и те же</b>: это одна сеть, применённая 5 раз, а не 5 разных слоёв. Вектор h — это память: всё, что сеть успела понять о прочитанном.`,
+  formula:()=>`h<sub>t</sub> = tanh(x<sub>t</sub>W<sub>xh</sub> + h<sub>t−1</sub>W<sub>hh</sub> + b<sub>h</sub>), &nbsp; h<sub>0</sub> = 0<br>p<sub>t</sub> = softmax(h<sub>t</sub>W<sub>hy</sub> + b<sub>y</sub>)`,
+  live:()=>`Параметров: W_xh 4·6 + W_hh 6·6 + b_h 6 + W_hy 6·4 + b_y 4 = 94 — и столько же на любую длину слова.`},
+ {t:'Вход: one-hot выбирает строку',cam:['ch','x','wxh'],focus:['ch','x','wxh'],
+  text:()=>`Умножение one-hot вектора на W<sub>xh</sub> просто достаёт строку этой буквы. Каждая буква получает свой вектор из 6 чисел — по сути, эмбеддинг. Эту часть можно посчитать для всех шагов сразу, одним умножением.`,
+  formula:()=>`XW<sub>xh</sub>: &nbsp;(5 × 4) · (4 × 6) = 5 × 6`,
+  live:()=>`Строки 2 и 4 у XW_xh одинаковые: обе — «о». Различить их сможет только вторая часть формулы.`},
+ {t:'Память: предыдущее состояние',cam:['hp','whh','h','loopF'],focus:['hp','whh','h','loopF'],
+  text:()=>`H<sub>prev</sub> — это H, сдвинутая на строку вниз: на шаге t нужно состояние с шага t−1. Первая строка — h<sub>0</sub> = 0, до начала слова сеть ничего не знает. Синяя петля и есть та самая стрелка из свёрнутой картинки. Умножение на W<sub>hh</sub> решает, что из прошлого передать дальше.`,
+  formula:()=>`H<sub>prev</sub>[t] = H[t − 1], &nbsp; H<sub>prev</sub>[1] = h<sub>0</sub> = 0`,
+  live:()=>`Наведи на клетку H — подсветится та же строка, «переехавшая» в H_prev.`},
+ {t:'Шаг за шагом',time:'f',cam:FWDR,focus:[...FWDR,'z','sm','p'],
+  text:()=>`Вот где RNN отличается от MLP. XW<sub>xh</sub> считается сразу для всех шагов, а строку t матрицы A нельзя посчитать, пока нет строки t−1 матрицы H. Поэтому шаги идут строго по очереди. Рамка показывает текущий шаг, пунктир — состояние, пришедшее из прошлого шага. Управлять временем можно кнопками внизу.`,
+  formula:()=>`a<sub>t</sub> = x<sub>t</sub>W<sub>xh</sub> + h<sub>t−1</sub>W<sub>hh</sub> + b<sub>h</sub>, &nbsp; h<sub>t</sub> = tanh(a<sub>t</sub>)`,
+  live:timeLive},
+ {t:'tanh держит состояние в рамках',cam:['a','th','h'],focus:['a','th','h'],
+  text:()=>`tanh сжимает каждое число в интервал (−1, 1). Состояние проходит через W<sub>hh</sub> снова и снова. Без сжатия оно могло бы расти от шага к шагу до бесконечности.`,
+  formula:()=>`tanh(a) = <span class="frac"><span>e<sup>a</sup> − e<sup>−a</sup></span><span>e<sup>a</sup> + e<sup>−a</sup></span></span> ∈ (−1, 1)`,
+  live:()=>{const A=state.d.A.flat(),H=state.d.H.flat();return `A от ${f2(Math.min(...A))} до ${f2(Math.max(...A))} → H от ${f2(Math.min(...H))} до ${f2(Math.max(...H))}.`;}},
+ {t:'Выход на каждом шаге',cam:['h','why','by','z','sm','p'],focus:['h','why','by','z','sm','p'],
+  text:()=>`Из каждого состояния h<sub>t</sub> обычный полносвязный слой делает 4 логита — по одному на букву. Softmax превращает их в вероятности следующей буквы. Этот слой тоже общий для всех шагов.`,
+  formula:()=>`Z = HW<sub>hy</sub> + b<sub>y</sub>, &nbsp; P = softmax(Z)<span class="note">(5 × 6) · (6 × 4) = 5 × 4</span>`,
+  live:()=>{const P=state.d.Pr;return `После первой «о» сеть ставит на «л» ${(P[1][2]*100).toFixed(0)}%, после второй на «к» — ${(P[3][3]*100).toFixed(0)}%.`;}},
+ {t:'Потеря',cam:['p','y','ce','l','mean','L'],focus:['p','y','ce','l','mean','L'],
+  text:()=>`На каждом шаге — кросс-энтропия с правильной буквой, затем среднее по 5 шагам. Одна потеря L на всё слово: её градиент будет учитывать ошибки всех шагов сразу.`,
+  formula:()=>`ℓ<sub>t</sub> = −log P[t, y<sub>t</sub>], &nbsp; L = <span class="frac"><span>1</span><span>T</span></span> Σ<sub>t</sub> ℓ<sub>t</sub>`,
+  live:()=>`L = <b>${f3(state.d.L)}</b>; наугад было бы ln 4 ≈ 1.386. Сейчас сеть говорит «${predStr()}».`},
+ {t:'Обратный проход во времени',cam:BWD,focus:BWD,
+  text:()=>`BPTT — это обычный обратный проход по развёрнутой сети. Особенность одна: веса общие для всех шагов, а состояние h<sub>t</sub> влияет на потерю двумя путями — через свой выход p<sub>t</sub> и через все следующие шаги. Поэтому градиент идёт от последнего шага к первому, в обратном времени.`,
+  formula:()=>`<span class="frac"><span>∂L</span><span>∂L</span></span> = 1 &nbsp;— старт в правом конце`,live:()=>''},
+ {t:'Выходной слой',cam:['start','pmy','dz','dby','r-dwhy','dwhy'],focus:['start','pmy','dz','dby','r-dwhy','dwhy'],
+  text:()=>`Как в MLP: dZ = (P − Y)/T. Выходной слой применялся на всех 5 шагах, поэтому его градиенты — <b>сумма по шагам</b>: dW<sub>hy</sub> = Hᵀ dZ, db<sub>y</sub> — сумма строк dZ.`,
+  formula:()=>`dZ = <span class="frac"><span>1</span><span>T</span></span>(P − Y), &nbsp; dW<sub>hy</sub> = H<sup>T</sup>dZ, &nbsp; db<sub>y</sub> = Σ<sub>t</sub> dZ[t, :]`,
+  live:()=>`Шаг 4 («о» → «к»): P − Y = [${state.d.PmY[3].map(f2).join(', ')}].`},
+ {t:'Градиент состояния: два источника',time:'b',cam:['r-dh','dh','loopB','dhp','dz'],focus:['r-dh','dh','loopB','dhp','dz'],
+  text:()=>`В h<sub>t</sub> градиент приходит с двух сторон. Первый источник — <b>из выхода</b>: dZ<sub>t</sub>W<sub>hy</sub>ᵀ. Второй — <b>из будущего</b>: состояние h<sub>t</sub> было входом шага t+1, и оттуда вернулась его доля градиента. Поэтому считаем с конца. У шага 5 будущего нет, у шага 4 оно уже посчитано, и так далее. Красная петля — зеркало синей.`,
+  formula:()=>`dh<sub>t</sub> = dz<sub>t</sub>W<sub>hy</sub><sup>T</sup> + da<sub>t+1</sub>W<sub>hh</sub><sup>T</sup>, &nbsp; dh<sub>T</sub> = dz<sub>T</sub>W<sub>hy</sub><sup>T</sup>`,
+  live:timeLive},
+ {t:'Через tanh',cam:['a','h','da','tp','dh'],focus:['da','tp','dh','h'],
+  text:()=>`Производная tanh выражается через его же выход: 1 − h². Где нейрон насыщен (h близко к ±1), множитель почти 0 и градиент почти не проходит.`,
+  formula:()=>`dA = dH ⊙ (1 − H<sup>2</sup>)`,
+  live:()=>{const T_=state.d.Tp.flat();return `Множители 1 − H²: от ${f2(Math.min(...T_))} до ${f2(Math.max(...T_))}.`;}},
+ {t:'В прошлое',time:'b',cam:['dhp','dwhh','r-dhp','da','loopB'],focus:['whh','dhp','r-dhp','da','loopB'],
+  text:()=>`dA · W<sub>hh</sub>ᵀ — градиент по h<sub>t−1</sub>, который получился на шаге t. Строка t матрицы dH<sub>prev</sub> уезжает по красной петле в строку t−1 матрицы dH и там складывается с градиентом из выхода. Первая строка dH<sub>prev</sub> — градиент по h<sub>0</sub>. Он никуда не идёт, потому что h<sub>0</sub> = 0 не обучается.`,
+  formula:()=>`dH<sub>prev</sub> = dA W<sub>hh</sub><sup>T</sup><span class="note">(5 × 6) · (6 × 6) = 5 × 6</span>`,
+  live:timeLive},
+ {t:'Градиенты общих весов — сумма по времени',cam:['x','wxh','hp','whh','bh','dwxh','dwhh','dbh','r-dwhh','r-dwxh','da'],focus:['x','hp','dwxh','dwhh','dbh','r-dwhh','r-dwxh','da'],
+  text:()=>`W<sub>hh</sub> работал на всех 5 шагах, поэтому его градиент — сумма 5 вкладов «h<sub>t−1</sub> × da<sub>t</sub>». Это ровно H<sub>prev</sub>ᵀ dA. С W<sub>xh</sub> то же самое, но one-hot вход делает картину наглядной: строка буквы «о» в dW<sub>xh</sub> собрала вклады шагов 2 и 4, а строки «м», «л» и «к» — по одному шагу. Похоже на CNN, где вес ядра собирал градиенты со всех позиций.`,
+  formula:()=>`dW<sub>hh</sub> = H<sub>prev</sub><sup>T</sup>dA, &nbsp; dW<sub>xh</sub> = X<sup>T</sup>dA, &nbsp; db<sub>h</sub> = Σ<sub>t</sub> dA[t, :]`,
+  live:()=>{const d=state.d;return `Строка «о» в dW_xh = dA шага 2 + dA шага 4: [${d.G.Wxh[1].map(f2).join(', ')}] = [${d.dA[1].map((v,j)=>f2(v+d.dA[3][j])).join(', ')}].`;}},
+ {t:'Почему RNN забывает',cam:['dh','loopB','dhp','whh'],focus:['dh','loopB','dhp','whh'],
+  text:()=>`Возьмём ошибку только последнего шага и проследим, сколько её доходит до ранних состояний. На каждом шаге назад градиент умножается на W<sub>hh</sub>ᵀ и на 1 − h². Если эти множители в среднем меньше 1, градиент <b>затухает</b> экспоненциально — сеть не может выучить далёкие зависимости. Если больше 1 — <b>взрывается</b>, и его обрезают (gradient clipping). Именно это решают LSTM и GRU.`,
+  formula:()=>`<span class="frac"><span>∂ℓ<sub>T</sub></span><span>∂h<sub>t</sub></span></span> = <span class="frac"><span>∂ℓ<sub>T</sub></span><span>∂h<sub>T</sub></span></span> ∏<sub>k=t+1</sub><sup>T</sup> diag(1 − h<sub>k</sub><sup>2</sup>) W<sub>hh</sub><sup>T</sup>`,
+  live:()=>`‖∂ℓ₅/∂h_t‖ для t = 5, 4, 3, 2, 1: `+[...state.d.decay].reverse().map(f3).join(' → ')+'.'},
+ {t:'Шаг градиентного спуска',cam:['whh','dwhh','u-whh','ua-whh','bh','dbh','u-bh'],focus:['whh','bh','dwxh','dwhh','dbh','dwhy','dby',...UPD],
+  text:()=>`Крупно — W<sub>hh</sub>: сверху сами веса, под ними градиент, ниже новые веса, клетка в клетку. Одновременно обновляются все 94 параметра. Поскольку веса общие, одно обновление улучшает сеть сразу на всех шагах времени.`,
+  formula:()=>`W ← W − η·dW`,
+  live:()=>{const d=state.d;return `С η = ${state.eta.toFixed(2)} потеря после шага: ${f3(d.L)} → <b>${f3(d.Lnext)}</b>${d.Lnext>d.L?' — выросла: шаг слишком большой':''}.`;}},
+ {t:'Обучение — это повторение',cam:['z','p','y','chart','gU'],focus:['chart','p','y','gU'],
+  text:()=>`Нажимай «Шаг обучения» или «×10» и смотри на верхнюю картинку. Сначала сеть выучит простое: после «м» и «л» идёт «о». Потом — трудное: две одинаковые «о» должны давать разные ответы. Сделать это можно только через состояние h, в котором сеть помнит, сколько «о» уже было.`,
+  formula:()=>`прямой проход → L → BPTT → W ← W − η·dW<span class="note">и так по кругу, пока L падает</span>`,
+  live:()=>{const P=state.d.Pr;return `Итерация ${state.iter}: L = <b>${f3(state.d.L)}</b>, сеть говорит «${predStr()}» (цель «олоко»). После первой «о»: «л» ${(P[1][2]*100).toFixed(0)}%, после второй: «к» ${(P[3][3]*100).toFixed(0)}%. Нажми ↻, чтобы вернуться к общей карте.`;}}
+];
+const NS=STEPS.length;
+
+/* ---------- camera ---------- */
+let vb={x:0,y:0,w:2600,h:1700};
+function setVB(b){vb=b;svg.setAttribute('viewBox',`${b.x} ${b.y} ${b.w} ${b.h}`);}
+function bboxKeys(keys){
+  let x1=1e9,y1=1e9,x2=-1e9,y2=-1e9;
+  const els=keys?keys.flatMap(k=>[...svg.querySelectorAll(`[data-k="${k}"]`)]):[...svg.querySelectorAll('[data-k]')];
+  els.forEach(el=>{const b=el.getBBox();if(!b.width&&!b.height)return;x1=Math.min(x1,b.x);y1=Math.min(y1,b.y);x2=Math.max(x2,b.x+b.width);y2=Math.max(y2,b.y+b.height);});
+  return {x:x1,y:y1,w:x2-x1,h:y2-y1};
+}
+function fit(b){
+  const r=svg.getBoundingClientRect();const ar=r.width/Math.max(1,r.height);
+  const pad=Math.max(b.w,b.h)*.05+36;
+  let x=b.x-pad,y=b.y-pad,w=b.w+2*pad,h=b.h+2*pad;
+  if(w<600){x-=(600-w)/2;w=600;}
+  if(w/h>ar){const nh=w/ar;y-=(nh-h)/2;h=nh;}else{const nw=h*ar;x-=(nw-w)/2;w=nw;}
+  return {x,y,w,h};
+}
+let anim=null;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function flyTo(t){
+  if(anim)cancelAnimationFrame(anim);
+  if(reduce){setVB(t);return;}
+  const f={...vb},t0=performance.now(),dur=750;
+  const ease=u=>u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;
+  const tick=now=>{const u=Math.min(1,(now-t0)/dur),e=ease(u);
+    setVB({x:f.x+(t.x-f.x)*e,y:f.y+(t.y-f.y)*e,w:f.w+(t.w-f.w)*e,h:f.h+(t.h-f.h)*e});
+    if(u<1)anim=requestAnimationFrame(tick);};
+  anim=requestAnimationFrame(tick);
+}
+const val=v=>typeof v==='function'?v():v;
+function camera(){const st=STEPS[state.step];flyTo(fit(bboxKeys(val(st.cam))));}
+
+
+/* ---------- render ---------- */
+const $=id=>document.getElementById(id);
+function stepKeys(){
+  const t=curT();if(t!==null)return [kt(t),kst(t)];
+  return null;
+}
+function applyFocus(){
+  const F=new Set(val(STEPS[state.step].focus)||[]);
+  svg.querySelectorAll('[data-k]').forEach(el=>{const k=el.dataset.k;el.classList.toggle('dim',F.size>0&&!F.has(k)&&!k.startsWith('title'));});
+  hl(null);
+}
+function panel(){
+  const st=STEPS[state.step];
+  $('count').textContent=`${state.step+1} из ${NS}`;
+  $('title').textContent=st.t;
+  $('text').innerHTML=st.text();
+  $('formula').innerHTML=st.formula();
+  $('live').innerHTML=st.live();
+  $('prev').style.visibility=state.step===0?'hidden':'visible';
+  $('next').textContent=state.step===NS-1?'↻':'Далее';
+  $('next').setAttribute('aria-label',state.step===NS-1?'В начало':'Далее');
+  [...$('progress').children].forEach((b,i)=>{b.className=i===state.step?'cur':(i<state.step?'done':'');});
+  ['wprev','wplay','wnext'].forEach(id=>$(id).disabled=!st.time);
+  $('wplay').textContent=state.playing?'❚❚':'▶';$('wplay').setAttribute('aria-label',state.playing?'Пауза':'Запустить');
+  $('wstat').textContent=st.time?`t = ${curT()+1}${st.time==='b'?' (обратный ход)':''}`:'на шагах с разбором по времени';
+  $('etal').textContent=`η = ${state.eta.toFixed(2)}`;
+  $('stat').textContent=`итерация ${state.iter} · seed ${state.seed}`;
+}
+function go(i){state.step=(i+NS)%NS;state.free=false;state.win=0;$('recenter').style.display='none';panel();applyFocus();drawCursor();camera();}
+function rebuild(){build();applyFocus();panel();}
+
+STEPS.forEach((s,i)=>{const b=document.createElement('button');b.title=`${i+1}. ${s.t}`;b.setAttribute('aria-label',`Шаг ${i+1}: ${s.t}`);b.onclick=()=>go(i);$('progress').appendChild(b);});
+function moveWin(dx){const st=STEPS[state.step];if(!st.time)return;state.win=(state.win+dx+T)%T;if(!hovering)hl(null);drawCursor();$('live').innerHTML=st.live();$('wstat').textContent=`t = ${curT()+1}${st.time==='b'?' (обратный ход)':''}`;}
+$('wprev').onclick=()=>{state.playing=false;moveWin(-1);panel();};
+$('wnext').onclick=()=>{state.playing=false;moveWin(1);panel();};
+$('wplay').onclick=()=>{state.playing=!state.playing;panel();};
+const reduceM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(reduceM)state.playing=false;
+setInterval(()=>{if(state.playing&&!hovering&&STEPS[state.step].time&&!document.hidden)moveWin(1);},1600);
+$('prev').onclick=()=>go(state.step-1);
+$('next').onclick=()=>go(state.step+1);
+$('eta').oninput=e=>{state.eta=+e.target.value;rebuild();};
+$('train1').onclick=()=>{trainSteps(1);rebuild();};
+$('train10').onclick=()=>{trainSteps(10);rebuild();};
+$('reseed').onclick=()=>{state.seed=1+Math.floor(Math.random()*9999);init();rebuild();};
+$('recenter').onclick=()=>go(state.step);
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT')return;
+  if(e.key==='ArrowRight'){go(state.step+1);e.preventDefault();}
+  if(e.key==='ArrowLeft'&&state.step>0){go(state.step-1);e.preventDefault();}
+});
+
+/* ---------- hover ---------- */
+const tip=$('tip'),stage=$('stage');
+let IDX=new Map(),hot=[],hovering=false;
+function indexHover(){
+  IDX=new Map();hot=[];
+  svg.querySelectorAll('[data-h]').forEach(el=>{el.dataset.h.split(' ').forEach(k=>{if(!k)return;if(!IDX.has(k))IDX.set(k,[]);IDX.get(k).push(el);});});
+}
+function hl(keys){
+  hot.forEach(el=>el.classList.remove('hot'));hot=[];
+  if(!keys)keys=stepKeys();
+  if(!keys||!keys.length){delete svg.dataset.hl;return;}
+  svg.dataset.hl='1';
+  keys.forEach(k=>(IDX.get(k)||[]).forEach(el=>{el.classList.add('hot');hot.push(el);}));
+}
+function showTip(e,html){
+  tip.innerHTML=html;
+  const r=stage.getBoundingClientRect();let x=e.clientX-r.left+14,y=e.clientY-r.top+14;
+  tip.style.opacity=1;const tw=tip.offsetWidth;if(x+tw>r.width-8)x=e.clientX-r.left-tw-14;
+  tip.style.left=x+'px';tip.style.top=y+'px';
+}
+svg.addEventListener('pointermove',e=>{
+  if(drag)return;
+  const el=e.target,cls=el.classList;
+  if(cls&&cls.contains('c')){
+    const m=MATS[el.dataset.m],i=+el.dataset.i,j=+el.dataset.j,v=m.M[i][j];
+    const ds=m.desc?m.desc(i,j):'';
+    showTip(e,`${esc(m.label)}${ds?' · '+esc(ds):''} = <b>${f3(v)}</b>`);
+    hovering=true;hl(el.dataset.t.split(' ').filter(Boolean));
+  }else if(cls&&cls.contains('chip')){tip.style.opacity=0;hovering=true;hl([el.dataset.t]);}
+  else{tip.style.opacity=0;if(hovering){hovering=false;hl(null);}}
+});
+svg.addEventListener('pointerleave',()=>{tip.style.opacity=0;hovering=false;hl(null);});
+
+/* ---------- pan / zoom ---------- */
+let drag=null,dragMoved=false;
+function toFree(){if(!state.free){state.free=true;$('recenter').style.display='block';}}
+svg.addEventListener('pointerdown',e=>{if(e.button!==0)return;if(anim)cancelAnimationFrame(anim);dragMoved=false;drag={x:e.clientX,y:e.clientY,vb:{...vb},moved:false,id:e.pointerId};});
+svg.addEventListener('pointermove',e=>{
+  if(!drag)return;const r=svg.getBoundingClientRect();
+  const s=Math.max(drag.vb.w/r.width,drag.vb.h/r.height);
+  const dx=(e.clientX-drag.x)*s,dy=(e.clientY-drag.y)*s;
+  if(!drag.moved&&Math.abs(dx)+Math.abs(dy)>3){drag.moved=true;dragMoved=true;svg.setPointerCapture(drag.id);svg.classList.add('dragging');toFree();tip.style.opacity=0;hovering=false;hl(null);}
+  if(drag.moved)setVB({...drag.vb,x:drag.vb.x-dx,y:drag.vb.y-dy});
+});
+const end=()=>{drag=null;svg.classList.remove('dragging');};
+svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',end);
+/* Встроенная в статью карта не должна перехватывать прокрутку страницы:
+   масштаб там только с Ctrl/⌘ (щипок на тачпаде тоже приходит с ctrlKey). */
+const embedded=window.self!==window.top;
+if(embedded){const h=document.querySelector('.hint');h.textContent=h.textContent.replace('колесо','Ctrl + колесо');}
+svg.addEventListener('wheel',e=>{
+  if(embedded&&!e.ctrlKey&&!e.metaKey)return;
+  e.preventDefault();if(anim)cancelAnimationFrame(anim);
+  const r=svg.getBoundingClientRect();const s=Math.max(vb.w/r.width,vb.h/r.height);
+  const ox=vb.x+(vb.w-r.width*s)/2,oy=vb.y+(vb.h-r.height*s)/2;
+  const px=ox+(e.clientX-r.left)*s,py=oy+(e.clientY-r.top)*s;
+  const k=Math.min(4,Math.max(.25,Math.pow(1.0018,e.deltaY)));
+  const nw=Math.min(8000,Math.max(200,vb.w*k)),kk=nw/vb.w;
+  setVB({x:px-(px-vb.x)*kk,y:py-(py-vb.y)*kk,w:vb.w*kk,h:vb.h*kk});toFree();
+},{passive:false});
+let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{if(!state.free)camera();},120);});
+
+
+/* ---------- theme ----------
+   Сайт хранит выбранную тему в localStorage.theme; iframe того же origin
+   читает её при загрузке и ловит переключение через событие storage.
+   Цвета клеток считаются в build() через isDark(), поэтому нужен rebuild(). */
+function siteTheme(){try{return localStorage.getItem('theme');}catch(e){return null;}}
+function applyTheme(t){if(t==='light'||t==='dark')document.documentElement.dataset.theme=t;else delete document.documentElement.dataset.theme;}
+applyTheme(siteTheme());
+window.addEventListener('storage',e=>{if(e.key==='theme'){applyTheme(e.newValue);rebuild();}});
+
+/* ---------- start ---------- */
+init();build();panel();applyFocus();
+setVB(fit(bboxKeys(null)));
+})();
+</script>
+</body>
+</html>
