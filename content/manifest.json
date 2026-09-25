@@ -280,7 +280,18 @@
       "icon": "sigma",
       "accent": "#DC2626",
       "tint": "#FEE2E2",
-      "order": 1
+      "order": 1,
+      "reading_order": [
+        {
+          "group": "training",
+          "label": {
+            "ru": "Как обучается нейросеть",
+            "en": "How a network learns",
+            "kk": "Нейрожелі қалай үйренеді"
+          },
+          "articles": ["how-network-learns", "gradient-descent", "backprop"]
+        }
+      ]
     },
     {
       "id": "interactive-maps",
