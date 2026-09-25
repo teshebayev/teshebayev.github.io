@@ -142,7 +142,7 @@
       "icon": "chart",
       "accent": "#D97706",
       "tint": "#FEF3C7",
-      "order": 1
+      "order": 5
     },
     {
       "id": "deep-learning",
@@ -176,7 +176,7 @@
       "icon": "chip",
       "accent": "#0EA5E9",
       "tint": "#E0F2FE",
-      "order": 3
+      "order": 6
     },
     {
       "id": "under-the-hood",
@@ -193,7 +193,7 @@
       "icon": "sigma",
       "accent": "#DC2626",
       "tint": "#FEE2E2",
-      "order": 4
+      "order": 1
     },
     {
       "id": "interactive-maps",
@@ -210,7 +210,7 @@
       "icon": "map",
       "accent": "#059669",
       "tint": "#D1FAE5",
-      "order": 5,
+      "order": 3,
       "reading_order": [
         {
           "group": "maps",
@@ -238,7 +238,7 @@
       "icon": "chat",
       "accent": "#9333EA",
       "tint": "#F3E8FF",
-      "order": 6
+      "order": 4
     }
   ],
   "tags": {
