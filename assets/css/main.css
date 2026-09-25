@@ -938,7 +938,8 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
 }
 .article__meta {
   display: flex;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 4px 16px;
   font-size: 13px;
   color: var(--text-faint);
   font-family: var(--font-mono);

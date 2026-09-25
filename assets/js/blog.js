@@ -9,6 +9,7 @@ import {
   currentLang,
   ui,
   t,
+  trackView,
 } from "./shared.js";
 
 initTheme();
@@ -25,6 +26,7 @@ const ICONS = {
 };
 
 loadManifest().then((manifest) => {
+  trackView(manifest, "/blog");
   const lang = currentLang(manifest);
   document.documentElement.setAttribute("lang", lang);
   document.title = `${ui(manifest, "blog_title", lang)} — ${manifest.site.author}`;

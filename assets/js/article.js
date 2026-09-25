@@ -20,6 +20,9 @@ import {
   articleLanguages,
   articleHasLang,
   resolveContent,
+  trackView,
+  fetchViews,
+  pluralizeViews,
 } from "./shared.js";
 
 initTheme();
@@ -46,6 +49,7 @@ if (!slug) window.location.replace("blog.html");
   applyCategoryAccent(document.documentElement, category);
 
   document.title = `${t(article.title, lang)} — ${manifest.site.author}`;
+  trackView(manifest, `/article/${slug}`);
 
   // Resolve content with fallback. If the article has no translation in the
   // current language, we still render it (using whatever language we have)
@@ -229,6 +233,13 @@ function renderArticleHeader(article, category, lang, manifest) {
   ];
   if (article.updated) parts.push(`<span>${ui(manifest, "updated", lang)} ${formatDate(article.updated)}</span>`);
   meta.innerHTML = parts.join("");
+
+  fetchViews(manifest, `/article/${article.slug}`).then((n) => {
+    if (n === null) return;
+    const span = document.createElement("span");
+    span.textContent = `${n.toLocaleString(lang)} ${pluralizeViews(n, lang)}`;
+    meta.appendChild(span);
+  });
 }
 
 function renderFallbackBanner(manifest, requestedLang, actualLang) {

@@ -16,6 +16,7 @@ import {
   ui,
   t,
   tagLabel,
+  trackView,
 } from "./shared.js";
 
 initTheme();
@@ -31,6 +32,7 @@ const state = {
 
 (async () => {
   const manifest = await loadManifest();
+  trackView(manifest, `/category/${id}`);
   const lang = currentLang(manifest);
   document.documentElement.setAttribute("lang", lang);
 

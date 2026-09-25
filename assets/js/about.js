@@ -1,8 +1,9 @@
-import { loadManifest, renderProfileSidebar, initTheme, currentLang, ui, t } from "./shared.js";
+import { loadManifest, renderProfileSidebar, initTheme, currentLang, ui, t, trackView } from "./shared.js";
 
 initTheme();
 
 loadManifest().then((manifest) => {
+  trackView(manifest, "/");
   const lang = currentLang(manifest);
   document.documentElement.setAttribute("lang", lang);
   document.title = `${ui(manifest, "nav_about", lang)} — ${manifest.site.author}`;

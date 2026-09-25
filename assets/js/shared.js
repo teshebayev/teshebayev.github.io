@@ -412,3 +412,49 @@ export function pluralizeArticles(n, lang = "ru") {
   if ([2, 3, 4].includes(mod10) && ![12, 13, 14].includes(mod100)) return "статьи";
   return "статей";
 }
+
+// =========================================================================
+//  View counter (GoatCounter)
+// =========================================================================
+
+/**
+ * Record a pageview under `path`. Paths are normalised by the caller
+ * (e.g. "/article/<slug>") so every language of a page shares one counter.
+ * count.js skips localhost and file:// on its own.
+ */
+export function trackView(manifest, path = window.location.pathname) {
+  const code = manifest?.site?.goatcounter;
+  if (!code) return;
+  window.goatcounter = { no_onload: true };
+  const s = document.createElement("script");
+  s.async = true;
+  s.src = "https://gc.zgo.at/count.js";
+  s.dataset.goatcounter = `https://${code}.goatcounter.com/count`;
+  s.onload = () => window.goatcounter.count({ path });
+  document.head.appendChild(s);
+}
+
+/** Fetch the view count for `path`; resolves to a number, or null if unavailable. */
+export async function fetchViews(manifest, path) {
+  const code = manifest?.site?.goatcounter;
+  if (!code) return null;
+  try {
+    const res = await fetch(`https://${code}.goatcounter.com/counter/${encodeURIComponent(path)}.json`);
+    if (!res.ok) return null;
+    const { count } = await res.json();
+    const n = parseInt(String(count).replace(/\D/g, ""), 10);
+    return Number.isFinite(n) ? n : null;
+  } catch {
+    return null;
+  }
+}
+
+export function pluralizeViews(n, lang = "ru") {
+  if (lang === "en") return n === 1 ? "view" : "views";
+  if (lang === "kk") return "қаралым";
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return "просмотр";
+  if ([2, 3, 4].includes(mod10) && ![12, 13, 14].includes(mod100)) return "просмотра";
+  return "просмотров";
+}
