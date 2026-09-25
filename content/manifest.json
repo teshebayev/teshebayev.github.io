@@ -142,7 +142,36 @@
       "icon": "chart",
       "accent": "#D97706",
       "tint": "#FEF3C7",
-      "order": 5
+      "order": 5,
+      "reading_order": [
+        {
+          "group": "intro",
+          "label": {
+            "ru": "Введение",
+            "en": "Introduction",
+            "kk": "Кіріспе"
+          },
+          "articles": ["ai-ml-intro", "vhod-model-vyhod"]
+        },
+        {
+          "group": "linear",
+          "label": {
+            "ru": "Линейная регрессия",
+            "en": "Linear regression",
+            "kk": "Сызықтық регрессия"
+          },
+          "articles": ["linear-regression-full-cycle", "linear-regression-by-shapes"]
+        },
+        {
+          "group": "logistic",
+          "label": {
+            "ru": "Логистическая регрессия",
+            "en": "Logistic regression",
+            "kk": "Логистикалық регрессия"
+          },
+          "articles": ["logistic-regression-full-cycle", "logistic-regression-by-shapes"]
+        }
+      ]
     },
     {
       "id": "deep-learning",
@@ -159,7 +188,45 @@
       "icon": "brain",
       "accent": "#6366F1",
       "tint": "#E0E7FF",
-      "order": 2
+      "order": 2,
+      "reading_order": [
+        {
+          "group": "mlp",
+          "label": {
+            "ru": "Многослойный перцептрон",
+            "en": "Multilayer perceptron",
+            "kk": "Көпқабатты перцептрон"
+          },
+          "articles": ["mlp-full-cycle", "mlp-by-shapes"]
+        },
+        {
+          "group": "cnn",
+          "label": {
+            "ru": "Свёрточные сети",
+            "en": "Convolutional networks",
+            "kk": "Орама желілер"
+          },
+          "articles": ["cnn-from-zero", "cnn-by-shapes", "conv-arithmetic"]
+        },
+        {
+          "group": "rnn",
+          "label": {
+            "ru": "Рекуррентные сети",
+            "en": "Recurrent networks",
+            "kk": "Рекуррентті желілер"
+          },
+          "articles": ["rnn-from-zero", "rnn-by-shapes"]
+        },
+        {
+          "group": "attention",
+          "label": {
+            "ru": "Внимание и трансформер",
+            "en": "Attention and the transformer",
+            "kk": "Зейін және трансформер"
+          },
+          "articles": ["self-attention", "multi-head-attention", "transformer", "attention-is-all-you-need"]
+        }
+      ]
     },
     {
       "id": "computer-science",
@@ -176,7 +243,27 @@
       "icon": "chip",
       "accent": "#0EA5E9",
       "tint": "#E0F2FE",
-      "order": 6
+      "order": 6,
+      "reading_order": [
+        {
+          "group": "hardware",
+          "label": {
+            "ru": "Железо",
+            "en": "Hardware",
+            "kk": "Аппараттық бөлік"
+          },
+          "articles": ["how-computers-work", "computer-architecture", "cpu-what-processor-does"]
+        },
+        {
+          "group": "software",
+          "label": {
+            "ru": "Программы",
+            "en": "Software",
+            "kk": "Бағдарламалар"
+          },
+          "articles": ["how-programs-run", "operating-system", "programming-languages"]
+        }
+      ]
     },
     {
       "id": "under-the-hood",
@@ -238,7 +325,18 @@
       "icon": "chat",
       "accent": "#9333EA",
       "tint": "#F3E8FF",
-      "order": 4
+      "order": 4,
+      "reading_order": [
+        {
+          "group": "basics",
+          "label": {
+            "ru": "Основы",
+            "en": "Basics",
+            "kk": "Негіздер"
+          },
+          "articles": ["language-models-intro"]
+        }
+      ]
     }
   ],
   "tags": {
