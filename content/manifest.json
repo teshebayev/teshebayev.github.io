@@ -317,7 +317,7 @@
             "en": "From MLP to transformer",
             "kk": "MLP-ден трансформерге дейін"
           },
-          "articles": ["mlp-map", "cnn-map", "rnn-map", "transformer-encoder-map"]
+          "articles": ["mlp-map", "mnist-mlp-map", "cnn-map", "rnn-map", "transformer-encoder-map"]
         }
       ]
     },
@@ -878,6 +878,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/interactive-maps/mlp-map.ru.md"
+  }
+},
+    {
+  "slug": "mnist-mlp-map",
+  "category": "interactive-maps",
+  "title": {
+    "ru": "Карта полносвязной сети на MNIST"
+  },
+  "description": {
+    "ru": "Обученная сеть 784 → 16 → 16 → 10 на рукописных цифрах, на одном холсте: вход как 784 пикселя, нейрон первого слоя как шаблон 28 × 28, ReLU, выключающий часть сети, второй слой, softmax и потеря, градиент ответа по пикселям и то, как слой за слоем расходятся классы. Девять шагов; цифру можно взять из MNIST или нарисовать самому, любой нейрон — открыть и увидеть его веса, вклады и самые сильно возбуждающие его цифры."
+  },
+  "date": "2026-09-29",
+  "reading_time": 10,
+  "tags": ["deep-learning", "computer-vision"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/interactive-maps/mnist-mlp-map.ru.md"
   }
 },
     {
