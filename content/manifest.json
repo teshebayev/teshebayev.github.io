@@ -283,6 +283,15 @@
       "order": 1,
       "reading_order": [
         {
+          "group": "structure",
+          "label": {
+            "ru": "Сеть в матрицах",
+            "en": "The network in matrices",
+            "kk": "Желі матрицалармен"
+          },
+          "articles": ["nn-matryoshka"]
+        },
+        {
           "group": "training",
           "label": {
             "ru": "Как обучается нейросеть",
@@ -691,6 +700,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/under-the-hood/backprop.ru.md"
+  }
+},
+    {
+  "slug": "nn-matryoshka",
+  "category": "under-the-hood",
+  "title": {
+    "ru": "Нейросеть как матрёшка: собираем слой за слоем"
+  },
+  "description": {
+    "ru": "Полносвязная сеть — одно действие «умножить строку на матрицу», вложенное само в себя столько раз, сколько у сети слоёв. На сквозном примере с квартирой: вход и выход как строки, слой как матрица m × d₁, домино размеров, почему без активаций четыре слоя сворачиваются в одну матрицу 3 × 3, ReLU и softmax, батч и обратный проход, который раскрывает матрёшку снаружи внутрь. Семь пошаговых сцен, у каждого слоя свой цвет."
+  },
+  "date": "2026-09-29",
+  "reading_time": 25,
+  "tags": ["ml-basics", "deep-learning"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/under-the-hood/nn-matryoshka.ru.md"
   }
 },
     {

@@ -1284,6 +1284,12 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
 .prose .svg-math-sm .katex { font-size: 14px; }
 .prose .svg-math-md .katex { font-size: 17px; }
 .prose .svg-math-lg .katex { font-size: 20px; }
+/* The stage figure is white in both themes, so its math stays dark. */
+.prose .stage-figure .svg-math { color: #111111; }
+/* Label-sized math: the div carries the label's own font-size and colour. */
+.prose .svg-math-fit .katex { font-size: 1.08em; }
+/* Math inside uppercase / letter-spaced captions keeps its own case. */
+.prose .katex { text-transform: none; letter-spacing: normal; }
 
 /* Reading-contract cards under the lead paragraph. */
 .prose .reading-contract {
