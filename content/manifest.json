@@ -327,6 +327,15 @@
             "kk": "Нейрожелі қалай үйренеді"
           },
           "articles": ["how-network-learns", "gradient-descent", "backprop"]
+        },
+        {
+          "group": "tools",
+          "label": {
+            "ru": "Инструменты",
+            "en": "Tools",
+            "kk": "Құралдар"
+          },
+          "articles": ["libraries-and-frameworks"]
         }
       ]
     },
@@ -745,6 +754,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/under-the-hood/nn-matryoshka.ru.md"
+  }
+},
+    {
+  "slug": "libraries-and-frameworks",
+  "category": "under-the-hood",
+  "title": {
+    "ru": "Что на самом деле делают библиотеки и фреймворки: от трёх циклов до PyTorch"
+  },
+  "description": {
+    "ru": "Библиотека — чужой код, который лежит обычной папкой в site-packages и после import становится объектом; фреймворк — та же библиотека, которая вдобавок сама вызывает ваш код. На одной операции — умножении матриц — от трёх вложенных циклов через import, pip install и объект ndarray до исходников NumPy, сети 2→2→1 на NumPy с ручным backward и той же сети на PyTorch. Семь пошаговых сцен."
+  },
+  "date": "2026-09-30",
+  "reading_time": 30,
+  "tags": ["programming", "deep-learning"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/under-the-hood/libraries-and-frameworks.ru.md"
   }
 },
     {
