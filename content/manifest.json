@@ -266,6 +266,34 @@
       ]
     },
     {
+      "id": "python",
+      "title": {
+        "ru": "Основы программирования на Python",
+        "en": "Python programming basics",
+        "kk": "Python-да бағдарламалау негіздері"
+      },
+      "description": {
+        "ru": "Python с нуля: от того, как компьютер выполняет программу, до переменных, списков, циклов и функций.",
+        "en": "Python from scratch: from how a computer runs a program to variables, lists, loops, and functions.",
+        "kk": "Python нөлден: компьютер бағдарламаны қалай орындайтынынан айнымалыларға, тізімдерге, циклдерге және функцияларға дейін."
+      },
+      "icon": "code",
+      "accent": "#2563EB",
+      "tint": "#DBEAFE",
+      "order": 7,
+      "reading_order": [
+        {
+          "group": "intro",
+          "label": {
+            "ru": "Введение",
+            "en": "Introduction",
+            "kk": "Кіріспе"
+          },
+          "articles": ["python-computer-intro"]
+        }
+      ]
+    },
+    {
       "id": "under-the-hood",
       "title": {
         "ru": "Под капотом",
@@ -717,6 +745,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/under-the-hood/nn-matryoshka.ru.md"
+  }
+},
+    {
+  "slug": "python-computer-intro",
+  "category": "python",
+  "title": {
+    "ru": "Как работает компьютер: от кнопки «Запустить» до результата на экране"
+  },
+  "description": {
+    "ru": "Вводная статья к циклу про Python. Из каких частей состоит компьютер, почему памяти несколько, как процессор разговаривает с оперативной памятью, что у него внутри и как он выполняет программу по кругу «выборка — разбор — исполнение — запись». Что происходит при запуске программы и где во всём этом интерпретатор Python. Семь пошаговых сцен, никакой подготовки не нужно."
+  },
+  "date": "2026-09-30",
+  "reading_time": 15,
+  "tags": ["programming", "computer-basics"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/python/python-computer-intro.ru.md"
   }
 },
     {
