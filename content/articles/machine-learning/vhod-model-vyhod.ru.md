@@ -1168,282 +1168,423 @@ $$\text{выход} = f(\text{вход})$$
 
 > **Сначала смотрим на выход.** Именно он диктует, какую модель брать, какую функцию потерь оптимизировать и какими метриками мерить качество.
 
-### 5.1. Главный водораздел: дискретный или непрерывный выход
+Что именно выдаёт модель? Хочется сказать «ответ»: «спам», «кошка», «215 000 $». Но мир не детерминирован. Похожие письма бывают и рекламой, и важным уведомлением; два одинаковых по описанию дома продаются по разной цене. Поэтому честная постановка такая: **задача модели — по входу x выдать вероятности всех возможных ответов y.** В теории вероятностей это называется условным распределением:
 
-Все исходы можно разделить на два больших класса.
+$$p(y \mid x)$$
 
-- **Дискретный выход** — конечный, «пересчитываемый» набор значений. Метафора: бросок кубика (только 1–6, значения 3.5 не бывает). Если выход — это **одна метка из заранее известного списка**, то задача называется **классификацией**. Примеры: письмо → спам / не спам; фото → цифра 0–9; лицо → «это Алиса».
-- **Непрерывный выход** — значение из бесконечного диапазона, которое можно сколь угодно дробить. Метафора: рост человека (172.4 см, а между 172 и 173 — бесконечно много значений). Если выход — это **произвольное число**, задача называется **регрессией**. Примеры: дом → цена; погода → температура; фото → возраст.
+Читается как «насколько вероятен ответ y, если на входе x». Конкретный ответ — «спам» или «215 000 $» — достаётся уже из этого распределения.
 
-<div class="stage" id="stageOutputTypes" tabindex="0">
-  <div class="stage-figure">
-<svg id="mlOutputTypes" viewBox="0 130 960 480" role="img" aria-label="Дискретные и непрерывные выходы ML-модели">
+А дальше работает старое деление из теории вероятностей. Случайные величины бывают двух типов — **дискретные** и **непрерывные**, и вероятности у них задаются по-разному. Ровно на эти два типа делятся и выходы моделей.
+
+### 5.1. Дискретный выход: вероятность каждого варианта
+
+Начнём с самого простого примера — броска обычного кубика. У него шесть граней, и выпасть может только одно из шести чисел: 1, 2, 3, 4, 5 или 6. Никакого «3.5» или «2.7» на кубике не бывает: между соседними исходами пусто.
+
+<div class="stage-figure" style="background:#ffffff;border:1px solid #E4E1D7;border-radius:14px;padding:20px;margin:24px 0;">
+<svg id="diceOutcomes" viewBox="0 0 960 460" role="img" aria-label="Шесть исходов броска кубика: значение 3.5 невозможно">
   <style>
-    #mlOutputTypes { font-family: Helvetica, Arial, sans-serif; }
-    #mlOutputTypes .text { font-size: 16px; fill: #111111; }
-    #mlOutputTypes .small { font-size: 13px; fill: #5E5850; }
-    #mlOutputTypes .lbl { font-size: 15px; fill: #111111; }
-    #mlOutputTypes .box-blue   { fill: #ffffff; stroke: #3576C0; stroke-width: 1.45; rx: 14; }
-    #mlOutputTypes .box-yellow { fill: #FFFBEB; stroke: #C29E08; stroke-width: 1.45; rx: 14; }
-    #mlOutputTypes .box-green  { fill: #F0FAF0; stroke: #73B222; stroke-width: 1.45; rx: 14; }
-    #mlOutputTypes .box-red    { fill: #FFF2F2; stroke: #C30B0A; stroke-width: 1.45; rx: 14; }
-    #mlOutputTypes .box-gray   { fill: #F6F5F3; stroke: #5E5850; stroke-width: 1.3; rx: 14; }
+    #diceOutcomes { font-family: Helvetica, Arial, sans-serif; }
+    #diceOutcomes .text { font-size: 16px; fill: #111111; }
+    #diceOutcomes .small { font-size: 13px; fill: #5E5850; }
+    #diceOutcomes .lbl { font-size: 15px; fill: #111111; }
+    #diceOutcomes .box-red { fill: #FFF2F2; stroke: #C30B0A; stroke-width: 1.45; rx: 14; }
+    #diceOutcomes .box-green { fill: #F0FAF0; stroke: #73B222; stroke-width: 1.45; rx: 14; }
+  </style>
+  <g>
+    <text x="140" y="25" class="lbl">Возможные исходы броска шестигранного кубика:</text>
+
+    <g>
+      <rect x="220" y="65" width="135" height="90" rx="14" fill="#F6F5F3" stroke="#DADADA" stroke-width="1.5"/>
+      <circle cx="287.5" cy="110" r="10" fill="#111111"/>
+      <text x="287.5" y="182" class="small" text-anchor="middle" font-weight="700">сторона 1</text>
+
+      <rect x="412" y="65" width="135" height="90" rx="14" fill="#F6F5F3" stroke="#DADADA" stroke-width="1.5"/>
+      <circle cx="442" cy="127" r="10" fill="#111111"/>
+      <circle cx="517" cy="83" r="10" fill="#111111"/>
+      <text x="479.5" y="182" class="small" text-anchor="middle" font-weight="700">сторона 2</text>
+
+      <rect x="604" y="65" width="135" height="90" rx="14" fill="#F6F5F3" stroke="#DADADA" stroke-width="1.5"/>
+      <circle cx="634" cy="132" r="10" fill="#111111"/>
+      <circle cx="671.5" cy="110" r="10" fill="#111111"/>
+      <circle cx="709" cy="88" r="10" fill="#111111"/>
+      <text x="671.5" y="182" class="small" text-anchor="middle" font-weight="700">сторона 3</text>
+
+      <rect x="220" y="210" width="135" height="90" rx="14" fill="#F6F5F3" stroke="#DADADA" stroke-width="1.5"/>
+      <circle cx="250" cy="232" r="10" fill="#111111"/>
+      <circle cx="325" cy="232" r="10" fill="#111111"/>
+      <circle cx="250" cy="278" r="10" fill="#111111"/>
+      <circle cx="325" cy="278" r="10" fill="#111111"/>
+      <text x="287.5" y="327" class="small" text-anchor="middle" font-weight="700">сторона 4</text>
+
+      <rect x="412" y="210" width="135" height="90" rx="14" fill="#F6F5F3" stroke="#DADADA" stroke-width="1.5"/>
+      <circle cx="442" cy="232" r="10" fill="#111111"/>
+      <circle cx="517" cy="232" r="10" fill="#111111"/>
+      <circle cx="479.5" cy="255" r="10" fill="#111111"/>
+      <circle cx="442" cy="278" r="10" fill="#111111"/>
+      <circle cx="517" cy="278" r="10" fill="#111111"/>
+      <text x="479.5" y="327" class="small" text-anchor="middle" font-weight="700">сторона 5</text>
+
+      <rect x="604" y="210" width="135" height="90" rx="14" fill="#F6F5F3" stroke="#DADADA" stroke-width="1.5"/>
+      <circle cx="634" cy="232" r="10" fill="#111111"/>
+      <circle cx="709" cy="232" r="10" fill="#111111"/>
+      <circle cx="634" cy="255" r="10" fill="#111111"/>
+      <circle cx="709" cy="255" r="10" fill="#111111"/>
+      <circle cx="634" cy="278" r="10" fill="#111111"/>
+      <circle cx="709" cy="278" r="10" fill="#111111"/>
+      <text x="671.5" y="327" class="small" text-anchor="middle" font-weight="700">сторона 6</text>
+    </g>
+
+    <rect class="box-red" x="330" y="352" width="300" height="70"/>
+    <text x="480" y="382" text-anchor="middle" font-size="17" font-weight="800" fill="#C30B0A">3.5 — невозможно</text>
+    <text x="480" y="405" text-anchor="middle" class="small" fill="#C30B0A">на кубике нет стороны «три с половиной»</text>
+
+    <text x="480" y="445" class="small" text-anchor="middle">Можно пересчитать все варианты: закрытый список из 6 исходов — <tspan fill="#3576C0" font-weight="700">дискретные значения</tspan></text>
+  </g>
+</svg>
+</div>
+
+Так устроена **дискретная** величина: все её возможные значения можно выписать в список и пересчитать — пусть даже список окажется очень длинным. Грани кубика, «спам / не спам», цифры 0–9, токены словаря — всё это дискретные величины.
+
+Раз значения можно перечислить, распределение — просто таблица: каждому значению `k` своя вероятность `P(Y = k)`. У честного кубика все шесть вероятностей одинаковы и равны 1/6. Требований к такой таблице всего два:
+
+$$0 \le P(Y = k) \le 1, \qquad \sum_{k} P(Y = k) = 1$$
+
+Модель с дискретным выходом выдаёт ровно такую таблицу — вектор из K чисел, по одному на каждый вариант. Последний слой сети сам по себе выдаёт K произвольных чисел `z₁, …, z_K`, и чтобы превратить их в честные вероятности, используют **softmax**:
+
+$$P(Y = k \mid x) = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}$$
+
+Экспонента делает все числа положительными, деление на сумму — сумму равной единице.
+
+Посмотрим пошагово: от кубика до предсказания следующего токена в языковой модели. Как LLM строит распределение по словарю и выбирает из него токен, подробно разобрано в [статье про LLM](article.html?slug=language-models-intro).
+
+<div class="stage" id="stageDiscreteOut" tabindex="0">
+  <div class="stage-figure">
+<svg id="mlDiscreteOut" viewBox="0 0 960 590" role="img" aria-label="Дискретный выход: вероятность каждого варианта">
+  <style>
+    #mlDiscreteOut { font-family: Helvetica, Arial, sans-serif; }
+    #mlDiscreteOut .text { font-size: 16px; fill: #111111; }
+    #mlDiscreteOut .small { font-size: 13px; fill: #5E5850; }
+    #mlDiscreteOut .lbl { font-size: 15px; fill: #111111; }
+    #mlDiscreteOut .val { font-size: 13px; font-weight: 700; fill: #111111; }
+    #mlDiscreteOut .box-blue   { fill: #ffffff; stroke: #3576C0; stroke-width: 1.45; rx: 14; }
+    #mlDiscreteOut .box-yellow { fill: #FFFBEB; stroke: #C29E08; stroke-width: 1.45; rx: 14; }
+    #mlDiscreteOut .box-green  { fill: #F0FAF0; stroke: #73B222; stroke-width: 1.45; rx: 14; }
+    #mlDiscreteOut .box-red    { fill: #FFF2F2; stroke: #C30B0A; stroke-width: 1.45; rx: 14; }
+    #mlDiscreteOut .box-gray   { fill: #F6F5F3; stroke: #5E5850; stroke-width: 1.3; rx: 14; }
+    #mlDiscreteOut .box-dark   { fill: #1b1d26; rx: 14; }
   </style>
   <defs>
-    <marker id="mlArrow" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto">
+    <marker id="doArrow" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto">
       <path d="M0,0 L8,3.5 L0,7 Z" fill="#5E5850"/>
+    </marker>
+    <marker id="doArrowY" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L8,3.5 L0,7 Z" fill="#C29E08"/>
     </marker>
   </defs>
 
-  <g data-key="step1" data-only="1">
-    <rect class="box-blue" x="60" y="250" width="200" height="120"/>
-    <text x="160" y="298" class="text" text-anchor="middle" font-weight="700">Вход</text>
-    <text x="160" y="326" class="small" text-anchor="middle">фото, текст, числа…</text>
-
-    <line x1="266" y1="310" x2="372" y2="310" stroke="#5E5850" stroke-width="2.5" marker-end="url(#mlArrow)"/>
-
-    <rect class="box-yellow" x="380" y="250" width="200" height="120"/>
-    <text x="480" y="298" class="text" text-anchor="middle" font-weight="700">Модель ML</text>
-    <text x="480" y="326" class="small" text-anchor="middle">обученная функция</text>
-
-    <line x1="586" y1="310" x2="692" y2="310" stroke="#5E5850" stroke-width="2.5" marker-end="url(#mlArrow)"/>
-
-    <rect class="box-green" x="700" y="250" width="200" height="120"/>
-    <text x="800" y="328" text-anchor="middle" font-size="56" font-weight="800" fill="#73B222">?</text>
-
-    <text x="480" y="450" class="text" text-anchor="middle" font-weight="700">Главный вопрос: какие значения может принимать выход?</text>
-    <text x="480" y="480" class="small" text-anchor="middle">Ответ делит все задачи на два больших класса</text>
+  <g data-key="d1" data-only="1">
+    <text x="480" y="60" class="lbl" text-anchor="middle" font-weight="700">Бросок кубика: величина Y принимает одно из шести значений</text>
+    <line x1="170" y1="400" x2="790" y2="400" stroke="#5E5850" stroke-width="2"/>
+    <text x="150" y="300" class="small" text-anchor="end">P(Y = k)</text>
+    <rect x="198" y="200" width="64" height="200" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="230" y="190" class="val" text-anchor="middle">1/6 ≈ 0.167</text>
+    <rect x="208" y="414" width="44" height="44" rx="7.9" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="230" cy="436" r="4" fill="#111111"/>
+    <rect x="298" y="200" width="64" height="200" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="330" y="190" class="val" text-anchor="middle">1/6 ≈ 0.167</text>
+    <rect x="308" y="414" width="44" height="44" rx="7.9" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="340.1" cy="425.9" r="4" fill="#111111"/><circle cx="319.9" cy="446.1" r="4" fill="#111111"/>
+    <rect x="398" y="200" width="64" height="200" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="430" y="190" class="val" text-anchor="middle">1/6 ≈ 0.167</text>
+    <rect x="408" y="414" width="44" height="44" rx="7.9" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="440.1" cy="425.9" r="4" fill="#111111"/><circle cx="430" cy="436" r="4" fill="#111111"/><circle cx="419.9" cy="446.1" r="4" fill="#111111"/>
+    <rect x="498" y="200" width="64" height="200" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="530" y="190" class="val" text-anchor="middle">1/6 ≈ 0.167</text>
+    <rect x="508" y="414" width="44" height="44" rx="7.9" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="519.9" cy="425.9" r="4" fill="#111111"/><circle cx="540.1" cy="425.9" r="4" fill="#111111"/><circle cx="519.9" cy="446.1" r="4" fill="#111111"/><circle cx="540.1" cy="446.1" r="4" fill="#111111"/>
+    <rect x="598" y="200" width="64" height="200" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="630" y="190" class="val" text-anchor="middle">1/6 ≈ 0.167</text>
+    <rect x="608" y="414" width="44" height="44" rx="7.9" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="619.9" cy="425.9" r="4" fill="#111111"/><circle cx="640.1" cy="425.9" r="4" fill="#111111"/><circle cx="630" cy="436" r="4" fill="#111111"/><circle cx="619.9" cy="446.1" r="4" fill="#111111"/><circle cx="640.1" cy="446.1" r="4" fill="#111111"/>
+    <rect x="698" y="200" width="64" height="200" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="730" y="190" class="val" text-anchor="middle">1/6 ≈ 0.167</text>
+    <rect x="708" y="414" width="44" height="44" rx="7.9" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="719.9" cy="425.9" r="4" fill="#111111"/><circle cx="740.1" cy="425.9" r="4" fill="#111111"/><circle cx="719.9" cy="436" r="4" fill="#111111"/><circle cx="740.1" cy="436" r="4" fill="#111111"/><circle cx="719.9" cy="446.1" r="4" fill="#111111"/><circle cx="740.1" cy="446.1" r="4" fill="#111111"/>
+    <line x1="480" y1="400" x2="480" y2="300" stroke="#C30B0A" stroke-width="2" stroke-dasharray="5 4"/>
+    <text x="480" y="288" text-anchor="middle" font-size="15" font-weight="800" fill="#C30B0A">3.5?</text>
+    <text x="480" y="492" class="small" text-anchor="middle" fill="#C30B0A">3.5 выпасть не может: вероятность есть только у значений 1, 2, …, 6</text>
+    <text x="480" y="535" class="text" text-anchor="middle" font-weight="700">Сумма столбиков: 6 × 1/6 = 1</text>
+    <text x="480" y="562" class="small" text-anchor="middle">Распределение дискретной величины — это список значений и вероятность каждого</text>
   </g>
 
-  <g data-key="step2" data-only="1">
-    <text x="140" y="165" class="lbl">Возможные исходы броска шестигранного кубика:</text>
-
-    <g>
-      <rect x="220" y="205" width="135" height="90" rx="14" fill="#F6F5F3" stroke="#DADADA" stroke-width="1.5"/>
-      <circle cx="287.5" cy="250" r="10" fill="#111111"/>
-      <text x="287.5" y="322" class="small" text-anchor="middle" font-weight="700">сторона 1</text>
-
-      <rect x="412" y="205" width="135" height="90" rx="14" fill="#F6F5F3" stroke="#DADADA" stroke-width="1.5"/>
-      <circle cx="442" cy="267" r="10" fill="#111111"/>
-      <circle cx="517" cy="223" r="10" fill="#111111"/>
-      <text x="479.5" y="322" class="small" text-anchor="middle" font-weight="700">сторона 2</text>
-
-      <rect x="604" y="205" width="135" height="90" rx="14" fill="#F6F5F3" stroke="#DADADA" stroke-width="1.5"/>
-      <circle cx="634" cy="272" r="10" fill="#111111"/>
-      <circle cx="671.5" cy="250" r="10" fill="#111111"/>
-      <circle cx="709" cy="228" r="10" fill="#111111"/>
-      <text x="671.5" y="322" class="small" text-anchor="middle" font-weight="700">сторона 3</text>
-
-      <rect x="220" y="350" width="135" height="90" rx="14" fill="#F6F5F3" stroke="#DADADA" stroke-width="1.5"/>
-      <circle cx="250" cy="372" r="10" fill="#111111"/>
-      <circle cx="325" cy="372" r="10" fill="#111111"/>
-      <circle cx="250" cy="418" r="10" fill="#111111"/>
-      <circle cx="325" cy="418" r="10" fill="#111111"/>
-      <text x="287.5" y="467" class="small" text-anchor="middle" font-weight="700">сторона 4</text>
-
-      <rect x="412" y="350" width="135" height="90" rx="14" fill="#F6F5F3" stroke="#DADADA" stroke-width="1.5"/>
-      <circle cx="442" cy="372" r="10" fill="#111111"/>
-      <circle cx="517" cy="372" r="10" fill="#111111"/>
-      <circle cx="479.5" cy="395" r="10" fill="#111111"/>
-      <circle cx="442" cy="418" r="10" fill="#111111"/>
-      <circle cx="517" cy="418" r="10" fill="#111111"/>
-      <text x="479.5" y="467" class="small" text-anchor="middle" font-weight="700">сторона 5</text>
-
-      <rect x="604" y="350" width="135" height="90" rx="14" fill="#F6F5F3" stroke="#DADADA" stroke-width="1.5"/>
-      <circle cx="634" cy="372" r="10" fill="#111111"/>
-      <circle cx="709" cy="372" r="10" fill="#111111"/>
-      <circle cx="634" cy="395" r="10" fill="#111111"/>
-      <circle cx="709" cy="395" r="10" fill="#111111"/>
-      <circle cx="634" cy="418" r="10" fill="#111111"/>
-      <circle cx="709" cy="418" r="10" fill="#111111"/>
-      <text x="671.5" y="467" class="small" text-anchor="middle" font-weight="700">сторона 6</text>
-    </g>
-
-    <rect class="box-red" x="330" y="492" width="300" height="70"/>
-    <text x="480" y="522" text-anchor="middle" font-size="17" font-weight="800" fill="#C30B0A">3.5 — невозможно</text>
-    <text x="480" y="545" text-anchor="middle" class="small" fill="#C30B0A">на кубике нет стороны «три с половиной»</text>
-
-    <text x="480" y="585" class="small" text-anchor="middle">Можно пересчитать все варианты: закрытый список из 6 исходов — <tspan fill="#3576C0" font-weight="700">дискретные значения</tspan></text>
+  <g data-key="d2" data-only="1">
+    <text x="260" y="80" class="text" text-anchor="middle" font-weight="800" fill="#3576C0">честный кубик</text>
+    <text x="260" y="104" class="small" text-anchor="middle">все исходы равновероятны</text>
+    <line x1="75" y1="420" x2="445" y2="420" stroke="#5E5850" stroke-width="2"/>
+    <rect x="90" y="336.7" width="40" height="83.3" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="110" y="328.7" class="val" text-anchor="middle">0.17</text>
+    <rect x="94" y="432" width="32" height="32" rx="5.8" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="110" cy="448" r="2.9" fill="#111111"/>
+    <rect x="150" y="336.7" width="40" height="83.3" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="170" y="328.7" class="val" text-anchor="middle">0.17</text>
+    <rect x="154" y="432" width="32" height="32" rx="5.8" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="177.4" cy="440.6" r="2.9" fill="#111111"/><circle cx="162.6" cy="455.4" r="2.9" fill="#111111"/>
+    <rect x="210" y="336.7" width="40" height="83.3" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="230" y="328.7" class="val" text-anchor="middle">0.17</text>
+    <rect x="214" y="432" width="32" height="32" rx="5.8" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="237.4" cy="440.6" r="2.9" fill="#111111"/><circle cx="230" cy="448" r="2.9" fill="#111111"/><circle cx="222.6" cy="455.4" r="2.9" fill="#111111"/>
+    <rect x="270" y="336.7" width="40" height="83.3" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="290" y="328.7" class="val" text-anchor="middle">0.17</text>
+    <rect x="274" y="432" width="32" height="32" rx="5.8" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="282.6" cy="440.6" r="2.9" fill="#111111"/><circle cx="297.4" cy="440.6" r="2.9" fill="#111111"/><circle cx="282.6" cy="455.4" r="2.9" fill="#111111"/><circle cx="297.4" cy="455.4" r="2.9" fill="#111111"/>
+    <rect x="330" y="336.7" width="40" height="83.3" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="350" y="328.7" class="val" text-anchor="middle">0.17</text>
+    <rect x="334" y="432" width="32" height="32" rx="5.8" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="342.6" cy="440.6" r="2.9" fill="#111111"/><circle cx="357.4" cy="440.6" r="2.9" fill="#111111"/><circle cx="350" cy="448" r="2.9" fill="#111111"/><circle cx="342.6" cy="455.4" r="2.9" fill="#111111"/><circle cx="357.4" cy="455.4" r="2.9" fill="#111111"/>
+    <rect x="390" y="336.7" width="40" height="83.3" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="410" y="328.7" class="val" text-anchor="middle">0.17</text>
+    <rect x="394" y="432" width="32" height="32" rx="5.8" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="402.6" cy="440.6" r="2.9" fill="#111111"/><circle cx="417.4" cy="440.6" r="2.9" fill="#111111"/><circle cx="402.6" cy="448" r="2.9" fill="#111111"/><circle cx="417.4" cy="448" r="2.9" fill="#111111"/><circle cx="402.6" cy="455.4" r="2.9" fill="#111111"/><circle cx="417.4" cy="455.4" r="2.9" fill="#111111"/>
+    <text x="260" y="494" class="lbl" text-anchor="middle" font-weight="700" fill="#73B222">сумма = 1</text>
+    <text x="710" y="80" class="text" text-anchor="middle" font-weight="800" fill="#3576C0">нечестный кубик</text>
+    <text x="710" y="104" class="small" text-anchor="middle">шестёрка выпадает чаще</text>
+    <line x1="525" y1="420" x2="895" y2="420" stroke="#5E5850" stroke-width="2"/>
+    <rect x="540" y="395" width="40" height="25" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="560" y="387" class="val" text-anchor="middle">0.05</text>
+    <rect x="544" y="432" width="32" height="32" rx="5.8" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="560" cy="448" r="2.9" fill="#111111"/>
+    <rect x="600" y="395" width="40" height="25" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="620" y="387" class="val" text-anchor="middle">0.05</text>
+    <rect x="604" y="432" width="32" height="32" rx="5.8" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="627.4" cy="440.6" r="2.9" fill="#111111"/><circle cx="612.6" cy="455.4" r="2.9" fill="#111111"/>
+    <rect x="660" y="370" width="40" height="50" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="680" y="362" class="val" text-anchor="middle">0.10</text>
+    <rect x="664" y="432" width="32" height="32" rx="5.8" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="687.4" cy="440.6" r="2.9" fill="#111111"/><circle cx="680" cy="448" r="2.9" fill="#111111"/><circle cx="672.6" cy="455.4" r="2.9" fill="#111111"/>
+    <rect x="720" y="370" width="40" height="50" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="740" y="362" class="val" text-anchor="middle">0.10</text>
+    <rect x="724" y="432" width="32" height="32" rx="5.8" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="732.6" cy="440.6" r="2.9" fill="#111111"/><circle cx="747.4" cy="440.6" r="2.9" fill="#111111"/><circle cx="732.6" cy="455.4" r="2.9" fill="#111111"/><circle cx="747.4" cy="455.4" r="2.9" fill="#111111"/>
+    <rect x="780" y="320" width="40" height="100" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="800" y="312" class="val" text-anchor="middle">0.20</text>
+    <rect x="784" y="432" width="32" height="32" rx="5.8" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="792.6" cy="440.6" r="2.9" fill="#111111"/><circle cx="807.4" cy="440.6" r="2.9" fill="#111111"/><circle cx="800" cy="448" r="2.9" fill="#111111"/><circle cx="792.6" cy="455.4" r="2.9" fill="#111111"/><circle cx="807.4" cy="455.4" r="2.9" fill="#111111"/>
+    <rect x="840" y="170" width="40" height="250" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="860" y="162" class="val" text-anchor="middle">0.50</text>
+    <rect x="844" y="432" width="32" height="32" rx="5.8" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="852.6" cy="440.6" r="2.9" fill="#111111"/><circle cx="867.4" cy="440.6" r="2.9" fill="#111111"/><circle cx="852.6" cy="448" r="2.9" fill="#111111"/><circle cx="867.4" cy="448" r="2.9" fill="#111111"/><circle cx="852.6" cy="455.4" r="2.9" fill="#111111"/><circle cx="867.4" cy="455.4" r="2.9" fill="#111111"/>
+    <text x="710" y="494" class="lbl" text-anchor="middle" font-weight="700" fill="#73B222">сумма = 1</text>
+    <line x1="480" y1="130" x2="480" y2="480" stroke="#DADADA" stroke-width="1.5" stroke-dasharray="4 4"/>
+    <text x="480" y="540" class="text" text-anchor="middle" font-weight="700">Форма может быть любой — правила одни: каждая вероятность от 0 до 1, сумма = 1</text>
+    <text x="480" y="566" class="small" text-anchor="middle">Модель — машина, которая под каждый вход выдаёт свой «нечестный кубик» p(y | x)</text>
   </g>
 
-  <g data-key="step3" data-only="1">
-    <text x="110" y="160" class="lbl">Возможный рост человека (см):</text>
-
-    <rect x="115" y="240" width="730" height="28" fill="#F0FAF0" stroke="#73B222" stroke-width="1.5" rx="6"/>
-
-    <g stroke="#73B222" stroke-width="2">
-      <line x1="115" y1="268" x2="115" y2="288"/><line x1="261" y1="268" x2="261" y2="288"/>
-      <line x1="407" y1="268" x2="407" y2="288"/><line x1="553" y1="268" x2="553" y2="288"/>
-      <line x1="699" y1="268" x2="699" y2="288"/><line x1="845" y1="268" x2="845" y2="288"/>
-    </g>
-    <g class="small" text-anchor="middle">
-      <text x="115" y="310">150 см</text><text x="261" y="310">160 см</text>
-      <text x="407" y="310">170 см</text><text x="553" y="310">180 см</text>
-      <text x="699" y="310">190 см</text><text x="845" y="310">200 см</text>
-    </g>
-
-    <polygon points="443,207 432,229 454,229" fill="#C30B0A"/>
-    <line x1="443" y1="229" x2="443" y2="268" stroke="#C30B0A" stroke-width="2.5"/>
-    <text x="443" y="190" text-anchor="middle" font-size="18" font-weight="800" fill="#C30B0A">172.43856… см</text>
-
-    <text x="480" y="360" class="lbl" text-anchor="middle" font-weight="700">Увеличим маленький участок между 172 и 173 см</text>
-    <line x1="360" y1="384" x2="600" y2="384" stroke="#5E5850" stroke-width="1.6" stroke-dasharray="5 5"/>
-    <line x1="443" y1="268" x2="360" y2="384" stroke="#5E5850" stroke-width="1.2" stroke-dasharray="5 5"/>
-    <line x1="458" y1="268" x2="600" y2="384" stroke="#5E5850" stroke-width="1.2" stroke-dasharray="5 5"/>
-
-    <rect x="300" y="405" width="360" height="24" fill="#F0FAF0" stroke="#73B222" stroke-width="1.5" rx="6"/>
-    <g stroke="#73B222" stroke-width="1.6">
-      <line x1="300" y1="429" x2="300" y2="448"/>
-      <line x1="336" y1="429" x2="336" y2="440"/>
-      <line x1="372" y1="429" x2="372" y2="440"/>
-      <line x1="408" y1="429" x2="408" y2="440"/>
-      <line x1="444" y1="429" x2="444" y2="440"/>
-      <line x1="480" y1="429" x2="480" y2="448"/>
-      <line x1="516" y1="429" x2="516" y2="440"/>
-      <line x1="552" y1="429" x2="552" y2="440"/>
-      <line x1="588" y1="429" x2="588" y2="440"/>
-      <line x1="624" y1="429" x2="624" y2="440"/>
-      <line x1="660" y1="429" x2="660" y2="448"/>
-    </g>
-    <g class="small" text-anchor="middle">
-      <text x="300" y="470">172.0 см</text>
-      <text x="480" y="470">172.5 см</text>
-      <text x="660" y="470">173.0 см</text>
-      <text x="300" y="492">1720 мм</text>
-      <text x="480" y="492">1725 мм</text>
-      <text x="660" y="492">1730 мм</text>
-    </g>
-
-    <polygon points="458,382 450,398 466,398" fill="#C30B0A"/>
-    <line x1="458" y1="398" x2="458" y2="429" stroke="#C30B0A" stroke-width="2"/>
-    <text x="458" y="525" text-anchor="middle" font-size="15" font-weight="800" fill="#C30B0A">172.43856 см = 1724.3856 мм</text>
-
-    <text x="480" y="560" class="small" text-anchor="middle">Можно записать грубо: 172 см, точнее: 1724 мм, ещё точнее: 172.43856 см.</text>
-    <text x="480" y="584" class="small" text-anchor="middle">Между 172 и 173 см есть миллиметры и ещё более мелкие значения — <tspan fill="#73B222" font-weight="700">непрерывные</tspan></text>
+  <g data-key="d3" data-only="1">
+    <text x="480" y="70" class="lbl" text-anchor="middle" font-weight="700">Бинарная классификация: два исхода, как у монетки</text>
+    <rect class="box-blue" x="40" y="200" width="260" height="130"/>
+    <text x="60" y="230" class="small">вход: текст письма</text>
+    <text x="60" y="264" class="lbl">«Вы выиграли iPhone!</text>
+    <text x="60" y="290" class="lbl">Перейдите по ссылке…»</text>
+    <line x1="306" y1="265" x2="352" y2="265" stroke="#5E5850" stroke-width="2.5" marker-end="url(#doArrow)"/>
+    <rect class="box-dark" x="360" y="220" width="140" height="90"/>
+    <text x="430" y="271" text-anchor="middle" font-size="18" font-weight="800" fill="#ffffff">модель</text>
+    <line x1="506" y1="265" x2="552" y2="265" stroke="#5E5850" stroke-width="2.5" marker-end="url(#doArrow)"/>
+    <text x="570" y="245" class="lbl" font-weight="700" fill="#73B222">спам</text>
+    <rect x="660" y="222" width="230" height="34" fill="#73B222" fill-opacity="0.22" stroke="#73B222" stroke-width="1.5"/>
+    <text x="898" y="245" class="val">0.92</text>
+    <text x="570" y="305" class="lbl" font-weight="700" fill="#3576C0">не спам</text>
+    <rect x="660" y="282" width="20" height="34" fill="#3576C0" fill-opacity="0.22" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="688" y="305" class="val">0.08</text>
+    <text x="480" y="420" class="text" text-anchor="middle" font-weight="700">P(спам) + P(не спам) = 0.92 + 0.08 = 1</text>
+    <text x="480" y="450" class="small" text-anchor="middle">Поэтому модели хватает одного числа: P(не спам) = 1 − P(спам)</text>
+    <text x="480" y="490" class="small" text-anchor="middle">Числа иллюстративные</text>
   </g>
 
-  <g data-key="step4" data-only="1">
-    <rect class="box-yellow" x="90" y="280" width="170" height="100"/>
-    <text x="175" y="325" class="text" text-anchor="middle" font-weight="700">Модель</text>
-    <text x="175" y="350" class="small" text-anchor="middle">вход → класс</text>
-
-    <line x1="266" y1="330" x2="382" y2="330" stroke="#5E5850" stroke-width="2.5" marker-end="url(#mlArrow)"/>
-
-    <rect class="box-blue" x="430" y="240" width="280" height="50"/>
-    <text x="455" y="271" class="text">кошка</text>
-
-    <rect class="box-green" x="430" y="305" width="280" height="50"/>
-    <text x="455" y="336" class="text" font-weight="700" fill="#73B222">собака  ←</text>
-
-    <rect class="box-blue" x="430" y="370" width="280" height="50"/>
-    <text x="455" y="401" class="text">птица</text>
-
-    <text x="500" y="500" class="small" text-anchor="middle">Выход — одна из заранее известных меток. Это и есть <tspan fill="#3576C0" font-weight="700">классификация</tspan></text>
+  <g data-key="d4" data-only="1">
+    <text x="480" y="70" class="lbl" text-anchor="middle" font-weight="700">Многоклассовая классификация: какая цифра на картинке? Десять исходов</text>
+    <rect x="60" y="190" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="82" y="190" width="22" height="22" fill="#3576C0" stroke="#DADADA" stroke-width="1"/>
+    <rect x="104" y="190" width="22" height="22" fill="#3576C0" stroke="#DADADA" stroke-width="1"/>
+    <rect x="126" y="190" width="22" height="22" fill="#3576C0" stroke="#DADADA" stroke-width="1"/>
+    <rect x="148" y="190" width="22" height="22" fill="#3576C0" stroke="#DADADA" stroke-width="1"/>
+    <rect x="170" y="190" width="22" height="22" fill="#3576C0" stroke="#DADADA" stroke-width="1"/>
+    <rect x="192" y="190" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="60" y="212" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="82" y="212" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="104" y="212" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="126" y="212" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="148" y="212" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="170" y="212" width="22" height="22" fill="#3576C0" stroke="#DADADA" stroke-width="1"/>
+    <rect x="192" y="212" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="60" y="234" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="82" y="234" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="104" y="234" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="126" y="234" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="148" y="234" width="22" height="22" fill="#3576C0" stroke="#DADADA" stroke-width="1"/>
+    <rect x="170" y="234" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="192" y="234" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="60" y="256" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="82" y="256" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="104" y="256" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="126" y="256" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="148" y="256" width="22" height="22" fill="#3576C0" stroke="#DADADA" stroke-width="1"/>
+    <rect x="170" y="256" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="192" y="256" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="60" y="278" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="82" y="278" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="104" y="278" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="126" y="278" width="22" height="22" fill="#3576C0" stroke="#DADADA" stroke-width="1"/>
+    <rect x="148" y="278" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="170" y="278" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="192" y="278" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="60" y="300" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="82" y="300" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="104" y="300" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="126" y="300" width="22" height="22" fill="#3576C0" stroke="#DADADA" stroke-width="1"/>
+    <rect x="148" y="300" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="170" y="300" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="192" y="300" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="60" y="322" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="82" y="322" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="104" y="322" width="22" height="22" fill="#3576C0" stroke="#DADADA" stroke-width="1"/>
+    <rect x="126" y="322" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="148" y="322" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="170" y="322" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <rect x="192" y="322" width="22" height="22" fill="#ffffff" stroke="#DADADA" stroke-width="1"/>
+    <text x="137" y="372" class="small" text-anchor="middle">картинка из пикселей</text>
+    <line x1="222" y1="267" x2="272" y2="267" stroke="#5E5850" stroke-width="2.5" marker-end="url(#doArrow)"/>
+    <rect class="box-dark" x="280" y="222" width="120" height="90"/>
+    <text x="340" y="273" text-anchor="middle" font-size="18" font-weight="800" fill="#ffffff">модель</text>
+    <line x1="406" y1="267" x2="450" y2="267" stroke="#5E5850" stroke-width="2.5" marker-end="url(#doArrow)"/>
+    <line x1="465" y1="420" x2="912" y2="420" stroke="#5E5850" stroke-width="2"/>
+    <rect x="475" y="418.5" width="30" height="1.5" fill="#3576C0" fill-opacity="0.22" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="490" y="410.5" font-size="12" font-weight="700" fill="#111111" text-anchor="middle">≈0</text>
+    <text x="490" y="444" class="lbl" text-anchor="middle">0</text>
+    <rect x="519" y="404.4" width="30" height="15.6" fill="#3576C0" fill-opacity="0.22" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="534" y="396.4" font-size="12" font-weight="700" fill="#111111" text-anchor="middle">0.06</text>
+    <text x="534" y="444" class="lbl" text-anchor="middle">1</text>
+    <rect x="563" y="414.8" width="30" height="5.2" fill="#3576C0" fill-opacity="0.22" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="578" y="406.8" font-size="12" font-weight="700" fill="#111111" text-anchor="middle">0.02</text>
+    <text x="578" y="444" class="lbl" text-anchor="middle">2</text>
+    <rect x="607" y="417.4" width="30" height="2.6" fill="#3576C0" fill-opacity="0.22" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="622" y="409.4" font-size="12" font-weight="700" fill="#111111" text-anchor="middle">0.01</text>
+    <text x="622" y="444" class="lbl" text-anchor="middle">3</text>
+    <rect x="651" y="418.5" width="30" height="1.5" fill="#3576C0" fill-opacity="0.22" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="666" y="410.5" font-size="12" font-weight="700" fill="#111111" text-anchor="middle">≈0</text>
+    <text x="666" y="444" class="lbl" text-anchor="middle">4</text>
+    <rect x="695" y="418.5" width="30" height="1.5" fill="#3576C0" fill-opacity="0.22" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="710" y="410.5" font-size="12" font-weight="700" fill="#111111" text-anchor="middle">≈0</text>
+    <text x="710" y="444" class="lbl" text-anchor="middle">5</text>
+    <rect x="739" y="418.5" width="30" height="1.5" fill="#3576C0" fill-opacity="0.22" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="754" y="410.5" font-size="12" font-weight="700" fill="#111111" text-anchor="middle">≈0</text>
+    <text x="754" y="444" class="lbl" text-anchor="middle">6</text>
+    <rect x="783" y="196.4" width="30" height="223.6" fill="#73B222" fill-opacity="0.22" stroke="#73B222" stroke-width="1.5"/>
+    <text x="798" y="188.4" font-size="12" font-weight="700" fill="#73B222" text-anchor="middle">0.86</text>
+    <text x="798" y="444" class="lbl" text-anchor="middle" font-weight="800" fill="#73B222">7</text>
+    <rect x="827" y="417.4" width="30" height="2.6" fill="#3576C0" fill-opacity="0.22" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="842" y="409.4" font-size="12" font-weight="700" fill="#111111" text-anchor="middle">0.01</text>
+    <text x="842" y="444" class="lbl" text-anchor="middle">8</text>
+    <rect x="871" y="409.6" width="30" height="10.4" fill="#3576C0" fill-opacity="0.22" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="886" y="401.6" font-size="12" font-weight="700" fill="#111111" text-anchor="middle">0.04</text>
+    <text x="886" y="444" class="lbl" text-anchor="middle">9</text>
+    <text x="480" y="500" class="text" text-anchor="middle" font-weight="700">Вектор из 10 вероятностей, сумма = 1</text>
+    <text x="480" y="528" class="small" text-anchor="middle">Похожие по начертанию 1 и 9 тоже получают заметные шансы. Числа иллюстративные</text>
   </g>
 
-  <g data-key="step5" data-only="1">
-    <line x1="200" y1="470" x2="840" y2="470" stroke="#5E5850" stroke-width="2"/>
-    <line x1="200" y1="470" x2="200" y2="180" stroke="#5E5850" stroke-width="2"/>
-    <text x="520" y="510" class="small" text-anchor="middle">площадь дома, м²</text>
-    <text x="150" y="330" class="small" text-anchor="middle" transform="rotate(-90 150 330)">цена, $</text>
-
-    <line x1="220" y1="440" x2="820" y2="220" stroke="#C29E08" stroke-width="3"/>
-
-    <g fill="#3576C0">
-      <circle cx="270" cy="410" r="7"/><circle cx="360" cy="390" r="7"/>
-      <circle cx="440" cy="350" r="7"/><circle cx="540" cy="330" r="7"/>
-      <circle cx="640" cy="290" r="7"/><circle cx="740" cy="250" r="7"/>
-    </g>
-
-    <circle cx="600" cy="306" r="9" fill="#73B222"/>
-    <line x1="600" y1="306" x2="600" y2="470" stroke="#73B222" stroke-width="1.5" stroke-dasharray="4 4"/>
-    <text x="612" y="300" font-size="15" font-weight="700" fill="#73B222">$215 000</text>
-
-    <text x="500" y="555" class="small" text-anchor="middle">Выход — произвольное число (упрощённый фрагмент Ames Housing). Это <tspan fill="#73B222" font-weight="700">регрессия</tspan></text>
+  <g data-key="d5" data-only="1">
+    <text x="480" y="60" class="lbl" text-anchor="middle" font-weight="700">Следующий токен: вероятность у каждого слова словаря (~50 000 токенов)</text>
+    <rect class="box-blue" x="40" y="250" width="220" height="70"/>
+    <text x="150" y="291" class="text" text-anchor="middle">«Кот сидит на …»</text>
+    <line x1="266" y1="285" x2="304" y2="285" stroke="#5E5850" stroke-width="2.5" marker-end="url(#doArrow)"/>
+    <rect class="box-dark" x="312" y="240" width="120" height="90"/>
+    <text x="372" y="291" text-anchor="middle" font-size="18" font-weight="800" fill="#ffffff">LLM</text>
+    <line x1="438" y1="285" x2="480" y2="285" stroke="#5E5850" stroke-width="2.5" marker-end="url(#doArrow)"/>
+    <text x="500" y="123" class="lbl" font-weight="700" fill="#73B222">ковре</text>
+    <rect x="600" y="104" width="252" height="26" fill="#73B222" fill-opacity="0.22" stroke="#73B222" stroke-width="1.5"/>
+    <text x="860" y="123" class="val">0.28</text>
+    <text x="500" y="163" class="lbl">окне</text>
+    <rect x="600" y="144" width="189" height="26" fill="#3576C0" fill-opacity="0.22" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="797" y="163" class="val">0.21</text>
+    <text x="500" y="203" class="lbl">диване</text>
+    <rect x="600" y="184" width="126" height="26" fill="#3576C0" fill-opacity="0.22" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="734" y="203" class="val">0.14</text>
+    <text x="500" y="243" class="lbl">стуле</text>
+    <rect x="600" y="224" width="81" height="26" fill="#3576C0" fill-opacity="0.22" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="689" y="243" class="val">0.09</text>
+    <text x="500" y="283" class="lbl">полу</text>
+    <rect x="600" y="264" width="63" height="26" fill="#3576C0" fill-opacity="0.22" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="671" y="283" class="val">0.07</text>
+    <text x="540" y="320" class="text" text-anchor="middle">⋮</text>
+    <text x="500" y="358" class="lbl">банан</text>
+    <rect x="600" y="340" width="1.5" height="26" fill="#3576C0"/>
+    <text x="610" y="358" class="val">0.00002</text>
+    <text x="540" y="392" class="text" text-anchor="middle">⋮</text>
+    <text x="500" y="433" class="lbl">все прочие</text>
+    <rect x="600" y="414" width="189" height="26" fill="#5E5850" fill-opacity="0.18" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="797" y="433" class="val">0.21</text>
+    <text x="600" y="462" class="small">≈ 49 995 токенов вместе, включая «банан»</text>
+    <text x="480" y="525" class="text" text-anchor="middle" font-weight="700">Выход LLM — вектор длиной в словарь, сумма = 1</text>
+    <text x="480" y="553" class="small" text-anchor="middle">Даже нелепое продолжение получает крошечную, но ненулевую вероятность. Числа иллюстративные</text>
   </g>
 
-  <g data-key="step6" data-only="1">
-    <rect class="box-gray" x="80" y="170" width="300" height="62"/>
-    <text x="100" y="208" class="lbl">Распознавание лица</text>
-    <line x1="388" y1="201" x2="470" y2="201" stroke="#5E5850" stroke-width="2.5" marker-end="url(#mlArrow)"/>
-    <rect class="box-blue" x="478" y="170" width="400" height="62"/>
-    <text x="498" y="208" class="lbl" fill="#3576C0" font-weight="700">«это Алиса» — один из N людей</text>
-
-    <rect class="box-gray" x="80" y="258" width="300" height="62"/>
-    <text x="100" y="296" class="lbl">Генерация токена</text>
-    <line x1="388" y1="289" x2="470" y2="289" stroke="#5E5850" stroke-width="2.5" marker-end="url(#mlArrow)"/>
-    <rect class="box-blue" x="478" y="258" width="400" height="62"/>
-    <text x="498" y="296" class="lbl" fill="#3576C0" font-weight="700">следующее слово из словаря</text>
-
-    <rect class="box-gray" x="80" y="346" width="300" height="62"/>
-    <text x="100" y="384" class="lbl">Письмо</text>
-    <line x1="388" y1="377" x2="470" y2="377" stroke="#5E5850" stroke-width="2.5" marker-end="url(#mlArrow)"/>
-    <rect class="box-blue" x="478" y="346" width="400" height="62"/>
-    <text x="498" y="384" class="lbl" fill="#3576C0" font-weight="700">спам / не спам</text>
-
-    <rect class="box-gray" x="80" y="434" width="300" height="62"/>
-    <text x="100" y="472" class="lbl">Картинка MNIST</text>
-    <line x1="388" y1="465" x2="470" y2="465" stroke="#5E5850" stroke-width="2.5" marker-end="url(#mlArrow)"/>
-    <rect class="box-blue" x="478" y="434" width="400" height="62"/>
-    <text x="498" y="472" class="lbl" fill="#3576C0" font-weight="700">цифра 0–9</text>
-
-    <text x="480" y="558" class="small" text-anchor="middle">Внутри модель считает вероятности, но итог — один дискретный класс</text>
-  </g>
-
-  <g data-key="step7" data-only="1">
-    <rect class="box-gray" x="80" y="170" width="300" height="62"/>
-    <text x="100" y="208" class="lbl">Дом (Ames Housing)</text>
-    <line x1="388" y1="201" x2="470" y2="201" stroke="#5E5850" stroke-width="2.5" marker-end="url(#mlArrow)"/>
-    <rect class="box-green" x="478" y="170" width="400" height="62"/>
-    <text x="498" y="208" class="lbl" fill="#73B222" font-weight="700">цена: $215 000</text>
-
-    <rect class="box-gray" x="80" y="258" width="300" height="62"/>
-    <text x="100" y="296" class="lbl">Погода на завтра</text>
-    <line x1="388" y1="289" x2="470" y2="289" stroke="#5E5850" stroke-width="2.5" marker-end="url(#mlArrow)"/>
-    <rect class="box-green" x="478" y="258" width="400" height="62"/>
-    <text x="498" y="296" class="lbl" fill="#73B222" font-weight="700">температура: 23.7 °C</text>
-
-    <rect class="box-gray" x="80" y="346" width="300" height="62"/>
-    <text x="100" y="384" class="lbl">Фото человека</text>
-    <line x1="388" y1="377" x2="470" y2="377" stroke="#5E5850" stroke-width="2.5" marker-end="url(#mlArrow)"/>
-    <rect class="box-green" x="478" y="346" width="400" height="62"/>
-    <text x="498" y="384" class="lbl" fill="#73B222" font-weight="700">возраст: 31.4 года</text>
-
-    <rect class="box-gray" x="80" y="434" width="300" height="62"/>
-    <text x="100" y="472" class="lbl">Замер пациента</text>
-    <line x1="388" y1="465" x2="470" y2="465" stroke="#5E5850" stroke-width="2.5" marker-end="url(#mlArrow)"/>
-    <rect class="box-green" x="478" y="434" width="400" height="62"/>
-    <text x="498" y="472" class="lbl" fill="#73B222" font-weight="700">рост: 172.4 см</text>
-
-    <text x="480" y="558" class="small" text-anchor="middle">Выход можно бесконечно дробить — это число, а не метка</text>
-  </g>
-
-  <g data-key="step8" data-only="1">
-    <rect class="box-blue" x="70" y="150" width="380" height="360"/>
-    <text x="260" y="195" class="text" text-anchor="middle" font-weight="800" fill="#3576C0">Дискретный выход</text>
-    <text x="260" y="222" class="lbl" text-anchor="middle" font-weight="700">→ классификация</text>
-    <g class="small" fill="#111111">
-      <text x="100" y="268">• конечный набор значений</text>
-      <text x="100" y="298">• метафора: кубик 1–6</text>
-      <text x="100" y="328">• лицо → «это Алиса»</text>
-      <text x="100" y="358">• токен → следующее слово</text>
-      <text x="100" y="388">• письмо → спам / не спам</text>
-      <text x="100" y="418">• картинка → цифра 0–9</text>
-    </g>
-
-    <rect class="box-green" x="510" y="150" width="380" height="360"/>
-    <text x="700" y="195" class="text" text-anchor="middle" font-weight="800" fill="#73B222">Непрерывный выход</text>
-    <text x="700" y="222" class="lbl" text-anchor="middle" font-weight="700">→ регрессия</text>
-    <g class="small" fill="#111111">
-      <text x="540" y="268">• бесконечный диапазон</text>
-      <text x="540" y="298">• метафора: рост человека</text>
-      <text x="540" y="328">• дом → цена $215 000</text>
-      <text x="540" y="358">• погода → 23.7 °C</text>
-      <text x="540" y="388">• фото → возраст 31.4 года</text>
-      <text x="540" y="418">• замер → рост 172.4 см</text>
-    </g>
-
-    <text x="480" y="555" class="text" text-anchor="middle" font-weight="700">Сначала смотрим на выход — он диктует выбор модели и метрики</text>
+  <g data-key="d6" data-only="1">
+    <text x="480" y="60" class="lbl" text-anchor="middle" font-weight="700">Дискретный выход = вектор вероятностей длины K</text>
+    <rect class="box-blue" x="60" y="100" width="260" height="170"/>
+    <text x="190" y="134" class="text" text-anchor="middle" font-weight="800" fill="#3576C0">K = 2</text>
+    <text x="190" y="158" class="small" text-anchor="middle">спам / не спам</text>
+    <rect x="105" y="180" width="70" height="70" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="205" y="243.9" width="70" height="6.1" fill="#3576C0" fill-opacity="0.35"/>
+    <line x1="84" y1="250" x2="296" y2="250" stroke="#5E5850" stroke-width="1.3"/>
+    <rect class="box-blue" x="350" y="100" width="260" height="170"/>
+    <text x="480" y="134" class="text" text-anchor="middle" font-weight="800" fill="#3576C0">K = 10</text>
+    <text x="480" y="158" class="small" text-anchor="middle">цифра 0–9</text>
+    <rect x="383" y="249" width="14" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="403" y="245.1" width="14" height="4.9" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="423" y="248.4" width="14" height="1.6" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="443" y="249" width="14" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="463" y="249" width="14" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="483" y="249" width="14" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="503" y="249" width="14" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="523" y="180" width="14" height="70" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="543" y="249" width="14" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="563" y="246.7" width="14" height="3.3" fill="#3576C0" fill-opacity="0.35"/>
+    <line x1="374" y1="250" x2="586" y2="250" stroke="#5E5850" stroke-width="1.3"/>
+    <rect class="box-blue" x="640" y="100" width="260" height="170"/>
+    <text x="770" y="134" class="text" text-anchor="middle" font-weight="800" fill="#3576C0">K ≈ 50 000</text>
+    <text x="770" y="158" class="small" text-anchor="middle">следующий токен</text>
+    <rect x="670.8" y="180" width="3.5" height="70" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="675.8" y="199.6" width="3.5" height="50.4" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="680.8" y="213.7" width="3.5" height="36.3" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="685.8" y="223.9" width="3.5" height="26.1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="690.8" y="231.2" width="3.5" height="18.8" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="695.8" y="236.5" width="3.5" height="13.5" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="700.8" y="240.2" width="3.5" height="9.8" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="705.8" y="243" width="3.5" height="7" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="710.8" y="244.9" width="3.5" height="5.1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="715.8" y="246.4" width="3.5" height="3.6" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="720.8" y="247.4" width="3.5" height="2.6" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="725.8" y="248.1" width="3.5" height="1.9" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="730.8" y="248.6" width="3.5" height="1.4" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="735.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="740.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="745.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="750.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="755.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="760.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="765.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="770.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="775.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="780.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="785.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="790.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="795.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="800.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="805.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="810.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="815.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="820.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="825.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="830.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="835.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="840.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="845.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="850.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="855.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="860.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <rect x="865.8" y="249" width="3.5" height="1" fill="#3576C0" fill-opacity="0.35"/>
+    <line x1="664" y1="250" x2="876" y2="250" stroke="#5E5850" stroke-width="1.3"/>
+    <rect class="box-green" x="60" y="310" width="400" height="120"/>
+    <text x="80" y="344" class="text" font-weight="800" fill="#73B222">argmax: берём самый вероятный</text>
+    <text x="80" y="374" class="small" fill="#111111">цифры: 7 с вероятностью 0.86 → ответ «7»</text>
+    <text x="80" y="400" class="small" fill="#111111">спам: 0.92 → письмо уходит в спам</text>
+    <rect class="box-yellow" x="500" y="310" width="400" height="120"/>
+    <text x="520" y="344" class="text" font-weight="800" fill="#C29E08">сэмплирование: тянем жребий</text>
+    <text x="520" y="374" class="small" fill="#111111">LLM берёт «ковре» с шансом 0.28,</text>
+    <text x="520" y="400" class="small" fill="#111111">«окне» — 0.21, … поэтому ответы разнообразны</text>
+    <text x="480" y="490" class="text" text-anchor="middle" font-weight="700">Сначала распределение, потом ответ из него</text>
+    <text x="480" y="518" class="small" text-anchor="middle">Произвольные K чисел превращает в такие вероятности softmax</text>
   </g>
 </svg>
   </div>
@@ -1456,58 +1597,495 @@ $$\text{выход} = f(\text{вход})$$
   </div>
 
   <div class="stage-notes">
-    <div class="step-panel" data-on="step1" data-focus="step1">
-      <div class="step-kicker">Шаг 1 · что на выходе</div>
-      <h4>Что вообще на выходе модели?</h4>
-      <p>Модель берёт вход и возвращает выход — вопрос в том, какие значения он может принимать. Ответ на этот вопрос делит все задачи ML на два больших класса.</p>
+    <div class="step-panel" data-on="d1" data-focus="d1">
+      <div class="step-kicker">Шаг 1 · кубик</div>
+      <h4>Каждому исходу — своя вероятность</h4>
+      <p>У кубика шесть исходов, и у каждого своя вероятность — по 1/6. Между столбиками пусто: значения 3.5 не существует, вероятность есть только у перечисленных исходов. Вместе они дают 1 — какой-то исход выпадет обязательно.</p>
     </div>
-    <div class="step-panel" data-on="step2" data-focus="step2">
-      <div class="step-kicker">Шаг 2 · дискретные значения</div>
-      <h4>Дискретные значения — стороны кубика</h4>
-      <p>У кубика есть только 6 сторон: 1, 2, 3, 4, 5 или 6. Другого исхода быть не может — 3.5 невозможно. Закрытый список из конечного числа исходов — это и есть дискретные значения.</p>
+    <div class="step-panel" data-on="d2" data-focus="d2">
+      <div class="step-kicker">Шаг 2 · нечестный кубик</div>
+      <h4>Распределение может быть любой формы</h4>
+      <p>У нечестного кубика шестёрка выпадает в половине случаев, а единица — в 5%. Форма другая, правила те же: каждая вероятность от 0 до 1, сумма равна 1. Модель с дискретным выходом — это машина, которая под каждый вход выдаёт свой такой кубик p(y | x).</p>
     </div>
-    <div class="step-panel" data-on="step3" data-focus="step3">
-      <div class="step-kicker">Шаг 3 · непрерывные значения</div>
-      <h4>Непрерывные значения — рост человека</h4>
-      <p>Рост можно описать в сантиметрах, миллиметрах и ещё точнее — шкала не заканчивается отдельными точками. Между 172 и 173 см есть миллиметры и ещё более мелкие значения — это непрерывные величины.</p>
+    <div class="step-panel" data-on="d3" data-focus="d3">
+      <div class="step-kicker">Шаг 3 · спам</div>
+      <h4>Два исхода: спам или не спам</h4>
+      <p>Самый простой случай — бинарная классификация. Модель смотрит на письмо и выдаёт P(спам) = 0.92, а значит P(не спам) = 0.08. Раз исходов два, хватает одного числа: второе всегда дополняет его до единицы.</p>
     </div>
-    <div class="step-panel" data-on="step4" data-focus="step4">
-      <div class="step-kicker">Шаг 4 · классификация</div>
-      <h4>Дискретный выход — классификация</h4>
-      <p>Модель выбирает один вариант из конечного списка классов — здесь «собака» из трёх возможных меток. Выход — одна из заранее известных меток, и это классификация.</p>
+    <div class="step-panel" data-on="d4" data-focus="d4">
+      <div class="step-kicker">Шаг 4 · цифра</div>
+      <h4>Десять исходов: какая цифра на картинке</h4>
+      <p>Многоклассовая классификация: картинка рукописной цифры превращается в вектор из 10 вероятностей. Почти вся масса у семёрки — 0.86, но похожие по начертанию 1 и 9 тоже получают заметные шансы. Это полезная информация: модель честно показывает, в чём сомневается.</p>
     </div>
-    <div class="step-panel" data-on="step5" data-focus="step5">
-      <div class="step-kicker">Шаг 5 · регрессия</div>
-      <h4>Непрерывный выход — регрессия</h4>
-      <p>Модель предсказывает число на непрерывной шкале — здесь цену дома по его площади. Выход — произвольное число, и это регрессия.</p>
+    <div class="step-panel" data-on="d5" data-focus="d5">
+      <div class="step-kicker">Шаг 5 · следующий токен</div>
+      <h4>Языковая модель: вероятность у каждого токена словаря</h4>
+      <p>LLM на каждом шаге решает ту же задачу, только вариантов не 10, а десятки тысяч — весь словарь. По фразе «Кот сидит на …» она выдаёт «ковре» 0.28, «окне» 0.21 и так далее. Даже «банан» получает свою крошечную вероятность: в векторе есть место для каждого токена.</p>
     </div>
-    <div class="step-panel" data-on="step6" data-focus="step6">
-      <div class="step-kicker">Шаг 6 · примеры классификации</div>
-      <h4>Примеры классификации (дискретный выход)</h4>
-      <p>Распознавание лица, генерация следующего токена, фильтрация спама, распознавание цифры — везде ответ один: метка из конечного набора. Внутри модель считает вероятности, но итог — один дискретный класс.</p>
-    </div>
-    <div class="step-panel" data-on="step7" data-focus="step7">
-      <div class="step-kicker">Шаг 7 · примеры регрессии</div>
-      <h4>Примеры регрессии (непрерывный выход)</h4>
-      <p>Цена дома, температура завтра, возраст по фото, рост пациента — везде ответ число на непрерывной шкале. Такой выход можно бесконечно дробить — это число, а не метка.</p>
-    </div>
-    <div class="step-panel" data-on="step8" data-focus="step8">
-      <div class="step-kicker">Шаг 8 · итог</div>
-      <h4>Тип выхода определяет тип задачи</h4>
-      <p>Дискретно — классификация, непрерывно — регрессия. Это базовое деление стоит держать в голове с самого начала: сначала смотрим на выход, а он уже диктует выбор модели и метрики качества.</p>
+    <div class="step-panel" data-on="d6" data-focus="d6">
+      <div class="step-kicker">Шаг 6 · итог</div>
+      <h4>Сначала вектор вероятностей, потом ответ</h4>
+      <p>Дискретный выход — всегда вектор длины K с суммой 1: K = 2 для спама, 10 для цифр, ~50 000 для токенов. Ответ из него получают двумя способами: argmax берёт самый вероятный вариант, сэмплирование тянет жребий с этими шансами — так LLM и пишет разнообразный текст.</p>
     </div>
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
 
-### 5.2. На самом деле выходов больше, чем «число или метка»
+> **Дискретный выход — это всегда вектор вероятностей длины K**, где K — число вариантов: 2 для спама, 10 для цифр, десятки тысяч для токенов. Сумма вектора равна 1, а конкретный ответ получают из него через argmax или сэмплирование.
+
+### 5.2. Непрерывный выход: плотность вероятности
+
+Теперь другой пример — рост человека. Кажется, что это тоже «просто число»: 172 см. Но если взять линейку точнее, получится 172.4 см, ещё точнее — 1724.4 мм, ещё точнее — 172.43856 см, и так без конца. Между 172 и 173 см нет пустого места, как между гранями кубика: там бесконечно много возможных значений.
+
+<div class="stage-figure" style="background:#ffffff;border:1px solid #E4E1D7;border-radius:14px;padding:20px;margin:24px 0;">
+<svg id="heightContinuum" viewBox="0 0 960 465" role="img" aria-label="Рост человека можно измерять сколь угодно точно">
+  <style>
+    #heightContinuum { font-family: Helvetica, Arial, sans-serif; }
+    #heightContinuum .text { font-size: 16px; fill: #111111; }
+    #heightContinuum .small { font-size: 13px; fill: #5E5850; }
+    #heightContinuum .lbl { font-size: 15px; fill: #111111; }
+    #heightContinuum .box-red { fill: #FFF2F2; stroke: #C30B0A; stroke-width: 1.45; rx: 14; }
+    #heightContinuum .box-green { fill: #F0FAF0; stroke: #73B222; stroke-width: 1.45; rx: 14; }
+  </style>
+  <g>
+    <text x="110" y="25" class="lbl">Возможный рост человека (см):</text>
+
+    <rect x="115" y="105" width="730" height="28" fill="#F0FAF0" stroke="#73B222" stroke-width="1.5" rx="6"/>
+
+    <g stroke="#73B222" stroke-width="2">
+      <line x1="115" y1="133" x2="115" y2="153"/><line x1="261" y1="133" x2="261" y2="153"/>
+      <line x1="407" y1="133" x2="407" y2="153"/><line x1="553" y1="133" x2="553" y2="153"/>
+      <line x1="699" y1="133" x2="699" y2="153"/><line x1="845" y1="133" x2="845" y2="153"/>
+    </g>
+    <g class="small" text-anchor="middle">
+      <text x="115" y="175">150 см</text><text x="261" y="175">160 см</text>
+      <text x="407" y="175">170 см</text><text x="553" y="175">180 см</text>
+      <text x="699" y="175">190 см</text><text x="845" y="175">200 см</text>
+    </g>
+
+    <polygon points="443,72 432,94 454,94" fill="#C30B0A"/>
+    <line x1="443" y1="94" x2="443" y2="133" stroke="#C30B0A" stroke-width="2.5"/>
+    <text x="443" y="55" text-anchor="middle" font-size="18" font-weight="800" fill="#C30B0A">172.43856… см</text>
+
+    <text x="480" y="225" class="lbl" text-anchor="middle" font-weight="700">Увеличим маленький участок между 172 и 173 см</text>
+    <line x1="360" y1="249" x2="600" y2="249" stroke="#5E5850" stroke-width="1.6" stroke-dasharray="5 5"/>
+    <line x1="443" y1="133" x2="360" y2="249" stroke="#5E5850" stroke-width="1.2" stroke-dasharray="5 5"/>
+    <line x1="458" y1="133" x2="600" y2="249" stroke="#5E5850" stroke-width="1.2" stroke-dasharray="5 5"/>
+
+    <rect x="300" y="270" width="360" height="24" fill="#F0FAF0" stroke="#73B222" stroke-width="1.5" rx="6"/>
+    <g stroke="#73B222" stroke-width="1.6">
+      <line x1="300" y1="294" x2="300" y2="313"/>
+      <line x1="336" y1="294" x2="336" y2="305"/>
+      <line x1="372" y1="294" x2="372" y2="305"/>
+      <line x1="408" y1="294" x2="408" y2="305"/>
+      <line x1="444" y1="294" x2="444" y2="305"/>
+      <line x1="480" y1="294" x2="480" y2="313"/>
+      <line x1="516" y1="294" x2="516" y2="305"/>
+      <line x1="552" y1="294" x2="552" y2="305"/>
+      <line x1="588" y1="294" x2="588" y2="305"/>
+      <line x1="624" y1="294" x2="624" y2="305"/>
+      <line x1="660" y1="294" x2="660" y2="313"/>
+    </g>
+    <g class="small" text-anchor="middle">
+      <text x="300" y="335">172.0 см</text>
+      <text x="480" y="335">172.5 см</text>
+      <text x="660" y="335">173.0 см</text>
+      <text x="300" y="357">1720 мм</text>
+      <text x="480" y="357">1725 мм</text>
+      <text x="660" y="357">1730 мм</text>
+    </g>
+
+    <polygon points="458,247 450,263 466,263" fill="#C30B0A"/>
+    <line x1="458" y1="263" x2="458" y2="294" stroke="#C30B0A" stroke-width="2"/>
+    <text x="458" y="390" text-anchor="middle" font-size="15" font-weight="800" fill="#C30B0A">172.43856 см = 1724.3856 мм</text>
+
+    <text x="480" y="425" class="small" text-anchor="middle">Можно записать грубо: 172 см, точнее: 1724 мм, ещё точнее: 172.43856 см.</text>
+    <text x="480" y="449" class="small" text-anchor="middle">Между 172 и 173 см есть миллиметры и ещё более мелкие значения — <tspan fill="#73B222" font-weight="700">непрерывные</tspan></text>
+  </g>
+</svg>
+</div>
+
+Такая величина называется **непрерывной**: её значения сплошь заполняют отрезок, и пересчитать их нельзя. Рост, цена, температура, угол сустава робота — всё это непрерывные величины.
+
+И здесь таблица уже не работает. Значений бесконечно много: если раздать каждому хоть какую-то положительную вероятность, сумма получится бесконечной, а не равной 1. Поэтому вероятность попасть ровно в одно значение — скажем, в 172.4000… см — равна нулю. Вместо таблицы у непрерывной величины есть **плотность вероятности** `p(y)` — кривая, под которой вероятность измеряется площадью:
+
+$$P(a \le Y \le b) = \int_a^b p(y)\,dy, \qquad \int_{-\infty}^{\infty} p(y)\,dy = 1$$
+
+Сумма из дискретного случая превращается в интеграл, а «вероятность значения» — в «вероятность отрезка».
+
+Самая частая форма такой кривой — нормальное распределение, «колокол». Его задают всего два числа: центр `μ` и ширина `σ`. Регрессионная модель, по сути, выдаёт именно их, а чаще всего — только центр `μ`.
+
+<div class="stage" id="stageContinuousOut" tabindex="0">
+  <div class="stage-figure">
+<svg id="mlContinuousOut" viewBox="0 0 960 580" role="img" aria-label="Непрерывный выход: плотность вероятности">
+  <style>
+    #mlContinuousOut { font-family: Helvetica, Arial, sans-serif; }
+    #mlContinuousOut .text { font-size: 16px; fill: #111111; }
+    #mlContinuousOut .small { font-size: 13px; fill: #5E5850; }
+    #mlContinuousOut .lbl { font-size: 15px; fill: #111111; }
+    #mlContinuousOut .val { font-size: 13px; font-weight: 700; fill: #111111; }
+    #mlContinuousOut .box-blue   { fill: #ffffff; stroke: #3576C0; stroke-width: 1.45; rx: 14; }
+    #mlContinuousOut .box-yellow { fill: #FFFBEB; stroke: #C29E08; stroke-width: 1.45; rx: 14; }
+    #mlContinuousOut .box-green  { fill: #F0FAF0; stroke: #73B222; stroke-width: 1.45; rx: 14; }
+    #mlContinuousOut .box-red    { fill: #FFF2F2; stroke: #C30B0A; stroke-width: 1.45; rx: 14; }
+    #mlContinuousOut .box-gray   { fill: #F6F5F3; stroke: #5E5850; stroke-width: 1.3; rx: 14; }
+    #mlContinuousOut .box-dark   { fill: #1b1d26; rx: 14; }
+  </style>
+  <defs>
+    <marker id="coArrow" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto">
+      <path d="M0,0 L8,3.5 L0,7 Z" fill="#5E5850"/>
+    </marker>
+    <marker id="coArrowY" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L8,3.5 L0,7 Z" fill="#C29E08"/>
+    </marker>
+  </defs>
+
+  <g data-key="c1" data-only="1">
+    <text x="480" y="60" class="lbl" text-anchor="middle" font-weight="700">Рост взрослых людей: сгруппируем по 10 см</text>
+    <rect x="142" y="418" width="116" height="12" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="200" y="408" class="val" text-anchor="middle">0.02</text>
+    <rect x="262" y="346" width="116" height="84" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="320" y="336" class="val" text-anchor="middle">0.14</text>
+    <rect x="382" y="226" width="116" height="204" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="440" y="216" class="val" text-anchor="middle">0.34</text>
+    <rect x="502" y="226" width="116" height="204" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="560" y="216" class="val" text-anchor="middle">0.34</text>
+    <rect x="622" y="346" width="116" height="84" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="680" y="336" class="val" text-anchor="middle">0.14</text>
+    <rect x="742" y="418" width="116" height="12" fill="#3576C0" fill-opacity="0.18" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="800" y="408" class="val" text-anchor="middle">0.02</text>
+    <line x1="130" y1="430" x2="872" y2="430" stroke="#5E5850" stroke-width="2"/>
+    <line x1="140" y1="430" x2="140" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="140" y="454" class="small" text-anchor="middle">140</text>
+    <line x1="260" y1="430" x2="260" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="260" y="454" class="small" text-anchor="middle">150</text>
+    <line x1="380" y1="430" x2="380" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="380" y="454" class="small" text-anchor="middle">160</text>
+    <line x1="500" y1="430" x2="500" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="500" y="454" class="small" text-anchor="middle">170</text>
+    <line x1="620" y1="430" x2="620" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="620" y="454" class="small" text-anchor="middle">180</text>
+    <line x1="740" y1="430" x2="740" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="740" y="454" class="small" text-anchor="middle">190</text>
+    <line x1="860" y1="430" x2="860" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="860" y="454" class="small" text-anchor="middle">200</text>
+    <text x="884" y="454" class="small">см</text>
+    <text x="480" y="510" class="text" text-anchor="middle" font-weight="700">0.02 + 0.14 + 0.34 + 0.34 + 0.14 + 0.02 = 1</text>
+    <text x="480" y="540" class="small" text-anchor="middle">Пока это такая же таблица, как у кубика. Но рост можно мерить сколь угодно точно…</text>
+  </g>
+
+  <g data-key="c2" data-only="1">
+    <text x="480" y="60" class="lbl" text-anchor="middle" font-weight="700">Сузим столбики до 2 см и разделим высоту на ширину</text>
+    <text x="480" y="88" class="small" text-anchor="middle">высота = вероятность ÷ ширина столбика: это «вероятность на 1 см», плотность</text>
+    <rect x="141" y="427" width="22" height="3" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="165" y="424.7" width="22" height="5.3" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="189" y="421.2" width="22" height="8.8" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="213" y="415.7" width="22" height="14.3" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="237" y="407.9" width="22" height="22.1" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="261" y="397" width="22" height="33" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="285" y="382.8" width="22" height="47.2" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="309" y="365.1" width="22" height="64.9" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="333" y="344.2" width="22" height="85.8" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="357" y="321" width="22" height="109" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="381" y="297" width="22" height="133" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="405" y="274" width="22" height="156" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="429" y="254.2" width="22" height="175.8" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="453" y="239.6" width="22" height="190.4" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="477" y="231.9" width="22" height="198.1" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="501" y="231.9" width="22" height="198.1" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="525" y="239.6" width="22" height="190.4" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="549" y="254.2" width="22" height="175.8" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="573" y="274" width="22" height="156" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="597" y="297" width="22" height="133" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="621" y="321" width="22" height="109" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="645" y="344.2" width="22" height="85.8" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="669" y="365.1" width="22" height="64.9" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="693" y="382.8" width="22" height="47.2" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="717" y="397" width="22" height="33" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="741" y="407.9" width="22" height="22.1" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="765" y="415.7" width="22" height="14.3" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="789" y="421.2" width="22" height="8.8" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="813" y="424.7" width="22" height="5.3" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <rect x="837" y="427" width="22" height="3" fill="#3576C0" fill-opacity="0.16" stroke="#3576C0" stroke-width="1"/>
+    <path d="M140,427.8 L146,427.4 L152,427 L158,426.6 L164,426 L170,425.5 L176,424.8 L182,424 L188,423.2 L194,422.3 L200,421.2 L206,420.1 L212,418.8 L218,417.4 L224,415.8 L230,414.1 L236,412.3 L242,410.2 L248,408 L254,405.6 L260,403 L266,400.2 L272,397.2 L278,394 L284,390.5 L290,386.9 L296,383 L302,378.9 L308,374.5 L314,370 L320,365.2 L326,360.3 L332,355.1 L338,349.8 L344,344.3 L350,338.7 L356,332.9 L362,327 L368,321.1 L374,315.1 L380,309 L386,303 L392,297 L398,291 L404,285.2 L410,279.4 L416,273.9 L422,268.5 L428,263.4 L434,258.5 L440,254 L446,249.7 L452,245.9 L458,242.4 L464,239.3 L470,236.7 L476,234.5 L482,232.8 L488,231.5 L494,230.8 L500,230.5 L506,230.8 L512,231.5 L518,232.8 L524,234.5 L530,236.7 L536,239.3 L542,242.4 L548,245.9 L554,249.7 L560,254 L566,258.5 L572,263.4 L578,268.5 L584,273.9 L590,279.4 L596,285.2 L602,291 L608,297 L614,303 L620,309 L626,315.1 L632,321.1 L638,327 L644,332.9 L650,338.7 L656,344.3 L662,349.8 L668,355.1 L674,360.3 L680,365.2 L686,370 L692,374.5 L698,378.9 L704,383 L710,386.9 L716,390.5 L722,394 L728,397.2 L734,400.2 L740,403 L746,405.6 L752,408 L758,410.2 L764,412.3 L770,414.1 L776,415.8 L782,417.4 L788,418.8 L794,420.1 L800,421.2 L806,422.3 L812,423.2 L818,424 L824,424.8 L830,425.5 L836,426 L842,426.6 L848,427 L854,427.4 L860,427.8" fill="none" stroke="#73B222" stroke-width="3"/>
+    <line x1="130" y1="230.0" x2="138" y2="230.0" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="124" y="235.0" class="small" text-anchor="end">0.04</text>
+    <text x="124" y="212.0" class="small" text-anchor="end">1/см</text>
+    <text x="700" y="250" class="lbl" font-weight="700" fill="#73B222">кривая p(y)</text>
+    <line x1="130" y1="430" x2="872" y2="430" stroke="#5E5850" stroke-width="2"/>
+    <line x1="140" y1="430" x2="140" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="140" y="454" class="small" text-anchor="middle">140</text>
+    <line x1="260" y1="430" x2="260" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="260" y="454" class="small" text-anchor="middle">150</text>
+    <line x1="380" y1="430" x2="380" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="380" y="454" class="small" text-anchor="middle">160</text>
+    <line x1="500" y1="430" x2="500" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="500" y="454" class="small" text-anchor="middle">170</text>
+    <line x1="620" y1="430" x2="620" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="620" y="454" class="small" text-anchor="middle">180</text>
+    <line x1="740" y1="430" x2="740" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="740" y="454" class="small" text-anchor="middle">190</text>
+    <line x1="860" y1="430" x2="860" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="860" y="454" class="small" text-anchor="middle">200</text>
+    <text x="884" y="454" class="small">см</text>
+    <text x="480" y="510" class="text" text-anchor="middle" font-weight="700">Чем уже столбики, тем ближе их верхушки к гладкой кривой</text>
+    <text x="480" y="540" class="small" text-anchor="middle">В пределе остаётся только кривая p(y) — плотность вероятности</text>
+  </g>
+
+  <g data-key="c3" data-only="1">
+    <text x="480" y="60" class="lbl" text-anchor="middle" font-weight="700">Вероятность — это площадь под кривой</text>
+    <path d="M500,430 L500,230.5 L501.5,230.5 L503,230.6 L504.5,230.7 L506,230.8 L507.5,230.9 L509,231.1 L510.5,231.3 L512,231.5 L513.5,231.8 L515,232.1 L516.5,232.4 L518,232.8 L519.5,233.1 L521,233.6 L522.5,234 L524,234.5 L525.5,235 L527,235.5 L528.5,236.1 L530,236.7 L531.5,237.3 L533,237.9 L534.5,238.6 L536,239.3 L537.5,240 L539,240.8 L540.5,241.6 L542,242.4 L543.5,243.2 L545,244.1 L546.5,245 L548,245.9 L549.5,246.8 L551,247.8 L552.5,248.7 L554,249.7 L555.5,250.8 L557,251.8 L558.5,252.9 L560,254 L560,430 Z" fill="#73B222" fill-opacity="0.28"/>
+    <path d="M140,427.8 L146,427.4 L152,427 L158,426.6 L164,426 L170,425.5 L176,424.8 L182,424 L188,423.2 L194,422.3 L200,421.2 L206,420.1 L212,418.8 L218,417.4 L224,415.8 L230,414.1 L236,412.3 L242,410.2 L248,408 L254,405.6 L260,403 L266,400.2 L272,397.2 L278,394 L284,390.5 L290,386.9 L296,383 L302,378.9 L308,374.5 L314,370 L320,365.2 L326,360.3 L332,355.1 L338,349.8 L344,344.3 L350,338.7 L356,332.9 L362,327 L368,321.1 L374,315.1 L380,309 L386,303 L392,297 L398,291 L404,285.2 L410,279.4 L416,273.9 L422,268.5 L428,263.4 L434,258.5 L440,254 L446,249.7 L452,245.9 L458,242.4 L464,239.3 L470,236.7 L476,234.5 L482,232.8 L488,231.5 L494,230.8 L500,230.5 L506,230.8 L512,231.5 L518,232.8 L524,234.5 L530,236.7 L536,239.3 L542,242.4 L548,245.9 L554,249.7 L560,254 L566,258.5 L572,263.4 L578,268.5 L584,273.9 L590,279.4 L596,285.2 L602,291 L608,297 L614,303 L620,309 L626,315.1 L632,321.1 L638,327 L644,332.9 L650,338.7 L656,344.3 L662,349.8 L668,355.1 L674,360.3 L680,365.2 L686,370 L692,374.5 L698,378.9 L704,383 L710,386.9 L716,390.5 L722,394 L728,397.2 L734,400.2 L740,403 L746,405.6 L752,408 L758,410.2 L764,412.3 L770,414.1 L776,415.8 L782,417.4 L788,418.8 L794,420.1 L800,421.2 L806,422.3 L812,423.2 L818,424 L824,424.8 L830,425.5 L836,426 L842,426.6 L848,427 L854,427.4 L860,427.8" fill="none" stroke="#73B222" stroke-width="3"/>
+    <text x="600" y="250" class="lbl" font-weight="700" fill="#73B222">P(170 ≤ рост ≤ 175) ≈ 0.19</text>
+    <line x1="596" y1="256" x2="552" y2="330" stroke="#73B222" stroke-width="1.5"/>
+    <line x1="528.8" y1="430" x2="528.8" y2="150" stroke="#C30B0A" stroke-width="2" stroke-dasharray="5 4"/>
+    <text x="528.8" y="118" text-anchor="middle" font-size="15" font-weight="800" fill="#C30B0A">P(рост = 172.4 ровно) = 0</text>
+    <text x="528.8" y="140" class="small" text-anchor="middle" fill="#C30B0A">у отрезка нулевой ширины площадь нулевая</text>
+    <line x1="130" y1="430" x2="872" y2="430" stroke="#5E5850" stroke-width="2"/>
+    <line x1="140" y1="430" x2="140" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="140" y="454" class="small" text-anchor="middle">140</text>
+    <line x1="260" y1="430" x2="260" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="260" y="454" class="small" text-anchor="middle">150</text>
+    <line x1="380" y1="430" x2="380" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="380" y="454" class="small" text-anchor="middle">160</text>
+    <line x1="500" y1="430" x2="500" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="500" y="454" class="small" text-anchor="middle">170</text>
+    <line x1="620" y1="430" x2="620" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="620" y="454" class="small" text-anchor="middle">180</text>
+    <line x1="740" y1="430" x2="740" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="740" y="454" class="small" text-anchor="middle">190</text>
+    <line x1="860" y1="430" x2="860" y2="436" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="860" y="454" class="small" text-anchor="middle">200</text>
+    <text x="884" y="454" class="small">см</text>
+    <text x="480" y="510" class="text" text-anchor="middle" font-weight="700">Вся площадь под кривой = 1 — как сумма столбиков у кубика</text>
+    <text x="480" y="540" class="small" text-anchor="middle">p(172.4) ≈ 0.039 на 1 см — это плотность, а не вероятность</text>
+  </g>
+
+  <g data-key="c4" data-only="1">
+    <rect class="box-blue" x="40" y="70" width="250" height="70"/>
+    <text x="165" y="100" class="lbl" text-anchor="middle">дом: площадь, район,</text>
+    <text x="165" y="122" class="lbl" text-anchor="middle">год постройки</text>
+    <line x1="296" y1="105" x2="342" y2="105" stroke="#5E5850" stroke-width="2.5" marker-end="url(#coArrow)"/>
+    <rect class="box-dark" x="350" y="70" width="130" height="70"/>
+    <text x="415" y="111" text-anchor="middle" font-size="18" font-weight="800" fill="#ffffff">модель</text>
+    <line x1="486" y1="105" x2="532" y2="105" stroke="#5E5850" stroke-width="2.5" marker-end="url(#coArrow)"/>
+    <text x="542" y="111" class="text" font-weight="700" fill="#73B222">кривая p(цена | дом)</text>
+    <path d="M428,450 L428,309 L431.6,304.2 L435.2,299.4 L438.8,294.8 L442.4,290.3 L446,285.9 L449.6,281.7 L453.2,277.7 L456.8,274 L460.4,270.4 L464,267.1 L467.6,264.1 L471.2,261.3 L474.8,258.8 L478.4,256.7 L482,254.8 L485.6,253.3 L489.2,252.1 L492.8,251.2 L496.4,250.7 L500,250.5 L503.6,250.7 L507.2,251.2 L510.8,252.1 L514.4,253.3 L518,254.8 L521.6,256.7 L525.2,258.8 L528.8,261.3 L532.4,264.1 L536,267.1 L539.6,270.4 L543.2,274 L546.8,277.7 L550.4,281.7 L554,285.9 L557.6,290.3 L561.2,294.8 L564.8,299.4 L568.4,304.2 L572,309 L572,450 Z" fill="#73B222" fill-opacity="0.28"/>
+    <path d="M140,450 L146,450 L152,449.9 L158,449.9 L164,449.9 L170,449.9 L176,449.8 L182,449.8 L188,449.7 L194,449.6 L200,449.5 L206,449.4 L212,449.2 L218,449 L224,448.8 L230,448.5 L236,448.1 L242,447.7 L248,447.2 L254,446.5 L260,445.8 L266,444.9 L272,443.9 L278,442.7 L284,441.2 L290,439.6 L296,437.7 L302,435.6 L308,433.1 L314,430.3 L320,427.2 L326,423.7 L332,419.9 L338,415.6 L344,410.9 L350,405.8 L356,400.3 L362,394.3 L368,387.9 L374,381.1 L380,374 L386,366.5 L392,358.7 L398,350.6 L404,342.4 L410,334.1 L416,325.7 L422,317.3 L428,309 L434,301 L440,293.3 L446,285.9 L452,279.1 L458,272.8 L464,267.1 L470,262.2 L476,258.1 L482,254.8 L488,252.4 L494,251 L500,250.5 L506,251 L512,252.4 L518,254.8 L524,258.1 L530,262.2 L536,267.1 L542,272.8 L548,279.1 L554,285.9 L560,293.3 L566,301 L572,309 L578,317.3 L584,325.7 L590,334.1 L596,342.4 L602,350.6 L608,358.7 L614,366.5 L620,374 L626,381.1 L632,387.9 L638,394.3 L644,400.3 L650,405.8 L656,410.9 L662,415.6 L668,419.9 L674,423.7 L680,427.2 L686,430.3 L692,433.1 L698,435.6 L704,437.7 L710,439.6 L716,441.2 L722,442.7 L728,443.9 L734,444.9 L740,445.8 L746,446.5 L752,447.2 L758,447.7 L764,448.1 L770,448.5 L776,448.8 L782,449 L788,449.2 L794,449.4 L800,449.5 L806,449.6 L812,449.7 L818,449.8 L824,449.8 L830,449.9 L836,449.9 L842,449.9 L848,449.9 L854,450 L860,450" fill="none" stroke="#73B222" stroke-width="3"/>
+    <line x1="500" y1="450" x2="500" y2="250.5" stroke="#73B222" stroke-width="1.5" stroke-dasharray="5 4"/>
+    <text x="500" y="236.5" class="lbl" text-anchor="middle" font-weight="800" fill="#73B222">μ = 215 000 $</text>
+    <line x1="504" y1="329" x2="582.4" y2="329" stroke="#C29E08" stroke-width="2.5" marker-start="url(#coArrowY)" marker-end="url(#coArrowY)"/>
+    <text x="596.4" y="334" class="lbl" font-weight="700" fill="#C29E08">σ ≈ 18 000 $</text>
+    <text x="380" y="318" class="lbl" text-anchor="end" font-weight="700" fill="#73B222">P(200–230 тыс. $) ≈ 0.60</text>
+    <line x1="372" y1="326" x2="450" y2="405" stroke="#73B222" stroke-width="1.5"/>
+    <line x1="130" y1="450" x2="872" y2="450" stroke="#5E5850" stroke-width="2"/>
+    <line x1="140" y1="450" x2="140" y2="456" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="140" y="474" class="small" text-anchor="middle">140</text>
+    <line x1="284" y1="450" x2="284" y2="456" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="284" y="474" class="small" text-anchor="middle">170</text>
+    <line x1="428" y1="450" x2="428" y2="456" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="428" y="474" class="small" text-anchor="middle">200</text>
+    <line x1="572" y1="450" x2="572" y2="456" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="572" y="474" class="small" text-anchor="middle">230</text>
+    <line x1="716" y1="450" x2="716" y2="456" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="716" y="474" class="small" text-anchor="middle">260</text>
+    <line x1="860" y1="450" x2="860" y2="456" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="860" y="474" class="small" text-anchor="middle">290</text>
+    <text x="884" y="474" class="small">тыс. $</text>
+    <text x="480" y="525" class="text" text-anchor="middle" font-weight="700">Не одна цена, а кривая: центр μ и разброс σ</text>
+    <text x="480" y="553" class="small" text-anchor="middle">Упрощённый пример в духе Ames Housing, числа иллюстративные</text>
+  </g>
+
+  <g data-key="c5" data-only="1">
+    <text x="480" y="60" class="lbl" text-anchor="middle" font-weight="700">Погода → температура: центр один, уверенность разная</text>
+    <line x1="440" y1="450" x2="440" y2="250" stroke="#5E5850" stroke-width="1.2" stroke-dasharray="4 4"/>
+    <line x1="530" y1="450" x2="530" y2="250" stroke="#5E5850" stroke-width="1.2" stroke-dasharray="4 4"/>
+    <path d="M440,450 L440,329 L442.2,322.1 L444.5,315.1 L446.8,308.1 L449,301.2 L451.2,294.3 L453.5,287.4 L455.7,280.7 L458,274.2 L460.2,267.8 L462.5,261.8 L464.8,255.9 L467,250.4 L469.3,245.3 L471.5,240.6 L473.8,236.2 L476,232.4 L478.2,229 L480.5,226.1 L482.8,223.8 L485,222 L487.2,220.7 L489.5,220.1 L491.8,220 L494,220.5 L496.2,221.5 L498.5,223.1 L500.7,225.3 L503,228 L505.2,231.2 L507.5,234.9 L509.8,239.1 L512,243.7 L514.2,248.7 L516.5,254.1 L518.8,259.8 L521,265.8 L523.2,272 L525.5,278.5 L527.8,285.2 L530,292 L530,450 Z" fill="#73B222" fill-opacity="0.22"/>
+    <path d="M140,448.8 L146,448.6 L152,448.4 L158,448.2 L164,447.9 L170,447.6 L176,447.2 L182,446.9 L188,446.4 L194,446 L200,445.4 L206,444.9 L212,444.2 L218,443.5 L224,442.7 L230,441.9 L236,441 L242,440 L248,438.9 L254,437.7 L260,436.5 L266,435.1 L272,433.7 L278,432.1 L284,430.5 L290,428.8 L296,427 L302,425 L308,423 L314,420.9 L320,418.7 L326,416.5 L332,414.1 L338,411.7 L344,409.3 L350,406.7 L356,404.2 L362,401.6 L368,399 L374,396.4 L380,393.8 L386,391.2 L392,388.6 L398,386.1 L404,383.7 L410,381.3 L416,379 L422,376.9 L428,374.8 L434,372.9 L440,371.2 L446,369.6 L452,368.2 L458,366.9 L464,365.9 L470,365 L476,364.4 L482,364 L488,363.8 L494,363.8 L500,364 L506,364.4 L512,365 L518,365.9 L524,366.9 L530,368.2 L536,369.6 L542,371.2 L548,372.9 L554,374.8 L560,376.9 L566,379 L572,381.3 L578,383.7 L584,386.1 L590,388.6 L596,391.2 L602,393.8 L608,396.4 L614,399 L620,401.6 L626,404.2 L632,406.7 L638,409.3 L644,411.7 L650,414.1 L656,416.5 L662,418.7 L668,420.9 L674,423 L680,425 L686,427 L692,428.8 L698,430.5 L704,432.1 L710,433.7 L716,435.1 L722,436.5 L728,437.7 L734,438.9 L740,440 L746,441 L752,441.9 L758,442.7 L764,443.5 L770,444.2 L776,444.9 L782,445.4 L788,446 L794,446.4 L800,446.9 L806,447.2 L812,447.6 L818,447.9 L824,448.2 L830,448.4 L836,448.6 L842,448.8 L848,449 L854,449.1 L860,449.2" fill="none" stroke="#5E5850" stroke-width="2.5" stroke-dasharray="7 5"/>
+    <path d="M140,450 L146,450 L152,450 L158,450 L164,450 L170,450 L176,450 L182,450 L188,450 L194,450 L200,450 L206,450 L212,450 L218,450 L224,450 L230,450 L236,450 L242,450 L248,450 L254,450 L260,450 L266,450 L272,450 L278,450 L284,450 L290,450 L296,450 L302,450 L308,449.9 L314,449.9 L320,449.8 L326,449.7 L332,449.6 L338,449.3 L344,448.9 L350,448.3 L356,447.4 L362,446.2 L368,444.5 L374,442.2 L380,439 L386,434.9 L392,429.5 L398,422.8 L404,414.5 L410,404.5 L416,392.6 L422,379 L428,363.7 L434,346.9 L440,329 L446,310.5 L452,292 L458,274.2 L464,257.8 L470,243.7 L476,232.4 L482,224.5 L488,220.5 L494,220.5 L500,224.5 L506,232.4 L512,243.7 L518,257.8 L524,274.2 L530,292 L536,310.5 L542,329 L548,346.9 L554,363.7 L560,379 L566,392.6 L572,404.5 L578,414.5 L584,422.8 L590,429.5 L596,434.9 L602,439 L608,442.2 L614,444.5 L620,446.2 L626,447.4 L632,448.3 L638,448.9 L644,449.3 L650,449.6 L656,449.7 L662,449.8 L668,449.9 L674,449.9 L680,450 L686,450 L692,450 L698,450 L704,450 L710,450 L716,450 L722,450 L728,450 L734,450 L740,450 L746,450 L752,450 L758,450 L764,450 L770,450 L776,450 L782,450 L788,450 L794,450 L800,450 L806,450 L812,450 L818,450 L824,450 L830,450 L836,450 L842,450 L848,450 L854,450 L860,450" fill="none" stroke="#73B222" stroke-width="3"/>
+    <text x="491" y="207.9" class="lbl" text-anchor="middle" font-weight="800" fill="#73B222">μ = 23.7 °C</text>
+    <line x1="560" y1="150" x2="590" y2="150" stroke="#73B222" stroke-width="3"/>
+    <text x="600" y="155" class="lbl" fill="#111111">завтра: σ = 1.5 °C, P(22–25) ≈ 0.68</text>
+    <line x1="560" y1="180" x2="590" y2="180" stroke="#5E5850" stroke-width="2.5" stroke-dasharray="7 5"/>
+    <text x="600" y="185" class="lbl" fill="#111111">через неделю: σ = 4 °C, P(22–25) ≈ 0.29</text>
+    <line x1="130" y1="450" x2="872" y2="450" stroke="#5E5850" stroke-width="2"/>
+    <line x1="140" y1="450" x2="140" y2="456" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="140" y="474" class="small" text-anchor="middle">12</text>
+    <line x1="260" y1="450" x2="260" y2="456" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="260" y="474" class="small" text-anchor="middle">16</text>
+    <line x1="380" y1="450" x2="380" y2="456" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="380" y="474" class="small" text-anchor="middle">20</text>
+    <line x1="500" y1="450" x2="500" y2="456" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="500" y="474" class="small" text-anchor="middle">24</text>
+    <line x1="620" y1="450" x2="620" y2="456" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="620" y="474" class="small" text-anchor="middle">28</text>
+    <line x1="740" y1="450" x2="740" y2="456" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="740" y="474" class="small" text-anchor="middle">32</text>
+    <line x1="860" y1="450" x2="860" y2="456" stroke="#5E5850" stroke-width="1.5"/>
+    <text x="860" y="474" class="small" text-anchor="middle">36</text>
+    <text x="884" y="474" class="small">°C</text>
+    <text x="480" y="525" class="text" text-anchor="middle" font-weight="700">Ширина σ — неуверенность модели, центр μ — её лучший прогноз</text>
+    <text x="480" y="553" class="small" text-anchor="middle">Чем дальше прогноз, тем шире кривая и тем меньше вероятность любого узкого интервала</text>
+  </g>
+
+  <g data-key="c6" data-only="1">
+    <text x="480" y="50" class="lbl" text-anchor="middle" font-weight="700">Робот-манипулятор: выход — вектор из непрерывных чисел</text>
+    <rect class="box-blue" x="40" y="80" width="280" height="70"/>
+    <text x="180" y="110" class="lbl" text-anchor="middle">кадр камеры +</text>
+    <text x="180" y="132" class="lbl" text-anchor="middle">«возьми кубик»</text>
+    <line x1="326" y1="115" x2="372" y2="115" stroke="#5E5850" stroke-width="2.5" marker-end="url(#coArrow)"/>
+    <rect class="box-dark" x="380" y="80" width="160" height="70"/>
+    <text x="460" y="121" text-anchor="middle" font-size="18" font-weight="800" fill="#ffffff">политика</text>
+    <line x1="546" y1="115" x2="592" y2="115" stroke="#5E5850" stroke-width="2.5" marker-end="url(#coArrow)"/>
+    <text x="602" y="121" class="text" font-weight="700" fill="#73B222">6 непрерывных чисел</text>
+    <rect class="box-gray" x="40" y="200" width="135" height="230"/>
+    <text x="107.5" y="230" class="lbl" text-anchor="middle" font-weight="700">сустав 1</text>
+    <path d="M46.3,379.7 L48.3,379.6 L50.4,379.4 L52.4,379.2 L54.5,378.9 L56.5,378.5 L58.5,377.9 L60.6,377.2 L62.6,376.2 L64.7,375 L66.7,373.5 L68.7,371.6 L70.8,369.4 L72.8,366.7 L74.9,363.6 L76.9,360 L78.9,355.9 L81,351.3 L83,346.3 L85.1,340.9 L87.1,335.3 L89.1,329.5 L91.2,323.6 L93.2,317.9 L95.3,312.5 L97.3,307.6 L99.3,303.3 L101.4,299.8 L103.4,297.2 L105.5,295.5 L107.5,295 L109.5,295.5 L111.6,297.2 L113.6,299.8 L115.7,303.3 L117.7,307.6 L119.7,312.5 L121.8,317.9 L123.8,323.6 L125.9,329.5 L127.9,335.3 L129.9,340.9 L132,346.3 L134,351.3 L136.1,355.9 L138.1,360 L140.1,363.6 L142.2,366.7 L144.2,369.4 L146.3,371.6 L148.3,373.5 L150.3,375 L152.4,376.2 L154.4,377.2 L156.5,377.9 L158.5,378.5 L160.5,378.9 L162.6,379.2 L164.6,379.4 L166.7,379.6 L168.7,379.7" fill="none" stroke="#73B222" stroke-width="2.5"/>
+    <line x1="50" y1="380" x2="165" y2="380" stroke="#5E5850" stroke-width="1.3"/>
+    <line x1="107.5" y1="380" x2="107.5" y2="295" stroke="#73B222" stroke-width="1.3" stroke-dasharray="4 3"/>
+    <text x="107.5" y="410" class="lbl" text-anchor="middle" font-weight="800" fill="#73B222">μ = 12.4°</text>
+    <rect class="box-gray" x="190" y="200" width="135" height="230"/>
+    <text x="257.5" y="230" class="lbl" text-anchor="middle" font-weight="700">сустав 2</text>
+    <path d="M196.3,380 L198.3,380 L200.4,380 L202.4,380 L204.5,380 L206.5,380 L208.5,379.9 L210.6,379.9 L212.6,379.8 L214.7,379.6 L216.7,379.4 L218.7,378.9 L220.8,378.3 L222.8,377.3 L224.9,375.8 L226.9,373.6 L228.9,370.7 L231,366.7 L233,361.6 L235.1,355.1 L237.1,347.3 L239.1,338 L241.2,327.5 L243.2,316.1 L245.3,304.2 L247.3,292.5 L249.3,281.5 L251.4,272.1 L253.4,264.8 L255.5,260.2 L257.5,258.6 L259.5,260.2 L261.6,264.8 L263.6,272.1 L265.7,281.5 L267.7,292.5 L269.7,304.2 L271.8,316.1 L273.8,327.5 L275.9,338 L277.9,347.3 L279.9,355.1 L282,361.6 L284,366.7 L286.1,370.7 L288.1,373.6 L290.1,375.8 L292.2,377.3 L294.2,378.3 L296.3,378.9 L298.3,379.4 L300.3,379.6 L302.4,379.8 L304.4,379.9 L306.5,379.9 L308.5,380 L310.5,380 L312.6,380 L314.6,380 L316.7,380 L318.7,380" fill="none" stroke="#73B222" stroke-width="2.5"/>
+    <line x1="200" y1="380" x2="315" y2="380" stroke="#5E5850" stroke-width="1.3"/>
+    <line x1="257.5" y1="380" x2="257.5" y2="258.6" stroke="#73B222" stroke-width="1.3" stroke-dasharray="4 3"/>
+    <text x="257.5" y="410" class="lbl" text-anchor="middle" font-weight="800" fill="#73B222">μ = −35.1°</text>
+    <rect class="box-gray" x="340" y="200" width="135" height="230"/>
+    <text x="407.5" y="230" class="lbl" text-anchor="middle" font-weight="700">сустав 3</text>
+    <path d="M346.3,377.9 L348.3,377.3 L350.4,376.7 L352.4,375.9 L354.5,375 L356.5,373.9 L358.5,372.7 L360.6,371.2 L362.6,369.6 L364.7,367.8 L366.7,365.7 L368.7,363.4 L370.8,360.9 L372.8,358.2 L374.9,355.3 L376.9,352.2 L378.9,349 L381,345.6 L383,342.2 L385.1,338.7 L387.1,335.3 L389.1,331.9 L391.2,328.7 L393.2,325.7 L395.3,323 L397.3,320.5 L399.3,318.5 L401.4,316.8 L403.4,315.6 L405.5,314.9 L407.5,314.6 L409.5,314.9 L411.6,315.6 L413.6,316.8 L415.7,318.5 L417.7,320.5 L419.7,323 L421.8,325.7 L423.8,328.7 L425.9,331.9 L427.9,335.3 L429.9,338.7 L432,342.2 L434,345.6 L436.1,349 L438.1,352.2 L440.1,355.3 L442.2,358.2 L444.2,360.9 L446.3,363.4 L448.3,365.7 L450.3,367.8 L452.4,369.6 L454.4,371.2 L456.5,372.7 L458.5,373.9 L460.5,375 L462.6,375.9 L464.6,376.7 L466.7,377.3 L468.7,377.9" fill="none" stroke="#73B222" stroke-width="2.5"/>
+    <line x1="350" y1="380" x2="465" y2="380" stroke="#5E5850" stroke-width="1.3"/>
+    <line x1="407.5" y1="380" x2="407.5" y2="314.6" stroke="#73B222" stroke-width="1.3" stroke-dasharray="4 3"/>
+    <text x="407.5" y="410" class="lbl" text-anchor="middle" font-weight="800" fill="#73B222">μ = 78.0°</text>
+    <rect class="box-gray" x="490" y="200" width="135" height="230"/>
+    <text x="557.5" y="230" class="lbl" text-anchor="middle" font-weight="700">сустав 4</text>
+    <path d="M496.3,379.9 L498.3,379.9 L500.4,379.8 L502.4,379.7 L504.5,379.6 L506.5,379.3 L508.5,379 L510.6,378.6 L512.6,378 L514.7,377.1 L516.7,376 L518.7,374.6 L520.8,372.8 L522.8,370.4 L524.9,367.6 L526.9,364.1 L528.9,360 L531,355.3 L533,349.8 L535.1,343.8 L537.1,337.3 L539.1,330.3 L541.2,323.1 L543.2,316 L545.3,309 L547.3,302.5 L549.3,296.8 L551.4,292.1 L553.4,288.5 L555.5,286.3 L557.5,285.6 L559.5,286.3 L561.6,288.5 L563.6,292.1 L565.7,296.8 L567.7,302.5 L569.7,309 L571.8,316 L573.8,323.1 L575.9,330.3 L577.9,337.3 L579.9,343.8 L582,349.8 L584,355.3 L586.1,360 L588.1,364.1 L590.1,367.6 L592.2,370.4 L594.2,372.8 L596.3,374.6 L598.3,376 L600.3,377.1 L602.4,378 L604.4,378.6 L606.5,379 L608.5,379.3 L610.5,379.6 L612.6,379.7 L614.6,379.8 L616.7,379.9 L618.7,379.9" fill="none" stroke="#73B222" stroke-width="2.5"/>
+    <line x1="500" y1="380" x2="615" y2="380" stroke="#5E5850" stroke-width="1.3"/>
+    <line x1="557.5" y1="380" x2="557.5" y2="285.6" stroke="#73B222" stroke-width="1.3" stroke-dasharray="4 3"/>
+    <text x="557.5" y="410" class="lbl" text-anchor="middle" font-weight="800" fill="#73B222">μ = 4.6°</text>
+    <rect class="box-gray" x="640" y="200" width="135" height="230"/>
+    <text x="707.5" y="230" class="lbl" text-anchor="middle" font-weight="700">сустав 5</text>
+    <path d="M646.3,379.3 L648.3,379.1 L650.4,378.8 L652.4,378.4 L654.5,377.9 L656.5,377.2 L658.5,376.4 L660.6,375.3 L662.6,374.1 L664.7,372.6 L666.7,370.8 L668.7,368.6 L670.8,366.2 L672.8,363.3 L674.9,360.1 L676.9,356.6 L678.9,352.7 L681,348.5 L683,344 L685.1,339.3 L687.1,334.6 L689.1,329.7 L691.2,325 L693.2,320.4 L695.3,316.2 L697.3,312.3 L699.3,309 L701.4,306.3 L703.4,304.4 L705.5,303.1 L707.5,302.7 L709.5,303.1 L711.6,304.4 L713.6,306.3 L715.7,309 L717.7,312.3 L719.7,316.2 L721.8,320.4 L723.8,325 L725.9,329.7 L727.9,334.6 L729.9,339.3 L732,344 L734,348.5 L736.1,352.7 L738.1,356.6 L740.1,360.1 L742.2,363.3 L744.2,366.2 L746.3,368.6 L748.3,370.8 L750.3,372.6 L752.4,374.1 L754.4,375.3 L756.5,376.4 L758.5,377.2 L760.5,377.9 L762.6,378.4 L764.6,378.8 L766.7,379.1 L768.7,379.3" fill="none" stroke="#73B222" stroke-width="2.5"/>
+    <line x1="650" y1="380" x2="765" y2="380" stroke="#5E5850" stroke-width="1.3"/>
+    <line x1="707.5" y1="380" x2="707.5" y2="302.7" stroke="#73B222" stroke-width="1.3" stroke-dasharray="4 3"/>
+    <text x="707.5" y="410" class="lbl" text-anchor="middle" font-weight="800" fill="#73B222">μ = −20.3°</text>
+    <rect class="box-gray" x="790" y="200" width="135" height="230"/>
+    <text x="857.5" y="230" class="lbl" text-anchor="middle" font-weight="700">захват</text>
+    <path d="M796.3,380 L798.3,380 L800.4,380 L802.4,379.9 L804.5,379.9 L806.5,379.8 L808.5,379.7 L810.6,379.5 L812.6,379.2 L814.7,378.7 L816.7,378.1 L818.7,377.2 L820.8,375.9 L822.8,374.2 L824.9,371.9 L826.9,368.9 L828.9,365.1 L831,360.5 L833,355 L835.1,348.4 L837.1,341 L839.1,332.9 L841.2,324.1 L843.2,315 L845.3,306 L847.3,297.3 L849.3,289.5 L851.4,282.9 L853.4,277.9 L855.5,274.8 L857.5,273.8 L859.5,274.8 L861.6,277.9 L863.6,282.9 L865.7,289.5 L867.7,297.3 L869.7,306 L871.8,315 L873.8,324.1 L875.9,332.9 L877.9,341 L879.9,348.4 L882,355 L884,360.5 L886.1,365.1 L888.1,368.9 L890.1,371.9 L892.2,374.2 L894.2,375.9 L896.3,377.2 L898.3,378.1 L900.3,378.7 L902.4,379.2 L904.4,379.5 L906.5,379.7 L908.5,379.8 L910.5,379.9 L912.6,379.9 L914.6,380 L916.7,380 L918.7,380" fill="none" stroke="#73B222" stroke-width="2.5"/>
+    <line x1="800" y1="380" x2="915" y2="380" stroke="#5E5850" stroke-width="1.3"/>
+    <line x1="857.5" y1="380" x2="857.5" y2="273.8" stroke="#73B222" stroke-width="1.3" stroke-dasharray="4 3"/>
+    <text x="857.5" y="410" class="lbl" text-anchor="middle" font-weight="800" fill="#73B222">μ = 0.62</text>
+    <text x="480" y="485" class="text" text-anchor="middle" font-weight="700">Каждая координата — своё число на своей шкале</text>
+    <text x="480" y="513" class="small" text-anchor="middle">Пять углов суставов и степень открытия захвата. Числа иллюстративные</text>
+  </g>
+
+  <g data-key="c7" data-only="1">
+    <text x="480" y="50" class="lbl" text-anchor="middle" font-weight="700">Два типа выхода — два способа задать вероятности</text>
+    <rect class="box-blue" x="60" y="80" width="400" height="370"/>
+    <text x="260" y="116" class="text" text-anchor="middle" font-weight="800" fill="#3576C0">Дискретный выход</text>
+    <rect x="165" y="230" width="24" height="10" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1.2"/>
+    <rect x="199" y="230" width="24" height="10" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1.2"/>
+    <rect x="233" y="220" width="24" height="20" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1.2"/>
+    <rect x="267" y="220" width="24" height="20" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1.2"/>
+    <rect x="301" y="200" width="24" height="40" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1.2"/>
+    <rect x="335" y="140" width="24" height="100" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1.2"/>
+    <line x1="150" y1="240" x2="370" y2="240" stroke="#5E5850" stroke-width="1.3"/>
+    <text x="90" y="290" class="lbl">• значения можно пересчитать</text>
+    <text x="90" y="326" class="lbl">• P(Y = k) — вероятность каждого</text>
+    <text x="90" y="362" class="lbl">• сумма вероятностей = 1</text>
+    <text x="90" y="398" class="lbl">• ответ: argmax или жребий</text>
+    <rect class="box-green" x="500" y="80" width="400" height="370"/>
+    <text x="700" y="116" class="text" text-anchor="middle" font-weight="800" fill="#73B222">Непрерывный выход</text>
+    <path d="M684,240 L684,162.5 L684.8,161.6 L685.6,160.7 L686.4,159.8 L687.2,159 L688,158.2 L688.8,157.4 L689.6,156.7 L690.4,156.1 L691.2,155.5 L692,154.9 L692.8,154.4 L693.6,154 L694.4,153.6 L695.2,153.2 L696,152.9 L696.8,152.7 L697.6,152.5 L698.4,152.3 L699.2,152.3 L700,152.2 L700.8,152.3 L701.6,152.3 L702.4,152.5 L703.2,152.7 L704,152.9 L704.8,153.2 L705.6,153.6 L706.4,154 L707.2,154.4 L708,154.9 L708.8,155.5 L709.6,156.1 L710.4,156.7 L711.2,157.4 L712,158.2 L712.8,159 L713.6,159.8 L714.4,160.7 L715.2,161.6 L716,162.5 L716,240 Z" fill="#73B222" fill-opacity="0.28"/>
+    <path d="M594.4,239.6 L596.2,239.5 L597.9,239.5 L599.7,239.4 L601.4,239.2 L603.2,239.1 L605,238.9 L606.7,238.7 L608.5,238.5 L610.2,238.3 L612,238 L613.8,237.7 L615.5,237.3 L617.3,236.9 L619,236.4 L620.8,235.9 L622.6,235.3 L624.3,234.6 L626.1,233.9 L627.8,233.1 L629.6,232.2 L631.4,231.2 L633.1,230.1 L634.9,228.9 L636.6,227.6 L638.4,226.2 L640.2,224.7 L641.9,223.1 L643.7,221.3 L645.4,219.5 L647.2,217.5 L649,215.4 L650.7,213.2 L652.5,210.9 L654.2,208.4 L656,205.9 L657.8,203.3 L659.5,200.6 L661.3,197.8 L663,195 L664.8,192.1 L666.6,189.2 L668.3,186.2 L670.1,183.3 L671.8,180.4 L673.6,177.5 L675.4,174.7 L677.1,172 L678.9,169.4 L680.6,166.9 L682.4,164.6 L684.2,162.4 L685.9,160.3 L687.7,158.5 L689.4,156.9 L691.2,155.5 L693,154.3 L694.7,153.4 L696.5,152.8 L698.2,152.4 L700,152.2 L701.8,152.4 L703.5,152.8 L705.3,153.4 L707,154.3 L708.8,155.5 L710.6,156.9 L712.3,158.5 L714.1,160.3 L715.8,162.4 L717.6,164.6 L719.4,166.9 L721.1,169.4 L722.9,172 L724.6,174.7 L726.4,177.5 L728.2,180.4 L729.9,183.3 L731.7,186.2 L733.4,189.2 L735.2,192.1 L737,195 L738.7,197.8 L740.5,200.6 L742.2,203.3 L744,205.9 L745.8,208.4 L747.5,210.9 L749.3,213.2 L751,215.4 L752.8,217.5 L754.6,219.5 L756.3,221.3 L758.1,223.1 L759.8,224.7 L761.6,226.2 L763.4,227.6 L765.1,228.9 L766.9,230.1 L768.6,231.2 L770.4,232.2 L772.2,233.1 L773.9,233.9 L775.7,234.6 L777.4,235.3 L779.2,235.9 L781,236.4 L782.7,236.9 L784.5,237.3 L786.2,237.7 L788,238 L789.8,238.3 L791.5,238.5 L793.3,238.7 L795,238.9 L796.8,239.1 L798.6,239.2 L800.3,239.4 L802.1,239.5 L803.8,239.5 L805.6,239.6" fill="none" stroke="#73B222" stroke-width="2.5"/>
+    <line x1="590" y1="240" x2="810" y2="240" stroke="#5E5850" stroke-width="1.3"/>
+    <text x="530" y="290" class="lbl">• значения заполняют отрезок</text>
+    <text x="530" y="326" class="lbl">• p(y) — плотность вероятности</text>
+    <text x="530" y="362" class="lbl">• площадь под кривой = 1</text>
+    <text x="530" y="398" class="lbl">• ответ: центр μ (иногда ещё σ)</text>
+    <text x="480" y="500" class="text" text-anchor="middle" font-weight="700">Регрессия обычно отдаёт только μ — это и есть «число на выходе»</text>
+    <text x="480" y="528" class="small" text-anchor="middle">Сумма у дискретного случая превращается в интеграл у непрерывного</text>
+  </g>
+</svg>
+  </div>
+
+  <div class="stage-bar">
+    <button type="button" data-nav="prev">← Назад</button>
+    <button type="button" data-nav="next">Далее →</button>
+    <div class="stage-progress"></div>
+    <div class="stage-counter"></div>
+  </div>
+
+  <div class="stage-notes">
+    <div class="step-panel" data-on="c1" data-focus="c1">
+      <div class="step-kicker">Шаг 1 · рост</div>
+      <h4>Начнём с привычной таблицы</h4>
+      <p>Сгруппируем рост взрослых по 10 см: 160–170 см и 170–180 см встречаются чаще всего, по 34%. Получилась такая же таблица, как у кубика, и столбики снова дают в сумме 1. Но рост не обязан попадать в корзины по 10 см — его можно мерить сколь угодно точно.</p>
+    </div>
+    <div class="step-panel" data-on="c2" data-focus="c2">
+      <div class="step-kicker">Шаг 2 · уже столбики</div>
+      <h4>Сужаем корзины — получаем кривую</h4>
+      <p>Возьмём корзины по 2 см. Каждый столбик теперь ловит меньше людей, поэтому делим его вероятность на ширину — получается «вероятность на 1 см». Чем уже корзины, тем ближе верхушки к гладкой кривой. Эта кривая p(y) и есть плотность вероятности.</p>
+    </div>
+    <div class="step-panel" data-on="c3" data-focus="c3">
+      <div class="step-kicker">Шаг 3 · площадь</div>
+      <h4>Вероятность = площадь, а не высота</h4>
+      <p>Вероятность того, что рост окажется между 170 и 175 см, — это площадь под кривой на этом отрезке, около 0.19. А вероятность ровно 172.4 см равна нулю: у отрезка нулевой ширины нет площади. Высота кривой 0.039 — это плотность «на 1 см», а не вероятность.</p>
+    </div>
+    <div class="step-panel" data-on="c4" data-focus="c4">
+      <div class="step-kicker">Шаг 4 · цена дома</div>
+      <h4>Регрессия: модель выдаёт кривую для цены</h4>
+      <p>По описанию дома модель выдаёт распределение цены: центр μ = 215 000 $ и разброс σ ≈ 18 000 $. С вероятностью около 0.60 дом уйдёт за 200–230 тыс. $. Центр μ — лучший прогноз, σ — насколько модель в нём уверена.</p>
+    </div>
+    <div class="step-panel" data-on="c5" data-focus="c5">
+      <div class="step-kicker">Шаг 5 · температура</div>
+      <h4>Одинаковый центр, разная уверенность</h4>
+      <p>Прогноз на завтра и на неделю вперёд может иметь один и тот же центр 23.7 °C, но кривые разной ширины. Узкая кривая (σ = 1.5) даёт 0.68 на интервал 22–25 °C, широкая (σ = 4) — только 0.29. Ширина кривой — это неуверенность модели.</p>
+    </div>
+    <div class="step-panel" data-on="c6" data-focus="c6">
+      <div class="step-kicker">Шаг 6 · робот</div>
+      <h4>Непрерывный выход бывает вектором</h4>
+      <p>Политика для манипулятора по кадру камеры и инструкции выдаёт сразу шесть непрерывных чисел: пять углов суставов и степень открытия захвата. Каждое — своя кривая со своим центром. Выход — это вектор, но каждая его координата устроена так же, как цена дома.</p>
+    </div>
+    <div class="step-panel" data-on="c7" data-focus="c7">
+      <div class="step-kicker">Шаг 7 · итог</div>
+      <h4>Дискретный и непрерывный: что общего и чем отличаются</h4>
+      <p>Дискретный выход — таблица вероятностей с суммой 1, непрерывный — кривая плотности с площадью 1. На практике регрессионная модель чаще всего выдаёт только центр μ: его мы и видим как «число на выходе».</p>
+    </div>
+  </div>
+</div>
+<p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
+
+> **Непрерывный выход — это кривая плотности `p(y | x)`, а не таблица.** Вероятность есть только у отрезка значений, а «число на выходе» регрессии — это центр `μ` этой кривой.
+
+### 5.3. Обучение с учителем: классификация и регрессия
+
+Теперь можно аккуратно назвать две главные задачи обучения с учителем. Отличаются они ровно одним — типом правильного ответа `y`:
+
+- **Классификация** — `y` дискретный, как в 5.1. Модель выдаёт вектор вероятностей по K классам, ответ — самый вероятный класс. Если классов два, это **бинарная** классификация (спам / не спам); если больше — **многоклассовая** (цифра на картинке). Предсказание следующего токена в LLM — тоже многоклассовая классификация, просто K равно размеру словаря.
+- **Регрессия** — `y` непрерывный, как в 5.2. Модель выдаёт число — центр `μ` распределения, иногда вместе с шириной `σ`. Цена дома, температура на завтра, углы суставов робота.
+
+| | Классификация | Регрессия |
+| --- | --- | --- |
+| Правильный ответ `y` | дискретный: один из K вариантов | непрерывный: число или вектор чисел |
+| Распределение на выходе | вероятности `P(Y = k)`, сумма = 1 | плотность `p(y)`, площадь = 1 |
+| Что выдаёт последний слой | K чисел → softmax | `μ` (иногда ещё `σ`) |
+| Как получить ответ | argmax или сэмплирование | взять `μ` |
+| Примеры из 5.1–5.2 | спам, цифра на картинке, следующий токен | рост, цена дома, температура, углы суставов |
+
+Одна тонкость, которая часто сбивает с толку: **тип задачи — это решение о том, как описать `y`, а не свойство самой величины.** Возраст непрерывен, но если нам нужны только группы «ребёнок / взрослый / пожилой», это уже классификация. И наоборот, в робототехнике непрерывные действия иногда нарезают на корзины — например, в RT-2 каждую координату действия делят на 256 интервалов и предсказывают как токены. Регрессию там сознательно превращают в классификацию, чтобы обучать робота той же языковой моделью.
+
+> **Классификация — это дискретный `y` и вектор вероятностей на выходе, регрессия — непрерывный `y` и кривая с центром `μ`.** Всё остальное — последний слой, функция потерь, метрики — следует из этого выбора.
+
+*Числа в обоих интерактивах иллюстративные и округлены до двух–трёх знаков. Рост взят как нормальное распределение с μ = 170 см и σ = 10 см; за пределами 140–200 см остаётся около 0.3% массы, поэтому на гистограмме их не видно.*
+
+### 5.4. На самом деле выходов больше, чем «число или метка»
 
 Деление на регрессию и классификацию — это фундамент, но реальные модели выдают и более богатые выходы. Полезно знать весь «зоопарк», чтобы понимать, что коробка может отдавать почти что угодно:
 
 - **Одно число** (скалярная регрессия) — цена, температура.
 - **Одна метка из K классов** (классификация) — кошка/собака/птица.
 - **Несколько меток сразу** (multi-label) — у фото могут быть теги «пляж», «закат», «люди».
-- **Вероятности / распределение** — не просто «кошка», а «кошка 0.8, собака 0.15, …».
+- **Вероятности / распределение** — не просто «кошка», а «кошка 0.8, собака 0.15, …». Как мы видели в 5.1–5.2, под капотом модель почти всегда считает именно распределение; здесь речь о случае, когда оно нужно нам само по себе — например, чтобы знать, насколько модель уверена.
 - **Последовательность** — перевод, генерация текста: на выходе цепочка токенов.
 - **Структурированный выход** — рамки объектов на фото (детекция), маска по пикселям (сегментация), или даже **целая картинка** (генеративные модели).
 - **Вектор-эмбеддинг** — иногда нужен сам по себе (поиск похожих, рекомендации).
