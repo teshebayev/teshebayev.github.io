@@ -2059,24 +2059,394 @@ $$P(a \le Y \le b) = \int_a^b p(y)\,dy, \qquad \int_{-\infty}^{\infty} p(y)\,dy 
 
 ### 5.3. Обучение с учителем: классификация и регрессия
 
-Теперь можно аккуратно назвать две главные задачи обучения с учителем. Отличаются они ровно одним — типом правильного ответа `y`:
+Теперь можно аккуратно назвать две главные задачи обучения с учителем. В обучении с учителем каждый пример — это пара: вход `x` и правильный ответ `y`, и модель учится по `x` предсказывать `y`. Задачи различаются ровно одним — типом `y`:
 
 - **Классификация** — `y` дискретный, как в 5.1. Модель выдаёт вектор вероятностей по K классам, ответ — самый вероятный класс. Если классов два, это **бинарная** классификация (спам / не спам); если больше — **многоклассовая** (цифра на картинке). Предсказание следующего токена в LLM — тоже многоклассовая классификация, просто K равно размеру словаря.
 - **Регрессия** — `y` непрерывный, как в 5.2. Модель выдаёт число — центр `μ` распределения, иногда вместе с шириной `σ`. Цена дома, температура на завтра, углы суставов робота.
 
-| | Классификация | Регрессия |
-| --- | --- | --- |
-| Правильный ответ `y` | дискретный: один из K вариантов | непрерывный: число или вектор чисел |
-| Распределение на выходе | вероятности `P(Y = k)`, сумма = 1 | плотность `p(y)`, площадь = 1 |
-| Что выдаёт последний слой | K чисел → softmax | `μ` (иногда ещё `σ`) |
-| Как получить ответ | argmax или сэмплирование | взять `μ` |
-| Примеры из 5.1–5.2 | спам, цифра на картинке, следующий токен | рост, цена дома, температура, углы суставов |
+Учатся обе модели по одному принципу: сделать правильный ответ как можно более вероятным. В классификации это значит поднять вероятность правильного класса — отсюда **кросс-энтропия**. В регрессии — подтянуть центр кривой `μ` к правильному числу — отсюда **среднеквадратичная ошибка**, MSE:
 
-Одна тонкость, которая часто сбивает с толку: **тип задачи — это решение о том, как описать `y`, а не свойство самой величины.** Возраст непрерывен, но если нам нужны только группы «ребёнок / взрослый / пожилой», это уже классификация. И наоборот, в робототехнике непрерывные действия иногда нарезают на корзины — например, в RT-2 каждую координату действия делят на 256 интервалов и предсказывают как токены. Регрессию там сознательно превращают в классификацию, чтобы обучать робота той же языковой моделью.
+$$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
 
-> **Классификация — это дискретный `y` и вектор вероятностей на выходе, регрессия — непрерывный `y` и кривая с центром `μ`.** Всё остальное — последний слой, функция потерь, метрики — следует из этого выбора.
+Пройдём по развилке пошагово: от карты машинного обучения из части 1 до итоговой таблицы.
 
-*Числа в обоих интерактивах иллюстративные и округлены до двух–трёх знаков. Рост взят как нормальное распределение с μ = 170 см и σ = 10 см; за пределами 140–200 см остаётся около 0.3% массы, поэтому на гистограмме их не видно.*
+<div class="stage" id="stageSupervisedSplit" tabindex="0">
+  <div class="stage-figure">
+<svg id="mlSupervisedSplit" viewBox="0 0 960 540" role="img" aria-label="Классификация и регрессия: развилка по типу правильного ответа">
+  <style>
+    #mlSupervisedSplit { font-family: Helvetica, Arial, sans-serif; }
+    #mlSupervisedSplit .text { font-size: 16px; fill: #111111; }
+    #mlSupervisedSplit .small { font-size: 13px; fill: #5E5850; }
+    #mlSupervisedSplit .lbl { font-size: 15px; fill: #111111; }
+    #mlSupervisedSplit .val { font-size: 13px; font-weight: 700; fill: #111111; }
+    #mlSupervisedSplit .box-blue   { fill: #ffffff; stroke: #3576C0; stroke-width: 1.45; rx: 14; }
+    #mlSupervisedSplit .box-yellow { fill: #FFFBEB; stroke: #C29E08; stroke-width: 1.45; rx: 14; }
+    #mlSupervisedSplit .box-green  { fill: #F0FAF0; stroke: #73B222; stroke-width: 1.45; rx: 14; }
+    #mlSupervisedSplit .box-red    { fill: #FFF2F2; stroke: #C30B0A; stroke-width: 1.45; rx: 14; }
+    #mlSupervisedSplit .box-gray   { fill: #F6F5F3; stroke: #5E5850; stroke-width: 1.3; rx: 14; }
+    #mlSupervisedSplit .box-dark   { fill: #1b1d26; rx: 14; }
+  </style>
+  <defs>
+    <marker id="ssArrow" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto">
+      <path d="M0,0 L8,3.5 L0,7 Z" fill="#5E5850"/>
+    </marker>
+    <marker id="ssArrowY" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L8,3.5 L0,7 Z" fill="#C29E08"/>
+    </marker>
+  </defs>
+
+  <g data-key="s0" data-only="1">
+    <rect class="box-dark" x="360" y="20" width="240" height="64"/>
+    <text x="480" y="50" text-anchor="middle" font-size="18" font-weight="800" fill="#ffffff">Машинное обучение</text>
+    <text x="480" y="72" text-anchor="middle" font-size="13" fill="#c7c7d1">три способа учиться</text>
+    <line x1="470" y1="84" x2="205" y2="140" stroke="#5E5850" stroke-width="2" marker-end="url(#ssArrow)"/>
+    <g opacity="0.4">
+    <line x1="480" y1="84" x2="480" y2="140" stroke="#5E5850" stroke-width="2" marker-end="url(#ssArrow)"/>
+    <line x1="490" y1="84" x2="755" y2="140" stroke="#5E5850" stroke-width="2" marker-end="url(#ssArrow)"/>
+    <rect class="box-blue" x="355" y="145" width="250" height="110"/>
+    <text x="480" y="182" text-anchor="middle" class="text" font-weight="800" style="fill:#3576C0">Без учителя</text>
+    <text x="480" y="204" text-anchor="middle" class="small">Unsupervised</text>
+    <text x="480" y="234" text-anchor="middle" class="small" style="fill:#111111">ответов нет</text>
+    <rect class="box-blue" x="640" y="145" width="250" height="110"/>
+    <text x="765" y="182" text-anchor="middle" class="text" font-weight="800" style="fill:#3576C0">С подкреплением</text>
+    <text x="765" y="204" text-anchor="middle" class="small">Reinforcement</text>
+    <text x="765" y="234" text-anchor="middle" class="small" style="fill:#111111">награда или штраф</text>
+    </g>
+    <text x="622" y="290" text-anchor="middle" class="small">эти ветки — темы отдельных статей</text>
+    <rect class="box-blue" x="70" y="145" width="250" height="110" style="stroke-width:2.6"/>
+    <text x="195" y="182" text-anchor="middle" class="text" font-weight="800" style="fill:#3576C0">С учителем</text>
+    <text x="195" y="204" text-anchor="middle" class="small">Supervised</text>
+    <text x="195" y="234" text-anchor="middle" class="small" style="fill:#111111">учимся на парах вход → ответ</text>
+    <line x1="180" y1="255" x2="128" y2="326" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <line x1="210" y1="255" x2="362" y2="326" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <text x="128" y="290" text-anchor="end" class="small" font-weight="700" style="fill:#3576C0">y дискретный</text>
+    <text x="300" y="290" class="small" font-weight="700" style="fill:#73B222">y непрерывный</text>
+    <rect class="box-blue" x="20" y="332" width="215" height="110"/>
+    <text x="127" y="372" text-anchor="middle" class="text" font-weight="800" style="fill:#3576C0">Классификация</text>
+    <text x="127" y="396" text-anchor="middle" class="small">Classification</text>
+    <text x="127" y="422" text-anchor="middle" class="small" style="fill:#111111">спам, цифра, токен</text>
+    <rect class="box-green" x="255" y="332" width="215" height="110"/>
+    <text x="362" y="372" text-anchor="middle" class="text" font-weight="800" style="fill:#73B222">Регрессия</text>
+    <text x="362" y="396" text-anchor="middle" class="small">Regression</text>
+    <text x="362" y="422" text-anchor="middle" class="small" style="fill:#111111">цена, температура, углы</text>
+    <text x="480" y="495" class="text" text-anchor="middle" font-weight="700">Внутри обучения с учителем — ещё одна развилка: по типу правильного ответа y</text>
+    <text x="480" y="523" class="small" text-anchor="middle">Карта из части 1, теперь с ветками для обучения с учителем</text>
+  </g>
+
+  <g data-key="s1" data-only="1">
+    <text x="480" y="50" class="lbl" text-anchor="middle" font-weight="700">Обучение с учителем: у каждого примера есть правильный ответ y</text>
+    <text x="295" y="88" class="small" text-anchor="middle" font-weight="700">вход x</text>
+    <text x="680" y="88" class="small" text-anchor="middle" font-weight="700">правильный ответ y</text>
+    <rect class="box-blue" x="120" y="100" width="350" height="44" style="rx:10"/>
+    <text x="140" y="128" class="lbl">письмо «Вы выиграли iPhone!»</text>
+    <line x1="476" y1="122" x2="514" y2="122" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <rect class="box-gray" x="520" y="100" width="320" height="44" style="rx:10"/>
+    <text x="680" y="128" class="lbl" text-anchor="middle" font-weight="700">спам</text>
+    <rect class="box-blue" x="120" y="158" width="350" height="44" style="rx:10"/>
+    <text x="140" y="186" class="lbl">картинка рукописной цифры</text>
+    <line x1="476" y1="180" x2="514" y2="180" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <rect class="box-gray" x="520" y="158" width="320" height="44" style="rx:10"/>
+    <text x="680" y="186" class="lbl" text-anchor="middle" font-weight="700">7</text>
+    <rect class="box-blue" x="120" y="216" width="350" height="44" style="rx:10"/>
+    <text x="140" y="244" class="lbl">«Кот сидит на …»</text>
+    <line x1="476" y1="238" x2="514" y2="238" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <rect class="box-gray" x="520" y="216" width="320" height="44" style="rx:10"/>
+    <text x="680" y="244" class="lbl" text-anchor="middle" font-weight="700">ковре</text>
+    <rect class="box-blue" x="120" y="274" width="350" height="44" style="rx:10"/>
+    <text x="140" y="302" class="lbl">дом: площадь, район, год</text>
+    <line x1="476" y1="296" x2="514" y2="296" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <rect class="box-gray" x="520" y="274" width="320" height="44" style="rx:10"/>
+    <text x="680" y="302" class="lbl" text-anchor="middle" font-weight="700">215 000 $</text>
+    <rect class="box-blue" x="120" y="332" width="350" height="44" style="rx:10"/>
+    <text x="140" y="360" class="lbl">прогноз погоды на завтра</text>
+    <line x1="476" y1="354" x2="514" y2="354" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <rect class="box-gray" x="520" y="332" width="320" height="44" style="rx:10"/>
+    <text x="680" y="360" class="lbl" text-anchor="middle" font-weight="700">23.7 °C</text>
+    <rect class="box-blue" x="120" y="390" width="350" height="44" style="rx:10"/>
+    <text x="140" y="418" class="lbl">кадр камеры + команда роботу</text>
+    <line x1="476" y1="412" x2="514" y2="412" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <rect class="box-gray" x="520" y="390" width="320" height="44" style="rx:10"/>
+    <text x="680" y="418" class="lbl" text-anchor="middle" font-weight="700">12.4°, −35.1°, 78.0°, …</text>
+    <text x="480" y="490" class="text" text-anchor="middle" font-weight="700">Модель учится по x предсказывать y. Но какого типа этот y?</text>
+    <text x="480" y="518" class="small" text-anchor="middle">От ответа на этот вопрос зависит последний слой, функция потерь и способ получить ответ</text>
+  </g>
+
+  <g data-key="s2" data-only="1">
+    <rect class="box-yellow" x="330" y="50" width="300" height="60"/>
+    <text x="480" y="78" class="text" text-anchor="middle" font-weight="800" style="fill:#C29E08">тип правильного ответа y</text>
+    <text x="480" y="99" class="small" text-anchor="middle">дискретный или непрерывный?</text>
+    <line x1="400" y1="114" x2="260" y2="160" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <line x1="560" y1="114" x2="700" y2="160" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <rect class="box-blue" x="40" y="170" width="420" height="270"/>
+    <text x="250" y="206" class="text" text-anchor="middle" font-weight="800" style="fill:#3576C0">дискретный y → классификация</text>
+    <text x="250" y="230" class="small" text-anchor="middle">распределение — таблица вероятностей, как в 5.1</text>
+    <rect class="box-green" x="500" y="170" width="420" height="270"/>
+    <text x="710" y="206" class="text" text-anchor="middle" font-weight="800" style="fill:#73B222">непрерывный y → регрессия</text>
+    <text x="710" y="230" class="small" text-anchor="middle">распределение — кривая плотности, как в 5.2</text>
+    <rect x="80" y="256" width="340" height="42" rx="10" fill="#F0F6FC" stroke="#3576C0" stroke-width="1.2"/>
+    <text x="250" y="283" class="lbl" text-anchor="middle">письмо → спам / не спам</text>
+    <rect x="80" y="314" width="340" height="42" rx="10" fill="#F0F6FC" stroke="#3576C0" stroke-width="1.2"/>
+    <text x="250" y="341" class="lbl" text-anchor="middle">картинка → цифра 0–9</text>
+    <rect x="80" y="372" width="340" height="42" rx="10" fill="#F0F6FC" stroke="#3576C0" stroke-width="1.2"/>
+    <text x="250" y="399" class="lbl" text-anchor="middle">текст → следующий токен</text>
+    <rect x="540" y="256" width="340" height="42" rx="10" fill="#ffffff" stroke="#73B222" stroke-width="1.2"/>
+    <text x="710" y="283" class="lbl" text-anchor="middle">дом → цена</text>
+    <rect x="540" y="314" width="340" height="42" rx="10" fill="#ffffff" stroke="#73B222" stroke-width="1.2"/>
+    <text x="710" y="341" class="lbl" text-anchor="middle">погода → температура</text>
+    <rect x="540" y="372" width="340" height="42" rx="10" fill="#ffffff" stroke="#73B222" stroke-width="1.2"/>
+    <text x="710" y="399" class="lbl" text-anchor="middle">кадр → углы суставов</text>
+    <text x="480" y="495" class="text" text-anchor="middle" font-weight="700">Задачу определяет не вход, а то, что мы предсказываем</text>
+    <text x="480" y="523" class="small" text-anchor="middle">Картинка на входе бывает и у классификации (какая цифра), и у регрессии (углы суставов)</text>
+  </g>
+
+  <g data-key="s3" data-only="1">
+    <text x="480" y="50" class="lbl" text-anchor="middle" font-weight="700">Классификация: от K чисел к вероятностям и к классу</text>
+    <rect class="box-dark" x="30" y="115" width="120" height="90"/>
+    <text x="90" y="166" text-anchor="middle" font-size="18" font-weight="800" fill="#ffffff">модель</text>
+    <line x1="156" y1="160" x2="192" y2="160" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <rect class="box-yellow" x="200" y="115" width="160" height="90"/>
+    <text x="280" y="150" class="lbl" text-anchor="middle" font-weight="700">K чисел z</text>
+    <text x="280" y="176" class="small" text-anchor="middle">4.2, 1.5, 1.1, …</text>
+    <line x1="366" y1="160" x2="402" y2="160" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <rect class="box-yellow" x="410" y="130" width="110" height="60"/>
+    <text x="465" y="166" class="lbl" text-anchor="middle" font-weight="800" style="fill:#C29E08">softmax</text>
+    <line x1="526" y1="160" x2="562" y2="160" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <rect x="576" y="198.5" width="12" height="1.5" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1"/>
+    <rect x="592" y="194.6" width="12" height="5.4" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1"/>
+    <rect x="608" y="198.2" width="12" height="1.8" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1"/>
+    <rect x="624" y="198.5" width="12" height="1.5" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1"/>
+    <rect x="640" y="198.5" width="12" height="1.5" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1"/>
+    <rect x="656" y="198.5" width="12" height="1.5" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1"/>
+    <rect x="672" y="198.5" width="12" height="1.5" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1"/>
+    <rect x="688" y="122.6" width="12" height="77.4" fill="#73B222" fill-opacity="0.3" stroke="#73B222" stroke-width="1"/>
+    <rect x="704" y="198.5" width="12" height="1.5" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1"/>
+    <rect x="720" y="196.4" width="12" height="3.6" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1"/>
+    <line x1="570" y1="200" x2="738" y2="200" stroke="#5E5850" stroke-width="1.3"/>
+    <text x="654" y="220" class="small" text-anchor="middle">P(7) = 0.86</text>
+    <line x1="746" y1="160" x2="810" y2="160" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <text x="778" y="150" class="small" text-anchor="middle" font-weight="700" style="fill:#C29E08">argmax</text>
+    <rect class="box-green" x="818" y="125" width="112" height="70"/>
+    <text x="874" y="169" text-anchor="middle" font-size="24" font-weight="800" fill="#73B222">«7»</text>
+    <rect class="box-blue" x="60" y="270" width="260" height="130"/>
+    <text x="190" y="304" class="lbl" text-anchor="middle" font-weight="700" style="fill:#3576C0">бинарная</text>
+    <text x="190" y="338" text-anchor="middle" font-size="22" font-weight="800" fill="#111111">K = 2</text>
+    <text x="190" y="372" class="small" text-anchor="middle">спам / не спам</text>
+    <rect class="box-blue" x="350" y="270" width="260" height="130"/>
+    <text x="480" y="304" class="lbl" text-anchor="middle" font-weight="700" style="fill:#3576C0">многоклассовая</text>
+    <text x="480" y="338" text-anchor="middle" font-size="22" font-weight="800" fill="#111111">K = 10</text>
+    <text x="480" y="372" class="small" text-anchor="middle">цифра 0–9</text>
+    <rect class="box-blue" x="640" y="270" width="260" height="130"/>
+    <text x="770" y="304" class="lbl" text-anchor="middle" font-weight="700" style="fill:#3576C0">многоклассовая</text>
+    <text x="770" y="338" text-anchor="middle" font-size="22" font-weight="800" fill="#111111">K ≈ 50 000</text>
+    <text x="770" y="372" class="small" text-anchor="middle">следующий токен в LLM</text>
+    <text x="480" y="460" class="text" text-anchor="middle" font-weight="700">Выход классификатора — вектор вероятностей из 5.1, ответ — самый вероятный класс</text>
+    <text x="480" y="488" class="small" text-anchor="middle">LLM — тоже классификатор, просто классов столько же, сколько токенов в словаре</text>
+  </g>
+
+  <g data-key="s4" data-only="1">
+    <text x="480" y="50" class="lbl" text-anchor="middle" font-weight="700">Регрессия: последний слой сразу выдаёт число — центр кривой</text>
+    <rect class="box-dark" x="30" y="115" width="120" height="90"/>
+    <text x="90" y="166" text-anchor="middle" font-size="18" font-weight="800" fill="#ffffff">модель</text>
+    <line x1="156" y1="160" x2="192" y2="160" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <rect class="box-yellow" x="200" y="115" width="200" height="90"/>
+    <text x="300" y="150" class="lbl" text-anchor="middle" font-weight="700">μ = 215 000 $</text>
+    <text x="300" y="176" class="small" text-anchor="middle">иногда ещё σ = 18 000 $</text>
+    <line x1="406" y1="160" x2="442" y2="160" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <path d="M576,200 L576,140 L577.2,139 L578.4,137.9 L579.6,136.9 L580.8,136 L582,135.1 L583.2,134.3 L584.4,133.4 L585.6,132.7 L586.8,132 L588,131.4 L589.2,130.8 L590.4,130.2 L591.6,129.8 L592.8,129.3 L594,129 L595.2,128.7 L596.4,128.5 L597.6,128.3 L598.8,128.2 L600,128.2 L601.2,128.2 L602.4,128.3 L603.6,128.5 L604.8,128.7 L606,129 L607.2,129.3 L608.4,129.8 L609.6,130.2 L610.8,130.8 L612,131.4 L613.2,132 L614.4,132.7 L615.6,133.4 L616.8,134.3 L618,135.1 L619.2,136 L620.4,136.9 L621.6,137.9 L622.8,139 L624,140 L624,200 Z" fill="#73B222" fill-opacity="0.22"/>
+    <path d="M464,199.8 L466.3,199.7 L468.5,199.7 L470.8,199.6 L473.1,199.5 L475.3,199.4 L477.6,199.3 L479.9,199.2 L482.1,199.1 L484.4,198.9 L486.7,198.7 L488.9,198.5 L491.2,198.2 L493.5,197.9 L495.7,197.6 L498,197.2 L500.3,196.8 L502.5,196.3 L504.8,195.8 L507.1,195.2 L509.3,194.5 L511.6,193.8 L513.9,192.9 L516.1,192 L518.4,191 L520.7,190 L522.9,188.8 L525.2,187.5 L527.5,186.1 L529.7,184.7 L532,183.1 L534.3,181.4 L536.5,179.6 L538.8,177.7 L541.1,175.7 L543.3,173.7 L545.6,171.5 L547.9,169.3 L550.1,167 L552.4,164.6 L554.7,162.2 L556.9,159.8 L559.2,157.3 L561.5,154.8 L563.7,152.4 L566,150 L568.3,147.6 L570.5,145.3 L572.8,143 L575.1,140.9 L577.3,138.8 L579.6,136.9 L581.9,135.2 L584.1,133.6 L586.4,132.2 L588.7,131 L590.9,130 L593.2,129.2 L595.5,128.7 L597.7,128.3 L600,128.2 L602.3,128.3 L604.5,128.7 L606.8,129.2 L609.1,130 L611.3,131 L613.6,132.2 L615.9,133.6 L618.1,135.2 L620.4,136.9 L622.7,138.8 L624.9,140.9 L627.2,143 L629.5,145.3 L631.7,147.6 L634,150 L636.3,152.4 L638.5,154.8 L640.8,157.3 L643.1,159.8 L645.3,162.2 L647.6,164.6 L649.9,167 L652.1,169.3 L654.4,171.5 L656.7,173.7 L658.9,175.7 L661.2,177.7 L663.5,179.6 L665.7,181.4 L668,183.1 L670.3,184.7 L672.5,186.1 L674.8,187.5 L677.1,188.8 L679.3,190 L681.6,191 L683.9,192 L686.1,192.9 L688.4,193.8 L690.7,194.5 L692.9,195.2 L695.2,195.8 L697.5,196.3 L699.7,196.8 L702,197.2 L704.3,197.6 L706.5,197.9 L708.8,198.2 L711.1,198.5 L713.3,198.7 L715.6,198.9 L717.9,199.1 L720.1,199.2 L722.4,199.3 L724.7,199.4 L726.9,199.5 L729.2,199.6 L731.5,199.7 L733.7,199.7 L736,199.8" fill="none" stroke="#73B222" stroke-width="2.5"/>
+    <line x1="456" y1="200" x2="744" y2="200" stroke="#5E5850" stroke-width="1.3"/>
+    <line x1="600" y1="200" x2="600" y2="128.2" stroke="#73B222" stroke-width="1.3" stroke-dasharray="4 3"/>
+    <text x="600" y="220" class="small" text-anchor="middle">p(цена | дом) из 5.2</text>
+    <line x1="752" y1="160" x2="810" y2="160" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
+    <text x="781" y="150" class="small" text-anchor="middle" font-weight="700" style="fill:#C29E08">берём μ</text>
+    <rect class="box-green" x="818" y="125" width="112" height="70"/>
+    <text x="874" y="167" text-anchor="middle" font-size="18" font-weight="800" fill="#73B222">215 000 $</text>
+    <rect class="box-green" x="60" y="270" width="260" height="130"/>
+    <text x="190" y="304" class="lbl" text-anchor="middle" font-weight="700" style="fill:#73B222">одно число</text>
+    <text x="190" y="338" text-anchor="middle" font-size="20" font-weight="800" fill="#111111">цена дома</text>
+    <text x="190" y="372" class="small" text-anchor="middle">215 000 $</text>
+    <rect class="box-green" x="350" y="270" width="260" height="130"/>
+    <text x="480" y="304" class="lbl" text-anchor="middle" font-weight="700" style="fill:#73B222">число + уверенность</text>
+    <text x="480" y="338" text-anchor="middle" font-size="20" font-weight="800" fill="#111111">температура</text>
+    <text x="480" y="372" class="small" text-anchor="middle">23.7 °C, σ = 1.5</text>
+    <rect class="box-green" x="640" y="270" width="260" height="130"/>
+    <text x="770" y="304" class="lbl" text-anchor="middle" font-weight="700" style="fill:#73B222">вектор чисел</text>
+    <text x="770" y="338" text-anchor="middle" font-size="20" font-weight="800" fill="#111111">углы суставов</text>
+    <text x="770" y="372" class="small" text-anchor="middle">12.4°, −35.1°, …</text>
+    <text x="480" y="460" class="text" text-anchor="middle" font-weight="700">Выход регрессии — центр μ кривой из 5.2, никакого softmax</text>
+    <text x="480" y="488" class="small" text-anchor="middle">Если модель отдаёт ещё и σ, мы знаем не только прогноз, но и насколько ему верить</text>
+  </g>
+
+  <g data-key="s5" data-only="1">
+    <text x="480" y="50" class="lbl" text-anchor="middle" font-weight="700">Как учатся: сделать правильный ответ вероятнее</text>
+    <rect class="box-blue" x="40" y="80" width="420" height="340"/>
+    <text x="250" y="114" class="text" text-anchor="middle" font-weight="800" style="fill:#3576C0">классификация: кросс-энтропия</text>
+    <text x="250" y="152" text-anchor="middle" font-size="19" font-weight="700" fill="#111111">L = −log P(правильный класс)</text>
+    <text x="250" y="180" class="small" text-anchor="middle">правильный ответ: «7»</text>
+    <text x="70" y="230" class="lbl">P(7) = 0.86</text>
+    <rect x="180" y="214" width="154.8" height="22" fill="#73B222" fill-opacity="0.3" stroke="#73B222" stroke-width="1.2"/>
+    <text x="370" y="230" class="lbl" font-weight="800" style="fill:#73B222">L = 0.15</text>
+    <text x="70" y="260" class="small">модель уверена и права</text>
+    <text x="70" y="330" class="lbl">P(7) = 0.05</text>
+    <rect x="180" y="314" width="9" height="22" fill="#C30B0A" fill-opacity="0.3" stroke="#C30B0A" stroke-width="1.2"/>
+    <text x="370" y="330" class="lbl" font-weight="800" style="fill:#C30B0A">L = 3.00</text>
+    <text x="70" y="360" class="small">модель почти исключила правильный класс</text>
+    <rect class="box-green" x="500" y="80" width="420" height="340"/>
+    <text x="710" y="114" class="text" text-anchor="middle" font-weight="800" style="fill:#73B222">регрессия: среднеквадратичная ошибка</text>
+    <text x="710" y="152" text-anchor="middle" font-size="19" font-weight="700" fill="#111111">L = (y − μ)²</text>
+    <text x="710" y="180" class="small" text-anchor="middle">правильный ответ: y = 230 тыс. $</text>
+    <line x1="540" y1="228" x2="880" y2="228" stroke="#5E5850" stroke-width="1.3"/>
+    <circle cx="855" cy="228" r="6" fill="#111111"/>
+    <circle cx="787.5" cy="228" r="6" fill="#73B222"/>
+    <text x="787.5" y="216" class="small" text-anchor="middle" font-weight="700" style="fill:#73B222">μ = 215</text>
+    <text x="855" y="216" class="small" text-anchor="middle" font-weight="700" style="fill:#111111">y = 230</text>
+    <text x="540" y="260" class="lbl" font-weight="800" style="fill:#73B222">L = 225</text>
+    <text x="540" y="282" class="small">промах на 15 тыс. $</text>
+    <line x1="540" y1="328" x2="880" y2="328" stroke="#5E5850" stroke-width="1.3"/>
+    <circle cx="855" cy="328" r="6" fill="#111111"/>
+    <circle cx="630" cy="328" r="6" fill="#C30B0A"/>
+    <text x="630" y="316" class="small" text-anchor="middle" font-weight="700" style="fill:#C30B0A">μ = 180</text>
+    <text x="855" y="316" class="small" text-anchor="middle" font-weight="700" style="fill:#111111">y = 230</text>
+    <text x="540" y="360" class="lbl" font-weight="800" style="fill:#C30B0A">L = 2 500</text>
+    <text x="540" y="382" class="small">промах на 50 тыс. $ — штраф в 11 раз больше</text>
+    <text x="480" y="470" class="text" text-anchor="middle" font-weight="700">Кросс-энтропия поднимает вероятность правильного класса, MSE подтягивает μ к правильному числу</text>
+    <text x="480" y="498" class="small" text-anchor="middle">Цены — в тысячах долларов. Числа иллюстративные</text>
+  </g>
+
+  <g data-key="s6" data-only="1">
+    <text x="480" y="45" class="lbl" text-anchor="middle" font-weight="700">Тип задачи — это наш выбор, как описать y</text>
+    <text x="120" y="88" class="lbl" font-weight="700" style="fill:#73B222">регрессия: предсказываем возраст числом</text>
+    <rect x="120" y="122" width="720" height="26" rx="6" fill="#F0FAF0" stroke="#73B222" stroke-width="1.3"/>
+    <line x1="120" y1="148" x2="120" y2="155" stroke="#5E5850" stroke-width="1.3"/>
+    <text x="120" y="172" class="small" text-anchor="middle">0</text>
+    <line x1="200" y1="148" x2="200" y2="155" stroke="#5E5850" stroke-width="1.3"/>
+    <text x="200" y="172" class="small" text-anchor="middle">10</text>
+    <line x1="280" y1="148" x2="280" y2="155" stroke="#5E5850" stroke-width="1.3"/>
+    <text x="280" y="172" class="small" text-anchor="middle">20</text>
+    <line x1="360" y1="148" x2="360" y2="155" stroke="#5E5850" stroke-width="1.3"/>
+    <text x="360" y="172" class="small" text-anchor="middle">30</text>
+    <line x1="440" y1="148" x2="440" y2="155" stroke="#5E5850" stroke-width="1.3"/>
+    <text x="440" y="172" class="small" text-anchor="middle">40</text>
+    <line x1="520" y1="148" x2="520" y2="155" stroke="#5E5850" stroke-width="1.3"/>
+    <text x="520" y="172" class="small" text-anchor="middle">50</text>
+    <line x1="600" y1="148" x2="600" y2="155" stroke="#5E5850" stroke-width="1.3"/>
+    <text x="600" y="172" class="small" text-anchor="middle">60</text>
+    <line x1="680" y1="148" x2="680" y2="155" stroke="#5E5850" stroke-width="1.3"/>
+    <text x="680" y="172" class="small" text-anchor="middle">70</text>
+    <line x1="760" y1="148" x2="760" y2="155" stroke="#5E5850" stroke-width="1.3"/>
+    <text x="760" y="172" class="small" text-anchor="middle">80</text>
+    <line x1="840" y1="148" x2="840" y2="155" stroke="#5E5850" stroke-width="1.3"/>
+    <text x="840" y="172" class="small" text-anchor="middle">90</text>
+    <text x="862" y="172" class="small">лет</text>
+    <polygon points="396.8,120 389.8,106 403.8,106" fill="#73B222"/>
+    <line x1="396.8" y1="122" x2="396.8" y2="148" stroke="#73B222" stroke-width="2"/>
+    <text x="408.8" y="117" class="lbl" font-weight="800" style="fill:#73B222">μ = 34.6 года</text>
+    <text x="120" y="222" class="lbl" font-weight="700" style="fill:#3576C0">классификация: предсказываем возрастную группу</text>
+    <rect x="120" y="240" width="144" height="40" fill="#F0F6FC" stroke="#3576C0" stroke-width="1.3"/>
+    <text x="192" y="265" class="lbl" text-anchor="middle" font-weight="700" style="fill:#3576C0">ребёнок</text>
+    <text x="192" y="302" class="small" text-anchor="middle">P = 0.02</text>
+    <rect x="264" y="240" width="376" height="40" fill="#F0FAF0" stroke="#73B222" stroke-width="2"/>
+    <text x="452" y="265" class="lbl" text-anchor="middle" font-weight="700" style="fill:#73B222">взрослый</text>
+    <text x="452" y="302" class="small" text-anchor="middle">P = 0.95</text>
+    <rect x="640" y="240" width="200" height="40" fill="#F0F6FC" stroke="#3576C0" stroke-width="1.3"/>
+    <text x="740" y="265" class="lbl" text-anchor="middle" font-weight="700" style="fill:#3576C0">пожилой</text>
+    <text x="740" y="302" class="small" text-anchor="middle">P = 0.03</text>
+    <rect class="box-gray" x="60" y="340" width="840" height="100"/>
+    <text x="480" y="372" class="lbl" text-anchor="middle" font-weight="700">И наоборот: в робототехнике непрерывное превращают в дискретное</text>
+    <text x="480" y="398" class="small" style="fill:#111111" text-anchor="middle">В RT-2 каждую координату действия робота делят на 256 корзин</text>
+    <text x="480" y="420" class="small" style="fill:#111111" text-anchor="middle">и предсказывают номер корзины как токен — регрессию решают как классификацию</text>
+    <text x="480" y="490" class="text" text-anchor="middle" font-weight="700">Сначала решаем, как описать y, — потом выбираем последний слой и потери</text>
+  </g>
+
+  <g data-key="s7" data-only="1">
+    <text x="480" y="45" class="lbl" text-anchor="middle" font-weight="700">Классификация и регрессия рядом</text>
+    <rect x="300" y="64" width="300" height="40" rx="10" fill="#F0F6FC" stroke="#3576C0" stroke-width="1.3"/>
+    <text x="450" y="90" class="text" text-anchor="middle" font-weight="800" style="fill:#3576C0">классификация</text>
+    <rect x="620" y="64" width="300" height="40" rx="10" fill="#F0FAF0" stroke="#73B222" stroke-width="1.3"/>
+    <text x="770" y="90" class="text" text-anchor="middle" font-weight="800" style="fill:#73B222">регрессия</text>
+    <rect x="40" y="116" width="880" height="48" rx="8" fill="#F6F5F3"/>
+    <text x="60" y="146" class="lbl" font-weight="700">правильный ответ y</text>
+    <text x="450" y="146" class="lbl" text-anchor="middle">дискретный: 1 из K</text>
+    <text x="770" y="146" class="lbl" text-anchor="middle">непрерывный: число или вектор</text>
+    <text x="60" y="198" class="lbl" font-weight="700">распределение</text>
+    <text x="450" y="198" class="lbl" text-anchor="middle">вероятности, сумма = 1</text>
+    <text x="770" y="198" class="lbl" text-anchor="middle">плотность, площадь = 1</text>
+    <rect x="40" y="220" width="880" height="48" rx="8" fill="#F6F5F3"/>
+    <text x="60" y="250" class="lbl" font-weight="700">последний слой</text>
+    <text x="450" y="250" class="lbl" text-anchor="middle">K чисел → softmax</text>
+    <text x="770" y="250" class="lbl" text-anchor="middle">μ (иногда ещё σ)</text>
+    <text x="60" y="302" class="lbl" font-weight="700">как получить ответ</text>
+    <text x="450" y="302" class="lbl" text-anchor="middle">argmax или сэмплирование</text>
+    <text x="770" y="302" class="lbl" text-anchor="middle">взять μ</text>
+    <rect x="40" y="324" width="880" height="48" rx="8" fill="#F6F5F3"/>
+    <text x="60" y="354" class="lbl" font-weight="700">функция потерь</text>
+    <text x="450" y="354" class="lbl" text-anchor="middle">кросс-энтропия</text>
+    <text x="770" y="354" class="lbl" text-anchor="middle">MSE</text>
+    <text x="60" y="406" class="lbl" font-weight="700">примеры</text>
+    <text x="450" y="406" class="lbl" text-anchor="middle">спам, цифра, токен</text>
+    <text x="770" y="406" class="lbl" text-anchor="middle">цена, температура, углы</text>
+    <text x="480" y="470" class="text" text-anchor="middle" font-weight="700">Всё в таблице следует из одной строки — типа y</text>
+  </g>
+</svg>
+  </div>
+
+  <div class="stage-bar">
+    <button type="button" data-nav="prev">← Назад</button>
+    <button type="button" data-nav="next">Далее →</button>
+    <div class="stage-progress"></div>
+    <div class="stage-counter"></div>
+  </div>
+
+  <div class="stage-notes">
+    <div class="step-panel" data-on="s0" data-focus="s0">
+      <div class="step-kicker">Шаг 1 · карта</div>
+      <h4>Вспомним карту из части 1</h4>
+      <p>В части 1 мы разделили машинное обучение на три области: с учителем, без учителя и с подкреплением. Теперь заглянем внутрь первой ветки. У обучения с учителем есть правильные ответы y, и по их типу оно делится ещё на две задачи: дискретный y даёт классификацию, непрерывный — регрессию.</p>
+    </div>
+    <div class="step-panel" data-on="s1" data-focus="s1">
+      <div class="step-kicker">Шаг 2 · данные</div>
+      <h4>Обучение с учителем: пары (x, y)</h4>
+      <p>В обучении с учителем у каждого примера есть вход x и правильный ответ y. Письмо и метка «спам», дом и его цена, кадр камеры и углы суставов, в которые робот должен перейти. Модель учится по x предсказывать y. Первый вопрос, который стоит задать: какого типа этот y?</p>
+    </div>
+    <div class="step-panel" data-on="s2" data-focus="s2">
+      <div class="step-kicker">Шаг 3 · развилка</div>
+      <h4>Тип y делит задачи на две группы</h4>
+      <p>Если y дискретный — спам, цифра, токен, — это классификация. Если непрерывный — цена, температура, углы, — это регрессия. Обратите внимание: вход тут ни при чём. Картинка бывает и у классификации (какая цифра), и у регрессии (куда повернуть суставы).</p>
+    </div>
+    <div class="step-panel" data-on="s3" data-focus="s3">
+      <div class="step-kicker">Шаг 4 · классификация</div>
+      <h4>Классификация: K чисел → softmax → класс</h4>
+      <p>Последний слой выдаёт K произвольных чисел, softmax превращает их в вектор вероятностей из 5.1, а argmax берёт самый вероятный класс. При K = 2 классификация бинарная, при K > 2 — многоклассовая. Предсказание следующего токена — тоже классификация, только K равно размеру словаря.</p>
+    </div>
+    <div class="step-panel" data-on="s4" data-focus="s4">
+      <div class="step-kicker">Шаг 5 · регрессия</div>
+      <h4>Регрессия: последний слой сразу выдаёт μ</h4>
+      <p>Здесь softmax не нужен: последний слой отдаёт само число — центр μ кривой из 5.2. Иногда модель выдаёт ещё и σ, и тогда мы знаем не только прогноз, но и насколько ему верить. Выход может быть одним числом, как цена, или вектором, как углы суставов.</p>
+    </div>
+    <div class="step-panel" data-on="s5" data-focus="s5">
+      <div class="step-kicker">Шаг 6 · обучение</div>
+      <h4>Потери: правильный ответ должен стать вероятнее</h4>
+      <p>Кросс-энтропия штрафует за низкую вероятность правильного класса: при P(7) = 0.86 потеря 0.15, при P(7) = 0.05 — уже 3.00. MSE штрафует за расстояние от μ до правильного числа: промах на 15 тыс. $ даёт 225, промах на 50 тыс. $ — уже 2 500. Идея одна: сделать правильный ответ вероятнее.</p>
+    </div>
+    <div class="step-panel" data-on="s6" data-focus="s6">
+      <div class="step-kicker">Шаг 7 · граница</div>
+      <h4>Одна величина — две постановки</h4>
+      <p>Возраст можно предсказывать числом — это регрессия, а можно группой «ребёнок / взрослый / пожилой» — это классификация. В робототехнике бывает и наоборот: в RT-2 непрерывные действия режут на 256 корзин и предсказывают как токены. Тип задачи — наш выбор, как описать y.</p>
+    </div>
+    <div class="step-panel" data-on="s7" data-focus="s7">
+      <div class="step-kicker">Шаг 8 · итог</div>
+      <h4>Всё следует из типа y</h4>
+      <p>Классификация: дискретный y, вектор вероятностей, softmax, argmax, кросс-энтропия. Регрессия: непрерывный y, центр μ, число без softmax, MSE. Стоит определить тип y — и остальные строки таблицы заполняются сами.</p>
+    </div>
+  </div>
+</div>
+<p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
+
+Связь MSE с вероятностями не случайна. Если на выходе гауссова кривая с фиксированной шириной `σ`, то `−log p(y | x)` с точностью до константы равен `(y − μ)² / 2σ²`. Минимизировать MSE — значит искать такой центр `μ`, при котором правильный ответ становится самым вероятным. Ровно то же самое кросс-энтропия делает для классов.
+
+> **Классификация — это дискретный `y` и вектор вероятностей на выходе, регрессия — непрерывный `y` и кривая с центром `μ`.** Последний слой, функция потерь и способ получить ответ следуют из этого выбора.
+
+*Числа в интерактивах 5.1–5.2 иллюстративные и округлены до двух–трёх знаков. Рост взят как нормальное распределение с μ = 170 см и σ = 10 см; за пределами 140–200 см остаётся около 0.3% массы, поэтому на гистограмме их не видно.*
 
 ### 5.4. На самом деле выходов больше, чем «число или метка»
 
