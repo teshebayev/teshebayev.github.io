@@ -11,3 +11,9 @@ npm-debug.log*
 
 # Logs
 *.log
+
+# Manim sandbox (local renders, venv) and locally installed agent skills
+/manim/
+/.agents/
+/.claude/skills/
+/skills-lock.json
