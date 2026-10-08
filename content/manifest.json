@@ -363,7 +363,7 @@
             "en": "From MLP to transformer",
             "kk": "MLP-ден трансформерге дейін"
           },
-          "articles": ["mlp-map", "mnist-mlp-map", "cnn-map", "rnn-map", "transformer-encoder-map"]
+          "articles": ["mlp-map", "mnist-mlp-map", "cnn-map", "rnn-map", "transformer-encoder-map", "gpt-map"]
         }
       ]
     },
@@ -958,6 +958,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/interactive-maps/transformer-encoder-map.ru.md"
+  }
+},
+    {
+  "slug": "gpt-map",
+  "category": "interactive-maps",
+  "title": {
+    "ru": "Карта мини-GPT"
+  },
+  "description": {
+    "ru": "Обученная посимвольная GPT на одном холсте: два блока, четыре головы внимания, 104 704 параметра, корпус — Пушкин. Символ становится номером и вектором, Q и K дают матрицу оценок, маска закрывает будущее, softmax даёт веса, внимание и MLP прибавляют поправки к потоку, в конце — вероятности следующего символа с температурой и top-k/top-p. Восемнадцать шагов; начало фразы можно вписать своё, а сеть — заставить дописывать его символ за символом."
+  },
+  "date": "2026-10-08",
+  "reading_time": 12,
+  "tags": ["deep-learning", "llm"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/interactive-maps/gpt-map.ru.md"
   }
 },
     {
