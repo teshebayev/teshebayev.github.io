@@ -1,14 +1,14 @@
-> **В этой статье.** Прежде чем разбираться, *как* модель машинного обучения учится и что у неё внутри, полезно посмотреть на неё снаружи — как на **чёрную коробку**. У коробки есть только две стороны, которые нас сейчас интересуют: что мы в неё *кладём* (вход) и что из неё *достаём* (выход). Оказывается, почти все задачи ML можно разложить именно по этим двум осям. И заодно станет понятно, почему выбор самой модели — это во многом следствие того, *что у нас на входе* и *что мы хотим на выходе*.
+> **В этой статье.** Прежде чем разбираться, *как* модель машинного обучения учится и что у неё внутри, полезно посмотреть на неё снаружи, как на **чёрную коробку**. У коробки есть только две стороны, которые нас сейчас интересуют: что мы в неё *кладём* (вход) и что из неё *достаём* (выход). Оказывается, почти все задачи ML можно разложить именно по этим двум осям. И заодно станет понятно, почему выбор самой модели во многом следует из того, *что у нас на входе* и *что мы хотим на выходе*.
 
 ## 1. Карта машинного обучения: три области
 
-Прежде чем открывать коробку, полезно увидеть карту целиком. Машинное обучение обычно делят на три большие области — по тому, **как** модель учится и какую обратную связь она при этом получает.
+Прежде чем открывать коробку, полезно увидеть карту целиком. Машинное обучение обычно делят на три большие области по тому, **как** модель учится и какую обратную связь она при этом получает.
 
-- **Обучение с учителем (Supervised)** — у каждого примера есть правильный ответ. Модель учится на парах «*вход → правильный выход*».
-- **Обучение без учителя (Unsupervised)** — правильных ответов нет. Модель сама ищет структуру в данных: кластеры, закономерности, сжатые представления.
-- **Обучение с подкреплением (Reinforcement Learning)** — агент действует в среде, получает награды или штраф и учится максимизировать награду.
+- **Обучение с учителем (Supervised)**: у каждого примера есть правильный ответ. Модель учится на парах «*вход → правильный выход*».
+- **Обучение без учителя (Unsupervised)**: правильных ответов нет. Модель сама ищет структуру в данных: кластеры, закономерности, сжатые представления.
+- **Обучение с подкреплением (Reinforcement Learning)**: агент действует в среде, получает награды или штраф и учится максимизировать награду.
 
-Дальше статья будет говорить в основном про **обучение с учителем**: именно сам взгляд «вход → модель → выход *с правильным ответом*» работает напрямую. Но сначала — короткая прогулка по всем трём областям.
+Дальше статья будет говорить в основном про **обучение с учителем**: именно сам взгляд «вход → модель → выход *с правильным ответом*» работает напрямую. Но сначала коротко пройдём по всем трём областям.
 
 <div class="stage" id="stageParadigms" tabindex="0">
   <div class="stage-figure">
@@ -146,7 +146,7 @@
     <rect class="box-red" x="500" y="408" width="210" height="56"/>
     <text x="605" y="442" text-anchor="middle" class="text" font-weight="700" fill="#C30B0A">− штраф за ошибку</text>
 
-    <text x="480" y="512" class="small" text-anchor="middle">Цель — выбирать действия так, чтобы суммарная награда была максимальной</text>
+    <text x="480" y="512" class="small" text-anchor="middle">Цель: выбирать действия так, чтобы суммарная награда была максимальной</text>
   </g>
 
   <g data-key="step5" data-only="1">
@@ -182,7 +182,7 @@
     <text x="650" y="378" class="small">Учится:</text>
     <text x="650" y="400" class="text">стратегию действий</text>
 
-    <text x="480" y="478" class="small" text-anchor="middle">Точный ответ • ничего • награда — вот три разных вида обратной связи</text>
+    <text x="480" y="478" class="small" text-anchor="middle">Точный ответ • ничего • награда: три разных вида обратной связи</text>
   </g>
 
   <g data-key="step6" data-only="1">
@@ -206,7 +206,7 @@
     <text x="805" y="356" text-anchor="middle" class="small" fill="#111111">сравниваем с правильным ответом</text>
 
     <text x="480" y="468" class="text" text-anchor="middle" font-weight="700">Именно здесь работает шаблон «вход → модель → выход»</text>
-    <text x="480" y="500" class="small" text-anchor="middle">Дальше открываем эту коробку — но сначала смотрим на неё снаружи</text>
+    <text x="480" y="500" class="small" text-anchor="middle">Дальше открываем эту коробку, но сначала смотрим на неё снаружи</text>
   </g>
 </svg>
   </div>
@@ -227,27 +227,27 @@
     <div class="step-panel" data-on="step2" data-focus="step2">
       <div class="step-kicker">Шаг 2 · с учителем</div>
       <h4>Учимся на парах «вход → правильный ответ»</h4>
-      <p>У каждого примера — фото, площади дома, текста письма — заранее известен верный ответ. Модель видит много таких пар и учится сама давать правильный ответ на новом, ранее не встречавшемся входе.</p>
+      <p>У каждого примера (фото, площади дома, текста письма) заранее известен верный ответ. Модель видит много таких пар и учится сама давать правильный ответ на новом, ранее не встречавшемся входе.</p>
     </div>
     <div class="step-panel" data-on="step3" data-focus="step3">
       <div class="step-kicker">Шаг 3 · без учителя</div>
       <h4>Структура находится без готовых ответов</h4>
-      <p>Меток никто не дал. Модель сама ищет закономерности в данных — например, собирает похожие объекты в кластеры, как на схеме справа. Так же ищут и другие виды структуры: сжатые представления, аномалии.</p>
+      <p>Меток никто не дал. Модель сама ищет закономерности в данных: например, собирает похожие объекты в кластеры, как на схеме справа. Так же ищут и другие виды структуры: сжатые представления, аномалии.</p>
     </div>
     <div class="step-panel" data-on="step4" data-focus="step4">
       <div class="step-kicker">Шаг 4 · с подкреплением</div>
       <h4>Агент действует и получает награду или штраф</h4>
-      <p>Агент пробует действия в среде, получает новое состояние и сигнал — награду за успех или штраф за ошибку. Цель — выбирать действия так, чтобы суммарная награда со временем была максимальной.</p>
+      <p>Агент пробует действия в среде, получает новое состояние и сигнал: награду за успех или штраф за ошибку. Цель: выбирать действия так, чтобы суммарная награда со временем была максимальной.</p>
     </div>
     <div class="step-panel" data-on="step5" data-focus="step5">
       <div class="step-kicker">Шаг 5 · три вида обратной связи</div>
-      <h4>Ключевое различие — что видит модель в ответ</h4>
-      <p>С учителем ответ дан заранее и точен. Без учителя ответа нет вовсе. С подкреплением есть только награда — оценка успеха, а не готовый правильный ответ. Это три принципиально разных вида обратной связи.</p>
+      <h4>Различие в том, что видит модель в ответ</h4>
+      <p>С учителем ответ дан заранее и точен. Без учителя ответа нет вовсе. С подкреплением есть только награда: оценка успеха, а не готовый правильный ответ. Это три принципиально разных вида обратной связи.</p>
     </div>
     <div class="step-panel" data-on="step6" data-focus="step6">
       <div class="step-kicker">Шаг 6 · где мы дальше</div>
-      <h4>Дальше статья — про обучение с учителем</h4>
-      <p>Именно здесь работает шаблон «вход → модель → выход»: есть данные, есть правильный ответ, с которым можно сравнить предсказание. Дальше мы откроем эту коробку — но сначала посмотрим на неё снаружи.</p>
+      <h4>Дальше говорим про обучение с учителем</h4>
+      <p>Именно здесь работает шаблон «вход → модель → выход»: есть данные, есть правильный ответ, с которым можно сравнить предсказание. Дальше мы откроем эту коробку, но сначала посмотрим на неё снаружи.</p>
     </div>
   </div>
 </div>
@@ -255,20 +255,20 @@
 
 ## 2. Модель как чёрная коробка
 
-Представим, что модель — это закрытая коробка с двумя отверстиями. В одно мы что-то подаём, из другого что-то получаем. Что происходит внутри — пока не важно: возможно, там линейная формула, возможно, дерево решений, возможно, нейросеть на сто слоёв. С точки зрения «снаружи» это всё одно и то же — **функция**:
+Представим модель как закрытую коробку с двумя отверстиями. В одно мы что-то подаём, из другого что-то получаем. Что происходит внутри, пока не важно: возможно, там линейная формула, возможно, дерево решений, возможно, нейросеть на сто слоёв. С точки зрения «снаружи» всё это одна и та же **функция**:
 
 $$\text{выход} = f(\text{вход})$$
 
-Такой взгляд кажется упрощением, но он невероятно полезен. Он позволяет:
+Такой взгляд кажется упрощением, но он позволяет:
 
-- **классифицировать любую задачу ML** по двум признакам — *форма входа* и *тип выхода*;
+- **классифицировать любую задачу ML** по двум признакам: *форма входа* и *тип выхода*;
 - **отделить постановку задачи от реализации**: сначала решаем, что подаём и что хотим получить, и только потом выбираем конкретную модель;
-- увидеть, что совершенно разные на первый взгляд задачи (предсказать цену дома, узнать кошку на фото, угадать следующее слово) — это один и тот же шаблон **вход → f → выход**.
+- увидеть, что совершенно разные на первый взгляд задачи (предсказать цену дома, узнать кошку на фото, угадать следующее слово) укладываются в один и тот же шаблон **вход → f → выход**.
 
-Дальше мы по очереди откроем обе стороны коробки. Сначала — что бывает на входе. Потом — что бывает на выходе. А внутрь специально заглядывать не будем: это тема следующей статьи.
+Дальше мы по очереди откроем обе стороны коробки. Сначала посмотрим, что бывает на входе, потом что бывает на выходе. А внутрь специально заглядывать не будем: это тема следующей статьи.
 <div class="stage" id="stageBlackBox" tabindex="0">
   <div class="stage-figure">
-<svg id="blackBoxOverview" viewBox="0 140 960 420" role="img" aria-label="Вход — модель — выход как чёрная коробка">
+<svg id="blackBoxOverview" viewBox="0 140 960 420" role="img" aria-label="Вход, модель и выход как чёрная коробка">
   <style>
     #blackBoxOverview { font-family: Helvetica, Arial, sans-serif; }
     #blackBoxOverview .text { font-size:16px; fill:#111111; }
@@ -290,7 +290,7 @@ $$\text{выход} = f(\text{вход})$$
     <line x1="285" y1="320" x2="388" y2="320" stroke="#5E5850" stroke-width="2.5" marker-end="url(#bbArrow)"/><line x1="573" y1="320" x2="676" y2="320" stroke="#5E5850" stroke-width="2.5" marker-end="url(#bbArrow)"/>
     <rect class="box-dark" x="395" y="245" width="170" height="150"/><text x="480" y="308" text-anchor="middle" font-size="20" font-weight="800" fill="#ffffff">Модель</text><text x="480" y="338" text-anchor="middle" font-size="14" fill="#c7c7d1">чёрная коробка</text>
     <rect class="box-green" x="680" y="260" width="190" height="120"/><text x="775" y="310" class="text" text-anchor="middle" font-weight="700">Выход</text><text x="775" y="340" class="small" text-anchor="middle">ответ модели</text>
-    <text x="480" y="470" class="text" text-anchor="middle" font-weight="700">Пока не открываем коробку: важно понять две стороны — вход и выход</text>
+    <text x="480" y="470" class="text" text-anchor="middle" font-weight="700">Пока не открываем коробку. Важно понять две стороны: вход и выход</text>
   </g>
 
   <g data-key="step2" data-only="1">
@@ -332,12 +332,12 @@ $$\text{выход} = f(\text{вход})$$
     <div class="step-panel" data-on="step1" data-focus="step1">
       <div class="step-kicker">Шаг 1 · снаружи</div>
       <h4>У модели есть вход, функция и выход</h4>
-      <p>Что-то подаём в одно отверстие коробки, что-то получаем из другого. Пока не открываем коробку: важно сначала понять две стороны — вход и выход, а внутреннее устройство — тема следующей статьи.</p>
+      <p>Что-то подаём в одно отверстие коробки, что-то получаем из другого. Пока не открываем коробку. Важно сначала понять две стороны, вход и выход, а внутреннее устройство оставим для следующей статьи.</p>
     </div>
     <div class="step-panel" data-on="step2" data-focus="step2">
       <div class="step-kicker">Шаг 2 · разные входы</div>
       <h4>На вход могут прийти разные данные</h4>
-      <p>Таблица, картинка и текст выглядят по-разному для человека — но для модели всё это должно стать числами. Способ превращения зависит от типа данных, а дальше коробка обрабатывает их одинаково.</p>
+      <p>Таблица, картинка и текст выглядят по-разному для человека, но для модели всё это должно стать числами. Способ превращения зависит от типа данных, а дальше коробка обрабатывает их одинаково.</p>
     </div>
     <div class="step-panel" data-on="step3" data-focus="step3">
       <div class="step-kicker">Шаг 3 · разные выходы</div>
@@ -346,7 +346,7 @@ $$\text{выход} = f(\text{вход})$$
     </div>
     <div class="step-panel" data-on="step4" data-focus="step4">
       <div class="step-kicker">Шаг 4 · внутри функция f</div>
-      <h4>Внутри — функция f, снаружи — тот же шаблон</h4>
+      <h4>Внутри функция f, снаружи тот же шаблон</h4>
       <p>Обучение подбирает параметры функции f по данным, но снаружи формула остаётся той же: ŷ = f(x). В этой статье мы фиксируем вход и выход, а внутрь коробки заглянем позже.</p>
     </div>
   </div>
@@ -357,13 +357,13 @@ $$\text{выход} = f(\text{вход})$$
 
 Главная идея этого раздела одна, и её стоит проговорить сразу:
 
-> **Модель не умеет работать с «картинками», «текстом» или «таблицами». Она умеет работать только с числами** — векторами, матрицами и тензорами.
+> **Модель не умеет работать с «картинками», «текстом» или «таблицами». Она умеет работать только с числами**: векторами, матрицами и тензорами.
 
 Какими бы разными ни были исходные данные, перед входом в коробку их всегда превращают в набор чисел фиксированной формы. Разберём три типичных случая.
 
-### 3.1. Табличные данные — самый базовый вид
+### 3.1. Табличные данные: самый базовый вид
 
-Это самый привычный формат: таблица, где **строки — это объекты**, а **столбцы — их признаки** (характеристики). Каждая ячейка — одно число. Одна строка превращается в **вектор признаков** `x`, а вся таблица — в **матрицу X** формы `(n × m)`: `n` объектов на `m` признаков. Отдельно выделяют **целевой столбец y** — то, что мы хотим предсказать.
+Это самый привычный формат: таблица, где **строки описывают объекты**, а **столбцы задают их признаки** (характеристики). В каждой ячейке одно число. Одна строка превращается в **вектор признаков** `x`, а вся таблица в **матрицу X** формы `(n × m)`: `n` объектов на `m` признаков. Отдельно выделяют **целевой столбец y**: то, что мы хотим предсказать.
 
 Именно в таком виде данные подаются почти в любую классическую ML-модель. Поэтому с таблиц удобно начинать: на них проще всего увидеть и `X`, и `y`, и саму идею `f(признаки) → ответ`.
 <div class="stage" id="stageTabular" tabindex="0">
@@ -380,9 +380,9 @@ $$\text{выход} = f(\text{вход})$$
 <line x1="205" y1="158" x2="846.0" y2="158.0" stroke="#5E5850" stroke-width="1.2"/><polygon points="855,158 846.0,164.0 846.0,152.0" fill="#5E5850"/><line x1="855" y1="158" x2="214.0" y2="158.0" stroke="#5E5850" stroke-width="1.2"/><polygon points="205,158 214.0,152.0 214.0,164.0" fill="#5E5850"/><text x="530" y="148" class="label" text-anchor="middle">СТОЛБЦЫ = признаки (характеристики)</text><text class="label" text-anchor="middle" transform="translate(180, 313) rotate(-90)">СТРОКИ = объекты</text><line x1="198" y1="225" x2="198.0" y2="392.0" stroke="#5E5850" stroke-width="1.2"/><polygon points="198,401 192.0,392.0 204.0,392.0" fill="#5E5850"/><rect x="215" y="175" width="126" height="46" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="278" y="203" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Площадь</text><rect x="341" y="175" width="126" height="46" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="404" y="203" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Комнаты</text><rect x="467" y="175" width="126" height="46" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="530" y="203" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Этаж</text><rect x="593" y="175" width="126" height="46" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="656" y="203" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Возраст</text><rect x="719" y="175" width="126" height="46" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="782" y="203" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Цена, млн</text><rect x="215" y="221" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="278" y="249" font-size="15" fill="#111" text-anchor="middle">65</text><rect x="341" y="221" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="404" y="249" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="467" y="221" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="249" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="593" y="221" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="656" y="249" font-size="15" fill="#111" text-anchor="middle">10</text><rect x="719" y="221" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="782" y="249" font-size="15" fill="#111" text-anchor="middle">18</text><rect x="215" y="267" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="278" y="295" font-size="15" fill="#111" text-anchor="middle">80</text><rect x="341" y="267" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="404" y="295" font-size="15" fill="#111" text-anchor="middle">3</text><rect x="467" y="267" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="295" font-size="15" fill="#111" text-anchor="middle">7</text><rect x="593" y="267" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="656" y="295" font-size="15" fill="#111" text-anchor="middle">5</text><rect x="719" y="267" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="782" y="295" font-size="15" fill="#111" text-anchor="middle">25</text><rect x="215" y="313" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="278" y="341" font-size="15" fill="#111" text-anchor="middle">45</text><rect x="341" y="313" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="404" y="341" font-size="15" fill="#111" text-anchor="middle">1</text><rect x="467" y="313" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="341" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="593" y="313" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="656" y="341" font-size="15" fill="#111" text-anchor="middle">20</text><rect x="719" y="313" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="782" y="341" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="215" y="359" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="278" y="387" font-size="15" fill="#111" text-anchor="middle">120</text><rect x="341" y="359" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="404" y="387" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="467" y="359" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="387" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="593" y="359" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="656" y="387" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="719" y="359" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="782" y="387" font-size="15" fill="#111" text-anchor="middle">40</text><rect x="341" y="267" width="126" height="46" fill="none" stroke="#C29E08" stroke-width="3"/><line x1="404" y1="374" x2="404.0" y2="304.0" stroke="#C29E08" stroke-width="2"/><polygon points="404,294 410.0,304.0 398.0,304.0" fill="#C29E08"/><text x="404" y="394" class="small" fill="#C29E08" font-weight="700" text-anchor="middle">одна ячейка = одно число</text>
     <g transform="translate(80, 470)">
       <rect width="800" height="100" rx="12" fill="#FFFBEB" stroke="#C29E08" stroke-width="1.5"/>
-      <text x="400" y="34" class="text" font-weight="700" text-anchor="middle">Для модели любая таблица — это просто прямоугольник чисел (матрица)</text>
-      <text x="400" y="62" class="small" text-anchor="middle">Строки — отдельные объекты (здесь: 4 квартиры). Столбцы — их измеримые характеристики.</text>
-      <text x="400" y="84" class="small" text-anchor="middle">Каждая ячейка — одно значение. Дальше разберём, как это превращается во вход модели.</text>
+      <text x="400" y="34" class="text" font-weight="700" text-anchor="middle">Для модели любая таблица выглядит как прямоугольник чисел (матрица)</text>
+      <text x="400" y="62" class="small" text-anchor="middle">Строки: отдельные объекты (здесь 4 квартиры). Столбцы: их измеримые характеристики.</text>
+      <text x="400" y="84" class="small" text-anchor="middle">В каждой ячейке одно значение. Дальше разберём, как это превращается во вход модели.</text>
     </g>
   </g>
 
@@ -390,19 +390,19 @@ $$\text{выход} = f(\text{вход})$$
 <rect x="230" y="120" width="120" height="42" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="290" y="146" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Площадь</text><rect x="350" y="120" width="120" height="42" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="410" y="146" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Комнаты</text><rect x="470" y="120" width="120" height="42" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="530" y="146" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Этаж</text><rect x="590" y="120" width="120" height="42" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="650" y="146" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Возраст</text><rect x="710" y="120" width="120" height="42" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="770" y="146" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Цена, млн</text><rect x="230" y="162" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="290" y="188" font-size="15" fill="#111" text-anchor="middle">65</text><rect x="350" y="162" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="410" y="188" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="470" y="162" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="188" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="590" y="162" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="650" y="188" font-size="15" fill="#111" text-anchor="middle">10</text><rect x="710" y="162" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="770" y="188" font-size="15" fill="#111" text-anchor="middle">18</text><rect x="230" y="204" width="120" height="42" fill="#FFF4D2" stroke="#dddddd" stroke-width="1"/><text x="290" y="230" font-size="15" fill="#111" text-anchor="middle">80</text><rect x="350" y="204" width="120" height="42" fill="#FFF4D2" stroke="#dddddd" stroke-width="1"/><text x="410" y="230" font-size="15" fill="#111" text-anchor="middle">3</text><rect x="470" y="204" width="120" height="42" fill="#FFF4D2" stroke="#dddddd" stroke-width="1"/><text x="530" y="230" font-size="15" fill="#111" text-anchor="middle">7</text><rect x="590" y="204" width="120" height="42" fill="#FFF4D2" stroke="#dddddd" stroke-width="1"/><text x="650" y="230" font-size="15" fill="#111" text-anchor="middle">5</text><rect x="710" y="204" width="120" height="42" fill="#FFF4D2" stroke="#dddddd" stroke-width="1"/><text x="770" y="230" font-size="15" fill="#111" text-anchor="middle">25</text><rect x="230" y="204" width="600" height="42" fill="none" stroke="#C29E08" stroke-width="3"/><rect x="230" y="246" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="290" y="272" font-size="15" fill="#111" text-anchor="middle">45</text><rect x="350" y="246" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="410" y="272" font-size="15" fill="#111" text-anchor="middle">1</text><rect x="470" y="246" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="272" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="590" y="246" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="650" y="272" font-size="15" fill="#111" text-anchor="middle">20</text><rect x="710" y="246" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="770" y="272" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="230" y="288" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="290" y="314" font-size="15" fill="#111" text-anchor="middle">120</text><rect x="350" y="288" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="410" y="314" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="470" y="288" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="314" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="590" y="288" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="650" y="314" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="710" y="288" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="770" y="314" font-size="15" fill="#111" text-anchor="middle">40</text><text x="846" y="230" class="small" fill="#C29E08" font-weight="700">→ объект №2</text><line x1="530" y1="336" x2="530.0" y2="332.0" stroke="#C29E08" stroke-width="2"/><polygon points="530,322 536.0,332.0 524.0,332.0" fill="#C29E08"/><text x="544" y="378" class="small" fill="#C29E08" font-weight="700">вынем эту строку</text><text x="210" y="428" font-size="20" font-weight="800" fill="#111" text-anchor="end">x⁽²⁾ =</text><text x="234" y="430" font-size="40" fill="#111" text-anchor="end">[</text><rect x="240" y="400" width="88" height="50" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.4"/><text x="284" y="432" font-size="18" font-weight="700" fill="#111" text-anchor="middle">80</text><text x="284" y="470" font-size="11" fill="#5E5850" text-anchor="middle">Площадь</text><rect x="338" y="400" width="88" height="50" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.4"/><text x="382" y="432" font-size="18" font-weight="700" fill="#111" text-anchor="middle">3</text><text x="382" y="470" font-size="11" fill="#5E5850" text-anchor="middle">Комнаты</text><rect x="436" y="400" width="88" height="50" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.4"/><text x="480" y="432" font-size="18" font-weight="700" fill="#111" text-anchor="middle">7</text><text x="480" y="470" font-size="11" fill="#5E5850" text-anchor="middle">Этаж</text><rect x="534" y="400" width="88" height="50" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.4"/><text x="578" y="432" font-size="18" font-weight="700" fill="#111" text-anchor="middle">5</text><text x="578" y="470" font-size="11" fill="#5E5850" text-anchor="middle">Возраст</text><rect x="632" y="400" width="88" height="50" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.4"/><text x="676" y="432" font-size="18" font-weight="700" fill="#111" text-anchor="middle">25</text><text x="676" y="470" font-size="11" fill="#5E5850" text-anchor="middle">Цена</text><text x="726" y="430" font-size="40" fill="#111">]</text>
     <g transform="translate(80, 488)">
       <rect width="800" height="82" rx="12" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.5"/>
-      <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">Строка таблицы — это вектор: список чисел в фиксированном порядке</text>
+      <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">Строка таблицы становится вектором: списком чисел в фиксированном порядке</text>
       <text x="400" y="60" class="small" text-anchor="middle">Порядок важен: 2-я позиция всегда «комнаты», 3-я всегда «этаж». Так модель понимает, что есть что.</text>
     </g>
   </g>
 
   <g data-key="step3" data-only="1">
-<rect x="175" y="160" width="118" height="46" fill="#DCEAFB" stroke="#b6b6b6" stroke-width="1"/><text x="234" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Площадь</text><rect x="293" y="160" width="118" height="46" fill="#DCEAFB" stroke="#b6b6b6" stroke-width="1"/><text x="352" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Комнаты</text><rect x="411" y="160" width="118" height="46" fill="#DCEAFB" stroke="#b6b6b6" stroke-width="1"/><text x="470" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Этаж</text><rect x="529" y="160" width="118" height="46" fill="#DCEAFB" stroke="#b6b6b6" stroke-width="1"/><text x="588" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Возраст</text><rect x="691" y="160" width="118" height="46" fill="#E2F2D2" stroke="#b6b6b6" stroke-width="1"/><text x="750" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Цена, млн</text><rect x="175" y="206" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="234" y="234" font-size="15" fill="#111" text-anchor="middle">65</text><rect x="293" y="206" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="352" y="234" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="411" y="206" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="470" y="234" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="529" y="206" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="588" y="234" font-size="15" fill="#111" text-anchor="middle">10</text><rect x="691" y="206" width="118" height="46" fill="#F5FBEE" stroke="#dddddd" stroke-width="1"/><text x="750" y="234" font-size="15" fill="#111" text-anchor="middle">18</text><rect x="175" y="252" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="234" y="280" font-size="15" fill="#111" text-anchor="middle">80</text><rect x="293" y="252" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="352" y="280" font-size="15" fill="#111" text-anchor="middle">3</text><rect x="411" y="252" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="470" y="280" font-size="15" fill="#111" text-anchor="middle">7</text><rect x="529" y="252" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="588" y="280" font-size="15" fill="#111" text-anchor="middle">5</text><rect x="691" y="252" width="118" height="46" fill="#F5FBEE" stroke="#dddddd" stroke-width="1"/><text x="750" y="280" font-size="15" fill="#111" text-anchor="middle">25</text><rect x="175" y="298" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="234" y="326" font-size="15" fill="#111" text-anchor="middle">45</text><rect x="293" y="298" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="352" y="326" font-size="15" fill="#111" text-anchor="middle">1</text><rect x="411" y="298" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="470" y="326" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="529" y="298" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="588" y="326" font-size="15" fill="#111" text-anchor="middle">20</text><rect x="691" y="298" width="118" height="46" fill="#F5FBEE" stroke="#dddddd" stroke-width="1"/><text x="750" y="326" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="175" y="344" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="234" y="372" font-size="15" fill="#111" text-anchor="middle">120</text><rect x="293" y="344" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="352" y="372" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="411" y="344" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="470" y="372" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="529" y="344" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="588" y="372" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="691" y="344" width="118" height="46" fill="#F5FBEE" stroke="#dddddd" stroke-width="1"/><text x="750" y="372" font-size="15" fill="#111" text-anchor="middle">40</text><line x1="175" y1="406" x2="647" y2="406" stroke="#3576C0" stroke-width="2"/><line x1="175" y1="406" x2="175" y2="398" stroke="#3576C0" stroke-width="2"/><line x1="647" y1="406" x2="647" y2="398" stroke="#3576C0" stroke-width="2"/><text x="411" y="432" font-size="22" font-weight="800" fill="#3576C0" text-anchor="middle">X — признаки (вход)</text><line x1="691" y1="406" x2="809" y2="406" stroke="#73B222" stroke-width="2"/><line x1="691" y1="406" x2="691" y2="398" stroke="#73B222" stroke-width="2"/><line x1="809" y1="406" x2="809" y2="398" stroke="#73B222" stroke-width="2"/><text x="750" y="432" font-size="22" font-weight="800" fill="#73B222" text-anchor="middle">y — цель</text><text x="669" y="138" font-size="26" fill="#5E5850" text-anchor="middle">→</text>
+<rect x="175" y="160" width="118" height="46" fill="#DCEAFB" stroke="#b6b6b6" stroke-width="1"/><text x="234" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Площадь</text><rect x="293" y="160" width="118" height="46" fill="#DCEAFB" stroke="#b6b6b6" stroke-width="1"/><text x="352" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Комнаты</text><rect x="411" y="160" width="118" height="46" fill="#DCEAFB" stroke="#b6b6b6" stroke-width="1"/><text x="470" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Этаж</text><rect x="529" y="160" width="118" height="46" fill="#DCEAFB" stroke="#b6b6b6" stroke-width="1"/><text x="588" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Возраст</text><rect x="691" y="160" width="118" height="46" fill="#E2F2D2" stroke="#b6b6b6" stroke-width="1"/><text x="750" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Цена, млн</text><rect x="175" y="206" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="234" y="234" font-size="15" fill="#111" text-anchor="middle">65</text><rect x="293" y="206" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="352" y="234" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="411" y="206" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="470" y="234" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="529" y="206" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="588" y="234" font-size="15" fill="#111" text-anchor="middle">10</text><rect x="691" y="206" width="118" height="46" fill="#F5FBEE" stroke="#dddddd" stroke-width="1"/><text x="750" y="234" font-size="15" fill="#111" text-anchor="middle">18</text><rect x="175" y="252" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="234" y="280" font-size="15" fill="#111" text-anchor="middle">80</text><rect x="293" y="252" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="352" y="280" font-size="15" fill="#111" text-anchor="middle">3</text><rect x="411" y="252" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="470" y="280" font-size="15" fill="#111" text-anchor="middle">7</text><rect x="529" y="252" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="588" y="280" font-size="15" fill="#111" text-anchor="middle">5</text><rect x="691" y="252" width="118" height="46" fill="#F5FBEE" stroke="#dddddd" stroke-width="1"/><text x="750" y="280" font-size="15" fill="#111" text-anchor="middle">25</text><rect x="175" y="298" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="234" y="326" font-size="15" fill="#111" text-anchor="middle">45</text><rect x="293" y="298" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="352" y="326" font-size="15" fill="#111" text-anchor="middle">1</text><rect x="411" y="298" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="470" y="326" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="529" y="298" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="588" y="326" font-size="15" fill="#111" text-anchor="middle">20</text><rect x="691" y="298" width="118" height="46" fill="#F5FBEE" stroke="#dddddd" stroke-width="1"/><text x="750" y="326" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="175" y="344" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="234" y="372" font-size="15" fill="#111" text-anchor="middle">120</text><rect x="293" y="344" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="352" y="372" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="411" y="344" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="470" y="372" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="529" y="344" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="588" y="372" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="691" y="344" width="118" height="46" fill="#F5FBEE" stroke="#dddddd" stroke-width="1"/><text x="750" y="372" font-size="15" fill="#111" text-anchor="middle">40</text><line x1="175" y1="406" x2="647" y2="406" stroke="#3576C0" stroke-width="2"/><line x1="175" y1="406" x2="175" y2="398" stroke="#3576C0" stroke-width="2"/><line x1="647" y1="406" x2="647" y2="398" stroke="#3576C0" stroke-width="2"/><text x="411" y="432" font-size="22" font-weight="800" fill="#3576C0" text-anchor="middle">X: признаки (вход)</text><line x1="691" y1="406" x2="809" y2="406" stroke="#73B222" stroke-width="2"/><line x1="691" y1="406" x2="691" y2="398" stroke="#73B222" stroke-width="2"/><line x1="809" y1="406" x2="809" y2="398" stroke="#73B222" stroke-width="2"/><text x="750" y="432" font-size="22" font-weight="800" fill="#73B222" text-anchor="middle">y: цель</text><text x="669" y="138" font-size="26" fill="#5E5850" text-anchor="middle">→</text>
     <g transform="translate(80, 460)">
       <rect width="800" height="110" rx="12" fill="#F0FAF0" stroke="#73B222" stroke-width="1.5"/>
-      <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">X — то, что известно. y — то, что нужно предсказать.</text>
-      <text x="400" y="60" class="small" text-anchor="middle">Признаки (площадь, комнаты, этаж, возраст) → цель (цена). Цель — обычно один столбец.</text>
-      <text x="400" y="82" class="small" text-anchor="middle">Регрессия: y — число (цена). Классификация: y — метка класса (например, «дорогая / дешёвая»).</text>
-      <text x="400" y="102" class="small" text-anchor="middle">Какой столбец сделать целью — решаем мы, исходя из задачи.</text>
+      <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">X: то, что известно. y: то, что нужно предсказать.</text>
+      <text x="400" y="60" class="small" text-anchor="middle">Признаки (площадь, комнаты, этаж, возраст) → цель (цена). Цель обычно занимает один столбец.</text>
+      <text x="400" y="82" class="small" text-anchor="middle">Регрессия предсказывает число (цену), классификация метку класса (например, «дорогая / дешёвая»).</text>
+      <text x="400" y="102" class="small" text-anchor="middle">Какой столбец сделать целью, решаем мы, исходя из задачи.</text>
     </g>
   </g>
 
@@ -412,8 +412,8 @@ $$\text{выход} = f(\text{вход})$$
       <rect width="800" height="140" rx="12" fill="#FFFBEB" stroke="#C29E08" stroke-width="1.5"/>
       <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">Стандартная форма данных в ML</text>
       <text x="400" y="62" font-size="16" text-anchor="middle"><tspan fill="#3576C0" font-weight="700">X: форма (n × m) = (4 × 4)</tspan><tspan fill="#5E5850">     ·     </tspan><tspan fill="#73B222" font-weight="700">y: форма (n,) = (4,)</tspan></text>
-      <text x="400" y="90" class="small" text-anchor="middle">n — число объектов (samples), m — число признаков (features). У каждого объекта свой ответ в y.</text>
-      <text x="400" y="112" class="small" text-anchor="middle">В реальности n бывает миллионы строк, m — десятки или тысячи столбцов.</text>
+      <text x="400" y="90" class="small" text-anchor="middle">n означает число объектов (samples), m число признаков (features). У каждого объекта свой ответ в y.</text>
+      <text x="400" y="112" class="small" text-anchor="middle">В реальности строк бывают миллионы, а столбцов десятки или тысячи.</text>
       <text x="400" y="132" class="small" text-anchor="middle">Это ровно тот вид, в котором данные подаются почти в любую классическую ML-модель.</text>
     </g>
   </g>
@@ -422,11 +422,11 @@ $$\text{выход} = f(\text{вход})$$
 <text x="220" y="136" class="label" fill="#3576C0" text-anchor="middle">признаки одной квартиры</text><rect x="110" y="150" width="220" height="40" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.3"/><text x="126" y="175" font-size="15" fill="#111">Площадь: 65</text><rect x="110" y="196" width="220" height="40" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.3"/><text x="126" y="221" font-size="15" fill="#111">Комнаты: 2</text><rect x="110" y="242" width="220" height="40" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.3"/><text x="126" y="267" font-size="15" fill="#111">Этаж: 4</text><rect x="110" y="288" width="220" height="40" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.3"/><text x="126" y="313" font-size="15" fill="#111">Возраст: 10</text><text x="220" y="342" font-size="15" font-weight="700" fill="#3576C0" text-anchor="middle">вектор x = [65, 2, 4, 10]</text><line x1="338" y1="239" x2="389.2" y2="247.8" stroke="#5E5850" stroke-width="2.5"/><polygon points="402,250 388.2,253.7 390.2,241.9" fill="#5E5850"/><rect x="410" y="195" width="150" height="110" rx="14" fill="#FFFBEB" stroke="#C29E08" stroke-width="2.5"/><text x="485" y="241" font-size="30" font-weight="800" fill="#C29E08" text-anchor="middle">f</text><text x="485" y="273" class="small" text-anchor="middle">модель</text><text x="485" y="291" class="small" text-anchor="middle">(функция)</text><line x1="568" y1="250" x2="639.0" y2="250.0" stroke="#5E5850" stroke-width="2.5"/><polygon points="652,250 639.0,256.0 639.0,244.0" fill="#5E5850"/><rect x="660" y="208" width="200" height="84" rx="12" fill="#F0FAF0" stroke="#73B222" stroke-width="2"/><text x="760" y="238" class="small" fill="#73B222" font-weight="700" text-anchor="middle">предсказание цены</text><text x="760" y="272" font-size="24" font-weight="800" fill="#111" text-anchor="middle">ŷ ≈ 18 млн</text><text x="480" y="370" font-size="22" font-weight="800" text-anchor="middle"><tspan fill="#C29E08">f</tspan><tspan fill="#111">(</tspan><tspan fill="#3576C0">X</tspan><tspan fill="#111">) → </tspan><tspan fill="#73B222">y</tspan></text>
     <g transform="translate(80, 405)">
       <rect width="800" height="165" rx="12" fill="#F0FAF0" stroke="#73B222" stroke-width="1.5"/>
-      <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">Цель машинного обучения — найти такую f</text>
+      <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">Цель машинного обучения: найти такую f</text>
       <text x="400" y="60" class="small" text-anchor="middle">...чтобы для каждого объекта предсказание f(признаки) было близко к настоящему ответу y.</text>
       <text x="400" y="82" class="small" text-anchor="middle">Вход всегда один и тот же по форме: вектор признаков фиксированной длины m.</text>
-      <text x="400" y="104" class="small" text-anchor="middle">Выход — одно число (регрессия) или метка класса (классификация).</text>
-      <text x="400" y="132" class="small" text-anchor="middle" font-weight="700">Как именно подбирается f по данным (обучение) — это уже отдельная история.</text>
+      <text x="400" y="104" class="small" text-anchor="middle">На выходе одно число (регрессия) или метка класса (классификация).</text>
+      <text x="400" y="132" class="small" text-anchor="middle" font-weight="700">Как именно f подбирается по данным (обучение), разберём отдельно.</text>
       <text x="400" y="152" class="small" text-anchor="middle">Здесь главное: вход модели = матрица X, и мы хотим из неё получить y.</text>
     </g>
   </g>
@@ -443,38 +443,38 @@ $$\text{выход} = f(\text{вход})$$
   <div class="stage-notes">
     <div class="step-panel" data-on="step1" data-focus="step1">
       <div class="step-kicker">Шаг 1 · таблица как матрица</div>
-      <h4>Табличные данные — это матрица</h4>
-      <p>Как в Excel или CSV: строки и столбцы из чисел. Строки — отдельные объекты (здесь: 4 квартиры), столбцы — их измеримые характеристики, а каждая ячейка — одно число.</p>
+      <h4>Табличные данные образуют матрицу</h4>
+      <p>Как в Excel или CSV: строки и столбцы из чисел. Строки описывают отдельные объекты (здесь 4 квартиры), столбцы их измеримые характеристики, а в каждой ячейке одно число.</p>
     </div>
     <div class="step-panel" data-on="step2" data-focus="step2">
       <div class="step-kicker">Шаг 2 · строка как вектор</div>
       <h4>Одно наблюдение = строка = вектор</h4>
-      <p>Каждый объект описывается упорядоченным набором чисел. Порядок важен: 2-я позиция всегда «комнаты», 3-я всегда «этаж» — так модель понимает, что есть что, не видя названий столбцов.</p>
+      <p>Каждый объект описывается упорядоченным набором чисел. Порядок важен: 2-я позиция всегда «комнаты», 3-я всегда «этаж». Так модель понимает, что есть что, не видя названий столбцов.</p>
     </div>
     <div class="step-panel" data-on="step3" data-focus="step3">
       <div class="step-kicker">Шаг 3 · X и y</div>
       <h4>Признаки (X) и цель (y)</h4>
-      <p>Столбцы делятся на то, что мы знаем (X — признаки), и то, что хотим предсказать (y — цель, обычно один столбец). Какой столбец сделать целью — решаем мы сами, исходя из задачи.</p>
+      <p>Столбцы делятся на то, что мы знаем (признаки X), и то, что хотим предсказать (цель y, обычно один столбец). Какой столбец сделать целью, решаем мы сами, исходя из задачи.</p>
     </div>
     <div class="step-panel" data-on="step4" data-focus="step4">
       <div class="step-kicker">Шаг 4 · весь датасет</div>
       <h4>Весь датасет: матрица X и вектор y</h4>
-      <p>n объектов × m признаков — матрица X формы (n × m), и столбец ответов y длины n. В реальности n бывает миллионы строк, m — десятки или тысячи столбцов, но форма всегда такая.</p>
+      <p>n объектов × m признаков дают матрицу X формы (n × m) и столбец ответов y длины n. В реальности строк бывают миллионы, а столбцов десятки или тысячи, но форма всегда такая.</p>
     </div>
     <div class="step-panel" data-on="step5" data-focus="step5">
       <div class="step-kicker">Шаг 5 · предсказать y по X</div>
       <h4>Задача: предсказать y по X</h4>
-      <p>Нужна функция f, которая по признакам одной квартиры выдаст цель — предсказание цены. Вход всегда один и тот же по форме: вектор признаков фиксированной длины m, а найти подходящую f — и есть обучение.</p>
+      <p>Нужна функция f, которая по признакам одной квартиры выдаст цель, то есть предсказание цены. Вход всегда один и тот же по форме: вектор признаков фиксированной длины m, а поиск подходящей f и называют обучением.</p>
     </div>
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
 
-### 3.2. Изображения — это тоже числа
+### 3.2. Изображения тоже состоят из чисел
 
-Человек видит на картинке кошку. Компьютер видит **сетку чисел**. Каждый пиксель — это число (для серого — одно число от 0 до 255), а для цветного изображения — **три числа** (R, G, B). Сложив три цветовых канала, получаем **3D-тензор** формы `высота × ширина × каналы`.
+Человек видит на картинке кошку. Компьютер видит **сетку чисел**. Каждый пиксель хранит число (для серого одно число от 0 до 255), а в цветном изображении **три числа** (R, G, B). Сложив три цветовых канала, получаем **3D-тензор** формы `высота × ширина × каналы`.
 
-То есть картинка — это не что-то принципиально новое для модели: это просто матрица (или тензор) чисел, только большего размера, чем строка таблицы.
+Принципиально нового для модели в картинке ничего нет: это матрица (или тензор) чисел, только большего размера, чем строка таблицы.
 <div class="stage" id="stageImagePixels" tabindex="0">
   <div class="stage-figure">
 <svg id="howComputerSeesImage" viewBox="0 100 960 500" role="img" aria-label="Как компьютер видит цветную картинку">
@@ -495,13 +495,13 @@ $$\text{выход} = f(\text{вход})$$
 
     <text x="635" y="170" class="label" text-anchor="middle">КОМПЬЮТЕР ВИДИТ</text>
     <rect x="395" y="190" width="160" height="60" fill="#ffffff" stroke="#3576C0" stroke-width="1"/><text x="475" y="225" font-size="15" font-weight="700" text-anchor="middle"><tspan fill="#C30B0A">220</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#73B222">70</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#3576C0">70</tspan></text><rect x="555" y="190" width="160" height="60" fill="#ffffff" stroke="#3576C0" stroke-width="1"/><text x="635" y="225" font-size="15" font-weight="700" text-anchor="middle"><tspan fill="#C30B0A">250</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#73B222">200</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#3576C0">80</tspan></text><rect x="715" y="190" width="160" height="60" fill="#ffffff" stroke="#3576C0" stroke-width="1"/><text x="795" y="225" font-size="15" font-weight="700" text-anchor="middle"><tspan fill="#C30B0A">90</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#73B222">180</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#3576C0">90</tspan></text><rect x="395" y="250" width="160" height="60" fill="#ffffff" stroke="#3576C0" stroke-width="1"/><text x="475" y="285" font-size="15" font-weight="700" text-anchor="middle"><tspan fill="#C30B0A">80</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#73B222">150</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#3576C0">220</tspan></text><rect x="555" y="250" width="160" height="60" fill="#ffffff" stroke="#3576C0" stroke-width="1"/><text x="635" y="285" font-size="15" font-weight="700" text-anchor="middle"><tspan fill="#C30B0A">220</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#73B222">130</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#3576C0">200</tspan></text><rect x="715" y="250" width="160" height="60" fill="#ffffff" stroke="#3576C0" stroke-width="1"/><text x="795" y="285" font-size="15" font-weight="700" text-anchor="middle"><tspan fill="#C30B0A">200</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#73B222">200</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#3576C0">200</tspan></text><rect x="395" y="310" width="160" height="60" fill="#ffffff" stroke="#3576C0" stroke-width="1"/><text x="475" y="345" font-size="15" font-weight="700" text-anchor="middle"><tspan fill="#C30B0A">240</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#73B222">150</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#3576C0">60</tspan></text><rect x="555" y="310" width="160" height="60" fill="#ffffff" stroke="#3576C0" stroke-width="1"/><text x="635" y="345" font-size="15" font-weight="700" text-anchor="middle"><tspan fill="#C30B0A">60</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#73B222">60</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#3576C0">150</tspan></text><rect x="715" y="310" width="160" height="60" fill="#ffffff" stroke="#3576C0" stroke-width="1"/><text x="795" y="345" font-size="15" font-weight="700" text-anchor="middle"><tspan fill="#C30B0A">40</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#73B222">40</tspan><tspan fill="#5E5850">,&#160;</tspan><tspan fill="#3576C0">40</tspan></text>
-    <text x="635" y="395" class="small" text-anchor="middle">та же сетка — но из чисел (R, G, B) на каждый пиксель</text>
+    <text x="635" y="395" class="small" text-anchor="middle">та же сетка, но из чисел (R, G, B) на каждый пиксель</text>
 
     <g transform="translate(80, 440)">
       <rect width="800" height="115" rx="12" fill="#FFFBEB" stroke="#C29E08" stroke-width="1.5"/>
       <text x="400" y="38" class="text" font-weight="700" text-anchor="middle">Любая цифровая картинка хранится в виде чисел.</text>
       <text x="400" y="68" class="small" text-anchor="middle">Дальше разберём: почему чисел три на каждый пиксель,</text>
-      <text x="400" y="90" class="small" text-anchor="middle">как из них собирается цвет и почему всё это — 3D тензор.</text>
+      <text x="400" y="90" class="small" text-anchor="middle">как из них собирается цвет и почему всё это образует 3D тензор.</text>
     </g>
   </g>
 
@@ -521,15 +521,15 @@ $$\text{выход} = f(\text{вход})$$
       <text x="90" y="208" class="small" text-anchor="middle">(пример из матрицы справа)</text>
     </g>
 
-    <text x="510" y="500" class="text" font-weight="700" text-anchor="middle">0 — чёрный   ·   255 — белый   ·   между — оттенки серого</text>
-    <text x="510" y="525" class="small" text-anchor="middle">в MNIST реальный размер цифры — 28 × 28 таких пикселей</text>
+    <text x="510" y="500" class="text" font-weight="700" text-anchor="middle">0 = чёрный   ·   255 = белый   ·   между ними оттенки серого</text>
+    <text x="510" y="525" class="small" text-anchor="middle">в MNIST реальный размер цифры: 28 × 28 таких пикселей</text>
   </g>
 
   <g data-key="step3" data-only="1">
     <text x="200" y="135" class="small" text-anchor="middle">Красный</text><rect x="130" y="145" width="140" height="140" fill="rgb(230,60,60)" stroke="#111" stroke-width="1.5"/><text x="200" y="313" font-size="17" font-weight="800" fill="#C30B0A" text-anchor="middle">R = 230</text><text x="200" y="337" font-size="17" font-weight="800" fill="#73B222" text-anchor="middle">G = 60</text><text x="200" y="361" font-size="17" font-weight="800" fill="#3576C0" text-anchor="middle">B = 60</text><text x="390" y="135" class="small" text-anchor="middle">Жёлтый</text><rect x="320" y="145" width="140" height="140" fill="rgb(240,220,60)" stroke="#111" stroke-width="1.5"/><text x="390" y="313" font-size="17" font-weight="800" fill="#C30B0A" text-anchor="middle">R = 240</text><text x="390" y="337" font-size="17" font-weight="800" fill="#73B222" text-anchor="middle">G = 220</text><text x="390" y="361" font-size="17" font-weight="800" fill="#3576C0" text-anchor="middle">B = 60</text><text x="580" y="135" class="small" text-anchor="middle">Зелёный</text><rect x="510" y="145" width="140" height="140" fill="rgb(60,200,80)" stroke="#111" stroke-width="1.5"/><text x="580" y="313" font-size="17" font-weight="800" fill="#C30B0A" text-anchor="middle">R = 60</text><text x="580" y="337" font-size="17" font-weight="800" fill="#73B222" text-anchor="middle">G = 200</text><text x="580" y="361" font-size="17" font-weight="800" fill="#3576C0" text-anchor="middle">B = 80</text><text x="770" y="135" class="small" text-anchor="middle">Голубой</text><rect x="700" y="145" width="140" height="140" fill="rgb(60,180,230)" stroke="#111" stroke-width="1.5"/><text x="770" y="313" font-size="17" font-weight="800" fill="#C30B0A" text-anchor="middle">R = 60</text><text x="770" y="337" font-size="17" font-weight="800" fill="#73B222" text-anchor="middle">G = 180</text><text x="770" y="361" font-size="17" font-weight="800" fill="#3576C0" text-anchor="middle">B = 230</text>
     <g transform="translate(80, 495)">
       <rect width="800" height="85" rx="12" fill="#F0FAF0" stroke="#73B222" stroke-width="1.5"/>
-      <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">Интуиция: 0 — нет этого цвета, 255 — максимум.</text>
+      <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">Интуиция: 0 = нет этого цвета, 255 = максимум.</text>
       <text x="400" y="60" class="small" text-anchor="middle">Жёлтый = много R + много G + мало B.   Чёрный = (0, 0, 0).   Белый = (255, 255, 255).</text>
     </g>
   </g>
@@ -569,10 +569,10 @@ $$\text{выход} = f(\text{вход})$$
     <g transform="translate(80, 410)">
       <rect width="800" height="155" rx="12" fill="#F0FAF0" stroke="#73B222" stroke-width="1.5"/>
       <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">Каждый пиксель собирается из трёх интенсивностей</text>
-      <text x="400" y="62" class="small" text-anchor="middle">Центральный пиксель в этой картинке: R = 220, G = 130, B = 200 — пурпурно-розовый.</text>
-      <text x="400" y="85" class="small" text-anchor="middle">«Только R» — это вся картинка, но обнулены G и B. Видим только «красную составляющую».</text>
-      <text x="400" y="108" class="small" text-anchor="middle">Аналогично «только G» и «только B». Сложили три слоя — получили исходный цвет.</text>
-      <text x="400" y="135" class="small" text-anchor="middle" font-weight="700">Никакого «цвета» в данных нет — только три числа на пиксель.</text>
+      <text x="400" y="62" class="small" text-anchor="middle">Центральный пиксель в этой картинке (R = 220, G = 130, B = 200) пурпурно-розовый.</text>
+      <text x="400" y="85" class="small" text-anchor="middle">«Только R» показывает всю картинку с обнулёнными G и B. Видим только «красную составляющую».</text>
+      <text x="400" y="108" class="small" text-anchor="middle">Аналогично «только G» и «только B». Сложили три слоя и получили исходный цвет.</text>
+      <text x="400" y="135" class="small" text-anchor="middle" font-weight="700">Никакого «цвета» в данных нет, только три числа на пиксель.</text>
     </g>
   </g>
 
@@ -628,45 +628,45 @@ $$\text{выход} = f(\text{вход})$$
   <div class="stage-notes">
     <div class="step-panel" data-on="step1" data-focus="step1">
       <div class="step-kicker">Шаг 1 · что видит компьютер</div>
-      <h4>Любая картинка для машины — просто матрица чисел</h4>
-      <p>Человек видит цветные пиксели, а компьютер — ту же сетку, но из чисел R, G, B на каждый пиксель. Дальше разберём, почему чисел три на пиксель, как из них собирается цвет и почему всё это — 3D-тензор.</p>
+      <h4>Для машины любая картинка остаётся матрицей чисел</h4>
+      <p>Человек видит цветные пиксели, а компьютер ту же сетку, но из чисел R, G, B на каждый пиксель. Дальше разберём, почему чисел три на пиксель, как из них собирается цвет и почему всё это образует 3D-тензор.</p>
     </div>
     <div class="step-panel" data-on="step2" data-focus="step2">
       <div class="step-kicker">Шаг 2 · один пиксель</div>
-      <h4>Один пиксель — одно число (в grayscale)</h4>
-      <p>Сначала простой случай — чёрно-белая картинка, как в MNIST. 0 — чёрный, 255 — белый, всё между ними — оттенки серого. Реальный размер цифры в MNIST — 28 × 28 таких пикселей.</p>
+      <h4>Один пиксель хранит одно число (в grayscale)</h4>
+      <p>Сначала простой случай: чёрно-белая картинка, как в MNIST. 0 означает чёрный, 255 белый, всё между ними даёт оттенки серого. В настоящем MNIST цифра занимает 28 × 28 таких пикселей.</p>
     </div>
     <div class="step-panel" data-on="step3" data-focus="step3">
       <div class="step-kicker">Шаг 3 · цветной пиксель</div>
-      <h4>Цветной пиксель — уже три числа</h4>
-      <p>Любой цвет — это смесь R (красный), G (зелёный) и B (синий), каждое от 0 до 255. Жёлтый — много R и G, мало B; чёрный — (0, 0, 0); белый — (255, 255, 255).</p>
+      <h4>Цветной пиксель хранит уже три числа</h4>
+      <p>Любой цвет получается смесью R (красный), G (зелёный) и B (синий), каждое от 0 до 255. В жёлтом много R и G, мало B; чёрный записывается как (0, 0, 0), белый как (255, 255, 255).</p>
     </div>
     <div class="step-panel" data-on="step4" data-focus="step4">
       <div class="step-kicker">Шаг 4 · три канала</div>
       <h4>Картинка раскладывается на 3 канала</h4>
-      <p>Раз на пиксель приходится три числа, вся картинка — это три отдельные матрицы одинакового размера: красный, зелёный и синий каналы, каждый со значениями 0–255.</p>
+      <p>Раз на пиксель приходится три числа, вся картинка состоит из трёх отдельных матриц одинакового размера: красный, зелёный и синий каналы, каждый со значениями 0–255.</p>
     </div>
     <div class="step-panel" data-on="step5" data-focus="step5">
       <div class="step-kicker">Шаг 5 · сборка цвета</div>
       <h4>R + G + B = итоговая цветная картинка</h4>
-      <p>Складываем интенсивности по всем каналам — получаем итоговый цвет. Центральный пиксель здесь: R = 220, G = 130, B = 200 — пурпурно-розовый. Никакого «цвета» в данных нет, только три числа на пиксель.</p>
+      <p>Складываем интенсивности по всем каналам и получаем итоговый цвет. Центральный пиксель здесь (R = 220, G = 130, B = 200) пурпурно-розовый. Никакого «цвета» в данных нет, только три числа на пиксель.</p>
     </div>
     <div class="step-panel" data-on="step6" data-focus="step6">
       <div class="step-kicker">Шаг 6 · 3D-тензор</div>
-      <h4>Картинка — это стопка из трёх матриц</h4>
-      <p>Форма такого тензора — (высота × ширина × 3). Именно в этой форме картинки подаются в модели: CIFAR-10 — 32×32×3, ImageNet — 224×224×3, фото Full HD — 1080×1920×3.</p>
+      <h4>Картинка как стопка из трёх матриц</h4>
+      <p>Форма такого тензора: (высота × ширина × 3). Именно в этой форме картинки подаются в модели: в CIFAR-10 это 32×32×3, в ImageNet 224×224×3, у фото Full HD 1080×1920×3.</p>
     </div>
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
 
-### 3.3. Текст — самый хитрый случай
+### 3.3. Текст: самый хитрый случай
 
-С текстом сложнее всего, потому что «правильное» превращение в числа здесь неочевидно. Наивный путь — закодировать каждую букву её номером (ASCII) — не работает: у слов *cat* и *car* почти одинаковые коды, но совершенно разный смысл, а у *cat* и *kitten* коды разные, хотя по смыслу они близки.
+С текстом сложнее всего, потому что «правильное» превращение в числа здесь неочевидно. Наивный путь (закодировать каждую букву её номером в ASCII) не работает: у слов *cat* и *car* почти одинаковые коды, но совершенно разный смысл, а у *cat* и *kitten* коды разные, хотя по смыслу они близки.
 
-Следующая попытка — **one-hot векторы** — даёт каждому слову уникальный «адрес», но такие векторы огромные, почти полностью из нулей, и все слова в них «одинаково чужие» друг другу. Решение — **эмбеддинги**: короткие плотные векторы из вещественных чисел, которые модель *выстраивает* так, чтобы **геометрия отражала смысл** (близкие по смыслу слова — близкие векторы).
+Следующая попытка, **one-hot векторы**, даёт каждому слову уникальный «адрес», но такие векторы огромные, почти полностью из нулей, и все слова в них «одинаково чужие» друг другу. Решение дают **эмбеддинги**: короткие плотные векторы из вещественных чисел, которые модель *выстраивает* так, чтобы **геометрия отражала смысл** (близким по смыслу словам соответствуют близкие векторы).
 
-Главное для нашей картины: на вход модели в итоге всё равно идёт **вектор чисел** — просто полученный хитрее, чем у таблицы.
+Главное для нашей картины: на вход модели в итоге всё равно идёт **вектор чисел**, просто полученный хитрее, чем у таблицы.
 <div class="stage" id="stageWordEmbeddings" tabindex="0">
   <div class="stage-figure">
 <svg id="wordEmbeddingsViz" viewBox="0 90 960 495" role="img" aria-label="Как слова становятся числами: word embeddings">
@@ -690,16 +690,16 @@ $$\text{выход} = f(\text{вход})$$
     <g transform="translate(80, 440)">
       <rect width="800" height="130" rx="12" fill="#FFFBEB" stroke="#C29E08" stroke-width="1.5"/>
       <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">Так компьютер хранит текст: 1 буква = 1 число (0–255)</text>
-      <text x="400" y="60" class="small" text-anchor="middle">ASCII — реальный стандарт, используется в каждом текстовом файле.</text>
+      <text x="400" y="60" class="small" text-anchor="middle">ASCII: реальный стандарт, используется в каждом текстовом файле.</text>
       <text x="400" y="82" class="small" text-anchor="middle">Слово целиком = массив чисел. Это естественная первая мысль:</text>
-      <text x="400" y="104" class="small" text-anchor="middle">взять эти массивы и подавать в нейросеть. Дальше — почему так не работает.</text>
+      <text x="400" y="104" class="small" text-anchor="middle">взять эти массивы и подавать в нейросеть. Дальше: почему так не работает.</text>
     </g>
   </g>
 
   <g data-key="step2" data-only="1">
     <g transform="translate(80, 110)">
       <rect width="380" height="300" rx="12" fill="#FFF2F2" stroke="#C30B0A" stroke-width="1.5"/>
-      <text x="190" y="32" class="label" fill="#C30B0A" text-anchor="middle">Близкие коды — разный смысл</text>
+      <text x="190" y="32" class="label" fill="#C30B0A" text-anchor="middle">Близкие коды, разный смысл</text>
 
       <text x="100" y="80" font-size="22" font-weight="800" fill="#111" text-anchor="middle">"cat"</text>
       <text x="100" y="108" font-size="15" font-weight="700" fill="#3576C0" text-anchor="middle">[99, 97, 116]</text>
@@ -712,13 +712,13 @@ $$\text{выход} = f(\text{вход})$$
       <text x="190" y="196" class="small" text-anchor="middle">→ для ASCII почти одно и то же</text>
 
       <text x="190" y="235" class="text" font-weight="700" text-anchor="middle">Но cat ≠ car</text>
-      <text x="190" y="260" class="small" text-anchor="middle">(животное vs транспорт —</text>
+      <text x="190" y="260" class="small" text-anchor="middle">(животное vs транспорт:</text>
       <text x="190" y="278" class="small" text-anchor="middle">никакого сходства по смыслу)</text>
     </g>
 
     <g transform="translate(500, 110)">
       <rect width="380" height="300" rx="12" fill="#FFF2F2" stroke="#C30B0A" stroke-width="1.5"/>
-      <text x="190" y="32" class="label" fill="#C30B0A" text-anchor="middle">Близкий смысл — разные коды</text>
+      <text x="190" y="32" class="label" fill="#C30B0A" text-anchor="middle">Близкий смысл, разные коды</text>
 
       <text x="100" y="80" font-size="22" font-weight="800" fill="#111" text-anchor="middle">"cat"</text>
       <text x="100" y="108" font-size="15" font-weight="700" fill="#3576C0" text-anchor="middle">[99, 97, 116]</text>
@@ -730,16 +730,16 @@ $$\text{выход} = f(\text{вход})$$
       <text x="190" y="178" class="small" text-anchor="middle">даже длины массивов разные</text>
 
       <text x="190" y="235" class="text" font-weight="700" text-anchor="middle">Но kitten ≈ cat</text>
-      <text x="190" y="260" class="small" text-anchor="middle">(котёнок и кошка —</text>
+      <text x="190" y="260" class="small" text-anchor="middle">(котёнок и кошка:</text>
       <text x="190" y="278" class="small" text-anchor="middle">буквально семья)</text>
     </g>
 
     <g transform="translate(80, 440)">
       <rect width="800" height="130" rx="12" fill="#FFFBEB" stroke="#C29E08" stroke-width="1.5"/>
       <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">ASCII оптимизирован для хранения, а не для понимания</text>
-      <text x="400" y="60" class="small" text-anchor="middle">Числа в ASCII — это просто порядковые номера символов в таблице.</text>
+      <text x="400" y="60" class="small" text-anchor="middle">Числа в ASCII просто нумеруют символы в таблице.</text>
       <text x="400" y="82" class="small" text-anchor="middle">Они отражают «как буква записана», но ничего не знают про смысл слов.</text>
-      <text x="400" y="106" class="small" text-anchor="middle">Нужен другой способ — на уровне слов, а не букв.</text>
+      <text x="400" y="106" class="small" text-anchor="middle">Нужен другой способ: на уровне слов, а не букв.</text>
     </g>
   </g>
 
@@ -748,8 +748,8 @@ $$\text{выход} = f(\text{вход})$$
     <g transform="translate(80, 460)">
       <rect width="800" height="110" rx="12" fill="#FFFBEB" stroke="#C29E08" stroke-width="1.5"/>
       <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">Каждое слово получает уникальный «адрес» в словаре</text>
-      <text x="400" y="58" class="small" text-anchor="middle">Длина вектора = размер словаря V. Единица — в позиции слова, остальное — нули.</text>
-      <text x="400" y="80" class="small" text-anchor="middle">В реальности V = 10 000 — 50 000 слов. Огромный вектор почти из одних нулей.</text>
+      <text x="400" y="58" class="small" text-anchor="middle">Длина вектора = размер словаря V. Единица в позиции слова, в остальных нули.</text>
+      <text x="400" y="80" class="small" text-anchor="middle">В реальности V = 10 000–50 000 слов. Огромный вектор почти из одних нулей.</text>
       <text x="400" y="102" class="small" text-anchor="middle">Уже лучше ASCII: компьютер видит «слово №42», а не «три буквы».</text>
     </g>
   </g>
@@ -765,16 +765,16 @@ $$\text{выход} = f(\text{вход})$$
       <text x="20" y="150" class="small">  двумя словами одинаковое: √2</text>
       <text x="20" y="190" class="small">  d(кот, собака) =</text>
       <text x="20" y="210" class="small">  d(кот, автомобиль) = √2</text>
-      <text x="20" y="248" class="small" font-weight="700">• Семантика нулевая —</text>
+      <text x="20" y="248" class="small" font-weight="700">• Семантика нулевая:</text>
       <text x="20" y="268" class="small" font-weight="700">  все слова одинаково «чужие»</text>
     </g>
 
     <g transform="translate(80, 460)">
       <rect width="800" height="110" rx="12" fill="#FFF2F2" stroke="#C30B0A" stroke-width="1.5"/>
       <text x="400" y="32" class="text" font-weight="700" fill="#C30B0A" text-anchor="middle">Нельзя сказать, что кот ближе к собаке, чем к автомобилю</text>
-      <text x="400" y="60" class="small" text-anchor="middle">При V = 50 000 — гигантские разреженные векторы, и каждое слово «остров».</text>
+      <text x="400" y="60" class="small" text-anchor="middle">При V = 50 000 векторы гигантские и разреженные, каждое слово «остров».</text>
       <text x="400" y="82" class="small" text-anchor="middle">Нужны векторы, у которых геометрия отражает семантику.</text>
-      <text x="400" y="102" class="small" text-anchor="middle">Так появляются эмбеддинги — следующий шаг.</text>
+      <text x="400" y="102" class="small" text-anchor="middle">Так появляются эмбеддинги, следующий шаг.</text>
     </g>
   </g>
 
@@ -789,11 +789,11 @@ $$\text{выход} = f(\text{вход})$$
       <text x="20" y="115" class="small">• Числа реальные (0.34, -0.12...),</text>
       <text x="20" y="134" class="small">  не нули и единицы</text>
 
-      <text x="20" y="166" class="small">• Подбираются обучением модели —</text>
+      <text x="20" y="166" class="small">• Подбираются обучением модели,</text>
       <text x="20" y="185" class="small">  не задаются вручную</text>
 
       <text x="20" y="216" class="small" font-weight="700">• Сами по себе числа выглядят</text>
-      <text x="20" y="232" class="small" font-weight="700">  случайно. Магия — в геометрии.</text>
+      <text x="20" y="232" class="small" font-weight="700">  случайно. Смысл несёт геометрия.</text>
     </g>
 
     <g transform="translate(80, 410)">
@@ -802,7 +802,7 @@ $$\text{выход} = f(\text{вход})$$
       <text x="400" y="60" class="small" text-anchor="middle">one-hot: длина 50 000, почти всё нули, единственная 1</text>
       <text x="400" y="82" class="small" text-anchor="middle">embedding: длина 50–1000, все числа значимые и реальные</text>
       <text x="400" y="104" class="small" text-anchor="middle">one-hot задаются вручную; эмбеддинги выстраиваются из текстов</text>
-      <text x="400" y="135" class="small" text-anchor="middle" font-weight="700">Главное — у этих чисел появляется геометрический смысл (следующий шаг).</text>
+      <text x="400" y="135" class="small" text-anchor="middle" font-weight="700">Главное: у этих чисел появляется геометрический смысл (следующий шаг).</text>
     </g>
   </g>
 
@@ -829,9 +829,9 @@ $$\text{выход} = f(\text{вход})$$
     <g transform="translate(80, 440)">
       <rect width="800" height="130" rx="12" fill="#F0FAF0" stroke="#73B222" stroke-width="1.5"/>
       <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">Геометрия теперь несёт смысл</text>
-      <text x="400" y="60" class="small" text-anchor="middle">В one-hot все слова на расстоянии √2 друг от друга — это бесполезно.</text>
+      <text x="400" y="60" class="small" text-anchor="middle">В one-hot все слова на расстоянии √2 друг от друга: это бесполезно.</text>
       <text x="400" y="82" class="small" text-anchor="middle">В embeddings: d(кот, собака) маленькое, d(кот, автомобиль) большое.</text>
-      <text x="400" y="106" class="small" text-anchor="middle">Откуда модель берёт именно такие числа? Следующий шаг — обучение.</text>
+      <text x="400" y="106" class="small" text-anchor="middle">Откуда модель берёт именно такие числа? Следующий шаг: обучение.</text>
     </g>
   </g>
 
@@ -881,9 +881,9 @@ $$\text{выход} = f(\text{вход})$$
     <g transform="translate(80, 460)">
       <rect width="800" height="110" rx="12" fill="#FFFBEB" stroke="#C29E08" stroke-width="1.5"/>
       <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">Word2Vec (2013): нейросеть учится предсказывать соседние слова</text>
-      <text x="400" y="58" class="small" text-anchor="middle">«Кот» и «пёс» появляются в похожих фразах — их векторы сближаются.</text>
-      <text x="400" y="80" class="small" text-anchor="middle">«Автомобиль» в таких контекстах не встречается — его вектор остаётся далеко.</text>
-      <text x="400" y="100" class="small" text-anchor="middle">После миллиардов примеров — стабильная карта смыслов.</text>
+      <text x="400" y="58" class="small" text-anchor="middle">«Кот» и «пёс» появляются в похожих фразах, и их векторы сближаются.</text>
+      <text x="400" y="80" class="small" text-anchor="middle">«Автомобиль» в таких контекстах не встречается, и его вектор остаётся далеко.</text>
+      <text x="400" y="100" class="small" text-anchor="middle">После миллиардов примеров карта смыслов становится стабильной.</text>
     </g>
   </g>
 
@@ -893,7 +893,7 @@ $$\text{выход} = f(\text{вход})$$
       <rect width="800" height="140" rx="12" fill="#F0FAF0" stroke="#73B222" stroke-width="1.5"/>
       <text x="400" y="30" class="text" font-weight="700" text-anchor="middle">Эмбеддинги несут смысловые отношения</text>
       <text x="400" y="62" font-size="18" font-weight="800" fill="#73B222" text-anchor="middle">vec(король) − vec(мужчина) + vec(женщина) ≈ vec(королева)</text>
-      <text x="400" y="90" class="small" text-anchor="middle">Разница между «королём» и «мужчиной» — тот же вектор, что между «королевой» и «женщиной».</text>
+      <text x="400" y="90" class="small" text-anchor="middle">Разница между «королём» и «мужчиной» даёт тот же вектор, что между «королевой» и «женщиной».</text>
       <text x="400" y="110" class="small" text-anchor="middle">Модель выучила «королевское» и «женское» как направления в пространстве.</text>
       <text x="400" y="130" class="small" text-anchor="middle" font-weight="700">С эмбеддингами можно считать. И именно так работают все современные языковые модели.</text>
     </g>
@@ -912,42 +912,42 @@ $$\text{выход} = f(\text{вход})$$
     <div class="step-panel" data-on="step1" data-focus="step1">
       <div class="step-kicker">Шаг 1 · наивная идея</div>
       <h4>Буква → число: ASCII</h4>
-      <p>Самый простой способ кодировать текст — назначить каждой букве число по ASCII-таблице. Слово целиком становится массивом чисел — естественная первая мысль, но дальше выясняется, почему так не работает.</p>
+      <p>Самый простой способ кодировать текст: назначить каждой букве число по ASCII-таблице. Слово целиком становится массивом чисел. Это естественная первая мысль, но дальше выясняется, почему так не работает.</p>
     </div>
     <div class="step-panel" data-on="step2" data-focus="step2">
       <div class="step-kicker">Шаг 2 · проблема ASCII</div>
       <h4>Близость кодов не равна близости смысла</h4>
-      <p>"cat" и "car" отличаются в ASCII всего на 2 — но животное и транспорт ничего общего не имеют. А "cat" и "kitten" совсем разные по кодам, хотя смысл почти один и тот же. Нужен способ на уровне слов, а не букв.</p>
+      <p>"cat" и "car" отличаются в ASCII всего на 2, но животное и транспорт ничего общего не имеют. А "cat" и "kitten" совсем разные по кодам, хотя смысл почти один и тот же. Нужен способ на уровне слов, а не букв.</p>
     </div>
     <div class="step-panel" data-on="step3" data-focus="step3">
       <div class="step-kicker">Шаг 3 · one-hot encoding</div>
       <h4>Идея получше: one-hot кодирование</h4>
-      <p>Словарь из V слов — каждое слово получает вектор длины V с единственной единицей на своей позиции. Уже лучше ASCII: компьютер видит «слово №42», а не «три буквы».</p>
+      <p>В словаре из V слов каждое слово получает вектор длины V с единственной единицей на своей позиции. Уже лучше ASCII: компьютер видит «слово №42», а не «три буквы».</p>
     </div>
     <div class="step-panel" data-on="step4" data-focus="step4">
       <div class="step-kicker">Шаг 4 · проблема one-hot</div>
       <h4>Все слова одинаково далеки друг от друга</h4>
-      <p>Векторы one-hot попарно ортогональны — расстояние между любыми двумя словами одинаковое: √2. Нельзя сказать, что кот ближе к собаке, чем к автомобилю. Нужны векторы, у которых геометрия отражает семантику.</p>
+      <p>Векторы one-hot попарно ортогональны, поэтому расстояние между любыми двумя словами одинаковое: √2. Нельзя сказать, что кот ближе к собаке, чем к автомобилю. Нужны векторы, у которых геометрия отражает семантику.</p>
     </div>
     <div class="step-panel" data-on="step5" data-focus="step5">
       <div class="step-kicker">Шаг 5 · эмбеддинги</div>
-      <h4>Эмбеддинг — плотный вектор осмысленных чисел</h4>
-      <p>Каждое слово — короткий массив реальных чисел (в реальности 50–1000 значений), которые подбираются обучением модели, а не задаются вручную. Сами числа выглядят случайно — магия в их геометрии.</p>
+      <h4>Эмбеддинг: плотный вектор осмысленных чисел</h4>
+      <p>Каждое слово превращается в короткий массив реальных чисел (в реальности 50–1000 значений), которые подбираются обучением модели, а не задаются вручную. Сами числа выглядят случайно, смысл несёт их геометрия.</p>
     </div>
     <div class="step-panel" data-on="step6" data-focus="step6">
       <div class="step-kicker">Шаг 6 · геометрия смысла</div>
       <h4>Близкие по смыслу слова оказываются рядом</h4>
-      <p>Те же 5 слов как точки на плоскости: кот и собака оказались рядом, автомобиль и дом — тоже близко. Расстояние в пространстве эмбеддингов = близость по смыслу — то, чего one-hot дать не может.</p>
+      <p>Те же 5 слов как точки на плоскости: кот и собака оказались рядом, автомобиль и дом тоже близко. Расстояние в пространстве эмбеддингов = близость по смыслу, и этого one-hot дать не может.</p>
     </div>
     <div class="step-panel" data-on="step7" data-focus="step7">
       <div class="step-kicker">Шаг 7 · как обучаются</div>
       <h4>Обучение через предсказание контекста</h4>
-      <p>Word2Vec: слова, появляющиеся в похожих контекстах, получают похожие векторы. «Кот» и «пёс» встречаются в одинаковых фразах — их векторы сближаются, а «автомобиль» в таких контекстах не встречается и остаётся далеко.</p>
+      <p>Word2Vec: слова, появляющиеся в похожих контекстах, получают похожие векторы. «Кот» и «пёс» встречаются в одинаковых фразах, и их векторы сближаются, а «автомобиль» в таких контекстах не встречается и остаётся далеко.</p>
     </div>
     <div class="step-panel" data-on="step8" data-focus="step8">
       <div class="step-kicker">Шаг 8 · магия арифметики</div>
       <h4>С векторами слов можно считать</h4>
-      <p>Классика Word2Vec: vec(король) − vec(мужчина) + vec(женщина) ≈ vec(королева). Модель выучила «королевское» и «женское» как направления в пространстве — и именно так устроены все современные языковые модели.</p>
+      <p>Классика Word2Vec: vec(король) − vec(мужчина) + vec(женщина) ≈ vec(королева). Модель выучила «королевское» и «женское» как направления в пространстве, и именно так устроены все современные языковые модели.</p>
     </div>
   </div>
 </div>
@@ -964,9 +964,9 @@ $$\text{выход} = f(\text{вход})$$
 | Текст (слово/токен) | вектор-эмбеддинг | `(d,)` |
 | Аудио, временные ряды | вектор / 1D-сигнал | `(t,)` |
 
-> *Аудио и временные ряды добавлены для полноты — они тоже сводятся к числам. При желании это отдельный мини-интерактив, но для статьи достаточно строки в таблице.*
+> *Аудио и временные ряды добавлены для полноты: они тоже сводятся к числам. При желании это отдельный мини-интерактив, но для статьи достаточно строки в таблице.*
 
-Вывод раздела: **любой вход — это тензор чисел фиксированной формы.** Эта форма — первое, что определяет, какую модель мы вообще можем использовать.
+Вывод раздела: **любой вход сводится к тензору чисел фиксированной формы.** Эта форма первой определяет, какую модель мы вообще можем использовать.
 <div class="stage" id="stageTensors" tabindex="0">
   <div class="stage-figure">
 <svg id="mlTensors" viewBox="0 160 960 390" role="img" aria-label="Любой вход превращается в тензор чисел">
@@ -1042,7 +1042,7 @@ $$\text{выход} = f(\text{вход})$$
     <rect class="box-green" x="470" y="270" width="410" height="80"/>
     <text x="675" y="318" class="mono" text-anchor="middle" font-weight="700" fill="#73B222">x = [65, 2, 4, 10]</text>
 
-    <text x="675" y="410" class="small" text-anchor="middle">Вектор формы <tspan font-weight="700">(m,)</tspan> — m признаков подряд</text>
+    <text x="675" y="410" class="small" text-anchor="middle">Вектор формы <tspan font-weight="700">(m,)</tspan>: m признаков подряд</text>
     <text x="480" y="500" class="small" text-anchor="middle">Порядок важен: 2-я позиция всегда «комнаты», 3-я всегда «этаж»</text>
   </g>
 
@@ -1064,7 +1064,7 @@ $$\text{выход} = f(\text{вход})$$
     <text x="752" y="305" class="text" text-anchor="middle" font-weight="700">3D-тензор</text>
     <text x="752" y="335" class="mono" text-anchor="middle">(H × W × C)</text>
 
-    <text x="480" y="500" class="small" text-anchor="middle">Вся картинка — сетка таких пикселей: высота × ширина × 3 канала</text>
+    <text x="480" y="500" class="small" text-anchor="middle">Вся картинка: сетка таких пикселей, высота × ширина × 3 канала</text>
   </g>
 
   <g data-key="step4" data-only="1">
@@ -1076,9 +1076,9 @@ $$\text{выход} = f(\text{вход})$$
     <rect class="box-green" x="435" y="270" width="445" height="80"/>
     <text x="657" y="318" class="mono" text-anchor="middle" font-weight="700" fill="#73B222">[0.21, -0.45, 0.78, …]</text>
 
-    <text x="480" y="420" class="small" text-anchor="middle">Числа не задаются вручную — модель <tspan font-weight="700">выстраивает</tspan> их так,</text>
+    <text x="480" y="420" class="small" text-anchor="middle">Числа не задаются вручную: модель <tspan font-weight="700">выстраивает</tspan> их так,</text>
     <text x="480" y="446" class="small" text-anchor="middle">чтобы близкие по смыслу слова получали близкие векторы</text>
-    <text x="480" y="510" class="small" text-anchor="middle">Вектор формы <tspan font-weight="700">(d,)</tspan> — обычно 50–1000 чисел</text>
+    <text x="480" y="510" class="small" text-anchor="middle">Вектор формы <tspan font-weight="700">(d,)</tspan>: обычно 50–1000 чисел</text>
   </g>
 
   <g data-key="step5" data-only="1">
@@ -1112,7 +1112,7 @@ $$\text{выход} = f(\text{вход})$$
     <rect class="box-dark" x="750" y="270" width="150" height="80"/>
     <text x="825" y="316" text-anchor="middle" font-size="16" font-weight="800" fill="#ffffff">Модель</text>
 
-    <text x="480" y="525" class="text" text-anchor="middle" font-weight="700">Любой вход — это тензор чисел фиксированной формы</text>
+    <text x="480" y="525" class="text" text-anchor="middle" font-weight="700">Любой вход сводится к тензору чисел фиксированной формы</text>
   </g>
 </svg>
   </div>
@@ -1128,27 +1128,27 @@ $$\text{выход} = f(\text{вход})$$
     <div class="step-panel" data-on="step1" data-focus="step1">
       <div class="step-kicker">Шаг 1 · только числа</div>
       <h4>Модель понимает только числа</h4>
-      <p>Картинка, текст, таблица — для модели это не «образы», а наборы чисел. Внутри коробки все они должны превратиться в числа. Дальше посмотрим, как именно это происходит с каждым типом данных.</p>
+      <p>Картинка, текст, таблица: для модели это не «образы», а наборы чисел. Внутри коробки все они должны превратиться в числа. Дальше посмотрим, как именно это происходит с каждым типом данных.</p>
     </div>
     <div class="step-panel" data-on="step2" data-focus="step2">
       <div class="step-kicker">Шаг 2 · таблица</div>
       <h4>Таблица → вектор чисел</h4>
-      <p>Одна строка таблицы — это список чисел в фиксированном порядке, вектор формы (m,). Порядок важен: 2-я позиция всегда «комнаты», 3-я всегда «этаж».</p>
+      <p>Одна строка таблицы превращается в список чисел в фиксированном порядке, вектор формы (m,). Порядок важен: 2-я позиция всегда «комнаты», 3-я всегда «этаж».</p>
     </div>
     <div class="step-panel" data-on="step3" data-focus="step3">
       <div class="step-kicker">Шаг 3 · картинка</div>
       <h4>Картинка → тензор чисел</h4>
-      <p>Каждый пиксель — это числа интенсивности по каналам R, G, B. Вся картинка — сетка таких пикселей: высота × ширина × 3 канала, то есть 3D-тензор.</p>
+      <p>Каждый пиксель хранит числа интенсивности по каналам R, G, B. Вся картинка состоит из сетки таких пикселей: высота × ширина × 3 канала, то есть 3D-тензор.</p>
     </div>
     <div class="step-panel" data-on="step4" data-focus="step4">
       <div class="step-kicker">Шаг 4 · текст</div>
       <h4>Текст → вектор-эмбеддинг</h4>
-      <p>Слово превращается в короткий вектор вещественных чисел формы (d,), обычно 50–1000 значений. Числа не задаются вручную — модель выстраивает их так, чтобы близкие по смыслу слова получали близкие векторы.</p>
+      <p>Слово превращается в короткий вектор вещественных чисел формы (d,), обычно 50–1000 значений. Числа не задаются вручную: модель выстраивает их так, чтобы близкие по смыслу слова получали близкие векторы.</p>
     </div>
     <div class="step-panel" data-on="step5" data-focus="step5">
       <div class="step-kicker">Шаг 5 · общий знаменатель</div>
-      <h4>Любой вход — это тензор чисел</h4>
-      <p>Что бы ни было на входе — таблица, картинка, текст или аудио, — в коробку модели заходит один и тот же объект: тензор чисел фиксированной формы. Дальше модели неважно, откуда эти числа взялись.</p>
+      <h4>Любой вход сводится к тензору чисел</h4>
+      <p>Что бы ни было на входе (таблица, картинка, текст или аудио), в коробку модели заходит один и тот же объект: тензор чисел фиксированной формы. Дальше модели неважно, откуда эти числа взялись.</p>
     </div>
   </div>
 </div>
@@ -1158,9 +1158,9 @@ $$\text{выход} = f(\text{вход})$$
 
 Здесь мы держим обещание и **не открываем коробку**. Скажем лишь самое необходимое:
 
-внутри сидит функция `f` с настраиваемыми параметрами. Эти параметры **подбираются по данным** — это и есть обучение. После обучения коробка фиксируется: подаём ей вход `x` → получаем предсказание `ŷ = f(x)`.
+внутри сидит функция `f` с настраиваемыми параметрами. Эти параметры **подбираются по данным**: это и есть обучение. После обучения коробка фиксируется: подаём ей вход `x` → получаем предсказание `ŷ = f(x)`.
 
-Для нашего взгляда снаружи важно ровно одно: коробка **превращает вход определённой формы в выход определённого типа**. Каким именно образом — разберём в следующей статье на примере регрессии, где по шагам соберём весь пайплайн обучения.
+Для нашего взгляда снаружи важно ровно одно: коробка **превращает вход определённой формы в выход определённого типа**. Каким именно образом, разберём в следующей статье на примере регрессии, где по шагам соберём весь пайплайн обучения.
 
 ## 5. Что на выходе: тип выхода определяет задачу
 
@@ -1168,17 +1168,17 @@ $$\text{выход} = f(\text{вход})$$
 
 > **Сначала смотрим на выход.** Именно он диктует, какую модель брать, какую функцию потерь оптимизировать и какими метриками мерить качество.
 
-Что именно выдаёт модель? Хочется сказать «ответ»: «спам», «кошка», «215 000 $». Но мир не детерминирован. Похожие письма бывают и рекламой, и важным уведомлением; два одинаковых по описанию дома продаются по разной цене. Поэтому честная постановка такая: **задача модели — по входу x выдать вероятности всех возможных ответов y.** В теории вероятностей это называется условным распределением:
+Что именно выдаёт модель? Хочется сказать «ответ»: «спам», «кошка», «215 000 $». Но мир не детерминирован. Похожие письма бывают и рекламой, и важным уведомлением; два одинаковых по описанию дома продаются по разной цене. Поэтому честная постановка такая: **задача модели: по входу x выдать вероятности всех возможных ответов y.** В теории вероятностей это называется условным распределением:
 
 $$p(y \mid x)$$
 
-Читается как «насколько вероятен ответ y, если на входе x». Конкретный ответ — «спам» или «215 000 $» — достаётся уже из этого распределения.
+Читается как «насколько вероятен ответ y, если на входе x». Конкретный ответ («спам» или «215 000 $») достаётся уже из этого распределения.
 
-А дальше работает старое деление из теории вероятностей. Случайные величины бывают двух типов — **дискретные** и **непрерывные**, и вероятности у них задаются по-разному. Ровно на эти два типа делятся и выходы моделей.
+А дальше работает старое деление из теории вероятностей. Случайные величины бывают двух типов: **дискретные** и **непрерывные**, и вероятности у них задаются по-разному. Ровно на эти два типа делятся и выходы моделей.
 
 ### 5.1. Дискретный выход: вероятность каждого варианта
 
-Начнём с самого простого примера — броска обычного кубика. У него шесть граней, и выпасть может только одно из шести чисел: 1, 2, 3, 4, 5 или 6. Никакого «3.5» или «2.7» на кубике не бывает: между соседними исходами пусто.
+Начнём с самого простого примера: броска обычного кубика. У него шесть граней, и выпасть может только одно из шести чисел: 1, 2, 3, 4, 5 или 6. Никакого «3.5» или «2.7» на кубике не бывает: между соседними исходами пусто.
 
 <div class="stage-figure" style="background:#ffffff;border:1px solid #E4E1D7;border-radius:14px;padding:20px;margin:24px 0;">
 <svg id="diceOutcomes" viewBox="0 0 960 460" role="img" aria-label="Шесть исходов броска кубика: значение 3.5 невозможно">
@@ -1235,25 +1235,25 @@ $$p(y \mid x)$$
     </g>
 
     <rect class="box-red" x="330" y="352" width="300" height="70"/>
-    <text x="480" y="382" text-anchor="middle" font-size="17" font-weight="800" fill="#C30B0A">3.5 — невозможно</text>
+    <text x="480" y="382" text-anchor="middle" font-size="17" font-weight="800" fill="#C30B0A">3.5 не бывает</text>
     <text x="480" y="405" text-anchor="middle" class="small" fill="#C30B0A">на кубике нет стороны «три с половиной»</text>
 
-    <text x="480" y="445" class="small" text-anchor="middle">Можно пересчитать все варианты: закрытый список из 6 исходов — <tspan fill="#3576C0" font-weight="700">дискретные значения</tspan></text>
+    <text x="480" y="445" class="small" text-anchor="middle">Можно пересчитать все варианты: закрытый список из 6 исходов, <tspan fill="#3576C0" font-weight="700">дискретные значения</tspan></text>
   </g>
 </svg>
 </div>
 
-Так устроена **дискретная** величина: все её возможные значения можно выписать в список и пересчитать — пусть даже список окажется очень длинным. Грани кубика, «спам / не спам», цифры 0–9, токены словаря — всё это дискретные величины.
+Так устроена **дискретная** величина: все её возможные значения можно выписать в список и пересчитать, пусть даже список окажется очень длинным. Дискретны грани кубика, «спам / не спам», цифры 0–9, токены словаря.
 
-Раз значения можно перечислить, распределение — просто таблица: каждому значению `k` своя вероятность `P(Y = k)`. У честного кубика все шесть вероятностей одинаковы и равны 1/6. Требований к такой таблице всего два:
+Раз значения можно перечислить, распределение задаётся просто таблицей: каждому значению `k` своя вероятность `P(Y = k)`. У честного кубика все шесть вероятностей одинаковы и равны 1/6. Требований к такой таблице всего два:
 
 $$0 \le P(Y = k) \le 1, \qquad \sum_{k} P(Y = k) = 1$$
 
-Модель с дискретным выходом выдаёт ровно такую таблицу — вектор из K чисел, по одному на каждый вариант. Последний слой сети сам по себе выдаёт K произвольных чисел `z₁, …, z_K`, и чтобы превратить их в честные вероятности, используют **softmax**:
+Модель с дискретным выходом выдаёт ровно такую таблицу: вектор из K чисел, по одному на каждый вариант. Последний слой сети сам по себе выдаёт K произвольных чисел `z₁, …, z_K`, и чтобы превратить их в честные вероятности, используют **softmax**:
 
 $$P(Y = k \mid x) = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}$$
 
-Экспонента делает все числа положительными, деление на сумму — сумму равной единице.
+Экспонента делает все числа положительными, а деление на сумму делает сумму равной единице.
 
 Посмотрим пошагово: от кубика до предсказания следующего токена в языковой модели. Как LLM строит распределение по словарю и выбирает из него токен, подробно разобрано в [статье про LLM](article.html?slug=language-models-intro).
 
@@ -1308,7 +1308,7 @@ $$P(Y = k \mid x) = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}$$
     <text x="480" y="288" text-anchor="middle" font-size="15" font-weight="800" fill="#C30B0A">3.5?</text>
     <text x="480" y="492" class="small" text-anchor="middle" fill="#C30B0A">3.5 выпасть не может: вероятность есть только у значений 1, 2, …, 6</text>
     <text x="480" y="535" class="text" text-anchor="middle" font-weight="700">Сумма столбиков: 6 × 1/6 = 1</text>
-    <text x="480" y="562" class="small" text-anchor="middle">Распределение дискретной величины — это список значений и вероятность каждого</text>
+    <text x="480" y="562" class="small" text-anchor="middle">Распределение дискретной величины: список значений и вероятность каждого</text>
   </g>
 
   <g data-key="d2" data-only="1">
@@ -1357,8 +1357,8 @@ $$P(Y = k \mid x) = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}$$
     <rect x="844" y="432" width="32" height="32" rx="5.8" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3"/><circle cx="852.6" cy="440.6" r="2.9" fill="#111111"/><circle cx="867.4" cy="440.6" r="2.9" fill="#111111"/><circle cx="852.6" cy="448" r="2.9" fill="#111111"/><circle cx="867.4" cy="448" r="2.9" fill="#111111"/><circle cx="852.6" cy="455.4" r="2.9" fill="#111111"/><circle cx="867.4" cy="455.4" r="2.9" fill="#111111"/>
     <text x="710" y="494" class="lbl" text-anchor="middle" font-weight="700" fill="#73B222">сумма = 1</text>
     <line x1="480" y1="130" x2="480" y2="480" stroke="#DADADA" stroke-width="1.5" stroke-dasharray="4 4"/>
-    <text x="480" y="540" class="text" text-anchor="middle" font-weight="700">Форма может быть любой — правила одни: каждая вероятность от 0 до 1, сумма = 1</text>
-    <text x="480" y="566" class="small" text-anchor="middle">Модель — машина, которая под каждый вход выдаёт свой «нечестный кубик» p(y | x)</text>
+    <text x="480" y="540" class="text" text-anchor="middle" font-weight="700">Форма может быть любой, правила одни: каждая вероятность от 0 до 1, сумма = 1</text>
+    <text x="480" y="566" class="small" text-anchor="middle">Модель как машина, которая под каждый вход выдаёт свой «нечестный кубик» p(y | x)</text>
   </g>
 
   <g data-key="d3" data-only="1">
@@ -1505,7 +1505,7 @@ $$P(Y = k \mid x) = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}$$
     <rect x="600" y="414" width="189" height="26" fill="#5E5850" fill-opacity="0.18" stroke="#5E5850" stroke-width="1.5"/>
     <text x="797" y="433" class="val">0.21</text>
     <text x="600" y="462" class="small">≈ 49 995 токенов вместе, включая «банан»</text>
-    <text x="480" y="525" class="text" text-anchor="middle" font-weight="700">Выход LLM — вектор длиной в словарь, сумма = 1</text>
+    <text x="480" y="525" class="text" text-anchor="middle" font-weight="700">Выход LLM: вектор длиной в словарь, сумма = 1</text>
     <text x="480" y="553" class="small" text-anchor="middle">Даже нелепое продолжение получает крошечную, но ненулевую вероятность. Числа иллюстративные</text>
   </g>
 
@@ -1582,7 +1582,7 @@ $$P(Y = k \mid x) = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}$$
     <rect class="box-yellow" x="500" y="310" width="400" height="120"/>
     <text x="520" y="344" class="text" font-weight="800" fill="#C29E08">сэмплирование: тянем жребий</text>
     <text x="520" y="374" class="small" fill="#111111">LLM берёт «ковре» с шансом 0.28,</text>
-    <text x="520" y="400" class="small" fill="#111111">«окне» — 0.21, … поэтому ответы разнообразны</text>
+    <text x="520" y="400" class="small" fill="#111111">«окне» 0.21, … поэтому ответы разнообразны</text>
     <text x="480" y="490" class="text" text-anchor="middle" font-weight="700">Сначала распределение, потом ответ из него</text>
     <text x="480" y="518" class="small" text-anchor="middle">Произвольные K чисел превращает в такие вероятности softmax</text>
   </g>
@@ -1599,43 +1599,43 @@ $$P(Y = k \mid x) = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}$$
   <div class="stage-notes">
     <div class="step-panel" data-on="d1" data-focus="d1">
       <div class="step-kicker">Шаг 1 · кубик</div>
-      <h4>Каждому исходу — своя вероятность</h4>
-      <p>У кубика шесть исходов, и у каждого своя вероятность — по 1/6. Между столбиками пусто: значения 3.5 не существует, вероятность есть только у перечисленных исходов. Вместе они дают 1 — какой-то исход выпадет обязательно.</p>
+      <h4>У каждого исхода своя вероятность</h4>
+      <p>У кубика шесть исходов, и у каждого своя вероятность: по 1/6. Между столбиками пусто: значения 3.5 не существует, вероятность есть только у перечисленных исходов. Вместе они дают 1: какой-то исход выпадет обязательно.</p>
     </div>
     <div class="step-panel" data-on="d2" data-focus="d2">
       <div class="step-kicker">Шаг 2 · нечестный кубик</div>
       <h4>Распределение может быть любой формы</h4>
-      <p>У нечестного кубика шестёрка выпадает в половине случаев, а единица — в 5%. Форма другая, правила те же: каждая вероятность от 0 до 1, сумма равна 1. Модель с дискретным выходом — это машина, которая под каждый вход выдаёт свой такой кубик p(y | x).</p>
+      <p>У нечестного кубика шестёрка выпадает в половине случаев, а единица в 5%. Форма другая, правила те же: каждая вероятность от 0 до 1, сумма равна 1. Модель с дискретным выходом работает как машина, которая под каждый вход выдаёт свой такой кубик p(y | x).</p>
     </div>
     <div class="step-panel" data-on="d3" data-focus="d3">
       <div class="step-kicker">Шаг 3 · спам</div>
       <h4>Два исхода: спам или не спам</h4>
-      <p>Самый простой случай — бинарная классификация. Модель смотрит на письмо и выдаёт P(спам) = 0.92, а значит P(не спам) = 0.08. Раз исходов два, хватает одного числа: второе всегда дополняет его до единицы.</p>
+      <p>Самый простой случай: бинарная классификация. Модель смотрит на письмо и выдаёт P(спам) = 0.92, а значит P(не спам) = 0.08. Раз исходов два, хватает одного числа: второе всегда дополняет его до единицы.</p>
     </div>
     <div class="step-panel" data-on="d4" data-focus="d4">
       <div class="step-kicker">Шаг 4 · цифра</div>
       <h4>Десять исходов: какая цифра на картинке</h4>
-      <p>Многоклассовая классификация: картинка рукописной цифры превращается в вектор из 10 вероятностей. Почти вся масса у семёрки — 0.86, но похожие по начертанию 1 и 9 тоже получают заметные шансы. Это полезная информация: модель честно показывает, в чём сомневается.</p>
+      <p>Многоклассовая классификация: картинка рукописной цифры превращается в вектор из 10 вероятностей. Почти вся масса у семёрки (0.86), но похожие по начертанию 1 и 9 тоже получают заметные шансы. Это полезная информация: модель честно показывает, в чём сомневается.</p>
     </div>
     <div class="step-panel" data-on="d5" data-focus="d5">
       <div class="step-kicker">Шаг 5 · следующий токен</div>
       <h4>Языковая модель: вероятность у каждого токена словаря</h4>
-      <p>LLM на каждом шаге решает ту же задачу, только вариантов не 10, а десятки тысяч — весь словарь. По фразе «Кот сидит на …» она выдаёт «ковре» 0.28, «окне» 0.21 и так далее. Даже «банан» получает свою крошечную вероятность: в векторе есть место для каждого токена.</p>
+      <p>LLM на каждом шаге решает ту же задачу, только вариантов не 10, а десятки тысяч: весь словарь. По фразе «Кот сидит на …» она выдаёт «ковре» 0.28, «окне» 0.21 и так далее. Даже «банан» получает свою крошечную вероятность: в векторе есть место для каждого токена.</p>
     </div>
     <div class="step-panel" data-on="d6" data-focus="d6">
       <div class="step-kicker">Шаг 6 · итог</div>
       <h4>Сначала вектор вероятностей, потом ответ</h4>
-      <p>Дискретный выход — всегда вектор длины K с суммой 1: K = 2 для спама, 10 для цифр, ~50 000 для токенов. Ответ из него получают двумя способами: argmax берёт самый вероятный вариант, сэмплирование тянет жребий с этими шансами — так LLM и пишет разнообразный текст.</p>
+      <p>На дискретном выходе всегда вектор длины K с суммой 1: K = 2 для спама, 10 для цифр, ~50 000 для токенов. Ответ из него получают двумя способами: argmax берёт самый вероятный вариант, сэмплирование тянет жребий с этими шансами. Так LLM и пишет разнообразный текст.</p>
     </div>
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
 
-> **Дискретный выход — это всегда вектор вероятностей длины K**, где K — число вариантов: 2 для спама, 10 для цифр, десятки тысяч для токенов. Сумма вектора равна 1, а конкретный ответ получают из него через argmax или сэмплирование.
+> **Дискретный выход всегда задаётся вектором вероятностей длины K**, где K равно числу вариантов: 2 для спама, 10 для цифр, десятки тысяч для токенов. Сумма вектора равна 1, а конкретный ответ получают из него через argmax или сэмплирование.
 
 ### 5.2. Непрерывный выход: плотность вероятности
 
-Теперь другой пример — рост человека. Кажется, что это тоже «просто число»: 172 см. Но если взять линейку точнее, получится 172.4 см, ещё точнее — 1724.4 мм, ещё точнее — 172.43856 см, и так без конца. Между 172 и 173 см нет пустого места, как между гранями кубика: там бесконечно много возможных значений.
+Теперь другой пример: рост человека. Кажется, что это тоже «просто число»: 172 см. Но если взять линейку точнее, получится 172.4 см, ещё точнее 1724.4 мм, ещё точнее 172.43856 см, и так без конца. Между 172 и 173 см нет пустого места, как между гранями кубика: там бесконечно много возможных значений.
 
 <div class="stage-figure" style="background:#ffffff;border:1px solid #E4E1D7;border-radius:14px;padding:20px;margin:24px 0;">
 <svg id="heightContinuum" viewBox="0 0 960 465" role="img" aria-label="Рост человека можно измерять сколь угодно точно">
@@ -1700,20 +1700,20 @@ $$P(Y = k \mid x) = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}$$
     <text x="458" y="390" text-anchor="middle" font-size="15" font-weight="800" fill="#C30B0A">172.43856 см = 1724.3856 мм</text>
 
     <text x="480" y="425" class="small" text-anchor="middle">Можно записать грубо: 172 см, точнее: 1724 мм, ещё точнее: 172.43856 см.</text>
-    <text x="480" y="449" class="small" text-anchor="middle">Между 172 и 173 см есть миллиметры и ещё более мелкие значения — <tspan fill="#73B222" font-weight="700">непрерывные</tspan></text>
+    <text x="480" y="449" class="small" text-anchor="middle">Между 172 и 173 см есть миллиметры и ещё более мелкие значения, они <tspan fill="#73B222" font-weight="700">непрерывные</tspan></text>
   </g>
 </svg>
 </div>
 
-Такая величина называется **непрерывной**: её значения сплошь заполняют отрезок, и пересчитать их нельзя. Рост, цена, температура, угол сустава робота — всё это непрерывные величины.
+Такая величина называется **непрерывной**: её значения сплошь заполняют отрезок, и пересчитать их нельзя. Непрерывны рост, цена, температура, угол сустава робота.
 
-И здесь таблица уже не работает. Значений бесконечно много: если раздать каждому хоть какую-то положительную вероятность, сумма получится бесконечной, а не равной 1. Поэтому вероятность попасть ровно в одно значение — скажем, в 172.4000… см — равна нулю. Вместо таблицы у непрерывной величины есть **плотность вероятности** `p(y)` — кривая, под которой вероятность измеряется площадью:
+И здесь таблица уже не работает. Значений бесконечно много: если раздать каждому хоть какую-то положительную вероятность, сумма получится бесконечной, а не равной 1. Поэтому вероятность попасть ровно в одно значение (скажем, в 172.4000… см) равна нулю. Вместо таблицы у непрерывной величины есть **плотность вероятности** `p(y)`: кривая, под которой вероятность измеряется площадью:
 
 $$P(a \le Y \le b) = \int_a^b p(y)\,dy, \qquad \int_{-\infty}^{\infty} p(y)\,dy = 1$$
 
-Сумма из дискретного случая превращается в интеграл, а «вероятность значения» — в «вероятность отрезка».
+Сумма из дискретного случая превращается в интеграл, а «вероятность значения» в «вероятность отрезка».
 
-Самая частая форма такой кривой — нормальное распределение, «колокол». Его задают всего два числа: центр `μ` и ширина `σ`. Регрессионная модель, по сути, выдаёт именно их, а чаще всего — только центр `μ`.
+Самую частую форму такой кривой называют нормальным распределением, или «колоколом». Его задают всего два числа: центр `μ` и ширина `σ`. Регрессионная модель, по сути, выдаёт именно их, а чаще всего только центр `μ`.
 
 <div class="stage" id="stageContinuousOut" tabindex="0">
   <div class="stage-figure">
@@ -1829,11 +1829,11 @@ $$P(a \le Y \le b) = \int_a^b p(y)\,dy, \qquad \int_{-\infty}^{\infty} p(y)\,dy 
     <text x="860" y="454" class="small" text-anchor="middle">200</text>
     <text x="884" y="454" class="small">см</text>
     <text x="480" y="510" class="text" text-anchor="middle" font-weight="700">Чем уже столбики, тем ближе их верхушки к гладкой кривой</text>
-    <text x="480" y="540" class="small" text-anchor="middle">В пределе остаётся только кривая p(y) — плотность вероятности</text>
+    <text x="480" y="540" class="small" text-anchor="middle">В пределе остаётся только кривая p(y): плотность вероятности</text>
   </g>
 
   <g data-key="c3" data-only="1">
-    <text x="480" y="60" class="lbl" text-anchor="middle" font-weight="700">Вероятность — это площадь под кривой</text>
+    <text x="480" y="60" class="lbl" text-anchor="middle" font-weight="700">Вероятность равна площади под кривой</text>
     <path d="M500,430 L500,230.5 L501.5,230.5 L503,230.6 L504.5,230.7 L506,230.8 L507.5,230.9 L509,231.1 L510.5,231.3 L512,231.5 L513.5,231.8 L515,232.1 L516.5,232.4 L518,232.8 L519.5,233.1 L521,233.6 L522.5,234 L524,234.5 L525.5,235 L527,235.5 L528.5,236.1 L530,236.7 L531.5,237.3 L533,237.9 L534.5,238.6 L536,239.3 L537.5,240 L539,240.8 L540.5,241.6 L542,242.4 L543.5,243.2 L545,244.1 L546.5,245 L548,245.9 L549.5,246.8 L551,247.8 L552.5,248.7 L554,249.7 L555.5,250.8 L557,251.8 L558.5,252.9 L560,254 L560,430 Z" fill="#73B222" fill-opacity="0.28"/>
     <path d="M140,427.8 L146,427.4 L152,427 L158,426.6 L164,426 L170,425.5 L176,424.8 L182,424 L188,423.2 L194,422.3 L200,421.2 L206,420.1 L212,418.8 L218,417.4 L224,415.8 L230,414.1 L236,412.3 L242,410.2 L248,408 L254,405.6 L260,403 L266,400.2 L272,397.2 L278,394 L284,390.5 L290,386.9 L296,383 L302,378.9 L308,374.5 L314,370 L320,365.2 L326,360.3 L332,355.1 L338,349.8 L344,344.3 L350,338.7 L356,332.9 L362,327 L368,321.1 L374,315.1 L380,309 L386,303 L392,297 L398,291 L404,285.2 L410,279.4 L416,273.9 L422,268.5 L428,263.4 L434,258.5 L440,254 L446,249.7 L452,245.9 L458,242.4 L464,239.3 L470,236.7 L476,234.5 L482,232.8 L488,231.5 L494,230.8 L500,230.5 L506,230.8 L512,231.5 L518,232.8 L524,234.5 L530,236.7 L536,239.3 L542,242.4 L548,245.9 L554,249.7 L560,254 L566,258.5 L572,263.4 L578,268.5 L584,273.9 L590,279.4 L596,285.2 L602,291 L608,297 L614,303 L620,309 L626,315.1 L632,321.1 L638,327 L644,332.9 L650,338.7 L656,344.3 L662,349.8 L668,355.1 L674,360.3 L680,365.2 L686,370 L692,374.5 L698,378.9 L704,383 L710,386.9 L716,390.5 L722,394 L728,397.2 L734,400.2 L740,403 L746,405.6 L752,408 L758,410.2 L764,412.3 L770,414.1 L776,415.8 L782,417.4 L788,418.8 L794,420.1 L800,421.2 L806,422.3 L812,423.2 L818,424 L824,424.8 L830,425.5 L836,426 L842,426.6 L848,427 L854,427.4 L860,427.8" fill="none" stroke="#73B222" stroke-width="3"/>
     <text x="600" y="250" class="lbl" font-weight="700" fill="#73B222">P(170 ≤ рост ≤ 175) ≈ 0.19</text>
@@ -1857,8 +1857,8 @@ $$P(a \le Y \le b) = \int_a^b p(y)\,dy, \qquad \int_{-\infty}^{\infty} p(y)\,dy 
     <line x1="860" y1="430" x2="860" y2="436" stroke="#5E5850" stroke-width="1.5"/>
     <text x="860" y="454" class="small" text-anchor="middle">200</text>
     <text x="884" y="454" class="small">см</text>
-    <text x="480" y="510" class="text" text-anchor="middle" font-weight="700">Вся площадь под кривой = 1 — как сумма столбиков у кубика</text>
-    <text x="480" y="540" class="small" text-anchor="middle">p(172.4) ≈ 0.039 на 1 см — это плотность, а не вероятность</text>
+    <text x="480" y="510" class="text" text-anchor="middle" font-weight="700">Вся площадь под кривой = 1, как сумма столбиков у кубика</text>
+    <text x="480" y="540" class="small" text-anchor="middle">p(172.4) ≈ 0.039 на 1 см: это плотность, а не вероятность</text>
   </g>
 
   <g data-key="c4" data-only="1">
@@ -1924,12 +1924,12 @@ $$P(a \le Y \le b) = \int_a^b p(y)\,dy, \qquad \int_{-\infty}^{\infty} p(y)\,dy 
     <line x1="860" y1="450" x2="860" y2="456" stroke="#5E5850" stroke-width="1.5"/>
     <text x="860" y="474" class="small" text-anchor="middle">36</text>
     <text x="884" y="474" class="small">°C</text>
-    <text x="480" y="525" class="text" text-anchor="middle" font-weight="700">Ширина σ — неуверенность модели, центр μ — её лучший прогноз</text>
+    <text x="480" y="525" class="text" text-anchor="middle" font-weight="700">Ширина σ показывает неуверенность модели, центр μ её лучший прогноз</text>
     <text x="480" y="553" class="small" text-anchor="middle">Чем дальше прогноз, тем шире кривая и тем меньше вероятность любого узкого интервала</text>
   </g>
 
   <g data-key="c6" data-only="1">
-    <text x="480" y="50" class="lbl" text-anchor="middle" font-weight="700">Робот-манипулятор: выход — вектор из непрерывных чисел</text>
+    <text x="480" y="50" class="lbl" text-anchor="middle" font-weight="700">Робот-манипулятор: на выходе вектор из непрерывных чисел</text>
     <rect class="box-blue" x="40" y="80" width="280" height="70"/>
     <text x="180" y="110" class="lbl" text-anchor="middle">кадр камеры +</text>
     <text x="180" y="132" class="lbl" text-anchor="middle">«возьми кубик»</text>
@@ -1974,12 +1974,12 @@ $$P(a \le Y \le b) = \int_a^b p(y)\,dy, \qquad \int_{-\infty}^{\infty} p(y)\,dy 
     <line x1="800" y1="380" x2="915" y2="380" stroke="#5E5850" stroke-width="1.3"/>
     <line x1="857.5" y1="380" x2="857.5" y2="273.8" stroke="#73B222" stroke-width="1.3" stroke-dasharray="4 3"/>
     <text x="857.5" y="410" class="lbl" text-anchor="middle" font-weight="800" fill="#73B222">μ = 0.62</text>
-    <text x="480" y="485" class="text" text-anchor="middle" font-weight="700">Каждая координата — своё число на своей шкале</text>
+    <text x="480" y="485" class="text" text-anchor="middle" font-weight="700">У каждой координаты своё число на своей шкале</text>
     <text x="480" y="513" class="small" text-anchor="middle">Пять углов суставов и степень открытия захвата. Числа иллюстративные</text>
   </g>
 
   <g data-key="c7" data-only="1">
-    <text x="480" y="50" class="lbl" text-anchor="middle" font-weight="700">Два типа выхода — два способа задать вероятности</text>
+    <text x="480" y="50" class="lbl" text-anchor="middle" font-weight="700">Два типа выхода, два способа задать вероятности</text>
     <rect class="box-blue" x="60" y="80" width="400" height="370"/>
     <text x="260" y="116" class="text" text-anchor="middle" font-weight="800" fill="#3576C0">Дискретный выход</text>
     <rect x="165" y="230" width="24" height="10" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1.2"/>
@@ -1990,7 +1990,7 @@ $$P(a \le Y \le b) = \int_a^b p(y)\,dy, \qquad \int_{-\infty}^{\infty} p(y)\,dy 
     <rect x="335" y="140" width="24" height="100" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1.2"/>
     <line x1="150" y1="240" x2="370" y2="240" stroke="#5E5850" stroke-width="1.3"/>
     <text x="90" y="290" class="lbl">• значения можно пересчитать</text>
-    <text x="90" y="326" class="lbl">• P(Y = k) — вероятность каждого</text>
+    <text x="90" y="326" class="lbl">• P(Y = k): вероятность каждого</text>
     <text x="90" y="362" class="lbl">• сумма вероятностей = 1</text>
     <text x="90" y="398" class="lbl">• ответ: argmax или жребий</text>
     <rect class="box-green" x="500" y="80" width="400" height="370"/>
@@ -1999,10 +1999,10 @@ $$P(a \le Y \le b) = \int_a^b p(y)\,dy, \qquad \int_{-\infty}^{\infty} p(y)\,dy 
     <path d="M594.4,239.6 L596.2,239.5 L597.9,239.5 L599.7,239.4 L601.4,239.2 L603.2,239.1 L605,238.9 L606.7,238.7 L608.5,238.5 L610.2,238.3 L612,238 L613.8,237.7 L615.5,237.3 L617.3,236.9 L619,236.4 L620.8,235.9 L622.6,235.3 L624.3,234.6 L626.1,233.9 L627.8,233.1 L629.6,232.2 L631.4,231.2 L633.1,230.1 L634.9,228.9 L636.6,227.6 L638.4,226.2 L640.2,224.7 L641.9,223.1 L643.7,221.3 L645.4,219.5 L647.2,217.5 L649,215.4 L650.7,213.2 L652.5,210.9 L654.2,208.4 L656,205.9 L657.8,203.3 L659.5,200.6 L661.3,197.8 L663,195 L664.8,192.1 L666.6,189.2 L668.3,186.2 L670.1,183.3 L671.8,180.4 L673.6,177.5 L675.4,174.7 L677.1,172 L678.9,169.4 L680.6,166.9 L682.4,164.6 L684.2,162.4 L685.9,160.3 L687.7,158.5 L689.4,156.9 L691.2,155.5 L693,154.3 L694.7,153.4 L696.5,152.8 L698.2,152.4 L700,152.2 L701.8,152.4 L703.5,152.8 L705.3,153.4 L707,154.3 L708.8,155.5 L710.6,156.9 L712.3,158.5 L714.1,160.3 L715.8,162.4 L717.6,164.6 L719.4,166.9 L721.1,169.4 L722.9,172 L724.6,174.7 L726.4,177.5 L728.2,180.4 L729.9,183.3 L731.7,186.2 L733.4,189.2 L735.2,192.1 L737,195 L738.7,197.8 L740.5,200.6 L742.2,203.3 L744,205.9 L745.8,208.4 L747.5,210.9 L749.3,213.2 L751,215.4 L752.8,217.5 L754.6,219.5 L756.3,221.3 L758.1,223.1 L759.8,224.7 L761.6,226.2 L763.4,227.6 L765.1,228.9 L766.9,230.1 L768.6,231.2 L770.4,232.2 L772.2,233.1 L773.9,233.9 L775.7,234.6 L777.4,235.3 L779.2,235.9 L781,236.4 L782.7,236.9 L784.5,237.3 L786.2,237.7 L788,238 L789.8,238.3 L791.5,238.5 L793.3,238.7 L795,238.9 L796.8,239.1 L798.6,239.2 L800.3,239.4 L802.1,239.5 L803.8,239.5 L805.6,239.6" fill="none" stroke="#73B222" stroke-width="2.5"/>
     <line x1="590" y1="240" x2="810" y2="240" stroke="#5E5850" stroke-width="1.3"/>
     <text x="530" y="290" class="lbl">• значения заполняют отрезок</text>
-    <text x="530" y="326" class="lbl">• p(y) — плотность вероятности</text>
+    <text x="530" y="326" class="lbl">• p(y): плотность вероятности</text>
     <text x="530" y="362" class="lbl">• площадь под кривой = 1</text>
     <text x="530" y="398" class="lbl">• ответ: центр μ (иногда ещё σ)</text>
-    <text x="480" y="500" class="text" text-anchor="middle" font-weight="700">Регрессия обычно отдаёт только μ — это и есть «число на выходе»</text>
+    <text x="480" y="500" class="text" text-anchor="middle" font-weight="700">Регрессия обычно отдаёт только μ: это и есть «число на выходе»</text>
     <text x="480" y="528" class="small" text-anchor="middle">Сумма у дискретного случая превращается в интеграл у непрерывного</text>
   </g>
 </svg>
@@ -2019,52 +2019,52 @@ $$P(a \le Y \le b) = \int_a^b p(y)\,dy, \qquad \int_{-\infty}^{\infty} p(y)\,dy 
     <div class="step-panel" data-on="c1" data-focus="c1">
       <div class="step-kicker">Шаг 1 · рост</div>
       <h4>Начнём с привычной таблицы</h4>
-      <p>Сгруппируем рост взрослых по 10 см: 160–170 см и 170–180 см встречаются чаще всего, по 34%. Получилась такая же таблица, как у кубика, и столбики снова дают в сумме 1. Но рост не обязан попадать в корзины по 10 см — его можно мерить сколь угодно точно.</p>
+      <p>Сгруппируем рост взрослых по 10 см: 160–170 см и 170–180 см встречаются чаще всего, по 34%. Получилась такая же таблица, как у кубика, и столбики снова дают в сумме 1. Но рост не обязан попадать в корзины по 10 см: его можно мерить сколь угодно точно.</p>
     </div>
     <div class="step-panel" data-on="c2" data-focus="c2">
       <div class="step-kicker">Шаг 2 · уже столбики</div>
-      <h4>Сужаем корзины — получаем кривую</h4>
-      <p>Возьмём корзины по 2 см. Каждый столбик теперь ловит меньше людей, поэтому делим его вероятность на ширину — получается «вероятность на 1 см». Чем уже корзины, тем ближе верхушки к гладкой кривой. Эта кривая p(y) и есть плотность вероятности.</p>
+      <h4>Сужаем корзины и получаем кривую</h4>
+      <p>Возьмём корзины по 2 см. Каждый столбик теперь ловит меньше людей, поэтому делим его вероятность на ширину и получаем «вероятность на 1 см». Чем уже корзины, тем ближе верхушки к гладкой кривой. Эта кривая p(y) и есть плотность вероятности.</p>
     </div>
     <div class="step-panel" data-on="c3" data-focus="c3">
       <div class="step-kicker">Шаг 3 · площадь</div>
       <h4>Вероятность = площадь, а не высота</h4>
-      <p>Вероятность того, что рост окажется между 170 и 175 см, — это площадь под кривой на этом отрезке, около 0.19. А вероятность ровно 172.4 см равна нулю: у отрезка нулевой ширины нет площади. Высота кривой 0.039 — это плотность «на 1 см», а не вероятность.</p>
+      <p>Вероятность того, что рост окажется между 170 и 175 см, равна площади под кривой на этом отрезке, около 0.19. А вероятность ровно 172.4 см равна нулю: у отрезка нулевой ширины нет площади. Высота кривой 0.039 означает плотность «на 1 см», а не вероятность.</p>
     </div>
     <div class="step-panel" data-on="c4" data-focus="c4">
       <div class="step-kicker">Шаг 4 · цена дома</div>
       <h4>Регрессия: модель выдаёт кривую для цены</h4>
-      <p>По описанию дома модель выдаёт распределение цены: центр μ = 215 000 $ и разброс σ ≈ 18 000 $. С вероятностью около 0.60 дом уйдёт за 200–230 тыс. $. Центр μ — лучший прогноз, σ — насколько модель в нём уверена.</p>
+      <p>По описанию дома модель выдаёт распределение цены: центр μ = 215 000 $ и разброс σ ≈ 18 000 $. С вероятностью около 0.60 дом уйдёт за 200–230 тыс. $. Центр μ даёт лучший прогноз, σ показывает, насколько модель в нём уверена.</p>
     </div>
     <div class="step-panel" data-on="c5" data-focus="c5">
       <div class="step-kicker">Шаг 5 · температура</div>
       <h4>Одинаковый центр, разная уверенность</h4>
-      <p>Прогноз на завтра и на неделю вперёд может иметь один и тот же центр 23.7 °C, но кривые разной ширины. Узкая кривая (σ = 1.5) даёт 0.68 на интервал 22–25 °C, широкая (σ = 4) — только 0.29. Ширина кривой — это неуверенность модели.</p>
+      <p>Прогноз на завтра и на неделю вперёд может иметь один и тот же центр 23.7 °C, но кривые разной ширины. Узкая кривая (σ = 1.5) даёт 0.68 на интервал 22–25 °C, широкая (σ = 4) только 0.29. Ширина кривой отражает неуверенность модели.</p>
     </div>
     <div class="step-panel" data-on="c6" data-focus="c6">
       <div class="step-kicker">Шаг 6 · робот</div>
       <h4>Непрерывный выход бывает вектором</h4>
-      <p>Политика для манипулятора по кадру камеры и инструкции выдаёт сразу шесть непрерывных чисел: пять углов суставов и степень открытия захвата. Каждое — своя кривая со своим центром. Выход — это вектор, но каждая его координата устроена так же, как цена дома.</p>
+      <p>Политика для манипулятора по кадру камеры и инструкции выдаёт сразу шесть непрерывных чисел: пять углов суставов и степень открытия захвата. У каждого своя кривая со своим центром. Выход получается вектором, но каждая его координата устроена так же, как цена дома.</p>
     </div>
     <div class="step-panel" data-on="c7" data-focus="c7">
       <div class="step-kicker">Шаг 7 · итог</div>
       <h4>Дискретный и непрерывный: что общего и чем отличаются</h4>
-      <p>Дискретный выход — таблица вероятностей с суммой 1, непрерывный — кривая плотности с площадью 1. На практике регрессионная модель чаще всего выдаёт только центр μ: его мы и видим как «число на выходе».</p>
+      <p>Дискретный выход задаётся таблицей вероятностей с суммой 1, непрерывный кривой плотности с площадью 1. На практике регрессионная модель чаще всего выдаёт только центр μ: его мы и видим как «число на выходе».</p>
     </div>
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
 
-> **Непрерывный выход — это кривая плотности `p(y | x)`, а не таблица.** Вероятность есть только у отрезка значений, а «число на выходе» регрессии — это центр `μ` этой кривой.
+> **Непрерывный выход задаётся кривой плотности `p(y | x)`, а не таблицей.** Вероятность есть только у отрезка значений, а «число на выходе» регрессии равно центру `μ` этой кривой.
 
 ### 5.3. Обучение с учителем: классификация и регрессия
 
-Теперь можно аккуратно назвать две главные задачи обучения с учителем. В обучении с учителем каждый пример — это пара: вход `x` и правильный ответ `y`, и модель учится по `x` предсказывать `y`. Задачи различаются ровно одним — типом `y`:
+Теперь можно аккуратно назвать две главные задачи обучения с учителем. В обучении с учителем каждый пример состоит из пары: вход `x` и правильный ответ `y`, и модель учится по `x` предсказывать `y`. Задачи различаются ровно одним, типом `y`:
 
-- **Классификация** — `y` дискретный, как в 5.1. Модель выдаёт вектор вероятностей по K классам, ответ — самый вероятный класс. Если классов два, это **бинарная** классификация (спам / не спам); если больше — **многоклассовая** (цифра на картинке). Предсказание следующего токена в LLM — тоже многоклассовая классификация, просто K равно размеру словаря.
-- **Регрессия** — `y` непрерывный, как в 5.2. Модель выдаёт число — центр `μ` распределения, иногда вместе с шириной `σ`. Цена дома, температура на завтра, углы суставов робота.
+- **Классификация**: `y` дискретный, как в 5.1. Модель выдаёт вектор вероятностей по K классам, ответом служит самый вероятный класс. Если классов два, это **бинарная** классификация (спам / не спам); если больше, **многоклассовая** (цифра на картинке). Предсказание следующего токена в LLM тоже относится к многоклассовой классификации, просто K равно размеру словаря.
+- **Регрессия**: `y` непрерывный, как в 5.2. Модель выдаёт число, центр `μ` распределения, иногда вместе с шириной `σ`. Цена дома, температура на завтра, углы суставов робота.
 
-Учатся обе модели по одному принципу: сделать правильный ответ как можно более вероятным. В классификации это значит поднять вероятность правильного класса — отсюда **кросс-энтропия**. В регрессии — подтянуть центр кривой `μ` к правильному числу — отсюда **среднеквадратичная ошибка**, MSE:
+Учатся обе модели по одному принципу: сделать правильный ответ как можно более вероятным. В классификации это значит поднять вероятность правильного класса, отсюда **кросс-энтропия**. В регрессии нужно подтянуть центр кривой `μ` к правильному числу, отсюда **среднеквадратичная ошибка**, MSE:
 
 $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
 
@@ -2112,7 +2112,7 @@ $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
     <text x="765" y="204" text-anchor="middle" class="small">Reinforcement</text>
     <text x="765" y="234" text-anchor="middle" class="small" style="fill:#111111">награда или штраф</text>
     </g>
-    <text x="622" y="290" text-anchor="middle" class="small">эти ветки — темы отдельных статей</text>
+    <text x="622" y="290" text-anchor="middle" class="small">эти ветки: темы отдельных статей</text>
     <rect class="box-blue" x="70" y="145" width="250" height="110" style="stroke-width:2.6"/>
     <text x="195" y="182" text-anchor="middle" class="text" font-weight="800" style="fill:#3576C0">С учителем</text>
     <text x="195" y="204" text-anchor="middle" class="small">Supervised</text>
@@ -2129,7 +2129,7 @@ $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
     <text x="362" y="372" text-anchor="middle" class="text" font-weight="800" style="fill:#73B222">Регрессия</text>
     <text x="362" y="396" text-anchor="middle" class="small">Regression</text>
     <text x="362" y="422" text-anchor="middle" class="small" style="fill:#111111">цена, температура, углы</text>
-    <text x="480" y="495" class="text" text-anchor="middle" font-weight="700">Внутри обучения с учителем — ещё одна развилка: по типу правильного ответа y</text>
+    <text x="480" y="495" class="text" text-anchor="middle" font-weight="700">Внутри обучения с учителем есть ещё одна развилка: по типу правильного ответа y</text>
     <text x="480" y="523" class="small" text-anchor="middle">Карта из части 1, теперь с ветками для обучения с учителем</text>
   </g>
 
@@ -2179,10 +2179,10 @@ $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
     <line x1="560" y1="114" x2="700" y2="160" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
     <rect class="box-blue" x="40" y="170" width="420" height="270"/>
     <text x="250" y="206" class="text" text-anchor="middle" font-weight="800" style="fill:#3576C0">дискретный y → классификация</text>
-    <text x="250" y="230" class="small" text-anchor="middle">распределение — таблица вероятностей, как в 5.1</text>
+    <text x="250" y="230" class="small" text-anchor="middle">распределение: таблица вероятностей, как в 5.1</text>
     <rect class="box-green" x="500" y="170" width="420" height="270"/>
     <text x="710" y="206" class="text" text-anchor="middle" font-weight="800" style="fill:#73B222">непрерывный y → регрессия</text>
-    <text x="710" y="230" class="small" text-anchor="middle">распределение — кривая плотности, как в 5.2</text>
+    <text x="710" y="230" class="small" text-anchor="middle">распределение: кривая плотности, как в 5.2</text>
     <rect x="80" y="256" width="340" height="42" rx="10" fill="#F0F6FC" stroke="#3576C0" stroke-width="1.2"/>
     <text x="250" y="283" class="lbl" text-anchor="middle">письмо → спам / не спам</text>
     <rect x="80" y="314" width="340" height="42" rx="10" fill="#F0F6FC" stroke="#3576C0" stroke-width="1.2"/>
@@ -2239,12 +2239,12 @@ $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
     <text x="770" y="304" class="lbl" text-anchor="middle" font-weight="700" style="fill:#3576C0">многоклассовая</text>
     <text x="770" y="338" text-anchor="middle" font-size="22" font-weight="800" fill="#111111">K ≈ 50 000</text>
     <text x="770" y="372" class="small" text-anchor="middle">следующий токен в LLM</text>
-    <text x="480" y="460" class="text" text-anchor="middle" font-weight="700">Выход классификатора — вектор вероятностей из 5.1, ответ — самый вероятный класс</text>
-    <text x="480" y="488" class="small" text-anchor="middle">LLM — тоже классификатор, просто классов столько же, сколько токенов в словаре</text>
+    <text x="480" y="460" class="text" text-anchor="middle" font-weight="700">Классификатор выдаёт вектор вероятностей из 5.1, ответом служит самый вероятный класс</text>
+    <text x="480" y="488" class="small" text-anchor="middle">LLM тоже классификатор, просто классов столько же, сколько токенов в словаре</text>
   </g>
 
   <g data-key="s4" data-only="1">
-    <text x="480" y="50" class="lbl" text-anchor="middle" font-weight="700">Регрессия: последний слой сразу выдаёт число — центр кривой</text>
+    <text x="480" y="50" class="lbl" text-anchor="middle" font-weight="700">Регрессия: последний слой сразу выдаёт число, центр кривой</text>
     <rect class="box-dark" x="30" y="115" width="120" height="90"/>
     <text x="90" y="166" text-anchor="middle" font-size="18" font-weight="800" fill="#ffffff">модель</text>
     <line x1="156" y1="160" x2="192" y2="160" stroke="#5E5850" stroke-width="2.5" marker-end="url(#ssArrow)"/>
@@ -2273,8 +2273,8 @@ $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
     <text x="770" y="304" class="lbl" text-anchor="middle" font-weight="700" style="fill:#73B222">вектор чисел</text>
     <text x="770" y="338" text-anchor="middle" font-size="20" font-weight="800" fill="#111111">углы суставов</text>
     <text x="770" y="372" class="small" text-anchor="middle">12.4°, −35.1°, …</text>
-    <text x="480" y="460" class="text" text-anchor="middle" font-weight="700">Выход регрессии — центр μ кривой из 5.2, никакого softmax</text>
-    <text x="480" y="488" class="small" text-anchor="middle">Если модель отдаёт ещё и σ, мы знаем не только прогноз, но и насколько ему верить</text>
+    <text x="480" y="460" class="text" text-anchor="middle" font-weight="700">Регрессия выдаёт центр μ кривой из 5.2, никакого softmax</text>
+    <text x="480" y="488" class="small" text-anchor="middle">Если модель отдаёт ещё и σ, мы знаем и прогноз, и насколько ему верить</text>
   </g>
 
   <g data-key="s5" data-only="1">
@@ -2308,13 +2308,13 @@ $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
     <text x="630" y="316" class="small" text-anchor="middle" font-weight="700" style="fill:#C30B0A">μ = 180</text>
     <text x="855" y="316" class="small" text-anchor="middle" font-weight="700" style="fill:#111111">y = 230</text>
     <text x="540" y="360" class="lbl" font-weight="800" style="fill:#C30B0A">L = 2 500</text>
-    <text x="540" y="382" class="small">промах на 50 тыс. $ — штраф в 11 раз больше</text>
+    <text x="540" y="382" class="small">промах на 50 тыс. $ даёт штраф в 11 раз больше</text>
     <text x="480" y="470" class="text" text-anchor="middle" font-weight="700">Кросс-энтропия поднимает вероятность правильного класса, MSE подтягивает μ к правильному числу</text>
-    <text x="480" y="498" class="small" text-anchor="middle">Цены — в тысячах долларов. Числа иллюстративные</text>
+    <text x="480" y="498" class="small" text-anchor="middle">Цены в тысячах долларов. Числа иллюстративные</text>
   </g>
 
   <g data-key="s6" data-only="1">
-    <text x="480" y="45" class="lbl" text-anchor="middle" font-weight="700">Тип задачи — это наш выбор, как описать y</text>
+    <text x="480" y="45" class="lbl" text-anchor="middle" font-weight="700">Тип задачи выбираем мы, когда описываем y</text>
     <text x="120" y="88" class="lbl" font-weight="700" style="fill:#73B222">регрессия: предсказываем возраст числом</text>
     <rect x="120" y="122" width="720" height="26" rx="6" fill="#F0FAF0" stroke="#73B222" stroke-width="1.3"/>
     <line x1="120" y1="148" x2="120" y2="155" stroke="#5E5850" stroke-width="1.3"/>
@@ -2354,8 +2354,8 @@ $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
     <rect class="box-gray" x="60" y="340" width="840" height="100"/>
     <text x="480" y="372" class="lbl" text-anchor="middle" font-weight="700">И наоборот: в робототехнике непрерывное превращают в дискретное</text>
     <text x="480" y="398" class="small" style="fill:#111111" text-anchor="middle">В RT-2 каждую координату действия робота делят на 256 корзин</text>
-    <text x="480" y="420" class="small" style="fill:#111111" text-anchor="middle">и предсказывают номер корзины как токен — регрессию решают как классификацию</text>
-    <text x="480" y="490" class="text" text-anchor="middle" font-weight="700">Сначала решаем, как описать y, — потом выбираем последний слой и потери</text>
+    <text x="480" y="420" class="small" style="fill:#111111" text-anchor="middle">и предсказывают номер корзины как токен: регрессию решают как классификацию</text>
+    <text x="480" y="490" class="text" text-anchor="middle" font-weight="700">Сначала решаем, как описать y, потом выбираем последний слой и потери</text>
   </g>
 
   <g data-key="s7" data-only="1">
@@ -2385,7 +2385,7 @@ $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
     <text x="60" y="406" class="lbl" font-weight="700">примеры</text>
     <text x="450" y="406" class="lbl" text-anchor="middle">спам, цифра, токен</text>
     <text x="770" y="406" class="lbl" text-anchor="middle">цена, температура, углы</text>
-    <text x="480" y="470" class="text" text-anchor="middle" font-weight="700">Всё в таблице следует из одной строки — типа y</text>
+    <text x="480" y="470" class="text" text-anchor="middle" font-weight="700">Всё в таблице следует из одной строки: типа y</text>
   </g>
 </svg>
   </div>
@@ -2401,7 +2401,7 @@ $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
     <div class="step-panel" data-on="s0" data-focus="s0">
       <div class="step-kicker">Шаг 1 · карта</div>
       <h4>Вспомним карту из части 1</h4>
-      <p>В части 1 мы разделили машинное обучение на три области: с учителем, без учителя и с подкреплением. Теперь заглянем внутрь первой ветки. У обучения с учителем есть правильные ответы y, и по их типу оно делится ещё на две задачи: дискретный y даёт классификацию, непрерывный — регрессию.</p>
+      <p>В части 1 мы разделили машинное обучение на три области: с учителем, без учителя и с подкреплением. Теперь заглянем внутрь первой ветки. У обучения с учителем есть правильные ответы y, и по их типу оно делится ещё на две задачи: дискретный y даёт классификацию, непрерывный регрессию.</p>
     </div>
     <div class="step-panel" data-on="s1" data-focus="s1">
       <div class="step-kicker">Шаг 2 · данные</div>
@@ -2411,54 +2411,54 @@ $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
     <div class="step-panel" data-on="s2" data-focus="s2">
       <div class="step-kicker">Шаг 3 · развилка</div>
       <h4>Тип y делит задачи на две группы</h4>
-      <p>Если y дискретный — спам, цифра, токен, — это классификация. Если непрерывный — цена, температура, углы, — это регрессия. Обратите внимание: вход тут ни при чём. Картинка бывает и у классификации (какая цифра), и у регрессии (куда повернуть суставы).</p>
+      <p>Если y дискретный (спам, цифра, токен), это классификация. Если непрерывный (цена, температура, углы), это регрессия. Обратите внимание: вход тут ни при чём. Картинка бывает и у классификации (какая цифра), и у регрессии (куда повернуть суставы).</p>
     </div>
     <div class="step-panel" data-on="s3" data-focus="s3">
       <div class="step-kicker">Шаг 4 · классификация</div>
       <h4>Классификация: K чисел → softmax → класс</h4>
-      <p>Последний слой выдаёт K произвольных чисел, softmax превращает их в вектор вероятностей из 5.1, а argmax берёт самый вероятный класс. При K = 2 классификация бинарная, при K > 2 — многоклассовая. Предсказание следующего токена — тоже классификация, только K равно размеру словаря.</p>
+      <p>Последний слой выдаёт K произвольных чисел, softmax превращает их в вектор вероятностей из 5.1, а argmax берёт самый вероятный класс. При K = 2 классификация бинарная, при K > 2 многоклассовая. Предсказание следующего токена тоже относится к классификации, только K равно размеру словаря.</p>
     </div>
     <div class="step-panel" data-on="s4" data-focus="s4">
       <div class="step-kicker">Шаг 5 · регрессия</div>
       <h4>Регрессия: последний слой сразу выдаёт μ</h4>
-      <p>Здесь softmax не нужен: последний слой отдаёт само число — центр μ кривой из 5.2. Иногда модель выдаёт ещё и σ, и тогда мы знаем не только прогноз, но и насколько ему верить. Выход может быть одним числом, как цена, или вектором, как углы суставов.</p>
+      <p>Здесь softmax не нужен: последний слой отдаёт само число: центр μ кривой из 5.2. Иногда модель выдаёт ещё и σ, и тогда мы знаем и прогноз, и насколько ему верить. Выход может быть одним числом, как цена, или вектором, как углы суставов.</p>
     </div>
     <div class="step-panel" data-on="s5" data-focus="s5">
       <div class="step-kicker">Шаг 6 · обучение</div>
       <h4>Потери: правильный ответ должен стать вероятнее</h4>
-      <p>Кросс-энтропия штрафует за низкую вероятность правильного класса: при P(7) = 0.86 потеря 0.15, при P(7) = 0.05 — уже 3.00. MSE штрафует за расстояние от μ до правильного числа: промах на 15 тыс. $ даёт 225, промах на 50 тыс. $ — уже 2 500. Идея одна: сделать правильный ответ вероятнее.</p>
+      <p>Кросс-энтропия штрафует за низкую вероятность правильного класса: при P(7) = 0.86 потеря 0.15, при P(7) = 0.05 уже 3.00. MSE штрафует за расстояние от μ до правильного числа: промах на 15 тыс. $ даёт 225, промах на 50 тыс. $ уже 2 500. Идея одна: сделать правильный ответ вероятнее.</p>
     </div>
     <div class="step-panel" data-on="s6" data-focus="s6">
       <div class="step-kicker">Шаг 7 · граница</div>
-      <h4>Одна величина — две постановки</h4>
-      <p>Возраст можно предсказывать числом — это регрессия, а можно группой «ребёнок / взрослый / пожилой» — это классификация. В робототехнике бывает и наоборот: в RT-2 непрерывные действия режут на 256 корзин и предсказывают как токены. Тип задачи — наш выбор, как описать y.</p>
+      <h4>Одна величина, две постановки</h4>
+      <p>Возраст можно предсказывать числом (регрессия), а можно группой «ребёнок / взрослый / пожилой» (классификация). В робототехнике бывает и наоборот: в RT-2 непрерывные действия режут на 256 корзин и предсказывают как токены. Тип задачи выбираем мы, когда решаем, как описать y.</p>
     </div>
     <div class="step-panel" data-on="s7" data-focus="s7">
       <div class="step-kicker">Шаг 8 · итог</div>
       <h4>Всё следует из типа y</h4>
-      <p>Классификация: дискретный y, вектор вероятностей, softmax, argmax, кросс-энтропия. Регрессия: непрерывный y, центр μ, число без softmax, MSE. Стоит определить тип y — и остальные строки таблицы заполняются сами.</p>
+      <p>Классификация: дискретный y, вектор вероятностей, softmax, argmax, кросс-энтропия. Регрессия: непрерывный y, центр μ, число без softmax, MSE. Стоит определить тип y, и остальные строки таблицы заполняются сами.</p>
     </div>
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
 
-Связь MSE с вероятностями не случайна. Если на выходе гауссова кривая с фиксированной шириной `σ`, то `−log p(y | x)` с точностью до константы равен `(y − μ)² / 2σ²`. Минимизировать MSE — значит искать такой центр `μ`, при котором правильный ответ становится самым вероятным. Ровно то же самое кросс-энтропия делает для классов.
+Связь MSE с вероятностями не случайна. Если на выходе гауссова кривая с фиксированной шириной `σ`, то `−log p(y | x)` с точностью до константы равен `(y − μ)² / 2σ²`. Минимизируя MSE, мы ищем такой центр `μ`, при котором правильный ответ становится самым вероятным. Ровно то же самое кросс-энтропия делает для классов.
 
-> **Классификация — это дискретный `y` и вектор вероятностей на выходе, регрессия — непрерывный `y` и кривая с центром `μ`.** Последний слой, функция потерь и способ получить ответ следуют из этого выбора.
+> **В классификации `y` дискретный и на выходе вектор вероятностей, в регрессии `y` непрерывный и на выходе кривая с центром `μ`.** Последний слой, функция потерь и способ получить ответ следуют из этого выбора.
 
-*Числа в интерактивах 5.1–5.2 иллюстративные и округлены до двух–трёх знаков. Рост взят как нормальное распределение с μ = 170 см и σ = 10 см; за пределами 140–200 см остаётся около 0.3% массы, поэтому на гистограмме их не видно.*
+*Числа в интерактивах 5.1–5.2 иллюстративные и округлены до двух-трёх знаков. Рост взят как нормальное распределение с μ = 170 см и σ = 10 см; за пределами 140–200 см остаётся около 0.3% массы, поэтому на гистограмме их не видно.*
 
 ### 5.4. На самом деле выходов больше, чем «число или метка»
 
-Деление на регрессию и классификацию — это фундамент, но реальные модели выдают и более богатые выходы. Полезно знать весь «зоопарк», чтобы понимать, что коробка может отдавать почти что угодно:
+Деление на регрессию и классификацию лежит в основе, но реальные модели выдают и более богатые выходы. Полезно знать весь «зоопарк», чтобы понимать, что коробка может отдавать почти что угодно:
 
-- **Одно число** (скалярная регрессия) — цена, температура.
-- **Одна метка из K классов** (классификация) — кошка/собака/птица.
-- **Несколько меток сразу** (multi-label) — у фото могут быть теги «пляж», «закат», «люди».
-- **Вероятности / распределение** — не просто «кошка», а «кошка 0.8, собака 0.15, …». Как мы видели в 5.1–5.2, под капотом модель почти всегда считает именно распределение; здесь речь о случае, когда оно нужно нам само по себе — например, чтобы знать, насколько модель уверена.
-- **Последовательность** — перевод, генерация текста: на выходе цепочка токенов.
-- **Структурированный выход** — рамки объектов на фото (детекция), маска по пикселям (сегментация), или даже **целая картинка** (генеративные модели).
-- **Вектор-эмбеддинг** — иногда нужен сам по себе (поиск похожих, рекомендации).
+- **Одно число** (скалярная регрессия): цена, температура.
+- **Одна метка из K классов** (классификация): кошка/собака/птица.
+- **Несколько меток сразу** (multi-label): у фото могут быть теги «пляж», «закат», «люди».
+- **Вероятности / распределение**: вместо «кошка» модель отдаёт «кошка 0.8, собака 0.15, …». Как мы видели в 5.1–5.2, под капотом модель почти всегда считает именно распределение; здесь речь о случае, когда оно нужно нам само по себе, например чтобы знать, насколько модель уверена.
+- **Последовательность**: перевод, генерация текста; на выходе цепочка токенов.
+- **Структурированный выход**: рамки объектов на фото (детекция), маска по пикселям (сегментация), или даже **целая картинка** (генеративные модели).
+- **Вектор-эмбеддинг**: иногда нужен сам по себе (поиск похожих, рекомендации).
 
 Большинство из этих случаев под капотом сводится к тем же двум базовым кирпичикам («предскажи число» и «предскажи класс»), просто применённым много раз или к структуре. Но на уровне постановки задачи их полезно различать.
 <div class="stage" id="stageOutputZoo" tabindex="0">
@@ -2489,7 +2489,7 @@ $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
     <rect class="box-gray" x="460" y="270" width="320" height="110"/>
     <text x="620" y="335" text-anchor="middle" font-size="40" font-weight="800" fill="#5E5850">?</text>
 
-    <text x="480" y="460" class="text" text-anchor="middle" font-weight="700">Дальше — «зоопарк» выходов, которые встречаются на практике</text>
+    <text x="480" y="460" class="text" text-anchor="middle" font-weight="700">Дальше: «зоопарк» выходов, которые встречаются на практике</text>
     <text x="480" y="492" class="small" text-anchor="middle">от одного числа до целой картинки</text>
   </g>
 
@@ -2561,7 +2561,7 @@ $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
       <text x="588" y="361" class="small" fill="#3576C0">0.05</text>
     </g>
 
-    <text x="480" y="470" class="small" text-anchor="middle">Сумма = 1. Если нужен один класс — берём максимум (кошка)</text>
+    <text x="480" y="470" class="small" text-anchor="middle">Сумма = 1. Если нужен один класс, берём максимум (кошка)</text>
   </g>
 
   <g data-key="step6" data-only="1">
@@ -2583,7 +2583,7 @@ $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
       <text x="670" y="335" text-anchor="middle" class="text" fill="#73B222">котов</text>
     </g>
 
-    <text x="480" y="470" class="small" text-anchor="middle">Перевод, ответ чат-бота, описание картинки — выход переменной длины</text>
+    <text x="480" y="470" class="small" text-anchor="middle">У перевода, ответа чат-бота, описания картинки выход переменной длины</text>
   </g>
 
   <g data-key="step7" data-only="1">
@@ -2602,7 +2602,7 @@ $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
     <path d="M650 380 q10 -70 55 -75 q40 0 35 75 z" fill="#73B222" opacity="0.55"/>
     <text x="685" y="440" class="small" text-anchor="middle">сегментация (маска)</text>
 
-    <text x="480" y="500" class="small" text-anchor="middle">Сюда же — генерация изображений: на выходе целый тензор-картинка</text>
+    <text x="480" y="500" class="small" text-anchor="middle">Сюда же генерация изображений: на выходе целый тензор-картинка</text>
   </g>
 
   <g data-key="step8" data-only="1">
@@ -2642,37 +2642,37 @@ $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
     <div class="step-panel" data-on="step1" data-focus="step1">
       <div class="step-kicker">Шаг 1 · не только число или метка</div>
       <h4>Выход бывает не только числом или меткой</h4>
-      <p>Базовое деление — регрессия и классификация. Но коробка умеет больше: дальше — «зоопарк» выходов, которые встречаются на практике, от одного числа до целой картинки.</p>
+      <p>Базовое деление: регрессия и классификация. Но коробка умеет больше. Дальше разберём «зоопарк» выходов, которые встречаются на практике, от одного числа до целой картинки.</p>
     </div>
     <div class="step-panel" data-on="step2" data-focus="step2">
       <div class="step-kicker">Шаг 2 · одно число</div>
-      <h4>Одно число — регрессия</h4>
-      <p>Самый простой выход: единственное значение на непрерывной шкале, например температура на завтра. Тот же принцип — цена дома, возраст по фото, длительность поездки.</p>
+      <h4>Одно число: регрессия</h4>
+      <p>Самый простой выход: единственное значение на непрерывной шкале, например температура на завтра. По тому же принципу предсказывают цену дома, возраст по фото, длительность поездки.</p>
     </div>
     <div class="step-panel" data-on="step3" data-focus="step3">
       <div class="step-kicker">Шаг 3 · одна метка</div>
-      <h4>Одна метка — классификация</h4>
-      <p>Выход — один класс из конечного, заранее заданного списка, например «не спам». Тот же принцип — кошка/собака/птица, цифра 0–9, «это Алиса».</p>
+      <h4>Одна метка: классификация</h4>
+      <p>На выходе один класс из конечного, заранее заданного списка, например «не спам». Так же устроены кошка/собака/птица, цифра 0–9, «это Алиса».</p>
     </div>
     <div class="step-panel" data-on="step4" data-focus="step4">
       <div class="step-kicker">Шаг 4 · multi-label</div>
-      <h4>Несколько меток сразу — multi-label</h4>
-      <p>У одного объекта может быть несколько верных меток одновременно. Теги фотографии — «пляж», «закат», «люди»: помечаем все подходящие метки, а не выбираем одну.</p>
+      <h4>Несколько меток сразу: multi-label</h4>
+      <p>У одного объекта может быть несколько верных меток одновременно. Например, теги фотографии «пляж», «закат», «люди»: помечаем все подходящие метки, а не выбираем одну.</p>
     </div>
     <div class="step-panel" data-on="step5" data-focus="step5">
       <div class="step-kicker">Шаг 5 · распределение</div>
       <h4>Распределение вероятностей</h4>
-      <p>Часто модель отдаёт не один ответ, а уверенность по каждому варианту — кошка 0.80, собака 0.15, птица 0.05. Сумма всегда равна 1. Если нужен один класс — берём максимум.</p>
+      <p>Часто модель отдаёт не один ответ, а уверенность по каждому варианту: кошка 0.80, собака 0.15, птица 0.05. Сумма всегда равна 1. Если нужен один класс, берём максимум.</p>
     </div>
     <div class="step-panel" data-on="step6" data-focus="step6">
       <div class="step-kicker">Шаг 6 · последовательность</div>
-      <h4>Последовательность — генерация и перевод</h4>
-      <p>Выход — это цепочка токенов, выдаваемая шаг за шагом. Перевод, ответ чат-бота, описание картинки — везде выход переменной длины, а не фиксированного размера.</p>
+      <h4>Последовательность: генерация и перевод</h4>
+      <p>На выходе цепочка токенов, которая выдаётся шаг за шагом. У перевода, ответа чат-бота, описания картинки выход переменной длины, а не фиксированного размера.</p>
     </div>
     <div class="step-panel" data-on="step7" data-focus="step7">
       <div class="step-kicker">Шаг 7 · структурный выход</div>
       <h4>Структурный выход: рамки, маски, картинки</h4>
-      <p>Выход может иметь форму: координаты объекта (детекция), маска по пикселям (сегментация) или даже целое изображение — на выходе целый тензор-картинка, как в генеративных моделях.</p>
+      <p>Выход может иметь форму: координаты объекта (детекция), маска по пикселям (сегментация) или даже целое изображение, то есть тензор-картинку, как в генеративных моделях.</p>
     </div>
     <div class="step-panel" data-on="step8" data-focus="step8">
       <div class="step-kicker">Шаг 8 · итог</div>
@@ -2702,6 +2702,6 @@ $$L_{\text{CE}} = -\log P(Y = y \mid x), \qquad L_{\text{MSE}} = (y - \mu)^2$$
 | Число (регрессия) | один выход без активации, потери типа MSE |
 | Класс (классификация) | softmax на K классов, кросс-энтропия |
 
-Поэтому правильный порядок мыслей в любой ML-задаче такой: **сначала зафиксировать вход и выход коробки — и только потом выбирать, что положить внутрь.**
+Поэтому правильный порядок мыслей в любой ML-задаче такой: **сначала зафиксировать вход и выход коробки и только потом выбирать, что положить внутрь.**
 
-В следующей статье мы наконец **откроем коробку** и на примере **регрессии** соберём весь пайплайн обучения по шагам: данные → модель → как она учится → как проверяем качество. Там станет видно, что «магия» внутри коробки — это вполне понятный последовательный процесс.
+В следующей статье мы наконец **откроем коробку** и на примере **регрессии** соберём весь пайплайн обучения по шагам: данные → модель → как она учится → как проверяем качество. Там станет видно, что за «магией» внутри коробки стоит вполне понятный последовательный процесс.
