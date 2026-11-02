@@ -2043,330 +2043,168 @@ $$\hat y = w \cdot x + b$$
 
 Компьютер не видит «кота» сразу. На входе у него только сетка чисел. Компьютерное зрение учит модель находить в этой сетке такие комбинации пикселей, которые соответствуют осмысленным объектам: лицам, машинам, буквам, медицинским снимкам или котикам.
 
+Разберём это на том же коте 16 × 16, на котором в разделе про явное программирование сломалось правило по одному пикселю.
+
 <div class="stage" id="stageComputerVision" tabindex="0">
   <div class="stage-figure">
-<svg id="cvPipeline" viewBox="262 70 638 390" role="img" aria-label="От пикселей и цветовых каналов через края и формы к частям объекта и финальной классификации кота">
+<svg id="cvPipeline" viewBox="0 0 900 400" role="img" aria-label="Тот же пиксельный кот 16 на 16: яркость пикселей, числа у глаза, три канала RGB, окно 3 на 3 рисует карту краёв, части кота и вероятности классов">
   <style>
-    svg {
-      background: #ffffff;
-      font-family: Helvetica, Arial, sans-serif;
-    }
-    .title {
-      font-size: 21px;
-      font-weight: 800;
-      fill: #111111;
-    }
-    .scene-panel {
-      fill: #ffffff;
-      stroke: #3576C0;
-      stroke-width: 1.3;
-      stroke-opacity: 0.28;
-      rx: 16;
-    }
-    .scene-title {
-      font-size: 16px;
-      font-weight: 800;
-      fill: #111111;
-    }
-    .node-blue {
-      fill: #ffffff;
-      stroke: #3576C0;
-      stroke-width: 1.6;
-      rx: 10;
-    }
-    .node-yellow {
-      fill: #ffffff;
-      stroke: #C29E08;
-      stroke-width: 1.6;
-      rx: 10;
-    }
-    .node-green {
-      fill: #ffffff;
-      stroke: #73B222;
-      stroke-width: 1.6;
-      rx: 10;
-    }
-    .node-red {
-      fill: #ffffff;
-      stroke: #C30B0A;
-      stroke-width: 1.6;
-      rx: 10;
-    }
-    .node-bold {
-      font-size: 15px;
-      font-weight: 800;
-      fill: #111111;
-    }
-    .small {
-      font-size: 12px;
-      fill: #111111;
-      opacity: 0.78;
-    }
-    .left-text {
-      font-size: 15px;
-      fill: #111111;
-    }
-    .formula {
-      font-size: 24px;
-      font-weight: 800;
-      fill: #111111;
-    }
-    .formula-small {
-      font-size: 18px;
-      font-weight: 800;
-      fill: #111111;
-    }
-    .center {
-      text-anchor: middle;
-      dominant-baseline: middle;
-    }
-    .arrow {
-      stroke: #3576C0;
-      stroke-width: 2.2;
-      fill: none;
-      marker-end: url(#arrowHeadBlueCV);
-    }
-    .pixel {
-      stroke: #ffffff;
-      stroke-width: 0.7;
-    }
-    .shape {
-      fill: none;
-      stroke: #3576C0;
-      stroke-width: 3;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-    .shape-green {
-      fill: none;
-      stroke: #73B222;
-      stroke-width: 3;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-    .bar-blue {
-      fill: #3576C0;
-      opacity: 0.82;
-    }
-    .bar-green {
-      fill: #73B222;
-      opacity: 0.82;
-    }
-    .bar-yellow {
-      fill: #C29E08;
-      opacity: 0.82;
-    }
-    .bar-red {
-      fill: #C30B0A;
-      opacity: 0.82;
-    }
-    .num {
-      font-family: "Courier New", Courier, monospace;
-      font-size: 12px;
-      fill: #111111;
-    }
+    .cv-panel { fill: #ffffff; stroke: #3576C0; stroke-width: 1.3; stroke-opacity: 0.25; }
+    .cv-title { font: 800 19px Helvetica, Arial, sans-serif; fill: #111111; }
+    .cv-bold { font: 800 15px Helvetica, Arial, sans-serif; fill: #111111; }
+    .cv-text { font: 15px Helvetica, Arial, sans-serif; fill: #111111; }
+    .cv-small { font: 13px Helvetica, Arial, sans-serif; fill: #111111; opacity: 0.75; }
+    .cv-big { font: 800 30px Helvetica, Arial, sans-serif; fill: #111111; }
+    .cv-c { text-anchor: middle; dominant-baseline: middle; }
+    .cv-frame { fill: none; stroke: #C30B0A; stroke-width: 3; }
+    .cv-link { stroke: #C30B0A; stroke-width: 1.3; stroke-opacity: 0.6; }
+    .cv-arrow { stroke: #3576C0; stroke-width: 2.2; fill: none; marker-end: url(#cvArrow); }
   </style>
   <defs>
-    <marker id="arrowHeadBlueCV" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+    <marker id="cvArrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
       <path d="M0,0 L0,6 L8,3 z" fill="#3576C0" />
     </marker>
+    <linearGradient id="cvGrayScale" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#000000" />
+      <stop offset="1" stop-color="#ffffff" />
+    </linearGradient>
   </defs>
-  <rect x="292" y="90" width="584" height="350" class="scene-panel" />
-  <g id="sceneContent">
-    <g data-key="step1" data-only="1">
-      <text x="328" y="130" class="scene-title">Цветная картинка состоит из трёх каналов</text>
-      <g transform="translate(325,175)">
-        <rect x="0" y="0" width="24" height="24" class="pixel" fill="#F4B6A6"/>
-        <rect x="24" y="0" width="24" height="24" class="pixel" fill="#F0C86A"/>
-        <rect x="48" y="0" width="24" height="24" class="pixel" fill="#E9D86A"/>
-        <rect x="72" y="0" width="24" height="24" class="pixel" fill="#F0C86A"/>
-        <rect x="96" y="0" width="24" height="24" class="pixel" fill="#F4B6A6"/>
-        <rect x="0" y="24" width="24" height="24" class="pixel" fill="#D98A62"/>
-        <rect x="24" y="24" width="24" height="24" class="pixel" fill="#C29E08"/>
-        <rect x="48" y="24" width="24" height="24" class="pixel" fill="#73B222"/>
-        <rect x="72" y="24" width="24" height="24" class="pixel" fill="#C29E08"/>
-        <rect x="96" y="24" width="24" height="24" class="pixel" fill="#D98A62"/>
-        <rect x="0" y="48" width="24" height="24" class="pixel" fill="#3576C0"/>
-        <rect x="24" y="48" width="24" height="24" class="pixel" fill="#73B222"/>
-        <rect x="48" y="48" width="24" height="24" class="pixel" fill="#C30B0A"/>
-        <rect x="72" y="48" width="24" height="24" class="pixel" fill="#73B222"/>
-        <rect x="96" y="48" width="24" height="24" class="pixel" fill="#3576C0"/>
-        <rect x="0" y="72" width="24" height="24" class="pixel" fill="#D98A62"/>
-        <rect x="24" y="72" width="24" height="24" class="pixel" fill="#C29E08"/>
-        <rect x="48" y="72" width="24" height="24" class="pixel" fill="#73B222"/>
-        <rect x="72" y="72" width="24" height="24" class="pixel" fill="#C29E08"/>
-        <rect x="96" y="72" width="24" height="24" class="pixel" fill="#D98A62"/>
-        <rect x="0" y="96" width="24" height="24" class="pixel" fill="#F4B6A6"/>
-        <rect x="24" y="96" width="24" height="24" class="pixel" fill="#F0C86A"/>
-        <rect x="48" y="96" width="24" height="24" class="pixel" fill="#E9D86A"/>
-        <rect x="72" y="96" width="24" height="24" class="pixel" fill="#F0C86A"/>
-        <rect x="96" y="96" width="24" height="24" class="pixel" fill="#F4B6A6"/>
-        <rect x="0" y="0" width="120" height="120" fill="none" stroke="#3576C0" stroke-width="2"/>
-      </g>
-      <text x="470" y="240" class="formula center">=</text>
-      <rect x="520" y="170" width="95" height="60" class="node-red" />
-      <text x="567.5" y="194" class="node-bold center">R</text>
-      <text x="567.5" y="216" class="small center">красный</text>
-      <rect x="640" y="170" width="95" height="60" class="node-green" />
-      <text x="687.5" y="194" class="node-bold center">G</text>
-      <text x="687.5" y="216" class="small center">зелёный</text>
-      <rect x="760" y="170" width="95" height="60" class="node-blue" />
-      <text x="807.5" y="194" class="node-bold center">B</text>
-      <text x="807.5" y="216" class="small center">синий</text>
-      <text x="687.5" y="285" class="formula-small center">каждый пиксель = [R, G, B]</text>
-      <text x="584" y="350" class="left-text center">Компьютер видит цветную картинку как три числовых слоя.</text>
-      <text x="584" y="380" class="left-text center">Например, один пиксель может быть записан как [195, 11, 10].</text>
-      <text x="584" y="410" class="left-text center">То есть сначала изображение не «кот», а числа.</text>
-    </g>
-    <g data-key="step2" data-only="1">
-      <text x="328" y="130" class="scene-title">Цветная картинка складывается из трёх каналов</text>
-      <text x="584" y="170" class="formula-small center">R + G + B = картинка</text>
-      <rect x="335" y="195" width="90" height="54" class="node-red" />
-      <text x="380" y="218" class="node-bold center">R</text>
-      <text x="380" y="238" class="small center">красный</text>
-      <text x="447" y="224" class="formula-small center">+</text>
-      <rect x="470" y="195" width="90" height="54" class="node-green" />
-      <text x="515" y="218" class="node-bold center">G</text>
-      <text x="515" y="238" class="small center">зелёный</text>
-      <text x="582" y="224" class="formula-small center">+</text>
-      <rect x="605" y="195" width="90" height="54" class="node-blue" />
-      <text x="650" y="218" class="node-bold center">B</text>
-      <text x="650" y="238" class="small center">синий</text>
-      <text x="717" y="224" class="formula-small center">=</text>
-      <g transform="translate(750,190)">
-        <rect x="0" y="0" width="22" height="22" class="pixel" fill="#F4B6A6"/>
-        <rect x="22" y="0" width="22" height="22" class="pixel" fill="#F0C86A"/>
-        <rect x="44" y="0" width="22" height="22" class="pixel" fill="#E9D86A"/>
-        <rect x="0" y="22" width="22" height="22" class="pixel" fill="#3576C0"/>
-        <rect x="22" y="22" width="22" height="22" class="pixel" fill="#73B222"/>
-        <rect x="44" y="22" width="22" height="22" class="pixel" fill="#C30B0A"/>
-        <rect x="0" y="44" width="22" height="22" class="pixel" fill="#D98A62"/>
-        <rect x="22" y="44" width="22" height="22" class="pixel" fill="#C29E08"/>
-        <rect x="44" y="44" width="22" height="22" class="pixel" fill="#73B222"/>
-        <rect x="0" y="0" width="66" height="66" fill="none" stroke="#3576C0" stroke-width="2"/>
-      </g>
-      <text x="380" y="292" class="node-bold center">R</text>
-      <rect x="330" y="305" width="100" height="85" class="node-red" />
-      <text x="380" y="330" class="num center">195 240 233</text>
-      <text x="380" y="352" class="num center">53 115 195</text>
-      <text x="380" y="374" class="num center">217 194 115</text>
-      <text x="515" y="292" class="node-bold center">G</text>
-      <rect x="465" y="305" width="100" height="85" class="node-green" />
-      <text x="515" y="330" class="num center">11 40 56</text>
-      <text x="515" y="352" class="num center">118 178 11</text>
-      <text x="515" y="374" class="num center">102 158 178</text>
-      <text x="650" y="292" class="node-bold center">B</text>
-      <rect x="600" y="305" width="100" height="85" class="node-blue" />
-      <text x="650" y="330" class="num center">10 22 44</text>
-      <text x="650" y="352" class="num center">192 34 10</text>
-      <text x="650" y="374" class="num center">98 45 34</text>
-      <text x="584" y="418" class="left-text center">Каждый канал хранится отдельной матрицей чисел.</text>
-    </g>
-    <g data-key="step3" data-only="1">
-      <text x="328" y="130" class="scene-title">На первых слоях модель ищет края</text>
-      <rect x="335" y="185" width="100" height="90" class="node-blue" />
-      <line x1="355" y1="215" x2="415" y2="215" class="shape" />
-      <line x1="355" y1="240" x2="415" y2="240" class="shape" />
-      <text x="385" y="305" class="small center">горизонталь</text>
-      <rect x="470" y="185" width="100" height="90" class="node-blue" />
-      <line x1="500" y1="205" x2="500" y2="255" class="shape" />
-      <line x1="540" y1="205" x2="540" y2="255" class="shape" />
-      <text x="520" y="305" class="small center">вертикаль</text>
-      <rect x="605" y="185" width="100" height="90" class="node-blue" />
-      <line x1="625" y1="255" x2="685" y2="205" class="shape" />
-      <text x="655" y="305" class="small center">наклон</text>
-      <rect x="740" y="185" width="100" height="90" class="node-blue" />
-      <line x1="760" y1="205" x2="820" y2="255" class="shape" />
-      <line x1="820" y1="205" x2="760" y2="255" class="shape" />
-      <text x="790" y="305" class="small center">угол</text>
-      <text x="584" y="375" class="left-text center">Модель ещё не понимает «кот». Она видит простые визуальные сигналы:</text>
-      <text x="584" y="405" class="left-text center">границы, переходы цвета, линии и углы.</text>
-    </g>
-    <g data-key="step4" data-only="1">
-      <text x="328" y="130" class="scene-title">Следующие слои собирают формы</text>
-      <rect x="340" y="185" width="105" height="90" class="node-yellow" />
-      <circle cx="392.5" cy="230" r="26" class="shape" />
-      <text x="392.5" y="305" class="small center">круг</text>
-      <rect x="485" y="185" width="105" height="90" class="node-yellow" />
-      <rect x="515" y="205" width="45" height="45" class="shape" />
-      <text x="537.5" y="305" class="small center">квадрат</text>
-      <rect x="630" y="185" width="105" height="90" class="node-yellow" />
-      <path d="M657 250 L682 205 L707 250 Z" class="shape" />
-      <text x="682.5" y="305" class="small center">треугольник</text>
-      <text x="584" y="370" class="formula-small center">края → формы</text>
-      <text x="584" y="410" class="left-text center">Модель постепенно переходит от отдельных линий к простым частям картинки.</text>
-    </g>
-    <g data-key="step5" data-only="1">
-      <text x="328" y="130" class="scene-title">Более глубокие слои ищут части объекта</text>
-      <rect x="330" y="185" width="105" height="90" class="node-green" />
-      <path d="M382 203 L410 255 L354 255 Z" fill="none" stroke="#73B222" stroke-width="3"/>
-      <text x="382.5" y="305" class="small center">ухо</text>
-      <rect x="465" y="185" width="105" height="90" class="node-green" />
-      <ellipse cx="517.5" cy="230" rx="28" ry="18" class="shape-green" />
-      <circle cx="517.5" cy="230" r="7" fill="#73B222" />
-      <text x="517.5" y="305" class="small center">глаз</text>
-      <rect x="600" y="185" width="105" height="90" class="node-green" />
-      <circle cx="652.5" cy="225" r="6" fill="#73B222" />
-      <line x1="652.5" y1="225" x2="620" y2="210" class="shape-green" />
-      <line x1="652.5" y1="225" x2="620" y2="240" class="shape-green" />
-      <line x1="652.5" y1="225" x2="685" y2="210" class="shape-green" />
-      <line x1="652.5" y1="225" x2="685" y2="240" class="shape-green" />
-      <text x="652.5" y="305" class="small center">усы</text>
-      <rect x="735" y="185" width="105" height="90" class="node-green" />
-      <ellipse cx="787.5" cy="245" rx="26" ry="14" class="shape-green" />
-      <circle cx="767" cy="220" r="6" fill="none" stroke="#73B222" stroke-width="3"/>
-      <circle cx="787" cy="214" r="6" fill="none" stroke="#73B222" stroke-width="3"/>
-      <circle cx="807" cy="220" r="6" fill="none" stroke="#73B222" stroke-width="3"/>
-      <text x="787.5" y="305" class="small center">лапа</text>
-      <text x="584" y="375" class="left-text center">Никто вручную не говорит модели: «вот это ухо».</text>
-      <text x="584" y="405" class="left-text center">При обучении она сама находит полезные признаки для распознавания.</text>
-    </g>
-    <g data-key="step6" data-only="1">
-      <text x="328" y="130" class="scene-title">Финальный слой даёт вероятности классов</text>
-      <rect x="340" y="170" width="170" height="160" class="node-green" />
-      <path d="M395 220 L410 190 L425 220" fill="none" stroke="#73B222" stroke-width="3"/>
-      <path d="M430 220 L445 190 L460 220" fill="none" stroke="#73B222" stroke-width="3"/>
-      <ellipse cx="427.5" cy="240" rx="45" ry="35" fill="none" stroke="#73B222" stroke-width="3"/>
-      <circle cx="410" cy="235" r="4" fill="#111111"/>
-      <circle cx="445" cy="235" r="4" fill="#111111"/>
-      <path d="M420 252 Q428 260 436 252" fill="none" stroke="#73B222" stroke-width="2"/>
-      <text x="425" y="305" class="node-bold center">признаки кота</text>
-      <text x="570" y="190" class="left-text">кот</text>
-      <rect x="630" y="176" width="190" height="18" rx="4" class="bar-green"/>
-      <text x="830" y="190" class="small">0.93</text>
-      <text x="570" y="230" class="left-text">собака</text>
-      <rect x="630" y="216" width="36" height="18" rx="4" class="bar-blue"/>
-      <text x="680" y="230" class="small">0.04</text>
-      <text x="570" y="270" class="left-text">лиса</text>
-      <rect x="630" y="256" width="20" height="18" rx="4" class="bar-yellow"/>
-      <text x="660" y="270" class="small">0.02</text>
-      <text x="570" y="310" class="left-text">другое</text>
-      <rect x="630" y="296" width="10" height="18" rx="4" class="bar-red"/>
-      <text x="650" y="310" class="small">0.01</text>
-      <text x="584" y="390" class="formula-small center">Ответ модели: это похоже на кота</text>
-      <text x="584" y="420" class="left-text center">Модель выбирает класс с наибольшей вероятностью.</text>
-    </g>
-    <g data-key="step7" data-only="1">
-      <text x="328" y="130" class="scene-title">Как компьютер «видит» картинку</text>
-      <rect x="320" y="190" width="90" height="70" class="node-blue" />
-      <text x="365" y="215" class="node-bold center">Пиксели</text>
-      <text x="365" y="240" class="small center">числа</text>
-      <path d="M420 225 L460 225" class="arrow" />
-      <rect x="472" y="190" width="90" height="70" class="node-yellow" />
-      <text x="517" y="215" class="node-bold center">Края</text>
-      <text x="517" y="240" class="small center">линии</text>
-      <path d="M572 225 L612 225" class="arrow" />
-      <rect x="624" y="190" width="90" height="70" class="node-yellow" />
-      <text x="669" y="215" class="node-bold center">Части</text>
-      <text x="669" y="240" class="small center">глаз, ухо</text>
-      <path d="M724 225 L764 225" class="arrow" />
-      <rect x="776" y="190" width="80" height="70" class="node-green" />
-      <text x="816" y="215" class="node-bold center">Объект</text>
-      <text x="816" y="240" class="small center">кот</text>
-      <text x="584" y="335" class="formula-small center">пиксели → края → формы → части → объект</text>
-      <text x="584" y="385" class="left-text center">Компьютер не видит «кота» сразу.</text>
-      <text x="584" y="415" class="left-text center">Он постепенно строит всё более сложное описание картинки.</text>
-    </g>
+  <rect x="30" y="16" width="840" height="368" rx="18" class="cv-panel" />
+
+  <!-- 1. тот же кот -->
+  <g data-key="s1" data-only="1">
+    <g data-cv="color"></g>
+    <rect x="144" y="181" width="19" height="19" class="cv-frame" />
+    <text x="430" y="72" class="cv-title">Картинка для компьютера: таблица чисел</text>
+    <text x="430" y="116" class="cv-text">Это тот же кот 16 × 16, на котором выше</text>
+    <text x="430" y="140" class="cv-text">сломалось правило pixel[7][4] == 137.</text>
+    <text x="430" y="184" class="cv-text">16 строк × 16 столбцов = 256 пикселей.</text>
+    <text x="430" y="208" class="cv-text">Красная рамка: пиксель (7, 4), зелёный глаз.</text>
+    <text x="430" y="252" class="cv-text">Уши, глаза и усы видит человек.</text>
+    <text x="430" y="276" class="cv-text">В памяти компьютера лежат только числа.</text>
+  </g>
+
+  <!-- 2. яркость -->
+  <g data-key="s2" data-only="1">
+    <g data-cv="gray"></g>
+    <rect x="144" y="181" width="19" height="19" class="cv-frame" />
+    <text x="430" y="72" class="cv-title">Чёрно-белая картинка: одно число на пиксель</text>
+    <rect x="430" y="130" width="400" height="34" rx="4" fill="url(#cvGrayScale)" stroke="#8E8A82" />
+    <text x="430" y="186" class="cv-small">0 · чёрный</text>
+    <text x="830" y="186" class="cv-small" text-anchor="end">255 · белый</text>
+    <path d="M502 124 L502 112" stroke="#111111" />
+    <text x="502" y="104" class="cv-small cv-c">46 · контур</text>
+    <path d="M678 124 L678 112" stroke="#111111" />
+    <text x="678" y="104" class="cv-small cv-c">158 · шерсть</text>
+    <path d="M645 170 L645 214" stroke="#C30B0A" stroke-width="2" />
+    <text x="645" y="232" class="cv-bold cv-c" style="fill:#C30B0A">137 · глаз (7, 4)</text>
+    <text x="430" y="290" class="cv-text">Цвет пикселя сводится к одному числу от 0 до 255:</text>
+    <text x="430" y="314" class="cv-text">чем светлее точка, тем больше число.</text>
+  </g>
+
+  <!-- 3. числа у глаза -->
+  <g data-key="s3" data-only="1">
+    <g data-cv="gray2"></g>
+    <rect x="87" y="143" width="114" height="95" class="cv-frame" />
+    <line x1="201" y1="143" x2="470" y2="52" class="cv-link" />
+    <line x1="201" y1="238" x2="470" y2="322" class="cv-link" />
+    <g data-cv="zoom"></g>
+    <text x="626" y="356" class="cv-text cv-c">Строки 5–9, столбцы 1–6. Слова «глаз» здесь нет: только 46, 158, 137.</text>
+  </g>
+
+  <!-- 4. RGB одного пикселя -->
+  <g data-key="s4" data-only="1">
+    <g data-cv="color2"></g>
+    <rect x="161.5" y="312.5" width="22" height="22" class="cv-frame" style="stroke:#111111;stroke-width:3.5" />
+    <text x="430" y="72" class="cv-title">Цветной пиксель хранит три числа</text>
+    <rect x="430" y="98" width="96" height="96" rx="6" style="fill:#C30B0A" stroke="#111111" stroke-width="3" />
+    <text x="546" y="132" class="cv-bold">пиксель (14, 5): ошейник</text>
+    <text x="546" y="160" class="cv-text">[195, 11, 10]</text>
+    <text x="430" y="238" class="cv-bold">R</text>
+    <rect x="456" y="224" width="306" height="20" rx="4" fill="#C30B0A" /><text x="772" y="239" class="cv-bold">195</text>
+    <text x="430" y="274" class="cv-bold">G</text>
+    <rect x="456" y="260" width="17" height="20" rx="4" fill="#73B222" /><text x="483" y="275" class="cv-bold">11</text>
+    <text x="430" y="310" class="cv-bold">B</text>
+    <rect x="456" y="296" width="16" height="20" rx="4" fill="#3576C0" /><text x="482" y="311" class="cv-bold">10</text>
+    <text x="430" y="352" class="cv-text">Много красного, почти нет зелёного и синего.</text>
+  </g>
+
+  <!-- 5. три канала -->
+  <g data-key="s5" data-only="1">
+    <text x="450" y="56" class="cv-title cv-c">Картинка = три таблицы: R, G и B</text>
+    <g data-cv="channels"></g>
+    <text x="207" y="160" class="cv-big cv-c">=</text>
+    <text x="388" y="160" class="cv-big cv-c">+</text>
+    <text x="569" y="160" class="cv-big cv-c">+</text>
+    <text x="117" y="256" class="cv-small cv-c">картинка</text>
+    <text x="298" y="256" class="cv-small cv-c">R: сколько красного</text>
+    <text x="479" y="256" class="cv-small cv-c">G: сколько зелёного</text>
+    <text x="660" y="256" class="cv-small cv-c">B: сколько синего</text>
+    <text x="450" y="306" class="cv-bold cv-c">16 × 16 × 3 = 768 чисел на входе модели</text>
+    <text x="450" y="336" class="cv-text cv-c">У фото 4000 × 3000 пикселей таких чисел 4000 × 3000 × 3 = 36 млн.</text>
+  </g>
+
+  <!-- 6. окно бежит по коту -->
+  <g data-key="s6" data-only="1">
+    <text x="196" y="44" class="cv-small cv-c">яркость</text>
+    <text x="616" y="44" class="cv-small cv-c">карта краёв</text>
+    <g data-cv="scanGray"></g>
+    <g data-cv="scanEdge"></g>
+    <path d="M350 192 L462 192" class="cv-arrow" />
+    <text x="406" y="178" class="cv-small cv-c">окно 3 × 3</text>
+    <text x="196" y="354" class="cv-text cv-c" data-cv="readout"></text>
+    <text x="616" y="354" class="cv-small cv-c">тёмная клетка: резкий перепад яркости</text>
+  </g>
+
+  <!-- 7. части -->
+  <g data-key="s7" data-only="1">
+    <g data-cv="edgeParts"></g>
+    <rect x="77" y="73" width="85" height="68" fill="none" stroke="#3576C0" stroke-width="3" />
+    <rect x="94" y="158" width="85" height="68" fill="none" stroke="#73B222" stroke-width="3" />
+    <rect x="60" y="209" width="102" height="68" fill="none" stroke="#C29E08" stroke-width="3" stroke-dasharray="7 4" />
+    <text x="400" y="72" class="cv-title">Из краёв складываются части</text>
+    <rect x="400" y="102" width="16" height="16" fill="none" stroke="#3576C0" stroke-width="3" />
+    <text x="428" y="115" class="cv-text"><tspan font-weight="800">ухо</tspan>: два наклонных края сходятся в угол</text>
+    <rect x="400" y="140" width="16" height="16" fill="none" stroke="#73B222" stroke-width="3" />
+    <text x="428" y="153" class="cv-text"><tspan font-weight="800">глаз</tspan>: маленькое пятно в рамке из краёв</text>
+    <rect x="400" y="178" width="16" height="16" fill="none" stroke="#C29E08" stroke-width="3" stroke-dasharray="5 3" />
+    <text x="428" y="191" class="cv-text"><tspan font-weight="800">усы</tspan>: короткие края по бокам морды</text>
+    <text x="400" y="250" class="cv-text">Края, линии и углы собираются в формы,</text>
+    <text x="400" y="274" class="cv-text">формы в части. Эти сочетания никто не размечает:</text>
+    <text x="400" y="298" class="cv-text">при обучении глубокие слои находят их сами.</text>
+  </g>
+
+  <!-- 8. классы -->
+  <g data-key="s8" data-only="1">
+    <g data-cv="color3"></g>
+    <path d="M276 196 L330 196" class="cv-arrow" />
+    <text x="360" y="72" class="cv-title">Последний слой выдаёт вероятности классов</text>
+    <text x="440" y="130" class="cv-bold" text-anchor="end">кот</text>
+    <rect x="452" y="114" width="335" height="24" rx="5" fill="#73B222" /><text x="797" y="131" class="cv-bold">0.93</text>
+    <text x="440" y="176" class="cv-bold" text-anchor="end">собака</text>
+    <rect x="452" y="160" width="14" height="24" rx="5" fill="#3576C0" /><text x="476" y="177" class="cv-bold">0.04</text>
+    <text x="440" y="222" class="cv-bold" text-anchor="end">лиса</text>
+    <rect x="452" y="206" width="7" height="24" rx="5" fill="#C29E08" /><text x="469" y="223" class="cv-bold">0.02</text>
+    <text x="440" y="268" class="cv-bold" text-anchor="end">другое</text>
+    <rect x="452" y="252" width="4" height="24" rx="2" fill="#8E8A82" /><text x="466" y="269" class="cv-bold">0.01</text>
+    <text x="360" y="330" class="cv-text">Ответ: класс с наибольшей вероятностью, «кот».</text>
+  </g>
+
+  <!-- 9. вся цепочка -->
+  <g data-key="s9" data-only="1">
+    <text x="450" y="60" class="cv-title cv-c">От чисел к «коту»</text>
+    <g data-cv="chain"></g>
+    <path d="M160 176 L192 176 M330 176 L362 176 M500 176 L532 176 M670 176 L702 176" class="cv-arrow" />
+    <rect x="712" y="132" width="130" height="88" rx="12" style="fill:#EEF6E4" stroke="#73B222" stroke-width="1.8" />
+    <text x="777" y="164" class="cv-bold cv-c">кот</text>
+    <text x="777" y="192" class="cv-big cv-c">0.93</text>
+    <text x="96" y="256" class="cv-small cv-c">пиксели</text>
+    <text x="266" y="256" class="cv-small cv-c">яркость</text>
+    <text x="436" y="256" class="cv-small cv-c">края</text>
+    <text x="606" y="256" class="cv-small cv-c">части</text>
+    <text x="777" y="256" class="cv-small cv-c">ответ</text>
+    <text x="450" y="310" class="cv-bold cv-c">пиксели → края → формы и части → объект</text>
+    <text x="450" y="340" class="cv-text cv-c">Каждый этап строит из предыдущего более сложное описание той же картинки.</text>
   </g>
 </svg>
   </div>
@@ -2379,54 +2217,209 @@ $$\hat y = w \cdot x + b$$
   </div>
 
   <div class="stage-notes">
-    <div class="step-panel" data-on="step1" data-focus="step1">
-      <div class="step-kicker">Шаг 1 · пиксели</div>
-      <h4>Компьютер получает картинку</h4>
-      <p>Для компьютера изображение не объект, а набор чисел. Цветная картинка
-      складывается из трёх каналов: каждый пиксель хранит [R, G, B], например [195, 11, 10].</p>
+    <div class="step-panel" data-on="s1" data-focus="s1">
+      <div class="step-kicker">Шаг 1 · картинка</div>
+      <h4>Тот же кот, теперь глазами компьютера</h4>
+      <p>Возьмём кота 16 × 16 из раздела про явное программирование. На нём правило
+      «если пиксель (7, 4) равен 137, то кошка» ломалось от тени и сдвига. Теперь посмотрим, что
+      с этой картинкой делает модель. Для компьютера кот хранится как таблица из 256 пикселей.</p>
     </div>
-    <div class="step-panel" data-on="step2" data-focus="step2">
-      <div class="step-kicker">Шаг 2 · RGB</div>
-      <h4>Цветная картинка состоит из нескольких каналов</h4>
-      <p>Каждый пиксель хранит три числа: R, G и B. Итоговая картинка получается сложением
-      трёх каналов, и каждый канал хранится отдельной матрицей чисел.</p>
+    <div class="step-panel" data-on="s2" data-focus="s2">
+      <div class="step-kicker">Шаг 2 · яркость</div>
+      <h4>В чёрно-белой картинке пиксель равен одному числу</h4>
+      <p>0 означает чёрный, 255 белый, значения между ними дают оттенки серого. Тёмный контур кота
+      равен 46, рыжая шерсть 158, зелёный глаз в клетке (7, 4) равен 137.</p>
     </div>
-    <div class="step-panel" data-on="step3" data-focus="step3">
-      <div class="step-kicker">Шаг 3 · края</div>
-      <h4>Первые слои ищут простые признаки</h4>
-      <p>Например, края, линии и контрасты. Модель ещё не понимает «кот»: она видит только
-      простые визуальные сигналы: границы, переходы цвета, линии и углы.</p>
+    <div class="step-panel" data-on="s3" data-focus="s3">
+      <div class="step-kicker">Шаг 3 · числа у глаза</div>
+      <h4>Вот что на самом деле получает компьютер</h4>
+      <p>Увеличим кусок 5 × 6 у левого глаза. В клетках только числа: 46 там, где контур, 158 на
+      шерсти, 137 на глазу. Признака «это глаз» в таблице нет, его ещё предстоит найти.</p>
     </div>
-    <div class="step-panel" data-on="step4" data-focus="step4">
-      <div class="step-kicker">Шаг 4 · формы</div>
-      <h4>Простые признаки собираются в формы</h4>
-      <p>Линии и края начинают складываться в более понятные фигуры: круг, квадрат,
-      треугольник. Модель постепенно переходит от отдельных линий к простым частям
-      картинки.</p>
+    <div class="step-panel" data-on="s4" data-focus="s4">
+      <div class="step-kicker">Шаг 4 · RGB</div>
+      <h4>Цветной пиксель хранит три числа</h4>
+      <p>У цветной картинки три канала: R, G и B. Каждый пиксель хранит, сколько в нём красного,
+      зелёного и синего. Пиксель ошейника равен [195, 11, 10]: много красного, почти нет зелёного
+      и синего.</p>
     </div>
-    <div class="step-panel" data-on="step5" data-focus="step5">
-      <div class="step-kicker">Шаг 5 · части</div>
-      <h4>Формы складываются в части объекта</h4>
-      <p>Например: ухо, глаз, усы, лапа. Никто вручную не говорит модели «вот это ухо».
-      При обучении она сама находит полезные признаки для распознавания.</p>
+    <div class="step-panel" data-on="s5" data-focus="s5">
+      <div class="step-kicker">Шаг 5 · три канала</div>
+      <h4>Картинка раскладывается на три таблицы</h4>
+      <p>Каждый канал хранится отдельной матрицей 16 × 16. Вместе это 16 × 16 × 3 = 768 чисел, и
+      именно их получает модель на вход. У фотографии 4000 × 3000 пикселей таких чисел 36 миллионов.</p>
     </div>
-    <div class="step-panel" data-on="step6" data-focus="step6">
-      <div class="step-kicker">Шаг 6 · классификация</div>
+    <div class="step-panel" data-on="s6" data-focus="s6">
+      <div class="step-kicker">Шаг 6 · края</div>
+      <h4>Первые слои ищут края</h4>
+      <p>Окно 3 × 3 проходит по всей картинке и в каждой точке сравнивает яркость слева и справа,
+      сверху и снизу. Где перепад резкий, на карте появляется тёмная клетка. У левого уха, в клетке
+      (3, 2), яркость меняется с 197 на 46, и окно даёт сильный край. Здесь окно задано вручную
+      (фильтр Собеля); в настоящей сети числа в таких окнах подбираются при обучении.</p>
+    </div>
+    <div class="step-panel" data-on="s7" data-focus="s7">
+      <div class="step-kicker">Шаг 7 · формы и части</div>
+      <h4>Края складываются в части объекта</h4>
+      <p>Следующие слои собирают края в формы, а формы в части: два наклонных края, сходящихся
+      в угол, дают ухо, маленькое пятно в рамке из краёв даёт глаз, короткие края по бокам морды
+      дают усы. Никто вручную не говорит модели «вот это ухо»: такие признаки она находит при обучении.</p>
+    </div>
+    <div class="step-panel" data-on="s8" data-focus="s8">
+      <div class="step-kicker">Шаг 8 · классификация</div>
       <h4>Части объекта дают общий ответ</h4>
-      <p>Модель собирает признаки и оценивает, что изображено на картинке: кот 0.93,
-      собака 0.04, лиса 0.02, другое 0.01. Она выбирает класс с наибольшей
-      вероятностью.</p>
+      <p>Последний слой оценивает, что изображено на картинке: кот 0.93, собака 0.04, лиса 0.02,
+      другое 0.01. Модель выбирает класс с наибольшей вероятностью.</p>
     </div>
-    <div class="step-panel" data-on="step7" data-focus="step7">
-      <div class="step-kicker">Шаг 7 · полная схема</div>
-      <h4>Полная логика зрения модели</h4>
-      <p>От чисел к признакам, от признаков к объекту: пиксели → края → формы → части →
-      объект. Компьютер не видит «кота» сразу: он постепенно строит всё более сложное
-      описание картинки.</p>
+    <div class="step-panel" data-on="s9" data-focus="s9">
+      <div class="step-kicker">Шаг 9 · вся цепочка</div>
+      <h4>От чисел к «коту»</h4>
+      <p>Пиксели → края → формы и части → объект. На входе 768 чисел, на выходе вероятность
+      «кот» 0.93. Ручное правило по одному пикселю ломалось от тени и сдвига. Модель опирается на
+      сочетания краёв и частей: в тени перепады яркости слабее, но идут по тем же границам, а
+      после сдвига ухо остаётся ухом, просто в другом месте картинки.</p>
     </div>
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
+
+<script>
+(function () {
+  'use strict';
+  var stage = document.getElementById('stageComputerVision');
+  if (!stage) return;
+  var svg = stage.querySelector('svg');
+  var NS = 'http://www.w3.org/2000/svg';
+  var PAL = {
+    '.': [172, 203, 236], d: [58, 42, 34], o: [232, 142, 44], p: [238, 150, 162], w: [246, 244, 238],
+    g: [96, 172, 64], k: [90, 90, 90], r: [195, 11, 10], y: [240, 200, 40]
+  };
+  var CAT = [
+    '................', '..d..........d..', '..dd........dd..', '..dpd......dpd..',
+    '..dppddddddppd..', '.dooooooooooood.', '.dooooooooooood.', '.doogdoooodgood.',
+    '.doodgoooogdood.', '.dooooooooooood.', 'kdwwwwwppwwwwwdk', 'kdwwwwdwwdwwwwdk',
+    '..dwwwwddwwwwd..', '...dddddddddd...', '....rrrrrrrr....', '....rrryyrrr....'
+  ];
+  var N = 16;
+  var RGB = CAT.map(function (row) { return row.split('').map(function (ch) { return PAL[ch]; }); });
+  var GRAY = RGB.map(function (row) {
+    return row.map(function (c) { return Math.round(0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]); });
+  });
+  // фильтр Собеля по яркости, края дополняются соседним значением (как в видео)
+  function g(r, c) { return GRAY[Math.min(N - 1, Math.max(0, r))][Math.min(N - 1, Math.max(0, c))]; }
+  var MAG = [], MAX = 0;
+  for (var r = 0; r < N; r++) {
+    MAG.push([]);
+    for (var c = 0; c < N; c++) {
+      var gx = -g(r - 1, c - 1) + g(r - 1, c + 1) - 2 * g(r, c - 1) + 2 * g(r, c + 1) - g(r + 1, c - 1) + g(r + 1, c + 1);
+      var gy = -g(r - 1, c - 1) - 2 * g(r - 1, c) - g(r - 1, c + 1) + g(r + 1, c - 1) + 2 * g(r + 1, c) + g(r + 1, c + 1);
+      var m = Math.sqrt(gx * gx + gy * gy);
+      MAG[r].push(m);
+      if (m > MAX) MAX = m;
+    }
+  }
+
+  function el(name, attrs, parent, text) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function rgb(c) { return 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')'; }
+  function gray(v) { return rgb([v, v, v]); }
+  function edge(m) { var v = Math.round(255 - 225 * m / MAX); return gray(v); }
+  function slot(name) { return svg.querySelector('[data-cv="' + name + '"]'); }
+  function grid(parent, x, y, cell, fill, line) {
+    var cells = [];
+    for (var r = 0; r < N; r++) {
+      cells.push([]);
+      for (var c = 0; c < N; c++) {
+        cells[r].push(el('rect', { x: x + c * cell, y: y + r * cell, width: cell, height: cell, fill: fill(r, c),
+                                   stroke: '#ffffff', 'stroke-width': line === undefined ? 0.6 : line }, parent));
+      }
+    }
+    return cells;
+  }
+  var colorAt = function (r, c) { return rgb(RGB[r][c]); };
+  var grayAt = function (r, c) { return gray(GRAY[r][c]); };
+  var edgeAt = function (r, c) { return edge(MAG[r][c]); };
+
+  // большие коты: левый верхний угол (68, 48), клетка 19
+  grid(slot('color'), 68, 48, 19, colorAt);
+  grid(slot('gray'), 68, 48, 19, grayAt);
+  grid(slot('gray2'), 68, 48, 19, grayAt);
+  grid(slot('color2'), 68, 48, 19, colorAt);
+
+  // увеличенный кусок у глаза: строки 5–9, столбцы 1–6
+  var zoom = slot('zoom'), Z = 52;
+  for (var zr = 5; zr <= 9; zr++) {
+    for (var zc = 1; zc <= 6; zc++) {
+      var v = GRAY[zr][zc], zx = 470 + (zc - 1) * Z, zy = 52 + (zr - 5) * Z;
+      var eye = zr === 7 && zc === 4;
+      el('rect', { x: zx, y: zy, width: Z, height: Z, fill: gray(v), stroke: eye ? '#C30B0A' : '#ffffff', 'stroke-width': eye ? 3 : 1 }, zoom);
+      el('text', { x: zx + Z / 2, y: zy + Z / 2 + 6, 'text-anchor': 'middle', 'font-size': 17, 'font-weight': 800,
+                   'font-family': 'Helvetica, Arial, sans-serif', fill: v < 110 ? '#ffffff' : '#111111' }, zoom, v);
+    }
+  }
+
+  // три канала, клетка 9
+  var ch = slot('channels');
+  grid(ch, 45, 88, 9, colorAt, 0);
+  grid(ch, 226, 88, 9, function (r, c) { return rgb([RGB[r][c][0], 0, 0]); }, 0);
+  grid(ch, 407, 88, 9, function (r, c) { return rgb([0, RGB[r][c][1], 0]); }, 0);
+  grid(ch, 588, 88, 9, function (r, c) { return rgb([0, 0, RGB[r][c][2]]); }, 0);
+
+  // части на карте краёв, клетка 17
+  grid(slot('edgeParts'), 60, 56, 17, edgeAt, 0.5);
+  grid(slot('color3'), 70, 100, 12, colorAt, 0.4);
+
+  // цепочка: пиксели, яркость, края, части; клетка 7
+  var chain = slot('chain');
+  grid(chain, 40, 120, 7, colorAt, 0);
+  grid(chain, 210, 120, 7, grayAt, 0);
+  grid(chain, 380, 120, 7, edgeAt, 0);
+  grid(chain, 550, 120, 7, edgeAt, 0);
+  [[1, 4, 1, 5, '#3576C0'], [6, 9, 2, 6, '#73B222'], [9, 12, 0, 5, '#C29E08']].forEach(function (p) {
+    el('rect', { x: 550 + p[2] * 7, y: 120 + p[0] * 7, width: (p[3] - p[2] + 1) * 7, height: (p[1] - p[0] + 1) * 7,
+                 fill: 'none', stroke: p[4], 'stroke-width': 2 }, chain);
+  });
+
+  // шаг 6: окно 3 × 3 бежит по коту и дорисовывает карту краёв
+  var S = 17, GX = 60, GY = 56, EX = 480;
+  var scanGray = slot('scanGray'), scanEdge = slot('scanEdge'), readout = slot('readout');
+  grid(scanGray, GX, GY, S, grayAt, 0.5);
+  var edgeCells = grid(scanEdge, EX, GY, S, function () { return '#ffffff'; }, 0.5);
+  el('rect', { x: EX, y: GY, width: N * S, height: N * S, fill: 'none', stroke: '#E0DDD3' }, scanEdge);
+  var win = el('rect', { width: 3 * S, height: 3 * S, fill: 'none', stroke: '#C30B0A', 'stroke-width': 3 }, scanGray);
+  var mark = el('rect', { width: S, height: S, fill: 'none', stroke: '#C30B0A', 'stroke-width': 2.5 }, scanEdge);
+  var group = svg.querySelector('[data-key="s6"]');
+  var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var k = 0, shown = false;
+
+  function place(i) {
+    var r = Math.floor(i / N), c = i % N;
+    win.setAttribute('x', GX + (c - 1) * S); win.setAttribute('y', GY + (r - 1) * S);
+    mark.setAttribute('x', EX + c * S); mark.setAttribute('y', GY + r * S);
+    edgeCells[r][c].setAttribute('fill', edgeAt(r, c));
+    readout.textContent = 'окно у (' + r + ', ' + c + '): сила края ' + Math.round(MAG[r][c]);
+  }
+  function reset() {
+    for (var r = 0; r < N; r++) for (var c = 0; c < N; c++) edgeCells[r][c].setAttribute('fill', '#ffffff');
+    k = 0;
+  }
+  function finish() {
+    for (var i = 0; i < N * N; i++) place(i);
+    place(3 * N + 2);
+    k = N * N;
+  }
+  setInterval(function () {
+    var visible = !group.classList.contains('is-hidden');
+    if (!visible) { shown = false; return; }
+    if (!shown) { shown = true; reset(); if (still) { finish(); return; } }
+    if (k < N * N) { place(k); k += 1; if (k === N * N) place(3 * N + 2); }
+  }, 32);
+})();
+</script>
 
 ## Как компьютер пишет тексты?
 
