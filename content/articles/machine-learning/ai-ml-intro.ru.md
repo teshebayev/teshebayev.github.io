@@ -12,6 +12,192 @@
 
 Слово «искусственный» не означает «фальшивый». Оно означает «сделанный руками», как в словах «искусственный спутник» или «искусственный материал». Поведение системы может выглядеть разумным, но источник у него другой: не биологическая эволюция, а математика, данные, инженерия и вычислительные ресурсы.
 
+<style>
+  .ai-live { margin: 26px 0 30px; }
+  .ai-live-controls {
+    display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px 24px;
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-soft);
+  }
+  .ai-live-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ai-live-btns button {
+    font-family: inherit; font-size: 14px; font-weight: 700; color: var(--text);
+    background: var(--bg-elev); border: 1px solid var(--accent); border-radius: 9px;
+    padding: 7px 14px; cursor: pointer;
+  }
+  .ai-live-btns button:hover,
+  .ai-live-btns button[aria-pressed="true"] { background: var(--accent); color: var(--bg-elev); }
+  .ai-live-btns button[disabled] { opacity: 0.35; cursor: default; }
+  .ai-slider { flex: 1 1 170px; min-width: 160px; }
+  .ai-slider label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
+  .ai-slider output { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--text); }
+  .ai-slider input[type=range] { width: 100%; accent-color: #3576C0; }
+  .ai-live .stage-notes { min-height: 0; }
+</style>
+
+<div class="stage" id="stageAiArtificial" tabindex="0">
+  <div class="stage-figure">
+<svg id="aiArtificial" viewBox="0 0 900 400" role="img" aria-label="Искусственный значит сделанный человеком: шесть умений машины, Луна и искусственный спутник на орбите Земли, два источника умений">
+  <style>
+    .aa-panel { fill: #ffffff; stroke: #3576C0; stroke-width: 1.3; stroke-opacity: 0.25; }
+    .aa-title { font: 800 20px Helvetica, Arial, sans-serif; fill: #111111; }
+    .aa-big { font: 800 34px Helvetica, Arial, sans-serif; fill: #111111; }
+    .aa-bold { font: 800 16px Helvetica, Arial, sans-serif; fill: #111111; }
+    .aa-text { font: 15px Helvetica, Arial, sans-serif; fill: #111111; }
+    .aa-small { font: 13px Helvetica, Arial, sans-serif; fill: #111111; opacity: 0.75; }
+    .aa-c { text-anchor: middle; dominant-baseline: middle; }
+    .aa-grey { fill: #F7F5EF; stroke: #8E8A82; stroke-width: 1.4; }
+    .aa-blue { fill: #ffffff; stroke: #3576C0; stroke-width: 1.6; }
+    .aa-yellow { fill: #ffffff; stroke: #C29E08; stroke-width: 1.6; }
+    .aa-link { stroke: #3576C0; stroke-width: 1.4; stroke-opacity: 0.45; fill: none; }
+    .aa-arrow { stroke: #3576C0; stroke-width: 2.2; fill: none; marker-end: url(#aaArrow); }
+    .aa-arrow-grey { stroke: #8E8A82; stroke-width: 2.2; fill: none; marker-end: url(#aaArrowGrey); }
+    .aa-orbit { fill: none; stroke: #8E8A82; stroke-width: 1.2; stroke-dasharray: 5 5; }
+    .aa-hl { fill: none; stroke: #C30B0A; stroke-width: 2.3; stroke-dasharray: 8 5; }
+    .aa-strike { stroke: #C30B0A; stroke-width: 2.4; }
+  </style>
+  <defs>
+    <marker id="aaArrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L8,3 z" fill="#3576C0" />
+    </marker>
+    <marker id="aaArrowGrey" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L8,3 z" fill="#8E8A82" />
+    </marker>
+  </defs>
+  <rect x="30" y="16" width="840" height="368" rx="18" class="aa-panel" />
+
+  <g data-key="who" data-only="1">
+    <text x="450" y="62" class="aa-title aa-c">Кто создал интеллект?</text>
+    <rect x="110" y="110" width="250" height="78" rx="12" class="aa-grey" />
+    <text x="235" y="140" class="aa-bold aa-c">Природа</text>
+    <text x="235" y="165" class="aa-small aa-c">эволюция за миллионы лет</text>
+    <path d="M235 196 L235 238" class="aa-arrow-grey" />
+    <rect x="110" y="248" width="250" height="70" rx="12" class="aa-grey" />
+    <text x="235" y="283" class="aa-bold aa-c">Интеллект человека</text>
+    <rect x="540" y="110" width="250" height="78" rx="12" class="aa-blue" />
+    <text x="665" y="140" class="aa-bold aa-c">Человек</text>
+    <text x="665" y="165" class="aa-small aa-c">инженеры и программисты</text>
+    <path d="M665 196 L665 238" class="aa-arrow" />
+    <rect x="540" y="248" width="250" height="70" rx="12" class="aa-yellow" />
+    <text x="665" y="283" class="aa-bold aa-c">Искусственный интеллект</text>
+    <text x="450" y="352" class="aa-text aa-c">ИИ построили люди: это попытка воспроизвести разумное поведение в машине.</text>
+  </g>
+
+  <g data-key="skills" data-only="1">
+    <text x="450" y="62" class="aa-title aa-c">Что значит «разумное поведение»</text>
+    <path d="M300 130 L380 200 M300 200 L380 200 M300 270 L380 200 M600 130 L520 200 M600 200 L520 200 M600 270 L520 200" class="aa-link" />
+    <rect x="380" y="160" width="140" height="80" rx="12" class="aa-yellow" />
+    <text x="450" y="200" class="aa-bold aa-c">Машина</text>
+    <rect x="130" y="110" width="170" height="40" rx="9" class="aa-blue" /><text x="215" y="130" class="aa-text aa-c">видеть</text>
+    <rect x="130" y="180" width="170" height="40" rx="9" class="aa-blue" /><text x="215" y="200" class="aa-text aa-c">слышать</text>
+    <rect x="130" y="250" width="170" height="40" rx="9" class="aa-blue" /><text x="215" y="270" class="aa-text aa-c">говорить</text>
+    <rect x="600" y="110" width="170" height="40" rx="9" class="aa-blue" /><text x="685" y="130" class="aa-text aa-c">рассуждать</text>
+    <rect x="600" y="180" width="170" height="40" rx="9" class="aa-blue" /><text x="685" y="200" class="aa-text aa-c">выбирать действие</text>
+    <rect x="600" y="250" width="170" height="40" rx="9" class="aa-blue" /><text x="685" y="270" class="aa-text aa-c">адаптироваться</text>
+    <text x="450" y="340" class="aa-text aa-c">Каждое из шести умений можно проверить на задаче:</text>
+    <text x="450" y="362" class="aa-text aa-c">узнала ли машина объект на фото, поняла ли фразу, выбрала ли верный ход.</text>
+  </g>
+
+  <g data-key="orbit" data-only="1">
+    <circle cx="240" cy="200" r="130" class="aa-orbit" />
+    <circle cx="240" cy="200" r="72" class="aa-orbit" />
+    <circle cx="240" cy="200" r="34" fill="#3576C0" fill-opacity="0.85" />
+    <text x="240" y="201" class="aa-small aa-c" style="fill:#ffffff;opacity:1">Земля</text>
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0 240 200" to="360 240 200" dur="16s" repeatCount="indefinite" />
+      <circle cx="370" cy="200" r="13" fill="#BDB8AE" stroke="#8E8A82" stroke-width="1.2" />
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0 240 200" to="360 240 200" dur="5s" repeatCount="indefinite" />
+      <rect x="306" y="195" width="12" height="10" fill="#C29E08" />
+      <rect x="292" y="198" width="12" height="4" fill="#3576C0" />
+      <rect x="320" y="198" width="12" height="4" fill="#3576C0" />
+    </g>
+    <text x="440" y="62" class="aa-title">«Искусственный» = сделанный руками</text>
+    <circle cx="452" cy="116" r="9" fill="#BDB8AE" stroke="#8E8A82" stroke-width="1.2" />
+    <text x="472" y="121" class="aa-text"><tspan font-weight="800">Луна</tspan>: её создала природа</text>
+    <rect x="445" y="152" width="14" height="11" fill="#C29E08" />
+    <text x="472" y="163" class="aa-text"><tspan font-weight="800">Спутник</tspan>: его построили люди</text>
+    <text x="440" y="214" class="aa-text">Оба тела летят по орбите по одним и тем же</text>
+    <text x="440" y="236" class="aa-text">законам тяготения. Спутник настоящий: он</text>
+    <text x="440" y="258" class="aa-text">передаёт сигнал и снимает Землю.</text>
+    <text x="440" y="314" class="aa-bold">искусственный</text>
+    <text x="568" y="314" class="aa-text">≠</text>
+    <text x="592" y="314" class="aa-bold">фальшивый</text>
+    <line x1="588" y1="309" x2="680" y2="309" class="aa-strike" />
+    <text x="440" y="346" class="aa-small">Так же с ИИ: поведение настоящее, другое происхождение.</text>
+  </g>
+
+  <g data-key="cols" data-only="1">
+    <text x="450" y="58" class="aa-title aa-c">Откуда берутся умения</text>
+    <rect x="100" y="86" width="300" height="222" rx="14" class="aa-grey" />
+    <text x="250" y="118" class="aa-bold aa-c">Человек</text>
+    <rect x="135" y="146" width="230" height="44" rx="9" fill="#ffffff" stroke="#8E8A82" stroke-width="1.1" />
+    <text x="250" y="168" class="aa-text aa-c">биологическая эволюция</text>
+    <rect x="135" y="204" width="230" height="44" rx="9" fill="#ffffff" stroke="#8E8A82" stroke-width="1.1" />
+    <text x="250" y="226" class="aa-text aa-c">личный опыт</text>
+    <rect x="500" y="86" width="300" height="222" rx="14" style="fill:#F0F5FB" class="aa-blue" />
+    <text x="650" y="118" style="fill:#3576C0" class="aa-bold aa-c">Искусственный интеллект</text>
+    <rect x="525" y="140" width="120" height="40" rx="9" class="aa-blue" /><text x="585" y="160" class="aa-text aa-c">математика</text>
+    <rect x="655" y="140" width="120" height="40" rx="9" class="aa-blue" /><text x="715" y="160" class="aa-text aa-c">данные</text>
+    <rect x="525" y="194" width="120" height="40" rx="9" class="aa-blue" /><text x="585" y="214" class="aa-text aa-c">инженерия</text>
+    <rect x="655" y="194" width="120" height="40" rx="9" class="aa-blue" /><text x="715" y="214" class="aa-text aa-c">вычисления</text>
+    <text x="650" y="270" class="aa-small aa-c">видеокарты, дата-центры</text>
+  </g>
+  <g data-key="colsNote" data-only="1">
+    <text x="450" y="346" class="aa-text aa-c">Умения могут совпадать: оба узнают кошку на фото. Различается источник.</text>
+  </g>
+  <g data-key="hlRight" data-only="1">
+    <rect x="490" y="76" width="320" height="242" rx="18" class="aa-hl" />
+    <text x="450" y="346" class="aa-bold aa-c">Дальше в статье: какие числа считает машина,</text>
+    <text x="450" y="368" class="aa-bold aa-c">по каким формулам и как она подбирает свои параметры.</text>
+  </g>
+</svg>
+  </div>
+
+  <div class="stage-bar">
+    <button type="button" data-nav="prev">← Назад</button>
+    <button type="button" data-nav="next">Далее →</button>
+    <div class="stage-progress"></div>
+    <div class="stage-counter"></div>
+  </div>
+
+  <div class="stage-notes">
+    <div class="step-panel" data-on="who" data-focus="who">
+      <div class="step-kicker">Шаг 1 · кто создал</div>
+      <h4>Интеллект человека вырастила природа, ИИ построили люди</h4>
+      <p>Человеческий интеллект сложился за миллионы лет эволюции. Искусственный интеллект
+      проектируют инженеры и программисты: это попытка воспроизвести разумное поведение в машине.</p>
+    </div>
+    <div class="step-panel" data-on="skills" data-focus="skills">
+      <div class="step-kicker">Шаг 2 · шесть умений</div>
+      <h4>Разумное поведение раскладывается на умения</h4>
+      <p>Машине нужно видеть, слышать, говорить, рассуждать, выбирать действие и подстраиваться под
+      новую информацию. Каждое умение проверяется на конкретной задаче: распознать объект на фото,
+      понять фразу, выбрать ход в игре.</p>
+    </div>
+    <div class="step-panel" data-on="orbit" data-focus="orbit">
+      <div class="step-kicker">Шаг 3 · искусственный спутник</div>
+      <h4>«Искусственный» значит «сделанный руками»</h4>
+      <p>Луна и спутник летят вокруг Земли по одним и тем же законам тяготения. Луну создала природа,
+      спутник построили люди. При этом спутник настоящий: он передаёт сигнал и снимает Землю.
+      Так же и с ИИ: слово «искусственный» говорит о происхождении, а не о том, что поведение фальшивое.</p>
+    </div>
+    <div class="step-panel" data-on="cols colsNote" data-focus="cols">
+      <div class="step-kicker">Шаг 4 · источник умений</div>
+      <h4>Различается источник поведения</h4>
+      <p>У человека умения выросли из биологической эволюции и личного опыта. У ИИ они получаются
+      из математики, данных, инженерии и вычислительных мощностей.</p>
+    </div>
+    <div class="step-panel" data-on="cols hlRight" data-focus="hlRight">
+      <div class="step-kicker">Шаг 5 · что дальше</div>
+      <h4>Разберём правую колонку</h4>
+      <p>Дальше в статье раскроем, что стоит за словами «математика» и «данные»: какие числа считает
+      машина, по каким формулам и как она подбирает свои параметры.</p>
+    </div>
+  </div>
+</div>
+<p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
+
 ## Области ИИ и почему сейчас все говорят про машинное обучение
 
 ИИ объединяет разные подходы. В старых системах программисты вручную описывали правила: «если у объекта четыре ноги, хвост и он лает, то это собака». Такие системы называют экспертными или rule-based системами.
@@ -315,6 +501,186 @@ def distance(velocity, time):
 Это явное программирование: человек знает правило и записывает его в код. Машине не нужно учиться, потому что вся логика уже задана программистом.
 
 А теперь другая задача: определить по фотографии, кошка на ней или собака. Формулы для этого нет. Нельзя написать надёжное правило вида `if pixel[3][5] == "усы": return "cat"`. Картинки слишком разные: меняется освещение, поза, фон, ракурс, размер объекта и качество камеры.
+
+<div class="ai-live" id="aiPixel">
+  <div class="stage-figure">
+<svg id="aiPixelSvg" viewBox="0 0 900 400" role="img" aria-label="Кот 16 на 16 пикселей: при смене освещения и сдвиге кота значение одного и того же пикселя меняется, и правило по пикселю перестаёт срабатывать">
+  <g data-pix="cat"></g>
+  <g data-pix="side"></g>
+</svg>
+  </div>
+  <div class="ai-live-controls">
+    <div class="ai-live-btns" role="group" aria-label="Снимок кота">
+      <button type="button" data-preset="0" aria-pressed="true">Обычный свет</button>
+      <button type="button" data-preset="1" aria-pressed="false">В тени</button>
+      <button type="button" data-preset="2" aria-pressed="false">Кот сдвинулся</button>
+    </div>
+    <div class="ai-slider"><label for="aiPixLight">Освещение <output id="aiPixLightOut">100 %</output></label>
+      <input id="aiPixLight" type="range" min="0.2" max="1.3" step="0.05" value="1"></div>
+    <div class="ai-slider"><label for="aiPixDx">Сдвиг вправо <output id="aiPixDxOut">0</output></label>
+      <input id="aiPixDx" type="range" min="-3" max="3" step="1" value="0"></div>
+    <div class="ai-slider"><label for="aiPixDy">Сдвиг вниз <output id="aiPixDyOut">0</output></label>
+      <input id="aiPixDy" type="range" min="-3" max="3" step="1" value="0"></div>
+  </div>
+  <div class="stage-notes">
+    <div class="step-live">
+      <div class="step-kicker">Один пиксель · три снимка</div>
+      <h4></h4>
+      <p></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('aiPixel');
+  if (!root) return;
+  var svg = root.querySelector('svg');
+  var NS = 'http://www.w3.org/2000/svg';
+  var PAL = {
+    '.': [172, 203, 236], d: [58, 42, 34], o: [232, 142, 44], p: [238, 150, 162], w: [246, 244, 238],
+    g: [96, 172, 64], k: [90, 90, 90], r: [195, 11, 10], y: [240, 200, 40]
+  };
+  var CAT = [
+    '................', '..d..........d..', '..dd........dd..', '..dpd......dpd..',
+    '..dppddddddppd..', '.dooooooooooood.', '.dooooooooooood.', '.doogdoooodgood.',
+    '.doodgoooogdood.', '.dooooooooooood.', 'kdwwwwwppwwwwwdk', 'kdwwwwdwwdwwwwdk',
+    '..dwwwwddwwwwd..', '...dddddddddd...', '....rrrrrrrr....', '....rrryyrrr....'
+  ];
+  var N = 16, CELL = 20, X0 = 50, Y0 = 34, R0 = 7, C0 = 4, RULE = 137;
+  var PRESETS = [[1, 0, 0], [0.45, 0, 0], [1, 3, 2]];
+
+  function el(name, attrs, parent, text) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function gray(c) { return Math.round(0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]); }
+  function hex(c) { return 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')'; }
+
+  // кадр: сдвиг (фон заполняет освободившиеся клетки), затем множитель освещения
+  function frame(light, dx, dy) {
+    var out = [];
+    for (var r = 0; r < N; r++) {
+      var row = [];
+      for (var c = 0; c < N; c++) {
+        var sr = r - dy, sc = c - dx;
+        var base = (sr >= 0 && sr < N && sc >= 0 && sc < N) ? PAL[CAT[sr][sc]] : PAL['.'];
+        row.push(base.map(function (v) { return Math.min(255, Math.max(0, Math.round(v * light))); }));
+      }
+      out.push(row);
+    }
+    return out;
+  }
+
+  var gCat = svg.querySelector('[data-pix="cat"]');
+  var gSide = svg.querySelector('[data-pix="side"]');
+  var cells = [];
+  for (var r = 0; r < N; r++) {
+    cells.push([]);
+    for (var c = 0; c < N; c++) {
+      var rc = el('rect', { x: X0 + c * CELL, y: Y0 + r * CELL, width: CELL, height: CELL, stroke: '#ffffff', 'stroke-width': 0.6 }, gCat);
+      rc.dataset.r = r; rc.dataset.c = c;
+      cells[r].push(rc);
+    }
+  }
+  el('rect', { x: X0 + C0 * CELL - 1.5, y: Y0 + R0 * CELL - 1.5, width: CELL + 3, height: CELL + 3,
+               fill: 'none', stroke: '#C30B0A', 'stroke-width': 3.2 }, gCat);
+  var hoverBox = el('rect', { width: CELL, height: CELL, fill: 'none', stroke: '#111111', 'stroke-width': 2, visibility: 'hidden' }, gCat);
+  var hoverText = el('text', { x: X0, y: Y0 + N * CELL + 26, 'font-size': 13, fill: '#5E5850', 'font-family': 'Helvetica, Arial, sans-serif' }, gCat,
+                     'Наведите на любой пиксель, чтобы увидеть его числа');
+
+  var F = 'Helvetica, Arial, sans-serif', MONO = 'Menlo, Consolas, "Courier New", monospace';
+  el('text', { x: 430, y: 60, 'font-size': 18, 'font-weight': 800, fill: '#111111', 'font-family': F }, gSide, 'Пиксель (7, 4): строка 7, столбец 4');
+  var zoom = el('rect', { x: 430, y: 84, width: 96, height: 96, rx: 6, stroke: '#C30B0A', 'stroke-width': 3 }, gSide);
+  var bigNum = el('text', { x: 552, y: 146, 'font-size': 54, 'font-weight': 800, fill: '#111111', 'font-family': F }, gSide, '137');
+  el('text', { x: 552, y: 172, 'font-size': 13, fill: '#5E5850', 'font-family': F }, gSide, 'яркость: 0 чёрный, 255 белый');
+  var rgbText = el('text', { x: 430, y: 206, 'font-size': 14, fill: '#111111', 'font-family': MONO }, gSide, '');
+  el('rect', { x: 430, y: 226, width: 420, height: 72, rx: 10, fill: '#ffffff', stroke: '#3576C0', 'stroke-width': 1.6 }, gSide);
+  el('text', { x: 448, y: 256, 'font-size': 16, fill: '#3576C0', 'font-family': MONO }, gSide, 'if pixel[7][4] == 137:');
+  el('text', { x: 448, y: 282, 'font-size': 16, fill: '#3576C0', 'font-family': MONO }, gSide, '    return "кошка"');
+  var verdict = el('text', { x: 430, y: 330, 'font-size': 17, 'font-weight': 800, 'font-family': F }, gSide, '');
+  var verdict2 = el('text', { x: 430, y: 356, 'font-size': 14, fill: '#5E5850', 'font-family': F }, gSide, '');
+
+  var lightIn = document.getElementById('aiPixLight');
+  var dxIn = document.getElementById('aiPixDx');
+  var dyIn = document.getElementById('aiPixDy');
+  var presetBtns = Array.prototype.slice.call(root.querySelectorAll('[data-preset]'));
+  var titleEl = root.querySelector('.step-live h4');
+  var textEl = root.querySelector('.step-live p');
+  var img = frame(1, 0, 0);
+
+  function describe(light, dx, dy, v) {
+    var hit = v === RULE;
+    if (dx === 0 && dy === 0 && light === 1) {
+      return ['Правило сработало на этом снимке',
+        'Пиксель (7, 4) попал на зелёный глаз, его яркость 137. Программист видит это число и пишет правило «если 137, то кошка».'];
+    }
+    if (dx === 0 && dy === 0) {
+      return [hit ? 'Правило пока держится' : 'Тот же кот, другое число',
+        'Освещение ' + Math.round(light * 100) + ' %: каждый канал R, G, B умножился на ' + light.toFixed(2) +
+        ', и пиксель глаза стал ' + v + '. Кот на месте, глаз на месте, а правило проверяет точное число.'];
+    }
+    var moves = [];
+    if (dx) moves.push('на ' + Math.abs(dx) + ' ' + (Math.abs(dx) === 1 ? 'пиксель' : 'пикселя') + (dx > 0 ? ' вправо' : ' влево'));
+    if (dy) moves.push('на ' + Math.abs(dy) + ' ' + (Math.abs(dy) === 1 ? 'пиксель' : 'пикселя') + (dy > 0 ? ' вниз' : ' вверх'));
+    return [hit ? 'Совпадение случайное' : 'Кот сдвинулся, и на месте глаза другой участок',
+      'Кот сместился ' + moves.join(' и ') + '. В клетку (7, 4) теперь попадает другой участок картинки, его яркость ' + v +
+      '. На настоящих фото меняются ещё поза, фон, ракурс, размер и камера, и вместе с ними все числа сразу.'];
+  }
+
+  function update() {
+    var light = +lightIn.value, dx = +dxIn.value, dy = +dyIn.value;
+    document.getElementById('aiPixLightOut').textContent = Math.round(light * 100) + ' %';
+    document.getElementById('aiPixDxOut').textContent = dx;
+    document.getElementById('aiPixDyOut').textContent = dy;
+    img = frame(light, dx, dy);
+    for (var r = 0; r < N; r++) for (var c = 0; c < N; c++) cells[r][c].setAttribute('fill', hex(img[r][c]));
+    var px = img[R0][C0], v = gray(px), hit = v === RULE;
+    zoom.setAttribute('fill', hex(px));
+    bigNum.textContent = v;
+    rgbText.textContent = 'R ' + px[0] + '   G ' + px[1] + '   B ' + px[2];
+    verdict.textContent = hit ? '✓ правило сработало: «кошка»' : '✗ правило молчит: ' + v + ' ≠ 137';
+    verdict.setAttribute('fill', hit ? '#4E8A12' : '#C30B0A');
+    verdict2.textContent = hit ? 'На этом снимке число совпало.' : 'На снимке по-прежнему кошка.';
+    presetBtns.forEach(function (b, i) {
+      var p = PRESETS[i];
+      b.setAttribute('aria-pressed', String(p[0] === light && p[1] === dx && p[2] === dy));
+    });
+    var d = describe(light, dx, dy, v);
+    titleEl.textContent = d[0];
+    textEl.textContent = d[1];
+  }
+
+  function showHover(r, c) {
+    var px = img[r][c];
+    hoverBox.setAttribute('x', X0 + c * CELL); hoverBox.setAttribute('y', Y0 + r * CELL);
+    hoverBox.setAttribute('visibility', 'visible');
+    hoverText.textContent = 'пиксель (' + r + ', ' + c + '): R ' + px[0] + ', G ' + px[1] + ', B ' + px[2] + ' → яркость ' + gray(px);
+  }
+  gCat.addEventListener('mouseover', function (e) {
+    var t = e.target;
+    if (t.dataset && t.dataset.r !== undefined) showHover(+t.dataset.r, +t.dataset.c);
+  });
+  gCat.addEventListener('click', function (e) {
+    var t = e.target;
+    if (t.dataset && t.dataset.r !== undefined) showHover(+t.dataset.r, +t.dataset.c);
+  });
+  gCat.addEventListener('mouseleave', function () { hoverBox.setAttribute('visibility', 'hidden'); });
+
+  presetBtns.forEach(function (b, i) {
+    b.addEventListener('click', function () {
+      lightIn.value = PRESETS[i][0]; dxIn.value = PRESETS[i][1]; dyIn.value = PRESETS[i][2];
+      update();
+    });
+  });
+  [lightIn, dxIn, dyIn].forEach(function (inp) { inp.addEventListener('input', update); });
+  update();
+})();
+</script>
 
 Здесь начинается машинное обучение. Мы показываем модели много примеров вида «вход → правильный ответ», а она подбирает внутренние параметры так, чтобы на новых похожих примерах давать правильный ответ.
 
@@ -1162,6 +1528,212 @@ $$\hat y = w \cdot x + b$$
 
 Сначала линия стоит почти случайно, поэтому ошибка большая. Затем модель меняет `w` и `b`, линия постепенно поворачивается и сдвигается ближе к точкам. Это и есть обучение в самой простой форме.
 
+<div class="ai-live" id="aiLinreg">
+  <div class="stage-figure">
+<svg id="aiLinregSvg" viewBox="0 0 900 400" role="img" aria-label="Двадцать точек и прямая y = w x + b: ручки w и b двигают прямую, красные отрезки показывают ошибки, градиентный спуск сам подбирает w и b">
+  <defs>
+    <clipPath id="aiLrClip"><rect x="60" y="24" width="500" height="326" /></clipPath>
+  </defs>
+  <g data-lr="axes"></g>
+  <g data-lr="plot" clip-path="url(#aiLrClip)"></g>
+  <g data-lr="side"></g>
+</svg>
+  </div>
+  <div class="ai-live-controls">
+    <div class="ai-slider"><label for="aiLrW">Ручка w (наклон) <output id="aiLrWOut">−0.40</output></label>
+      <input id="aiLrW" type="range" min="-1.5" max="2.5" step="0.01" value="-0.4"></div>
+    <div class="ai-slider"><label for="aiLrB">Ручка b (сдвиг) <output id="aiLrBOut">7.00</output></label>
+      <input id="aiLrB" type="range" min="-3" max="9" step="0.01" value="7"></div>
+    <div class="ai-live-btns">
+      <button type="button" data-lr-act="step">1 шаг спуска</button>
+      <button type="button" data-lr-act="run">Обучить: 1500 шагов</button>
+      <button type="button" data-lr-act="reset">Сначала</button>
+    </div>
+  </div>
+  <div class="stage-notes">
+    <div class="step-live">
+      <div class="step-kicker">Обучение · подбор двух параметров</div>
+      <h4></h4>
+      <p></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('aiLinreg');
+  if (!root) return;
+  var svg = root.querySelector('svg');
+  var NS = 'http://www.w3.org/2000/svg';
+  var F = 'Helvetica, Arial, sans-serif';
+  var X = [0.758, 1.134, 1.657, 1.668, 1.742, 1.831, 2.978, 3.821, 4.994, 5.103,
+           5.106, 5.442, 5.907, 6.098, 6.473, 6.532, 7.594, 7.851, 8.849, 9.033];
+  var Y = [1.501, 1.348, 3.103, 2.362, 1.546, 2.396, 3.552, 3.719, 4.453, 5.611,
+           6.222, 5.689, 5.713, 6.648, 7.172, 6.521, 7.964, 8.509, 8.436, 8.164];
+  var W0 = -0.4, B0 = 7, LR = 0.02, STEPS = 1500, W_BEST = 0.907, B_BEST = 0.740;
+  var P = { l: 60, r: 560, t: 24, b: 350, x0: 0, x1: 10, y0: -1, y1: 11 };
+  function sx(v) { return P.l + (v - P.x0) / (P.x1 - P.x0) * (P.r - P.l); }
+  function sy(v) { return P.b - (v - P.y0) / (P.y1 - P.y0) * (P.b - P.t); }
+  function el(name, attrs, parent, text) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function f2(v) { return (v < 0 ? '−' : '') + Math.abs(v).toFixed(2); }
+  function mse(w, b) {
+    var s = 0;
+    for (var i = 0; i < X.length; i++) { var r = w * X[i] + b - Y[i]; s += r * r; }
+    return s / X.length;
+  }
+  function gradStep(w, b) {
+    var gw = 0, gb = 0;
+    for (var i = 0; i < X.length; i++) { var r = w * X[i] + b - Y[i]; gw += r * X[i]; gb += r; }
+    return [w - LR * 2 * gw / X.length, b - LR * 2 * gb / X.length];
+  }
+
+  // оси и сетка
+  var axes = svg.querySelector('[data-lr="axes"]');
+  for (var gx = 0; gx <= 10; gx += 2) {
+    el('line', { x1: sx(gx), y1: P.t, x2: sx(gx), y2: P.b, stroke: '#ECECEC' }, axes);
+    el('text', { x: sx(gx), y: P.b + 18, 'font-size': 12, fill: '#5E5850', 'text-anchor': 'middle', 'font-family': F }, axes, gx);
+  }
+  for (var gy = 0; gy <= 10; gy += 2) {
+    el('line', { x1: P.l, y1: sy(gy), x2: P.r, y2: sy(gy), stroke: '#ECECEC' }, axes);
+    el('text', { x: P.l - 8, y: sy(gy) + 4, 'font-size': 12, fill: '#5E5850', 'text-anchor': 'end', 'font-family': F }, axes, gy);
+  }
+  el('line', { x1: P.l, y1: sy(0), x2: P.r, y2: sy(0), stroke: '#8E8A82', 'stroke-width': 1.2 }, axes);
+  el('line', { x1: sx(0), y1: P.t, x2: sx(0), y2: P.b, stroke: '#8E8A82', 'stroke-width': 1.2 }, axes);
+  el('text', { x: P.r, y: P.b + 40, 'font-size': 13, fill: '#5E5850', 'text-anchor': 'end', 'font-family': F }, axes, 'x');
+  el('text', { x: P.l + 6, y: P.t + 12, 'font-size': 13, fill: '#5E5850', 'font-family': F }, axes, 'y');
+
+  var plot = svg.querySelector('[data-lr="plot"]');
+  var best = el('line', { stroke: '#8E8A82', 'stroke-width': 1.6, 'stroke-dasharray': '6 5', visibility: 'hidden' }, plot);
+  best.setAttribute('x1', sx(P.x0)); best.setAttribute('y1', sy(W_BEST * P.x0 + B_BEST));
+  best.setAttribute('x2', sx(P.x1)); best.setAttribute('y2', sy(W_BEST * P.x1 + B_BEST));
+  var resid = X.map(function () { return el('line', { stroke: '#C30B0A', 'stroke-width': 1.8, opacity: 0.85 }, plot); });
+  var line = el('line', { stroke: '#73B222', 'stroke-width': 3.2 }, plot);
+  X.forEach(function (x, i) {
+    el('circle', { cx: sx(x), cy: sy(Y[i]), r: 5.5, fill: '#3576C0', stroke: '#ffffff', 'stroke-width': 1.3 }, plot);
+  });
+
+  // правая колонка: формула, ошибка, кривая обучения
+  var side = svg.querySelector('[data-lr="side"]');
+  var formula = el('text', { x: 600, y: 52, 'font-size': 21, 'font-weight': 800, fill: '#111111', 'font-family': F }, side, '');
+  el('text', { x: 600, y: 90, 'font-size': 13, fill: '#5E5850', 'font-family': F }, side, 'средний квадрат ошибки (MSE)');
+  var mseText = el('text', { x: 600, y: 130, 'font-size': 38, 'font-weight': 800, fill: '#C30B0A', 'font-family': F }, side, '');
+  var stepText = el('text', { x: 600, y: 160, 'font-size': 14, fill: '#5E5850', 'font-family': F }, side, '');
+  var C = { l: 610, r: 860, t: 200, b: 330 };
+  el('rect', { x: C.l, y: C.t, width: C.r - C.l, height: C.b - C.t, fill: '#FAFAF7', stroke: '#E0DDD3', rx: 6 }, side);
+  el('text', { x: C.l, y: C.t - 10, 'font-size': 13, fill: '#5E5850', 'font-family': F }, side, 'MSE по шагам спуска');
+  el('text', { x: C.l, y: C.b + 18, 'font-size': 12, fill: '#5E5850', 'font-family': F }, side, '0');
+  el('text', { x: C.r, y: C.b + 18, 'font-size': 12, fill: '#5E5850', 'text-anchor': 'end', 'font-family': F }, side, '1500');
+  var curve = el('path', { fill: 'none', stroke: '#C30B0A', 'stroke-width': 2.2 }, side);
+  var bestNote = el('text', { x: 600, y: 376, 'font-size': 13, fill: '#5E5850', 'font-family': F, visibility: 'hidden' }, side,
+                    'пунктир: точный МНК, w = 0.91, b = 0.74');
+
+  var wIn = document.getElementById('aiLrW');
+  var bIn = document.getElementById('aiLrB');
+  var runBtn = root.querySelector('[data-lr-act="run"]');
+  var stepBtn = root.querySelector('[data-lr-act="step"]');
+  var titleEl = root.querySelector('.step-live h4');
+  var textEl = root.querySelector('.step-live p');
+
+  var w = W0, b = B0, step = 0, hist = [], timer = null, manual = false;
+  var M0 = mse(W0, B0);
+
+  function drawCurve() {
+    if (!hist.length) { curve.setAttribute('d', ''); return; }
+    var top = Math.log(Math.max(hist[0], 0.3)), bot = Math.log(0.2);
+    var d = hist.map(function (m, i) {
+      var cx = C.l + i / STEPS * (C.r - C.l);
+      var cy = C.t + (top - Math.log(Math.max(m, 0.2))) / (top - bot) * (C.b - C.t);
+      return (i ? 'L' : 'M') + cx.toFixed(1) + ' ' + Math.max(C.t, cy).toFixed(1);
+    });
+    curve.setAttribute('d', d.join(' '));
+  }
+
+  function note() {
+    var m = mse(w, b);
+    if (manual) {
+      return ['Вы крутите ручки сами',
+        'Каждое положение ручек даёт свою прямую и свою ошибку: сейчас MSE = ' + m.toFixed(2) +
+        '. Попробуйте опустить её ниже 0.30 вручную, а потом нажмите «Обучить», и спуск продолжит с вашей прямой.'];
+    }
+    if (step === 0) {
+      return ['Сначала прямая стоит почти случайно',
+        'w = −0.4, b = 7: прямая идёт вниз, а точки растут вверх. Красные отрезки показывают ошибку на каждой точке, ' +
+        'их средний квадрат равен ' + M0.toFixed(1) + '.'];
+    }
+    if (step < STEPS) {
+      return ['Шаг спуска сдвигает обе ручки',
+        'На каждом шаге w и b немного сдвигаются туда, где средний квадрат ошибки меньше. После ' + step +
+        ' шагов: w = ' + f2(w) + ', b = ' + f2(b) + ', MSE = ' + m.toFixed(2) + '.'];
+    }
+    return ['Прямая подобрана',
+      'После 1500 шагов w = ' + f2(w) + ', b = ' + f2(b) + ', MSE = ' + m.toFixed(2) +
+      '. Точная формула метода наименьших квадратов даёт ту же прямую (пунктир). Нейросеть учится так же, только ручек у неё миллионы и миллиарды.'];
+  }
+
+  function render() {
+    line.setAttribute('x1', sx(P.x0)); line.setAttribute('y1', sy(w * P.x0 + b));
+    line.setAttribute('x2', sx(P.x1)); line.setAttribute('y2', sy(w * P.x1 + b));
+    X.forEach(function (x, i) {
+      resid[i].setAttribute('x1', sx(x)); resid[i].setAttribute('x2', sx(x));
+      resid[i].setAttribute('y1', sy(Y[i])); resid[i].setAttribute('y2', sy(w * x + b));
+    });
+    var m = mse(w, b);
+    formula.textContent = 'ŷ = ' + f2(w) + '·x ' + (b < 0 ? '− ' : '+ ') + Math.abs(b).toFixed(2);
+    mseText.textContent = m.toFixed(2);
+    mseText.setAttribute('fill', m < 0.3 ? '#4E8A12' : '#C30B0A');
+    stepText.textContent = manual ? 'ручки выставлены вручную' : 'шагов спуска: ' + step;
+    var done = step >= STEPS;
+    best.setAttribute('visibility', done ? 'visible' : 'hidden');
+    bestNote.setAttribute('visibility', done ? 'visible' : 'hidden');
+    wIn.value = w; bIn.value = b;
+    document.getElementById('aiLrWOut').textContent = f2(w);
+    document.getElementById('aiLrBOut').textContent = f2(b);
+    runBtn.disabled = done; stepBtn.disabled = done;
+    drawCurve();
+    var n = note();
+    titleEl.textContent = n[0];
+    textEl.textContent = n[1];
+  }
+
+  function stop() { if (timer) { cancelAnimationFrame(timer); timer = null; } }
+  function doStep() {
+    if (manual) { manual = false; step = 0; hist = [mse(w, b)]; }
+    if (!hist.length) hist.push(mse(w, b));
+    var nb = gradStep(w, b); w = nb[0]; b = nb[1]; step += 1;
+    hist.push(mse(w, b));
+  }
+  function run() {
+    stop();
+    function frame() {
+      var k = Math.max(1, Math.floor(step / 25));
+      for (var i = 0; i < k && step < STEPS; i++) doStep();
+      render();
+      if (step < STEPS) timer = requestAnimationFrame(frame); else timer = null;
+    }
+    timer = requestAnimationFrame(frame);
+  }
+
+  stepBtn.addEventListener('click', function () { stop(); if (step < STEPS) doStep(); render(); });
+  runBtn.addEventListener('click', run);
+  root.querySelector('[data-lr-act="reset"]').addEventListener('click', function () {
+    stop(); w = W0; b = B0; step = 0; hist = []; manual = false; render();
+  });
+  [wIn, bIn].forEach(function (inp) {
+    inp.addEventListener('input', function () {
+      stop(); w = +wIn.value; b = +bIn.value; manual = true; step = 0; hist = []; render();
+    });
+  });
+  render();
+})();
+</script>
+
 <div class="stage" id="stageWhyMlNeeded" tabindex="0">
   <div class="stage-figure">
 <svg id="whyMl" viewBox="262 70 638 390" role="img" aria-label="От множества факторов и растущих правил if-else к историческим данным и модели, которая учится на них">
@@ -1866,230 +2438,201 @@ $$\hat y = w \cdot x + b$$
 
 > Кошка сидит на ...
 
-она должна оценить, какой токен вероятнее всего будет следующим: «диване», «окне», «стуле», «полу» и так далее.
+она должна оценить, какой токен вероятнее всего будет следующим: «стуле», «диване», «крыше», «полу» и так далее.
 
-Делая это миллиарды раз, модель учится грамматике, стилю, фактам, типичным рассуждениям и структуре языка. Когда мы просим её написать ответ, она продолжает тот же процесс: оценивает вероятности следующих токенов и генерирует текст шаг за шагом.
+Делая это миллиарды раз, модель учится грамматике, стилю, фактам, типичным рассуждениям и структуре языка. Когда мы просим её написать ответ, она продолжает тот же процесс: оценивает вероятности следующих токенов и генерирует текст шаг за шагом. Следующий токен не обязательно самый вероятный: часто его выбирают случайно, с теми вероятностями, которые посчитала модель. Поэтому на один и тот же вопрос она может ответить по-разному.
 
 LLM не достаёт готовый ответ из базы данных, как поисковик. Она строит продолжение текста по вероятностям. Поэтому такие модели могут звучать убедительно, но иногда ошибаться. Их нужно проверять, особенно в фактах, цифрах, законах, медицине и технических деталях.
 
 <div class="stage" id="stageLlmGeneration" tabindex="0">
   <div class="stage-figure">
-<svg id="llmGen" viewBox="262 70 638 390" role="img" aria-label="LLM разбивает текст на токены, учитывает контекст, оценивает вероятности продолжений и генерирует ответ токен за токеном">
+<svg id="llmGen" viewBox="0 0 900 400" role="img" aria-label="LLM разбивает текст на токены с номерами, учится угадывать следующий токен, оценивает вероятности продолжений, генерирует текст токен за токеном и выбирает токены случайно с этими вероятностями">
   <style>
-    svg {
-      background: #ffffff;
-      font-family: Helvetica, Arial, sans-serif;
-    }
-    .title {
-      font-size: 21px;
-      font-weight: 800;
-      fill: #111111;
-    }
-    .scene-panel {
-      fill: #ffffff;
-      stroke: #3576C0;
-      stroke-width: 1.3;
-      stroke-opacity: 0.28;
-      rx: 16;
-    }
-    .scene-title {
-      font-size: 16px;
-      font-weight: 800;
-      fill: #111111;
-    }
-    .node-blue {
-      fill: #ffffff;
-      stroke: #3576C0;
-      stroke-width: 1.6;
-      rx: 10;
-    }
-    .node-yellow {
-      fill: #ffffff;
-      stroke: #C29E08;
-      stroke-width: 1.6;
-      rx: 10;
-    }
-    .node-green {
-      fill: #ffffff;
-      stroke: #73B222;
-      stroke-width: 1.6;
-      rx: 10;
-    }
-    .node-red {
-      fill: #ffffff;
-      stroke: #C30B0A;
-      stroke-width: 1.6;
-      rx: 10;
-    }
-    .node-bold {
-      font-size: 15px;
-      font-weight: 800;
-      fill: #111111;
-    }
-    .small {
-      font-size: 12px;
-      fill: #111111;
-      opacity: 0.78;
-    }
-    .left-text {
-      font-size: 15px;
-      fill: #111111;
-    }
-    .formula-small {
-      font-size: 18px;
-      font-weight: 800;
-      fill: #111111;
-    }
-    .center {
-      text-anchor: middle;
-      dominant-baseline: middle;
-    }
-    .arrow {
-      stroke: #3576C0;
-      stroke-width: 2.2;
-      fill: none;
-      marker-end: url(#arrowHeadBlueLM);
-    }
-    .arrow-red {
-      stroke: #C30B0A;
-      stroke-width: 2;
-      fill: none;
-      marker-end: url(#arrowHeadRedLM);
-    }
-    .token-blue {
-      fill: #ffffff;
-      stroke: #3576C0;
-      stroke-width: 1.5;
-      rx: 7;
-    }
-    .token-yellow {
-      fill: #ffffff;
-      stroke: #C29E08;
-      stroke-width: 1.5;
-      rx: 7;
-    }
-    .token-red {
-      fill: #ffffff;
-      stroke: #C30B0A;
-      stroke-width: 1.5;
-      rx: 7;
-    }
-    .bar-blue {
-      fill: #3576C0;
-      opacity: 0.82;
-    }
-    .bar-yellow {
-      fill: #C29E08;
-      opacity: 0.82;
-    }
-    .bar-red {
-      fill: #C30B0A;
-      opacity: 0.82;
-    }
-    .bar-green {
-      fill: #73B222;
-      opacity: 0.82;
-    }
+    .lg-panel { fill: #ffffff; stroke: #3576C0; stroke-width: 1.3; stroke-opacity: 0.25; }
+    .lg-title { font: 800 20px Helvetica, Arial, sans-serif; fill: #111111; }
+    .lg-bold { font: 800 16px Helvetica, Arial, sans-serif; fill: #111111; }
+    .lg-big { font: 800 24px Helvetica, Arial, sans-serif; fill: #111111; }
+    .lg-text { font: 15px Helvetica, Arial, sans-serif; fill: #111111; }
+    .lg-small { font: 13px Helvetica, Arial, sans-serif; fill: #111111; opacity: 0.75; }
+    .lg-id { font: 700 15px Menlo, Consolas, "Courier New", monospace; fill: #3576C0; }
+    .lg-c { text-anchor: middle; dominant-baseline: middle; }
+    .lg-tok { fill: #ffffff; stroke: #3576C0; stroke-width: 1.6; }
+    .lg-tok-y { fill: #ffffff; stroke: #C29E08; stroke-width: 1.6; }
+    .lg-tok-r { fill: #ffffff; stroke: #C30B0A; stroke-width: 1.8; }
+    .lg-tok-g { fill: #EEF6E4; stroke: #73B222; stroke-width: 1.8; }
+    .lg-grey { fill: #F7F5EF; stroke: #8E8A82; stroke-width: 1.4; }
+    .lg-arrow { stroke: #3576C0; stroke-width: 2.2; fill: none; marker-end: url(#lgArrow); }
+    .lg-arc { stroke: #C30B0A; stroke-width: 1.8; fill: none; marker-end: url(#lgArrowRed); }
   </style>
   <defs>
-    <marker id="arrowHeadBlueLM" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+    <marker id="lgArrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
       <path d="M0,0 L0,6 L8,3 z" fill="#3576C0" />
     </marker>
-    <marker id="arrowHeadRedLM" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+    <marker id="lgArrowRed" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
       <path d="M0,0 L0,6 L8,3 z" fill="#C30B0A" />
     </marker>
   </defs>
-  <rect x="292" y="90" width="584" height="350" class="scene-panel" />
-  <g id="sceneContent">
-    <g data-key="step1" data-only="1">
-      <text x="328" y="130" class="scene-title">Пользователь даёт модели начало текста</text>
-      <rect x="355" y="195" width="460" height="78" class="node-yellow" />
-      <text x="585" y="225" class="node-bold center">Входной текст</text>
-      <text x="585" y="252" class="formula-small center">"Кошка сидит на ..."</text>
-      <text x="584" y="340" class="left-text center">На этом этапе модель просто получает последовательность символов.</text>
-      <text x="584" y="375" class="left-text center">Ей ещё нужно понять, из каких частей состоит текст.</text>
-    </g>
-    <g data-key="step2" data-only="1">
-      <text x="328" y="130" class="scene-title">Разбиение текста на токены</text>
-      <rect x="335" y="205" width="86" height="50" class="token-blue" />
-      <text x="378" y="230" class="node-bold center">Кошка</text>
-      <rect x="440" y="205" width="86" height="50" class="token-yellow" />
-      <text x="483" y="230" class="node-bold center">сидит</text>
-      <rect x="545" y="205" width="68" height="50" class="token-blue" />
-      <text x="579" y="230" class="node-bold center">на</text>
-      <rect x="632" y="205" width="68" height="50" class="token-red" />
-      <text x="666" y="230" class="node-bold center">...</text>
-      <text x="584" y="330" class="formula-small center">Текст → токены</text>
-      <text x="584" y="370" class="left-text center">Токены: маленькие части текста, с которыми дальше работает модель.</text>
-    </g>
-    <g data-key="step3" data-only="1">
-      <text x="328" y="130" class="scene-title">Перед предсказанием модель учитывает контекст</text>
-      <rect x="330" y="205" width="86" height="50" class="token-blue" />
-      <text x="373" y="230" class="node-bold center">Кошка</text>
-      <rect x="438" y="205" width="86" height="50" class="token-yellow" />
-      <text x="481" y="230" class="node-bold center">сидит</text>
-      <rect x="546" y="205" width="60" height="50" class="token-blue" />
-      <text x="576" y="230" class="node-bold center">на</text>
-      <rect x="650" y="195" width="120" height="70" class="node-red" />
-      <text x="710" y="223" class="node-bold center">Следующий</text>
-      <text x="710" y="245" class="node-bold center">токен ?</text>
-      <path d="M373 255 Q520 320 690 265" class="arrow-red" />
-      <path d="M481 255 Q565 310 700 265" class="arrow-red" />
-      <path d="M576 255 Q615 295 707 265" class="arrow-red" />
-      <text x="584" y="340" class="left-text center">Модель смотрит на предыдущие токены и пытается понять,</text>
-      <text x="584" y="375" class="left-text center">какое продолжение наиболее уместно именно в этом контексте.</text>
-    </g>
-    <g data-key="step4" data-only="1">
-      <text x="328" y="130" class="scene-title">Модель оценивает возможные продолжения</text>
-      <text x="400" y="195" class="left-text">"стуле"</text>
-      <rect x="470" y="182" width="240" height="20" rx="4" class="bar-blue" />
-      <text x="725" y="197" class="small">0.45</text>
-      <text x="400" y="235" class="left-text">"диване"</text>
-      <rect x="470" y="222" width="160" height="20" rx="4" class="bar-yellow" />
-      <text x="645" y="237" class="small">0.30</text>
-      <text x="400" y="275" class="left-text">"крыше"</text>
-      <rect x="470" y="262" width="92" height="20" rx="4" class="bar-red" />
-      <text x="577" y="277" class="small">0.17</text>
-      <text x="400" y="315" class="left-text">"полу"</text>
-      <rect x="470" y="302" width="50" height="20" rx="4" class="bar-green" />
-      <text x="535" y="317" class="small">0.08</text>
-      <text x="584" y="375" class="left-text center">На этом шаге модель решает, какой следующий токен наиболее вероятен.</text>
-    </g>
-    <g data-key="step5" data-only="1">
-      <text x="328" y="130" class="scene-title">Следующий токен выбран</text>
-      <rect x="350" y="205" width="150" height="68" class="node-blue" />
-      <text x="425" y="232" class="node-bold center">Контекст</text>
-      <text x="425" y="255" class="small center">"Кошка сидит на"</text>
-      <path d="M513 239 L580 239" class="arrow" />
-      <rect x="595" y="195" width="160" height="88" class="node-green" />
-      <text x="675" y="223" class="node-bold center">Новый токен</text>
-      <text x="675" y="253" class="formula-small center">"стуле"</text>
-      <text x="584" y="350" class="formula-small center">Модель добавляет один токен за раз</text>
-      <text x="584" y="390" class="left-text center">Она ещё не написала весь ответ, только выбрала следующее продолжение.</text>
-    </g>
-    <g data-key="step6" data-only="1">
-      <text x="328" y="130" class="scene-title">Авторегрессия: модель повторяет один и тот же цикл</text>
-      <rect x="360" y="180" width="190" height="60" class="node-blue" />
-      <text x="455" y="210" class="node-bold center">"Кошка сидит на"</text>
-      <path d="M563 210 L605 210" class="arrow" />
-      <rect x="620" y="180" width="110" height="60" class="node-green" />
-      <text x="675" y="210" class="node-bold center">"стуле"</text>
-      <path d="M675 250 C675 300, 450 300, 450 252" class="arrow" />
-      <rect x="360" y="310" width="410" height="60" class="node-yellow" />
-      <text x="565" y="340" class="node-bold center">Новый вход: "Кошка сидит на стуле ..."</text>
-      <text x="584" y="395" class="left-text center">Теперь модель снова оценивает следующий токен:</text>
-      <text x="584" y="420" class="left-text center">например, "и", "рядом", "у окна" и т.д.</text>
-    </g>
-    <g data-key="step7" data-only="1">
-      <text x="328" y="130" class="scene-title">Результат появляется постепенно</text>
-      <rect x="340" y="175" width="440" height="165" class="node-yellow" />
-      <text x="370" y="210" class="small">шаг 1  →  "Кошка сидит на <tspan font-weight="800">стуле</tspan>"</text>
-      <text x="370" y="245" class="small">шаг 2  →  "Кошка сидит на стуле <tspan font-weight="800">и</tspan>"</text>
-      <text x="370" y="280" class="small">шаг 3  →  "Кошка сидит на стуле и <tspan font-weight="800">смотрит</tspan>"</text>
-      <text x="370" y="315" class="small">шаг 4  →  "Кошка сидит на стуле и смотрит <tspan font-weight="800">в окно.</tspan>"</text>
-      <text x="584" y="380" class="formula-small center">LLM генерирует текст токен за токеном</text>
-      <text x="584" y="412" class="left-text center">Она не пишет весь ответ сразу, а многократно повторяет один и тот же цикл.</text>
-    </g>
+  <rect x="30" y="16" width="840" height="368" rx="18" class="lg-panel" />
+
+  <!-- заголовки шагов -->
+  <g data-key="t1" data-only="1"><text x="450" y="58" class="lg-title lg-c">Модель получает начало текста</text></g>
+  <g data-key="t2" data-only="1"><text x="450" y="58" class="lg-title lg-c">Текст → токены</text></g>
+  <g data-key="t3" data-only="1"><text x="450" y="58" class="lg-title lg-c">Токены → номера</text></g>
+  <g data-key="t5" data-only="1"><text x="450" y="58" class="lg-title lg-c">Модель смотрит на все предыдущие токены</text></g>
+  <g data-key="t7" data-only="1"><text x="450" y="58" class="lg-title lg-c">Выбранный токен добавляется к тексту</text></g>
+
+  <!-- 1. фраза целиком -->
+  <g data-key="phrase" data-only="1">
+    <rect x="230" y="140" width="440" height="80" rx="14" class="lg-tok-y" />
+    <text x="450" y="180" class="lg-big lg-c">Кошка сидит на …</text>
+    <text x="450" y="290" class="lg-text lg-c">Пока это просто строка символов. Модель считает только числа,</text>
+    <text x="450" y="314" class="lg-text lg-c">поэтому текст сначала нужно разрезать и пронумеровать.</text>
+  </g>
+
+  <!-- 2–3, 5, 7. ряд токенов -->
+  <g data-key="tokens" data-only="1">
+    <rect x="170" y="130" width="90" height="54" rx="9" class="lg-tok" /><text x="215" y="157" class="lg-bold lg-c">Кош</text>
+    <rect x="270" y="130" width="70" height="54" rx="9" class="lg-tok" /><text x="305" y="157" class="lg-bold lg-c">ка</text>
+    <rect x="350" y="130" width="110" height="54" rx="9" class="lg-tok" /><text x="405" y="157" class="lg-bold lg-c">сидит</text>
+    <rect x="470" y="130" width="70" height="54" rx="9" class="lg-tok" /><text x="505" y="157" class="lg-bold lg-c">на</text>
+  </g>
+  <g data-key="tokNote" data-only="1">
+    <text x="450" y="270" class="lg-text lg-c">Токен: слово, часть слова или знак препинания.</text>
+    <text x="450" y="296" class="lg-text lg-c">Слово может разрезаться на куски: «Кошка» → «Кош» + «ка».</text>
+  </g>
+  <g data-key="ids" data-only="1">
+    <text x="215" y="212" class="lg-id lg-c">48213</text>
+    <text x="305" y="212" class="lg-id lg-c">1023</text>
+    <text x="405" y="212" class="lg-id lg-c">27591</text>
+    <text x="505" y="212" class="lg-id lg-c">1186</text>
+    <text x="580" y="212" class="lg-small">← номер в словаре</text>
+    <text x="450" y="280" class="lg-text lg-c">У каждого токена свой номер в словаре модели. Номера здесь условные:</text>
+    <text x="450" y="306" class="lg-text lg-c">словарь настоящей модели содержит десятки или сотни тысяч токенов.</text>
+  </g>
+
+  <!-- 4. учебные задачи из одной фразы -->
+  <g data-key="tasks" data-only="1">
+    <text x="450" y="50" class="lg-title lg-c">Учебная задача: угадать следующий токен</text>
+    <text x="450" y="78" class="lg-small lg-c">строка из обучающих текстов: «Кошка сидит на стуле»</text>
+    <rect x="150" y="98" width="330" height="40" rx="8" class="lg-tok" /><text x="166" y="118" class="lg-text" dominant-baseline="middle">Кош</text>
+    <path d="M492 118 L560 118" class="lg-arrow" />
+    <rect x="572" y="98" width="130" height="40" rx="8" class="lg-tok-g" /><text x="637" y="118" class="lg-bold lg-c">ка</text>
+    <rect x="150" y="148" width="330" height="40" rx="8" class="lg-tok" /><text x="166" y="168" class="lg-text" dominant-baseline="middle">Кош | ка</text>
+    <path d="M492 168 L560 168" class="lg-arrow" />
+    <rect x="572" y="148" width="130" height="40" rx="8" class="lg-tok-g" /><text x="637" y="168" class="lg-bold lg-c">сидит</text>
+    <rect x="150" y="198" width="330" height="40" rx="8" class="lg-tok" /><text x="166" y="218" class="lg-text" dominant-baseline="middle">Кош | ка | сидит</text>
+    <path d="M492 218 L560 218" class="lg-arrow" />
+    <rect x="572" y="198" width="130" height="40" rx="8" class="lg-tok-g" /><text x="637" y="218" class="lg-bold lg-c">на</text>
+    <rect x="150" y="248" width="330" height="40" rx="8" class="lg-tok" /><text x="166" y="268" class="lg-text" dominant-baseline="middle">Кош | ка | сидит | на</text>
+    <path d="M492 268 L560 268" class="lg-arrow" />
+    <rect x="572" y="248" width="130" height="40" rx="8" class="lg-tok-g" /><text x="637" y="268" class="lg-bold lg-c">стуле</text>
+    <text x="315" y="312" class="lg-small lg-c">что модель видит</text>
+    <text x="637" y="312" class="lg-small lg-c">правильный ответ</text>
+    <text x="450" y="352" class="lg-text lg-c">Одна строка даёт сразу четыре задачи. Ответ уже есть в самом тексте.</text>
+  </g>
+
+  <!-- 5. контекст -->
+  <g data-key="ask" data-only="1">
+    <rect x="600" y="124" width="120" height="66" rx="10" class="lg-tok-r" />
+    <text x="660" y="157" style="fill:#C30B0A" class="lg-big lg-c">?</text>
+  </g>
+  <g data-key="arcs" data-only="1">
+    <path d="M215 186 Q430 300 640 194" class="lg-arc" />
+    <path d="M305 186 Q470 280 650 194" class="lg-arc" />
+    <path d="M405 186 Q530 262 658 194" class="lg-arc" />
+    <path d="M505 186 Q580 240 666 194" class="lg-arc" />
+    <text x="450" y="318" class="lg-text lg-c">Чтобы выбрать продолжение, модель учитывает все токены слева,</text>
+    <text x="450" y="344" class="lg-text lg-c">а не только последнее слово «на».</text>
+  </g>
+
+  <!-- 6. вероятности -->
+  <g data-key="probs" data-only="1">
+    <text x="450" y="54" class="lg-title lg-c">Модель оценивает варианты продолжения</text>
+    <text x="450" y="86" class="lg-text lg-c">«Кошка сидит на …»</text>
+    <text x="250" y="132" class="lg-bold" text-anchor="end">стуле</text>
+    <rect x="265" y="114" width="300" height="26" rx="5" fill="#73B222" fill-opacity="0.85" />
+    <text x="575" y="132" class="lg-bold">0.45</text>
+    <text x="250" y="178" class="lg-bold" text-anchor="end">диване</text>
+    <rect x="265" y="160" width="200" height="26" rx="5" fill="#3576C0" fill-opacity="0.85" />
+    <text x="475" y="178" class="lg-bold">0.30</text>
+    <text x="250" y="224" class="lg-bold" text-anchor="end">крыше</text>
+    <rect x="265" y="206" width="113" height="26" rx="5" fill="#C29E08" fill-opacity="0.85" />
+    <text x="388" y="224" class="lg-bold">0.17</text>
+    <text x="250" y="270" class="lg-bold" text-anchor="end">полу</text>
+    <rect x="265" y="252" width="53" height="26" rx="5" fill="#8E8A82" fill-opacity="0.85" />
+    <text x="328" y="270" class="lg-bold">0.08</text>
+    <text x="450" y="330" class="lg-text lg-c">Для каждого токена словаря модель выдаёт вероятность. Здесь показаны</text>
+    <text x="450" y="354" class="lg-text lg-c">четыре самых вероятных, вместе они дают 1.</text>
+  </g>
+
+  <!-- 7. выбор -->
+  <g data-key="picked" data-only="1">
+    <rect x="550" y="130" width="100" height="54" rx="9" class="lg-tok-g" />
+    <text x="600" y="157" class="lg-bold lg-c">стуле</text>
+    <rect x="660" y="130" width="60" height="54" rx="9" class="lg-tok-r" />
+    <text x="690" y="157" style="fill:#C30B0A" class="lg-bold lg-c">?</text>
+    <text x="450" y="252" class="lg-text lg-c">Новый вход: «Кошка сидит на стуле».</text>
+    <text x="450" y="280" class="lg-text lg-c">Модель снова считает вероятности, теперь для следующего токена.</text>
+  </g>
+
+  <!-- 8. цикл -->
+  <g data-key="loop" data-only="1">
+    <text x="450" y="54" class="lg-title lg-c">Ответ растёт по одному токену</text>
+    <rect x="130" y="80" width="640" height="200" rx="12" class="lg-tok-y" />
+    <text x="160" y="116" class="lg-small">шаг 1</text>
+    <text x="240" y="116" class="lg-text">Кошка сидит на <tspan font-weight="800" fill="#4E8A12">стуле</tspan></text>
+    <text x="160" y="160" class="lg-small">шаг 2</text>
+    <text x="240" y="160" class="lg-text">Кошка сидит на стуле <tspan font-weight="800" fill="#4E8A12">у</tspan></text>
+    <text x="160" y="204" class="lg-small">шаг 3</text>
+    <text x="240" y="204" class="lg-text">Кошка сидит на стуле у <tspan font-weight="800" fill="#4E8A12">окна</tspan></text>
+    <text x="160" y="248" class="lg-small">шаг 4</text>
+    <text x="240" y="248" class="lg-text">Кошка сидит на стуле у окна<tspan font-weight="800" fill="#4E8A12">.</tspan></text>
+    <text x="620" y="248" class="lg-small">точка: конец ответа</text>
+    <text x="450" y="322" class="lg-bold lg-c">предсказать → добавить → повторить</text>
+    <text x="450" y="350" class="lg-text lg-c">Весь ответ сразу модель не пишет: каждый токен требует нового прохода.</text>
+  </g>
+
+  <!-- 9. сэмплирование -->
+  <g data-key="sample" data-only="1">
+    <text x="450" y="54" class="lg-title lg-c">Шесть запусков на одном и том же начале</text>
+    <text x="110" y="100" class="lg-small">запуск 1</text><text x="190" y="100" class="lg-text">Кошка сидит на <tspan font-weight="800" fill="#4E8A12">стуле</tspan></text>
+    <text x="110" y="134" class="lg-small">запуск 2</text><text x="190" y="134" class="lg-text">Кошка сидит на <tspan font-weight="800" fill="#4E8A12">стуле</tspan></text>
+    <text x="110" y="168" class="lg-small">запуск 3</text><text x="190" y="168" class="lg-text">Кошка сидит на <tspan font-weight="800" fill="#A38404">крыше</tspan></text>
+    <text x="110" y="202" class="lg-small">запуск 4</text><text x="190" y="202" class="lg-text">Кошка сидит на <tspan font-weight="800" fill="#4E8A12">стуле</tspan></text>
+    <text x="110" y="236" class="lg-small">запуск 5</text><text x="190" y="236" class="lg-text">Кошка сидит на <tspan font-weight="800" fill="#3576C0">диване</tspan></text>
+    <text x="110" y="270" class="lg-small">запуск 6</text><text x="190" y="270" class="lg-text">Кошка сидит на <tspan font-weight="800" fill="#3576C0">диване</tspan></text>
+    <line x1="470" y1="82" x2="470" y2="282" stroke="#3576C0" stroke-opacity="0.25" />
+    <text x="500" y="100" class="lg-small">слово</text><text x="640" y="100" class="lg-small">раз</text><text x="740" y="100" class="lg-small">вероятность</text>
+    <text x="500" y="140" class="lg-bold">стуле</text><rect x="590" y="126" width="45" height="20" rx="4" fill="#73B222" /><text x="645" y="141" class="lg-bold">3</text><text x="740" y="140" class="lg-text">0.45</text>
+    <text x="500" y="180" class="lg-bold">диване</text><rect x="590" y="166" width="30" height="20" rx="4" fill="#3576C0" /><text x="630" y="181" class="lg-bold">2</text><text x="740" y="180" class="lg-text">0.30</text>
+    <text x="500" y="220" class="lg-bold">крыше</text><rect x="590" y="206" width="15" height="20" rx="4" fill="#C29E08" /><text x="615" y="221" class="lg-bold">1</text><text x="740" y="220" class="lg-text">0.17</text>
+    <text x="500" y="260" class="lg-bold">полу</text><text x="600" y="261" class="lg-bold">0</text><text x="740" y="260" class="lg-text">0.08</text>
+    <text x="450" y="326" class="lg-text lg-c">Токен выбирают случайно с вероятностями модели: «стуле» выпадает</text>
+    <text x="450" y="350" class="lg-text lg-c">примерно в 45 запусках из 100, «полу» в 8. Поэтому ответы различаются.</text>
+  </g>
+
+  <!-- 10. поисковик и LLM -->
+  <g data-key="search" data-only="1">
+    <text x="450" y="50" class="lg-title lg-c">Поисковик и LLM работают по-разному</text>
+    <rect x="80" y="76" width="350" height="200" rx="14" class="lg-grey" />
+    <text x="255" y="104" class="lg-bold lg-c">Поисковик</text>
+    <text x="255" y="140" class="lg-text lg-c">запрос</text>
+    <path d="M255 152 L255 172" class="lg-arrow" />
+    <text x="255" y="190" class="lg-text lg-c">индекс готовых страниц</text>
+    <path d="M255 202 L255 222" class="lg-arrow" />
+    <text x="255" y="242" class="lg-text lg-c">страница, которую написал человек,</text>
+    <text x="255" y="262" class="lg-small lg-c">со ссылкой на источник</text>
+    <rect x="470" y="76" width="350" height="200" rx="14" style="fill:#F0F5FB" class="lg-tok" />
+    <text x="645" y="104" style="fill:#3576C0" class="lg-bold lg-c">LLM</text>
+    <text x="645" y="140" class="lg-text lg-c">начало текста</text>
+    <path d="M645 152 L645 172" class="lg-arrow" />
+    <text x="645" y="190" class="lg-text lg-c">вероятности следующего токена</text>
+    <path d="M645 202 L645 222" class="lg-arrow" />
+    <text x="645" y="242" class="lg-text lg-c">новый текст, токен за токеном;</text>
+    <text x="645" y="262" class="lg-small lg-c">готового ответа в базе нет</text>
+    <rect x="80" y="300" width="740" height="62" rx="12" fill="#FBEDEC" stroke="#C30B0A" stroke-width="1.4" />
+    <text x="450" y="322" style="fill:#C30B0A" class="lg-bold lg-c">Вероятный текст может звучать убедительно и содержать ошибку.</text>
+    <text x="450" y="346" class="lg-text lg-c">Проверяйте факты, цифры, законы, медицину и технические детали.</text>
   </g>
 </svg>
   </div>
@@ -2102,51 +2645,72 @@ LLM не достаёт готовый ответ из базы данных, к
   </div>
 
   <div class="stage-notes">
-    <div class="step-panel" data-on="step1" data-focus="step1">
-      <div class="step-kicker">Шаг 1 · ввод</div>
-      <h4>Пользователь вводит текст</h4>
-      <p>LLM получает начало фразы, например «Кошка сидит на ...», и должна продолжить её.
-      На этом этапе модель просто получает последовательность символов, и ей ещё нужно
-      понять, из каких частей состоит текст.</p>
+    <div class="step-panel" data-on="t1 phrase" data-focus="phrase">
+      <div class="step-kicker">Шаг 1 · начало текста</div>
+      <h4>Модель получает фразу «Кошка сидит на …»</h4>
+      <p>Её нужно продолжить. Но модель работает только с числами, поэтому строку символов
+      сначала надо превратить в числа.</p>
     </div>
-    <div class="step-panel" data-on="step2" data-focus="step2">
+    <div class="step-panel" data-on="t2 tokens tokNote" data-focus="tokens">
       <div class="step-kicker">Шаг 2 · токены</div>
-      <h4>Текст разбивается на токены</h4>
-      <p>Модель работает не с целой фразой сразу, а с небольшими частями, которые называют токенами. Это
-      маленькие фрагменты текста, с которыми дальше работает модель.</p>
+      <h4>Фраза разбивается на токены</h4>
+      <p>Токеном может быть слово, часть слова или знак препинания. Здесь «Кошка» распалась на
+      два куска, «Кош» и «ка», а «сидит» и «на» остались целыми словами.</p>
     </div>
-    <div class="step-panel" data-on="step3" data-focus="step3">
-      <div class="step-kicker">Шаг 3 · контекст</div>
-      <h4>Модель смотрит на контекст</h4>
-      <p>Чтобы продолжить текст, ей важно, что было написано раньше. Модель смотрит на
-      предыдущие токены и пытается понять, какое продолжение наиболее уместно именно в
-      этом контексте.</p>
+    <div class="step-panel" data-on="t3 tokens ids" data-focus="ids">
+      <div class="step-kicker">Шаг 3 · номера</div>
+      <h4>Каждому токену присваивается номер</h4>
+      <p>Номер берётся из словаря модели: «Кош» → 48213, «ка» → 1023, «сидит» → 27591, «на» → 1186.
+      Номера условные, у настоящей модели они зависят от её словаря на десятки или сотни
+      тысяч токенов. Дальше модель работает с этими числами.</p>
     </div>
-    <div class="step-panel" data-on="step4" data-focus="step4">
-      <div class="step-kicker">Шаг 4 · вероятности</div>
-      <h4>Модель оценивает варианты</h4>
-      <p>Она не выбирает слово сразу, а сначала оценивает несколько кандидатов: «стуле»
-      0.45, «диване» 0.30, «крыше» 0.17, «полу» 0.08.</p>
+    <div class="step-panel" data-on="tasks" data-focus="tasks">
+      <div class="step-kicker">Шаг 4 · учебная задача</div>
+      <h4>Предсказать следующий токен по предыдущим</h4>
+      <p>Модель обучают на огромном количестве текстов. Каждая строка превращается в набор задач:
+      по «Кош» угадать «ка», по «Кош ка» угадать «сидит» и так далее. Правильный ответ всегда
+      следующий токен того же текста, поэтому размечать данные вручную не нужно.</p>
     </div>
-    <div class="step-panel" data-on="step5" data-focus="step5">
-      <div class="step-kicker">Шаг 5 · выбор токена</div>
-      <h4>Выбирается один токен</h4>
-      <p>Из вариантов модель берёт следующий фрагмент текста: «стуле». Она ещё не написала
-      весь ответ, только выбрала следующее продолжение.</p>
+    <div class="step-panel" data-on="t5 tokens ask arcs" data-focus="arcs">
+      <div class="step-kicker">Шаг 5 · контекст</div>
+      <h4>Модель смотрит на все предыдущие токены</h4>
+      <p>Чтобы оценить следующий токен, модель учитывает весь контекст слева. После «на» могло бы
+      идти что угодно, а «Кошка сидит на» сужает выбор до мест, где сидят кошки.</p>
     </div>
-    <div class="step-panel" data-on="step6" data-focus="step6">
-      <div class="step-kicker">Шаг 6 · повторение</div>
-      <h4>Новый токен добавляется ко входу</h4>
-      <p>После этого модель снова повторяет тот же процесс: новый вход становится «Кошка
-      сидит на стуле ...», и модель снова оценивает следующий токен: «и», «рядом», «у
-      окна» и так далее.</p>
+    <div class="step-panel" data-on="probs" data-focus="probs">
+      <div class="step-kicker">Шаг 6 · вероятности</div>
+      <h4>Модель оценивает варианты продолжения</h4>
+      <p>На выходе она выдаёт вероятность для каждого токена словаря: «стуле» 0.45, «диване» 0.30,
+      «крыше» 0.17, «полу» 0.08. Именно этим вероятностям модель училась на шаге 4: правильный
+      ответ из текста должен получать высокую вероятность.</p>
     </div>
-    <div class="step-panel" data-on="step7" data-focus="step7">
-      <div class="step-kicker">Шаг 7 · готовый текст</div>
-      <h4>Так собирается весь ответ</h4>
-      <p>Текст растёт токен за токеном, пока модель не закончит фразу. Она не пишет весь
-      ответ сразу, а многократно повторяет один и тот же цикл: предсказать, добавить,
-      повторить.</p>
+    <div class="step-panel" data-on="t7 tokens picked" data-focus="picked">
+      <div class="step-kicker">Шаг 7 · выбор токена</div>
+      <h4>Один токен добавляется к тексту</h4>
+      <p>Из вариантов выбирается один, например «стуле», и встаёт в конец фразы. Теперь вход
+      «Кошка сидит на стуле», и модель заново оценивает вероятности для следующего токена.</p>
+    </div>
+    <div class="step-panel" data-on="loop" data-focus="loop">
+      <div class="step-kicker">Шаг 8 · генерация</div>
+      <h4>Ответ собирается токен за токеном</h4>
+      <p>Предсказать, добавить, повторить: так появляются «у», «окна» и точка. Цикл идёт, пока
+      модель не выдаст токен конца ответа. Каждый новый токен требует нового прохода по всему
+      тексту.</p>
+    </div>
+    <div class="step-panel" data-on="sample" data-focus="sample">
+      <div class="step-kicker">Шаг 9 · случайный выбор</div>
+      <h4>Один и тот же вопрос, разные ответы</h4>
+      <p>Брать каждый раз самый вероятный токен не обязательно. Часто токен выбирают случайно,
+      с вероятностями модели. В шести запусках на одном начале вышло: «стуле» 3 раза, «диване»
+      2 раза, «крыше» 1 раз. Поэтому на одинаковый вопрос модель может ответить по-разному.</p>
+    </div>
+    <div class="step-panel" data-on="search" data-focus="search">
+      <div class="step-kicker">Шаг 10 · не поисковик</div>
+      <h4>LLM строит текст, а не достаёт его из базы</h4>
+      <p>Поисковик находит страницу, которую уже кто-то написал, и показывает источник. LLM собирает
+      новый текст по вероятностям токенов. Вероятное продолжение может звучать убедительно и всё
+      равно содержать ошибку, поэтому факты, цифры, законы, медицину и технические детали нужно
+      проверять.</p>
     </div>
   </div>
 </div>
