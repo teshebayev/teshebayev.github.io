@@ -17,3 +17,6 @@ npm-debug.log*
 /.agents/
 /.claude/skills/
 /skills-lock.json
+
+# Substack exports (images and drafts, not part of the site)
+/substack/

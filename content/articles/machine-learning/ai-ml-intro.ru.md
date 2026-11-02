@@ -122,8 +122,8 @@
     <text x="440" y="258" class="aa-text">передаёт сигнал и снимает Землю.</text>
     <text x="440" y="314" class="aa-bold">искусственный</text>
     <text x="568" y="314" class="aa-text">≠</text>
-    <text x="592" y="314" class="aa-bold">фальшивый</text>
-    <line x1="588" y1="309" x2="680" y2="309" class="aa-strike" />
+    <text x="592" y="314" class="aa-bold" textLength="88" lengthAdjust="spacingAndGlyphs">фальшивый</text>
+    <line x1="589" y1="309" x2="683" y2="309" class="aa-strike" />
     <text x="440" y="346" class="aa-small">Так же с ИИ: поведение настоящее, другое происхождение.</text>
   </g>
 
