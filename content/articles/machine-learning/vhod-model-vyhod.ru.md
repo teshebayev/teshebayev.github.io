@@ -614,8 +614,8 @@ $$\text{выход} = f(\text{вход})$$
   </style>
 
   <g data-key="step1" data-only="1">
-<line x1="205" y1="158" x2="846.0" y2="158.0" stroke="#5E5850" stroke-width="1.2"/><polygon points="855,158 846.0,164.0 846.0,152.0" fill="#5E5850"/><line x1="855" y1="158" x2="214.0" y2="158.0" stroke="#5E5850" stroke-width="1.2"/><polygon points="205,158 214.0,152.0 214.0,164.0" fill="#5E5850"/><text x="530" y="148" class="label" text-anchor="middle">СТОЛБЦЫ = признаки (характеристики)</text><text class="label" text-anchor="middle" transform="translate(180, 313) rotate(-90)">СТРОКИ = объекты</text><line x1="198" y1="225" x2="198.0" y2="392.0" stroke="#5E5850" stroke-width="1.2"/><polygon points="198,401 192.0,392.0 204.0,392.0" fill="#5E5850"/><rect x="215" y="175" width="126" height="46" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="278" y="203" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Площадь</text><rect x="341" y="175" width="126" height="46" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="404" y="203" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Комнаты</text><rect x="467" y="175" width="126" height="46" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="530" y="203" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Этаж</text><rect x="593" y="175" width="126" height="46" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="656" y="203" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Возраст</text><rect x="719" y="175" width="126" height="46" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="782" y="203" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Цена, млн</text><rect x="215" y="221" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="278" y="249" font-size="15" fill="#111" text-anchor="middle">65</text><rect x="341" y="221" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="404" y="249" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="467" y="221" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="249" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="593" y="221" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="656" y="249" font-size="15" fill="#111" text-anchor="middle">10</text><rect x="719" y="221" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="782" y="249" font-size="15" fill="#111" text-anchor="middle">18</text><rect x="215" y="267" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="278" y="295" font-size="15" fill="#111" text-anchor="middle">80</text><rect x="341" y="267" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="404" y="295" font-size="15" fill="#111" text-anchor="middle">3</text><rect x="467" y="267" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="295" font-size="15" fill="#111" text-anchor="middle">7</text><rect x="593" y="267" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="656" y="295" font-size="15" fill="#111" text-anchor="middle">5</text><rect x="719" y="267" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="782" y="295" font-size="15" fill="#111" text-anchor="middle">25</text><rect x="215" y="313" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="278" y="341" font-size="15" fill="#111" text-anchor="middle">45</text><rect x="341" y="313" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="404" y="341" font-size="15" fill="#111" text-anchor="middle">1</text><rect x="467" y="313" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="341" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="593" y="313" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="656" y="341" font-size="15" fill="#111" text-anchor="middle">20</text><rect x="719" y="313" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="782" y="341" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="215" y="359" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="278" y="387" font-size="15" fill="#111" text-anchor="middle">120</text><rect x="341" y="359" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="404" y="387" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="467" y="359" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="387" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="593" y="359" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="656" y="387" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="719" y="359" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="782" y="387" font-size="15" fill="#111" text-anchor="middle">40</text><rect x="341" y="267" width="126" height="46" fill="none" stroke="#C29E08" stroke-width="3"/><line x1="404" y1="374" x2="404.0" y2="304.0" stroke="#C29E08" stroke-width="2"/><polygon points="404,294 410.0,304.0 398.0,304.0" fill="#C29E08"/><text x="404" y="394" class="small" fill="#C29E08" font-weight="700" text-anchor="middle">одна ячейка = одно число</text>
-    <g transform="translate(80, 470)">
+<g transform="translate(-50, 0)"><line x1="205" y1="158" x2="846.0" y2="158.0" stroke="#5E5850" stroke-width="1.2"/><polygon points="855,158 846.0,164.0 846.0,152.0" fill="#5E5850"/><line x1="855" y1="158" x2="214.0" y2="158.0" stroke="#5E5850" stroke-width="1.2"/><polygon points="205,158 214.0,152.0 214.0,164.0" fill="#5E5850"/><text x="530" y="148" class="label" text-anchor="middle">СТОЛБЦЫ = признаки (характеристики)</text><text class="label" text-anchor="middle" transform="translate(180, 313) rotate(-90)">СТРОКИ = объекты</text><line x1="198" y1="225" x2="198.0" y2="392.0" stroke="#5E5850" stroke-width="1.2"/><polygon points="198,401 192.0,392.0 204.0,392.0" fill="#5E5850"/><rect x="215" y="175" width="126" height="46" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="278" y="203" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Площадь</text><rect x="341" y="175" width="126" height="46" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="404" y="203" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Комнаты</text><rect x="467" y="175" width="126" height="46" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="530" y="203" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Этаж</text><rect x="593" y="175" width="126" height="46" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="656" y="203" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Возраст</text><rect x="719" y="175" width="126" height="46" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="782" y="203" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Цена, млн</text><rect x="215" y="221" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="278" y="249" font-size="15" fill="#111" text-anchor="middle">65</text><rect x="341" y="221" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="404" y="249" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="467" y="221" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="249" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="593" y="221" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="656" y="249" font-size="15" fill="#111" text-anchor="middle">10</text><rect x="719" y="221" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="782" y="249" font-size="15" fill="#111" text-anchor="middle">18</text><rect x="215" y="267" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="278" y="295" font-size="15" fill="#111" text-anchor="middle">80</text><rect x="341" y="267" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="404" y="295" font-size="15" fill="#111" text-anchor="middle">3</text><rect x="467" y="267" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="295" font-size="15" fill="#111" text-anchor="middle">7</text><rect x="593" y="267" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="656" y="295" font-size="15" fill="#111" text-anchor="middle">5</text><rect x="719" y="267" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="782" y="295" font-size="15" fill="#111" text-anchor="middle">25</text><rect x="215" y="313" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="278" y="341" font-size="15" fill="#111" text-anchor="middle">45</text><rect x="341" y="313" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="404" y="341" font-size="15" fill="#111" text-anchor="middle">1</text><rect x="467" y="313" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="341" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="593" y="313" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="656" y="341" font-size="15" fill="#111" text-anchor="middle">20</text><rect x="719" y="313" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="782" y="341" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="215" y="359" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="278" y="387" font-size="15" fill="#111" text-anchor="middle">120</text><rect x="341" y="359" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="404" y="387" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="467" y="359" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="387" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="593" y="359" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="656" y="387" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="719" y="359" width="126" height="46" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="782" y="387" font-size="15" fill="#111" text-anchor="middle">40</text><rect x="341" y="359" width="126" height="46" fill="none" stroke="#C29E08" stroke-width="3"/><line x1="404" y1="440" x2="404" y2="419" stroke="#C29E08" stroke-width="2"/><polygon points="404,409 410,419 398,419" fill="#C29E08"/><text x="404" y="458" class="small" fill="#C29E08" font-weight="700" text-anchor="middle">одна ячейка = одно число</text></g>
+    <g transform="translate(80, 482)">
       <rect width="800" height="100" rx="12" fill="#FFFBEB" stroke="#C29E08" stroke-width="1.5"/>
       <text x="400" y="34" class="text" font-weight="700" text-anchor="middle">Для модели любая таблица выглядит как прямоугольник чисел (матрица)</text>
       <text x="400" y="62" class="small" text-anchor="middle">Строки: отдельные объекты (здесь 4 квартиры). Столбцы: их измеримые характеристики.</text>
@@ -624,7 +624,7 @@ $$\text{выход} = f(\text{вход})$$
   </g>
 
   <g data-key="step2" data-only="1">
-<rect x="230" y="120" width="120" height="42" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="290" y="146" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Площадь</text><rect x="350" y="120" width="120" height="42" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="410" y="146" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Комнаты</text><rect x="470" y="120" width="120" height="42" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="530" y="146" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Этаж</text><rect x="590" y="120" width="120" height="42" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="650" y="146" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Возраст</text><rect x="710" y="120" width="120" height="42" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="770" y="146" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Цена, млн</text><rect x="230" y="162" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="290" y="188" font-size="15" fill="#111" text-anchor="middle">65</text><rect x="350" y="162" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="410" y="188" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="470" y="162" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="188" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="590" y="162" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="650" y="188" font-size="15" fill="#111" text-anchor="middle">10</text><rect x="710" y="162" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="770" y="188" font-size="15" fill="#111" text-anchor="middle">18</text><rect x="230" y="204" width="120" height="42" fill="#FFF4D2" stroke="#dddddd" stroke-width="1"/><text x="290" y="230" font-size="15" fill="#111" text-anchor="middle">80</text><rect x="350" y="204" width="120" height="42" fill="#FFF4D2" stroke="#dddddd" stroke-width="1"/><text x="410" y="230" font-size="15" fill="#111" text-anchor="middle">3</text><rect x="470" y="204" width="120" height="42" fill="#FFF4D2" stroke="#dddddd" stroke-width="1"/><text x="530" y="230" font-size="15" fill="#111" text-anchor="middle">7</text><rect x="590" y="204" width="120" height="42" fill="#FFF4D2" stroke="#dddddd" stroke-width="1"/><text x="650" y="230" font-size="15" fill="#111" text-anchor="middle">5</text><rect x="710" y="204" width="120" height="42" fill="#FFF4D2" stroke="#dddddd" stroke-width="1"/><text x="770" y="230" font-size="15" fill="#111" text-anchor="middle">25</text><rect x="230" y="204" width="600" height="42" fill="none" stroke="#C29E08" stroke-width="3"/><rect x="230" y="246" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="290" y="272" font-size="15" fill="#111" text-anchor="middle">45</text><rect x="350" y="246" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="410" y="272" font-size="15" fill="#111" text-anchor="middle">1</text><rect x="470" y="246" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="272" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="590" y="246" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="650" y="272" font-size="15" fill="#111" text-anchor="middle">20</text><rect x="710" y="246" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="770" y="272" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="230" y="288" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="290" y="314" font-size="15" fill="#111" text-anchor="middle">120</text><rect x="350" y="288" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="410" y="314" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="470" y="288" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="314" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="590" y="288" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="650" y="314" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="710" y="288" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="770" y="314" font-size="15" fill="#111" text-anchor="middle">40</text><text x="846" y="230" class="small" fill="#C29E08" font-weight="700">→ объект №2</text><line x1="530" y1="336" x2="530.0" y2="332.0" stroke="#C29E08" stroke-width="2"/><polygon points="530,322 536.0,332.0 524.0,332.0" fill="#C29E08"/><text x="544" y="378" class="small" fill="#C29E08" font-weight="700">вынем эту строку</text><text x="210" y="428" font-size="20" font-weight="800" fill="#111" text-anchor="end">x⁽²⁾ =</text><text x="234" y="430" font-size="40" fill="#111" text-anchor="end">[</text><rect x="240" y="400" width="88" height="50" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.4"/><text x="284" y="432" font-size="18" font-weight="700" fill="#111" text-anchor="middle">80</text><text x="284" y="470" font-size="11" fill="#5E5850" text-anchor="middle">Площадь</text><rect x="338" y="400" width="88" height="50" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.4"/><text x="382" y="432" font-size="18" font-weight="700" fill="#111" text-anchor="middle">3</text><text x="382" y="470" font-size="11" fill="#5E5850" text-anchor="middle">Комнаты</text><rect x="436" y="400" width="88" height="50" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.4"/><text x="480" y="432" font-size="18" font-weight="700" fill="#111" text-anchor="middle">7</text><text x="480" y="470" font-size="11" fill="#5E5850" text-anchor="middle">Этаж</text><rect x="534" y="400" width="88" height="50" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.4"/><text x="578" y="432" font-size="18" font-weight="700" fill="#111" text-anchor="middle">5</text><text x="578" y="470" font-size="11" fill="#5E5850" text-anchor="middle">Возраст</text><rect x="632" y="400" width="88" height="50" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.4"/><text x="676" y="432" font-size="18" font-weight="700" fill="#111" text-anchor="middle">25</text><text x="676" y="470" font-size="11" fill="#5E5850" text-anchor="middle">Цена</text><text x="726" y="430" font-size="40" fill="#111">]</text>
+<g transform="translate(-50, 0)"><rect x="230" y="120" width="120" height="42" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="290" y="146" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Площадь</text><rect x="350" y="120" width="120" height="42" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="410" y="146" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Комнаты</text><rect x="470" y="120" width="120" height="42" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="530" y="146" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Этаж</text><rect x="590" y="120" width="120" height="42" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="650" y="146" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Возраст</text><rect x="710" y="120" width="120" height="42" fill="#EFEFEC" stroke="#b6b6b6" stroke-width="1"/><text x="770" y="146" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Цена, млн</text><rect x="230" y="162" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="290" y="188" font-size="15" fill="#111" text-anchor="middle">65</text><rect x="350" y="162" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="410" y="188" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="470" y="162" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="188" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="590" y="162" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="650" y="188" font-size="15" fill="#111" text-anchor="middle">10</text><rect x="710" y="162" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="770" y="188" font-size="15" fill="#111" text-anchor="middle">18</text><rect x="230" y="204" width="120" height="42" fill="#FFF4D2" stroke="#dddddd" stroke-width="1"/><text x="290" y="230" font-size="15" fill="#111" text-anchor="middle">80</text><rect x="350" y="204" width="120" height="42" fill="#FFF4D2" stroke="#dddddd" stroke-width="1"/><text x="410" y="230" font-size="15" fill="#111" text-anchor="middle">3</text><rect x="470" y="204" width="120" height="42" fill="#FFF4D2" stroke="#dddddd" stroke-width="1"/><text x="530" y="230" font-size="15" fill="#111" text-anchor="middle">7</text><rect x="590" y="204" width="120" height="42" fill="#FFF4D2" stroke="#dddddd" stroke-width="1"/><text x="650" y="230" font-size="15" fill="#111" text-anchor="middle">5</text><rect x="710" y="204" width="120" height="42" fill="#FFF4D2" stroke="#dddddd" stroke-width="1"/><text x="770" y="230" font-size="15" fill="#111" text-anchor="middle">25</text><rect x="230" y="204" width="600" height="42" fill="none" stroke="#C29E08" stroke-width="3"/><rect x="230" y="246" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="290" y="272" font-size="15" fill="#111" text-anchor="middle">45</text><rect x="350" y="246" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="410" y="272" font-size="15" fill="#111" text-anchor="middle">1</text><rect x="470" y="246" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="272" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="590" y="246" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="650" y="272" font-size="15" fill="#111" text-anchor="middle">20</text><rect x="710" y="246" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="770" y="272" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="230" y="288" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="290" y="314" font-size="15" fill="#111" text-anchor="middle">120</text><rect x="350" y="288" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="410" y="314" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="470" y="288" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="530" y="314" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="590" y="288" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="650" y="314" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="710" y="288" width="120" height="42" fill="#fff" stroke="#dddddd" stroke-width="1"/><text x="770" y="314" font-size="15" fill="#111" text-anchor="middle">40</text><text x="846" y="230" class="small" fill="#C29E08" font-weight="700">→ объект №2</text><line x1="530" y1="336" x2="530.0" y2="332.0" stroke="#C29E08" stroke-width="2"/><polygon points="530,322 536.0,332.0 524.0,332.0" fill="#C29E08"/><text x="530" y="362" class="small" fill="#C29E08" font-weight="700" text-anchor="middle">вынем эту строку</text></g><text x="166" y="428" font-size="20" font-weight="800" fill="#111" text-anchor="end">x⁽²⁾ =</text><text x="191" y="430" font-size="40" fill="#111" text-anchor="end">[</text><rect x="195" y="400" width="90" height="50" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.4"/><text x="240" y="432" font-size="18" font-weight="700" fill="#111" text-anchor="middle">80</text><text x="240" y="470" font-size="11" fill="#5E5850" text-anchor="middle">Площадь</text><rect x="315" y="400" width="90" height="50" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.4"/><text x="360" y="432" font-size="18" font-weight="700" fill="#111" text-anchor="middle">3</text><text x="360" y="470" font-size="11" fill="#5E5850" text-anchor="middle">Комнаты</text><rect x="435" y="400" width="90" height="50" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.4"/><text x="480" y="432" font-size="18" font-weight="700" fill="#111" text-anchor="middle">7</text><text x="480" y="470" font-size="11" fill="#5E5850" text-anchor="middle">Этаж</text><rect x="555" y="400" width="90" height="50" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.4"/><text x="600" y="432" font-size="18" font-weight="700" fill="#111" text-anchor="middle">5</text><text x="600" y="470" font-size="11" fill="#5E5850" text-anchor="middle">Возраст</text><rect x="675" y="400" width="90" height="50" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.4"/><text x="720" y="432" font-size="18" font-weight="700" fill="#111" text-anchor="middle">25</text><text x="720" y="470" font-size="11" fill="#5E5850" text-anchor="middle">Цена</text><text x="769" y="430" font-size="40" fill="#111">]</text>
     <g transform="translate(80, 488)">
       <rect width="800" height="82" rx="12" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.5"/>
       <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">Строка таблицы становится вектором: списком чисел в фиксированном порядке</text>
@@ -633,7 +633,7 @@ $$\text{выход} = f(\text{вход})$$
   </g>
 
   <g data-key="step3" data-only="1">
-<rect x="175" y="160" width="118" height="46" fill="#DCEAFB" stroke="#b6b6b6" stroke-width="1"/><text x="234" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Площадь</text><rect x="293" y="160" width="118" height="46" fill="#DCEAFB" stroke="#b6b6b6" stroke-width="1"/><text x="352" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Комнаты</text><rect x="411" y="160" width="118" height="46" fill="#DCEAFB" stroke="#b6b6b6" stroke-width="1"/><text x="470" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Этаж</text><rect x="529" y="160" width="118" height="46" fill="#DCEAFB" stroke="#b6b6b6" stroke-width="1"/><text x="588" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Возраст</text><rect x="691" y="160" width="118" height="46" fill="#E2F2D2" stroke="#b6b6b6" stroke-width="1"/><text x="750" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Цена, млн</text><rect x="175" y="206" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="234" y="234" font-size="15" fill="#111" text-anchor="middle">65</text><rect x="293" y="206" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="352" y="234" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="411" y="206" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="470" y="234" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="529" y="206" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="588" y="234" font-size="15" fill="#111" text-anchor="middle">10</text><rect x="691" y="206" width="118" height="46" fill="#F5FBEE" stroke="#dddddd" stroke-width="1"/><text x="750" y="234" font-size="15" fill="#111" text-anchor="middle">18</text><rect x="175" y="252" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="234" y="280" font-size="15" fill="#111" text-anchor="middle">80</text><rect x="293" y="252" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="352" y="280" font-size="15" fill="#111" text-anchor="middle">3</text><rect x="411" y="252" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="470" y="280" font-size="15" fill="#111" text-anchor="middle">7</text><rect x="529" y="252" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="588" y="280" font-size="15" fill="#111" text-anchor="middle">5</text><rect x="691" y="252" width="118" height="46" fill="#F5FBEE" stroke="#dddddd" stroke-width="1"/><text x="750" y="280" font-size="15" fill="#111" text-anchor="middle">25</text><rect x="175" y="298" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="234" y="326" font-size="15" fill="#111" text-anchor="middle">45</text><rect x="293" y="298" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="352" y="326" font-size="15" fill="#111" text-anchor="middle">1</text><rect x="411" y="298" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="470" y="326" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="529" y="298" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="588" y="326" font-size="15" fill="#111" text-anchor="middle">20</text><rect x="691" y="298" width="118" height="46" fill="#F5FBEE" stroke="#dddddd" stroke-width="1"/><text x="750" y="326" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="175" y="344" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="234" y="372" font-size="15" fill="#111" text-anchor="middle">120</text><rect x="293" y="344" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="352" y="372" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="411" y="344" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="470" y="372" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="529" y="344" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="588" y="372" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="691" y="344" width="118" height="46" fill="#F5FBEE" stroke="#dddddd" stroke-width="1"/><text x="750" y="372" font-size="15" fill="#111" text-anchor="middle">40</text><line x1="175" y1="406" x2="647" y2="406" stroke="#3576C0" stroke-width="2"/><line x1="175" y1="406" x2="175" y2="398" stroke="#3576C0" stroke-width="2"/><line x1="647" y1="406" x2="647" y2="398" stroke="#3576C0" stroke-width="2"/><text x="411" y="432" font-size="22" font-weight="800" fill="#3576C0" text-anchor="middle">X: признаки (вход)</text><line x1="691" y1="406" x2="809" y2="406" stroke="#73B222" stroke-width="2"/><line x1="691" y1="406" x2="691" y2="398" stroke="#73B222" stroke-width="2"/><line x1="809" y1="406" x2="809" y2="398" stroke="#73B222" stroke-width="2"/><text x="750" y="432" font-size="22" font-weight="800" fill="#73B222" text-anchor="middle">y: цель</text><text x="669" y="138" font-size="26" fill="#5E5850" text-anchor="middle">→</text>
+<rect x="175" y="160" width="118" height="46" fill="#DCEAFB" stroke="#b6b6b6" stroke-width="1"/><text x="234" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Площадь</text><rect x="293" y="160" width="118" height="46" fill="#DCEAFB" stroke="#b6b6b6" stroke-width="1"/><text x="352" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Комнаты</text><rect x="411" y="160" width="118" height="46" fill="#DCEAFB" stroke="#b6b6b6" stroke-width="1"/><text x="470" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Этаж</text><rect x="529" y="160" width="118" height="46" fill="#DCEAFB" stroke="#b6b6b6" stroke-width="1"/><text x="588" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Возраст</text><rect x="691" y="160" width="118" height="46" fill="#E2F2D2" stroke="#b6b6b6" stroke-width="1"/><text x="750" y="188" font-size="13.5" font-weight="700" fill="#111" text-anchor="middle">Цена, млн</text><rect x="175" y="206" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="234" y="234" font-size="15" fill="#111" text-anchor="middle">65</text><rect x="293" y="206" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="352" y="234" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="411" y="206" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="470" y="234" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="529" y="206" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="588" y="234" font-size="15" fill="#111" text-anchor="middle">10</text><rect x="691" y="206" width="118" height="46" fill="#F5FBEE" stroke="#dddddd" stroke-width="1"/><text x="750" y="234" font-size="15" fill="#111" text-anchor="middle">18</text><rect x="175" y="252" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="234" y="280" font-size="15" fill="#111" text-anchor="middle">80</text><rect x="293" y="252" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="352" y="280" font-size="15" fill="#111" text-anchor="middle">3</text><rect x="411" y="252" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="470" y="280" font-size="15" fill="#111" text-anchor="middle">7</text><rect x="529" y="252" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="588" y="280" font-size="15" fill="#111" text-anchor="middle">5</text><rect x="691" y="252" width="118" height="46" fill="#F5FBEE" stroke="#dddddd" stroke-width="1"/><text x="750" y="280" font-size="15" fill="#111" text-anchor="middle">25</text><rect x="175" y="298" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="234" y="326" font-size="15" fill="#111" text-anchor="middle">45</text><rect x="293" y="298" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="352" y="326" font-size="15" fill="#111" text-anchor="middle">1</text><rect x="411" y="298" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="470" y="326" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="529" y="298" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="588" y="326" font-size="15" fill="#111" text-anchor="middle">20</text><rect x="691" y="298" width="118" height="46" fill="#F5FBEE" stroke="#dddddd" stroke-width="1"/><text x="750" y="326" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="175" y="344" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="234" y="372" font-size="15" fill="#111" text-anchor="middle">120</text><rect x="293" y="344" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="352" y="372" font-size="15" fill="#111" text-anchor="middle">4</text><rect x="411" y="344" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="470" y="372" font-size="15" fill="#111" text-anchor="middle">12</text><rect x="529" y="344" width="118" height="46" fill="#F5F9FE" stroke="#dddddd" stroke-width="1"/><text x="588" y="372" font-size="15" fill="#111" text-anchor="middle">2</text><rect x="691" y="344" width="118" height="46" fill="#F5FBEE" stroke="#dddddd" stroke-width="1"/><text x="750" y="372" font-size="15" fill="#111" text-anchor="middle">40</text><line x1="175" y1="406" x2="647" y2="406" stroke="#3576C0" stroke-width="2"/><line x1="175" y1="406" x2="175" y2="398" stroke="#3576C0" stroke-width="2"/><line x1="647" y1="406" x2="647" y2="398" stroke="#3576C0" stroke-width="2"/><text x="411" y="432" font-size="22" font-weight="800" fill="#3576C0" text-anchor="middle">X: признаки (вход)</text><line x1="691" y1="406" x2="809" y2="406" stroke="#73B222" stroke-width="2"/><line x1="691" y1="406" x2="691" y2="398" stroke="#73B222" stroke-width="2"/><line x1="809" y1="406" x2="809" y2="398" stroke="#73B222" stroke-width="2"/><text x="750" y="432" font-size="22" font-weight="800" fill="#73B222" text-anchor="middle">y: цель</text>
     <g transform="translate(80, 460)">
       <rect width="800" height="110" rx="12" fill="#F0FAF0" stroke="#73B222" stroke-width="1.5"/>
       <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">X: то, что известно. y: то, что нужно предсказать.</text>
@@ -656,8 +656,8 @@ $$\text{выход} = f(\text{вход})$$
   </g>
 
   <g data-key="step5" data-only="1">
-<text x="220" y="136" class="label" fill="#3576C0" text-anchor="middle">признаки одной квартиры</text><rect x="110" y="150" width="220" height="40" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.3"/><text x="126" y="175" font-size="15" fill="#111">Площадь: 65</text><rect x="110" y="196" width="220" height="40" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.3"/><text x="126" y="221" font-size="15" fill="#111">Комнаты: 2</text><rect x="110" y="242" width="220" height="40" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.3"/><text x="126" y="267" font-size="15" fill="#111">Этаж: 4</text><rect x="110" y="288" width="220" height="40" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.3"/><text x="126" y="313" font-size="15" fill="#111">Возраст: 10</text><text x="220" y="342" font-size="15" font-weight="700" fill="#3576C0" text-anchor="middle">вектор x = [65, 2, 4, 10]</text><line x1="338" y1="239" x2="389.2" y2="247.8" stroke="#5E5850" stroke-width="2.5"/><polygon points="402,250 388.2,253.7 390.2,241.9" fill="#5E5850"/><rect x="410" y="195" width="150" height="110" rx="14" fill="#FFFBEB" stroke="#C29E08" stroke-width="2.5"/><text x="485" y="241" font-size="30" font-weight="800" fill="#C29E08" text-anchor="middle">f</text><text x="485" y="273" class="small" text-anchor="middle">модель</text><text x="485" y="291" class="small" text-anchor="middle">(функция)</text><line x1="568" y1="250" x2="639.0" y2="250.0" stroke="#5E5850" stroke-width="2.5"/><polygon points="652,250 639.0,256.0 639.0,244.0" fill="#5E5850"/><rect x="660" y="208" width="200" height="84" rx="12" fill="#F0FAF0" stroke="#73B222" stroke-width="2"/><text x="760" y="238" class="small" fill="#73B222" font-weight="700" text-anchor="middle">предсказание цены</text><text x="760" y="272" font-size="24" font-weight="800" fill="#111" text-anchor="middle">ŷ ≈ 18 млн</text><text x="480" y="370" font-size="22" font-weight="800" text-anchor="middle"><tspan fill="#C29E08">f</tspan><tspan fill="#111">(</tspan><tspan fill="#3576C0">X</tspan><tspan fill="#111">) → </tspan><tspan fill="#73B222">y</tspan></text>
-    <g transform="translate(80, 405)">
+<text x="190" y="136" class="label" fill="#3576C0" text-anchor="middle">признаки одной квартиры</text><rect x="80" y="150" width="220" height="40" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.3"/><text x="96" y="175" font-size="15" fill="#111">Площадь: 65</text><rect x="80" y="196" width="220" height="40" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.3"/><text x="96" y="221" font-size="15" fill="#111">Комнаты: 2</text><rect x="80" y="242" width="220" height="40" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.3"/><text x="96" y="267" font-size="15" fill="#111">Этаж: 4</text><rect x="80" y="288" width="220" height="40" rx="6" fill="#F4F8FF" stroke="#3576C0" stroke-width="1.3"/><text x="96" y="313" font-size="15" fill="#111">Возраст: 10</text><text x="190" y="350" font-size="15" font-weight="700" fill="#3576C0" text-anchor="middle">вектор x = [65, 2, 4, 10]</text><line x1="310" y1="239" x2="377" y2="239" stroke="#5E5850" stroke-width="2.5"/><polygon points="390,239 377,245 377,233" fill="#5E5850"/><rect x="400" y="184" width="160" height="110" rx="14" fill="#FFFBEB" stroke="#C29E08" stroke-width="2.5"/><text x="480" y="230" font-size="30" font-weight="800" fill="#C29E08" text-anchor="middle">f</text><text x="480" y="262" class="small" text-anchor="middle">модель</text><text x="480" y="280" class="small" text-anchor="middle">(функция)</text><line x1="570" y1="239" x2="637" y2="239" stroke="#5E5850" stroke-width="2.5"/><polygon points="650,239 637,245 637,233" fill="#5E5850"/><rect x="660" y="197" width="220" height="84" rx="12" fill="#F0FAF0" stroke="#73B222" stroke-width="2"/><text x="770" y="227" class="small" fill="#73B222" font-weight="700" text-anchor="middle">предсказание цены</text><text x="770" y="261" font-size="24" font-weight="800" fill="#111" text-anchor="middle">ŷ ≈ 18 млн</text><text x="480" y="384" font-size="22" font-weight="800" text-anchor="middle"><tspan fill="#C29E08">f</tspan><tspan fill="#111">(</tspan><tspan fill="#3576C0">X</tspan><tspan fill="#111">) → </tspan><tspan fill="#73B222">y</tspan></text>
+    <g transform="translate(80, 410)">
       <rect width="800" height="165" rx="12" fill="#F0FAF0" stroke="#73B222" stroke-width="1.5"/>
       <text x="400" y="32" class="text" font-weight="700" text-anchor="middle">Цель машинного обучения: найти такую f</text>
       <text x="400" y="60" class="small" text-anchor="middle">...чтобы для каждого объекта предсказание f(признаки) было близко к настоящему ответу y.</text>
@@ -1988,18 +1988,18 @@ $$\text{выход} = f(\text{вход})$$
     <rect class="box-blue" x="380" y="230" width="200" height="160"/>
     <text x="480" y="270" class="lbl" text-anchor="middle" font-weight="700">Картинка</text>
     <g>
-      <rect x="420" y="288" width="20" height="20" fill="#C30B0A"/>
-      <rect x="440" y="288" width="20" height="20" fill="#C29E08"/>
-      <rect x="460" y="288" width="20" height="20" fill="#73B222"/>
-      <rect x="480" y="288" width="20" height="20" fill="#3576C0"/>
-      <rect x="420" y="308" width="20" height="20" fill="#C29E08"/>
-      <rect x="440" y="308" width="20" height="20" fill="#73B222"/>
-      <rect x="460" y="308" width="20" height="20" fill="#3576C0"/>
-      <rect x="480" y="308" width="20" height="20" fill="#C30B0A"/>
-      <rect x="420" y="328" width="20" height="20" fill="#73B222"/>
-      <rect x="440" y="328" width="20" height="20" fill="#3576C0"/>
-      <rect x="460" y="328" width="20" height="20" fill="#C30B0A"/>
-      <rect x="480" y="328" width="20" height="20" fill="#C29E08"/>
+      <rect x="440" y="288" width="20" height="20" fill="#C30B0A"/>
+      <rect x="460" y="288" width="20" height="20" fill="#C29E08"/>
+      <rect x="480" y="288" width="20" height="20" fill="#73B222"/>
+      <rect x="500" y="288" width="20" height="20" fill="#3576C0"/>
+      <rect x="440" y="308" width="20" height="20" fill="#C29E08"/>
+      <rect x="460" y="308" width="20" height="20" fill="#73B222"/>
+      <rect x="480" y="308" width="20" height="20" fill="#3576C0"/>
+      <rect x="500" y="308" width="20" height="20" fill="#C30B0A"/>
+      <rect x="440" y="328" width="20" height="20" fill="#73B222"/>
+      <rect x="460" y="328" width="20" height="20" fill="#3576C0"/>
+      <rect x="480" y="328" width="20" height="20" fill="#C30B0A"/>
+      <rect x="500" y="328" width="20" height="20" fill="#C29E08"/>
     </g>
 
     <rect class="box-blue" x="680" y="230" width="200" height="160"/>
@@ -2012,17 +2012,21 @@ $$\text{выход} = f(\text{вход})$$
 
   <g data-key="step2" data-only="1">
     <text x="200" y="220" class="lbl" text-anchor="middle">Одна квартира</text>
+    <rect x="90" y="235" width="220" height="30" fill="#F2F7FD"/>
     <g stroke="#3576C0" stroke-width="1.3" fill="none">
-      <rect x="90" y="250" width="220" height="120"/>
-      <line x1="90" y1="280" x2="310" y2="280"/>
-      <line x1="90" y1="310" x2="310" y2="310"/>
-      <line x1="90" y1="340" x2="310" y2="340"/>
-      <line x1="200" y1="250" x2="200" y2="370"/>
+      <rect x="90" y="235" width="220" height="150"/>
+      <line x1="90" y1="265" x2="310" y2="265"/>
+      <line x1="90" y1="295" x2="310" y2="295"/>
+      <line x1="90" y1="325" x2="310" y2="325"/>
+      <line x1="90" y1="355" x2="310" y2="355"/>
+      <line x1="200" y1="235" x2="200" y2="385"/>
     </g>
     <g class="small" fill="#5E5850">
-      <text x="100" y="300">площадь</text><text x="240" y="300">65</text>
-      <text x="100" y="330">комнаты</text><text x="240" y="330">2</text>
-      <text x="100" y="360">этаж</text><text x="240" y="360">4</text>
+      <text x="100" y="255" font-weight="700" fill="#3576C0">признак</text><text x="210" y="255" font-weight="700" fill="#3576C0">значение</text>
+      <text x="100" y="285">площадь</text><text x="240" y="285">65</text>
+      <text x="100" y="315">комнаты</text><text x="240" y="315">2</text>
+      <text x="100" y="345">этаж</text><text x="240" y="345">4</text>
+      <text x="100" y="375">возраст</text><text x="240" y="375">10</text>
     </g>
 
     <line x1="330" y1="310" x2="452" y2="310" stroke="#5E5850" stroke-width="2.5" marker-end="url(#tsArrow)"/>
@@ -2030,27 +2034,27 @@ $$\text{выход} = f(\text{вход})$$
     <rect class="box-green" x="470" y="270" width="410" height="80"/>
     <text x="675" y="318" class="mono" text-anchor="middle" font-weight="700" fill="#73B222">x = [65, 2, 4, 10]</text>
 
-    <text x="675" y="410" class="small" text-anchor="middle">Вектор формы <tspan font-weight="700">(m,)</tspan>: m признаков подряд</text>
+    <text x="675" y="380" class="small" text-anchor="middle">Вектор формы <tspan font-weight="700">(m,)</tspan>: m признаков подряд</text>
     <text x="480" y="500" class="small" text-anchor="middle">Порядок важен: 2-я позиция всегда «комнаты», 3-я всегда «этаж»</text>
   </g>
 
   <g data-key="step3" data-only="1">
-    <text x="200" y="215" class="lbl" text-anchor="middle">Один пиксель</text>
-    <rect x="150" y="235" width="100" height="100" fill="#dc82c8" stroke="#3576C0" stroke-width="1.5"/>
+    <text x="150" y="250" class="lbl" text-anchor="middle">Один пиксель</text>
+    <rect x="100" y="264" width="100" height="100" fill="#dc82c8" stroke="#3576C0" stroke-width="1.5"/>
 
-    <line x1="266" y1="285" x2="388" y2="285" stroke="#5E5850" stroke-width="2.5" marker-end="url(#tsArrow)"/>
+    <line x1="216" y1="314" x2="338" y2="314" stroke="#5E5850" stroke-width="2.5" marker-end="url(#tsArrow)"/>
 
-    <rect class="box-red"   x="400" y="240" width="150" height="44" fill="#FFF2F2" stroke="#C30B0A" stroke-width="1.45" rx="14"/>
-    <text x="475" y="268" class="mono" text-anchor="middle" font-weight="700" fill="#C30B0A">R = 220</text>
-    <rect class="box-green" x="400" y="292" width="150" height="44"/>
-    <text x="475" y="320" class="mono" text-anchor="middle" font-weight="700" fill="#73B222">G = 130</text>
-    <rect class="box-blue"  x="400" y="344" width="150" height="44"/>
-    <text x="475" y="372" class="mono" text-anchor="middle" font-weight="700" fill="#3576C0">B = 200</text>
+    <rect class="box-red"   x="350" y="240" width="150" height="44" fill="#FFF2F2" stroke="#C30B0A" stroke-width="1.45" rx="14"/>
+    <text x="425" y="268" class="mono" text-anchor="middle" font-weight="700" fill="#C30B0A">R = 220</text>
+    <rect class="box-green" x="350" y="292" width="150" height="44"/>
+    <text x="425" y="320" class="mono" text-anchor="middle" font-weight="700" fill="#73B222">G = 130</text>
+    <rect class="box-blue"  x="350" y="344" width="150" height="44"/>
+    <text x="425" y="372" class="mono" text-anchor="middle" font-weight="700" fill="#3576C0">B = 200</text>
 
-    <line x1="566" y1="314" x2="612" y2="314" stroke="#5E5850" stroke-width="2" marker-end="url(#tsArrow)"/>
-    <rect x="625" y="270" width="255" height="88" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3" rx="14"/>
-    <text x="752" y="305" class="text" text-anchor="middle" font-weight="700">3D-тензор</text>
-    <text x="752" y="335" class="mono" text-anchor="middle">(H × W × C)</text>
+    <line x1="516" y1="314" x2="588" y2="314" stroke="#5E5850" stroke-width="2.5" marker-end="url(#tsArrow)"/>
+    <rect x="605" y="270" width="255" height="88" fill="#F6F5F3" stroke="#5E5850" stroke-width="1.3" rx="14"/>
+    <text x="732" y="305" class="text" text-anchor="middle" font-weight="700">3D-тензор</text>
+    <text x="732" y="335" class="mono" text-anchor="middle">(H × W × C)</text>
 
     <text x="480" y="500" class="small" text-anchor="middle">Вся картинка: сетка таких пикселей, высота × ширина × 3 канала</text>
   </g>
@@ -2141,263 +2145,6 @@ $$\text{выход} = f(\text{вход})$$
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
-
-Ниже все четыре случая в одном месте. Выберите тип данных, поменяйте его размер и подайте результат в коробку. Коробка запоминает форму первого входа: модель строится под одну форму входа, и вход другой формы она не примет.
-
-<div class="ai-live" id="vmShapes">
-  <div class="stage-figure">
-<svg id="vmShapesSvg" viewBox="0 0 900 350" role="img" aria-label="Таблица, картинка, слово и звук превращаются в тензоры чисел фиксированной формы и подаются в одну и ту же чёрную коробку">
-  <defs>
-    <marker id="vmShArr" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#3576C0"/></marker>
-  </defs>
-  <g data-sh="raw"></g>
-  <g data-sh="tensor"></g>
-  <g data-sh="box"></g>
-  <g data-sh="fly"></g>
-</svg>
-  </div>
-  <div class="ai-live-controls">
-    <div class="ai-slider"><label for="vmShSize"><span id="vmShSizeLab">Признаков m</span> <output id="vmShSizeOut">4</output></label>
-      <input id="vmShSize" type="range" min="1" max="12" step="1" value="4"></div>
-    <div class="ai-live-btns" role="group" aria-label="Тип данных">
-      <button type="button" data-kind="table" aria-pressed="true">Таблица</button>
-      <button type="button" data-kind="image" aria-pressed="false">Картинка</button>
-      <button type="button" data-kind="text" aria-pressed="false">Текст</button>
-      <button type="button" data-kind="audio" aria-pressed="false">Звук</button>
-    </div>
-    <div class="ai-live-btns">
-      <button type="button" data-sh-act="feed">В коробку</button>
-      <button type="button" data-sh-act="reset">Сначала</button>
-    </div>
-  </div>
-  <div class="stage-notes">
-    <div class="step-live">
-      <div class="step-kicker">Общий знаменатель · тензор фиксированной формы</div>
-      <h4></h4>
-      <p></p>
-    </div>
-  </div>
-</div>
-
-<script>
-(function () {
-  'use strict';
-  var root = document.getElementById('vmShapes');
-  if (!root) return;
-  var svg = root.querySelector('svg');
-  var NS = 'http://www.w3.org/2000/svg';
-  var F = 'Helvetica, Arial, sans-serif';
-  var FEAT = [['площадь', 65], ['комнаты', 2], ['этаж', 4], ['возраст', 10], ['до метро, мин', 12], ['потолки, см', 270],
-              ['балкон', 1], ['ремонт, лет', 3], ['этажей в доме', 16], ['парковка', 0], ['лифт', 1], ['окна во двор', 1]];
-  var AUDIO_MS = [1, 5, 10, 100, 1000], RATE = 16000;
-  var KIND = {
-    table: { name: 'строка таблицы', into: 'вектор', min: 1, max: 12, def: 4, lab: 'Признаков m',
-             fix: 'Модель учили на одном наборе столбцов, и прогноз она умеет делать только для того же набора в том же порядке.' },
-    image: { name: 'картинка', into: 'тензор', min: 2, max: 32, def: 8, lab: 'Сторона картинки H = W',
-             fix: 'Поэтому перед подачей все картинки приводят к одному размеру, например 224 × 224.' },
-    text: { name: 'слово', into: 'вектор-эмбеддинг', min: 2, max: 300, def: 8, lab: 'Длина эмбеддинга d',
-            fix: 'У одной модели все эмбеддинги одной длины d: она задаётся при обучении и потом не меняется.' },
-    audio: { name: 'звук', into: '1D-сигнал', min: 0, max: 4, def: 1, lab: 'Длительность',
-             fix: 'Поэтому звук режут на куски одной длины или дополняют нулями до нужной длины.' }
-  };
-  function el(name, attrs, parent, text) {
-    var e = document.createElementNS(NS, name);
-    for (var k in attrs) e.setAttribute(k, attrs[k]);
-    if (text !== undefined) e.textContent = text;
-    if (parent) parent.appendChild(e);
-    return e;
-  }
-  function clear(g) { while (g.firstChild) g.removeChild(g.firstChild); }
-  function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
-  function wave(i) { return 0.6 * Math.sin(i * 0.39) + 0.3 * Math.sin(i * 1.7 + 1) + 0.1 * Math.sin(i * 5.3); }
-  function embv(i) { return Math.sin(i * 2.17 + 0.5) * Math.cos(i * 0.61); }
-  function div(v) { // −1…1 → красный…белый…синий
-    var a = Math.min(1, Math.abs(v));
-    return v >= 0 ? 'rgb(' + Math.round(255 - 202 * a) + ',' + Math.round(255 - 137 * a) + ',' + Math.round(255 - 63 * a) + ')'
-                  : 'rgb(' + Math.round(255 - 60 * a) + ',' + Math.round(255 - 244 * a) + ',' + Math.round(255 - 245 * a) + ')';
-  }
-
-  var gRaw = svg.querySelector('[data-sh="raw"]'), gTen = svg.querySelector('[data-sh="tensor"]');
-  var gBox = svg.querySelector('[data-sh="box"]'), gFly = svg.querySelector('[data-sh="fly"]');
-  var sizeIn = document.getElementById('vmShSize'), sizeOut = document.getElementById('vmShSizeOut'), sizeLab = document.getElementById('vmShSizeLab');
-  var kindBtns = Array.prototype.slice.call(root.querySelectorAll('[data-kind]'));
-  var feedBtn = root.querySelector('[data-sh-act="feed"]');
-  var titleEl = root.querySelector('.step-live h4');
-  var textEl = root.querySelector('.step-live p');
-
-  var kind, size, expect, lastFeed, busy;
-  function reset() { kind = 'table'; size = { table: 4, image: 8, text: 8, audio: 1 }; expect = {}; lastFeed = null; busy = false; }
-  reset();
-
-  function shape() {
-    var s = size[kind];
-    if (kind === 'table') return { txt: '(' + s + ',)', n: s, key: s };
-    if (kind === 'image') return { txt: '(' + s + ' × ' + s + ' × 3)', n: s * s * 3, key: s };
-    if (kind === 'text') return { txt: '(' + s + ',)', n: s, key: s };
-    var t = AUDIO_MS[s] * RATE / 1000;
-    return { txt: '(' + fmt(t) + ',)', n: t, key: t };
-  }
-  function durLabel(i) { return AUDIO_MS[i] >= 1000 ? AUDIO_MS[i] / 1000 + ' с' : AUDIO_MS[i] + ' мс'; }
-
-  function drawRaw() {
-    var s = size[kind];
-    el('text', { x: 24, y: 30, 'font-size': 14, 'font-weight': 700, fill: '#111111', 'font-family': F }, gRaw, 'вход: ' + KIND[kind].name);
-    if (kind === 'table') {
-      for (var i = 0; i < s; i++) {
-        var y = 50 + i * 19;
-        el('rect', { x: 24, y: y, width: 250, height: 17, rx: 3, fill: i % 2 ? '#FAFAF7' : '#F2F7FD' }, gRaw);
-        el('text', { x: 32, y: y + 13, 'font-size': 12, fill: '#5E5850', 'font-family': F }, gRaw, FEAT[i][0]);
-        el('text', { x: 266, y: y + 13, 'font-size': 12, 'font-weight': 700, fill: '#111111', 'text-anchor': 'end', 'font-family': F }, gRaw, FEAT[i][1]);
-      }
-    } else if (kind === 'image') {
-      var c = 200 / s;
-      for (var r = 0; r < s; r++) for (var q = 0; q < s; q++) {
-        var u = (r + 0.5) / s, v = (q + 0.5) / s, d = Math.hypot(u - 0.5, v - 0.45);
-        var R = Math.round(90 + 150 * v), G = Math.round(110 + 110 * (1 - u)), B = Math.round(d < 0.3 ? 200 : 90 + 60 * u);
-        el('rect', { x: 50 + q * c, y: 50 + r * c, width: c + 0.3, height: c + 0.3, fill: 'rgb(' + R + ',' + G + ',' + B + ')' }, gRaw);
-      }
-      el('rect', { x: 50, y: 50, width: 200, height: 200, fill: 'none', stroke: '#8E8A82' }, gRaw);
-    } else if (kind === 'text') {
-      el('text', { x: 150, y: 150, 'font-size': 56, 'font-weight': 800, fill: '#111111', 'text-anchor': 'middle', 'font-family': F }, gRaw, '«кот»');
-      el('text', { x: 150, y: 186, 'font-size': 13, fill: '#5E5850', 'text-anchor': 'middle', 'font-family': F }, gRaw, 'одно слово из словаря');
-    } else {
-      var t = shape().n, show = Math.min(t, 160), pts = '';
-      el('line', { x1: 24, y1: 150, x2: 280, y2: 150, stroke: '#E0DDD3' }, gRaw);
-      for (var k = 0; k < show; k++) {
-        var x = 24 + 256 * k / Math.max(1, show - 1), yv = 150 - 80 * wave(k * t / show);
-        pts += (k ? ' ' : '') + x.toFixed(1) + ',' + yv.toFixed(1);
-        if (show <= 80) el('circle', { cx: x, cy: yv, r: 2.2, fill: '#3576C0' }, gRaw);
-      }
-      el('polyline', { points: pts, fill: 'none', stroke: '#3576C0', 'stroke-width': 1.4 }, gRaw);
-      el('text', { x: 24, y: 262, 'font-size': 12, fill: '#5E5850', 'font-family': F }, gRaw,
-         durLabel(size.audio) + ', 16 000 отсчётов в секунду');
-    }
-  }
-
-  function strip(vals, colorOf, labels, parent, x0, y0, total) {
-    total = total || vals.length;
-    var show = Math.min(vals.length, 10), g = el('g', {}, parent);
-    for (var i = 0; i < show; i++) {
-      el('rect', { x: x0 + i * 27, y: y0, width: 25, height: 34, rx: 3, fill: colorOf(vals[i]), stroke: '#3576C0', 'stroke-width': 1 }, g);
-      if (labels) el('text', { x: x0 + i * 27 + 12.5, y: y0 + 21, 'font-size': 10, 'font-weight': 700, fill: '#111111', 'text-anchor': 'middle', 'font-family': F }, g, labels[i]);
-    }
-    if (total > show) el('text', { x: x0, y: y0 + 54, 'font-size': 13, fill: '#5E5850', 'font-family': F }, g, '… и ещё ' + fmt(total - show));
-    return g;
-  }
-
-  function drawTensor() {
-    var s = size[kind], sh = shape(), X = 330, g;
-    el('line', { x1: 286, y1: 150, x2: 322, y2: 150, stroke: '#3576C0', 'stroke-width': 3, 'marker-end': 'url(#vmShArr)' }, gTen);
-    el('text', { x: X, y: 30, 'font-size': 14, 'font-weight': 700, fill: '#3576C0', 'font-family': F }, gTen, 'становится: ' + KIND[kind].into);
-    if (kind === 'table') {
-      var v = FEAT.slice(0, s).map(function (f) { return f[1]; });
-      g = strip(v, function () { return '#F2F7FD'; }, v, gTen, X, 130);
-    } else if (kind === 'image') {
-      g = el('g', {}, gTen);
-      [2, 1, 0].forEach(function (k) {
-        el('rect', { x: X + 46 + k * 16, y: 100 - k * 14, width: 120, height: 90, rx: 4, fill: ['#F8D9D9', '#DCEFD0', '#D6E5F6'][k], stroke: ['#C30B0A', '#4E8A12', '#3576C0'][k], 'stroke-width': 1.5 }, g);
-      });
-      el('text', { x: X + 40, y: 150, 'font-size': 12, 'font-weight': 700, fill: '#111111', 'text-anchor': 'end', 'font-family': F }, g, 'H = ' + s);
-      el('text', { x: X + 106, y: 206, 'font-size': 12, 'font-weight': 700, fill: '#111111', 'text-anchor': 'middle', 'font-family': F }, g, 'W = ' + s);
-      el('text', { x: X + 206, y: 78, 'font-size': 12, 'font-weight': 700, fill: '#111111', 'font-family': F }, g, 'C = 3');
-    } else if (kind === 'text') {
-      var e = []; for (var i = 0; i < s; i++) e.push(embv(i));
-      g = strip(e, div, null, gTen, X, 130);
-    } else {
-      var a = []; for (var j = 0; j < Math.min(sh.n, 10); j++) a.push(wave(j));
-      g = strip(a, div, null, gTen, X, 130, sh.n);
-    }
-    el('text', { x: X, y: 250, 'font-size': 26, 'font-weight': 800, fill: '#111111', 'font-family': F }, gTen, sh.txt);
-    el('text', { x: X, y: 276, 'font-size': 15, 'font-weight': 700, fill: '#3576C0', 'font-family': F }, gTen, '= ' + fmt(sh.n) + ' ' + plural(sh.n));
-    return g;
-  }
-  function plural(n) {
-    var a = n % 10, b = n % 100;
-    return a === 1 && b !== 11 ? 'число' : a >= 2 && a <= 4 && (b < 12 || b > 14) ? 'числа' : 'чисел';
-  }
-
-  function drawBox() {
-    el('rect', { x: 690, y: 90, width: 180, height: 120, rx: 16, fill: '#1b1d26' }, gBox);
-    el('text', { x: 780, y: 156, 'font-size': 18, 'font-weight': 700, fill: '#ffffff', 'text-anchor': 'middle', 'font-family': F }, gBox, 'модель');
-    var ex = expect[kind];
-    el('text', { x: 780, y: 182, 'font-size': 12, fill: '#C9C3B5', 'text-anchor': 'middle', 'font-family': F }, gBox,
-       ex ? 'вход ' + ex.txt : 'форма входа ещё не задана');
-    if (lastFeed && lastFeed.kind === kind) {
-      var ok = lastFeed.ok;
-      el('text', { x: 780, y: 240, 'font-size': 15, 'font-weight': 800, fill: ok ? '#4E8A12' : '#C30B0A', 'text-anchor': 'middle', 'font-family': F }, gBox,
-         ok ? 'принято: ' + lastFeed.txt : 'не подходит: ' + lastFeed.txt);
-      if (!ok) el('text', { x: 780, y: 262, 'font-size': 13, fill: '#C30B0A', 'text-anchor': 'middle', 'font-family': F }, gBox, 'модель ждёт ' + expect[kind].txt);
-    }
-  }
-
-  function note() {
-    var sh = shape(), ex = expect[kind];
-    if (lastFeed && lastFeed.kind === kind && !lastFeed.ok) {
-      return ['Форма ' + lastFeed.txt + ' не подходит: модель ждёт ' + ex.txt,
-        'Модель строится под одну форму входа: её первый слой рассчитан ровно на ' + fmt(ex.n) + ' ' + plural(ex.n) + '. ' + KIND[kind].fix +
-        ' Верните прежний размер или нажмите «Сначала», чтобы задать коробке новую форму.'];
-    }
-    if (lastFeed && lastFeed.kind === kind) {
-      return ['Принято: ' + sh.txt + ', ' + fmt(sh.n) + ' ' + plural(sh.n),
-        'В коробку зашёл тензор чисел формы ' + sh.txt + '. Откуда эти числа взялись, из таблицы, картинки, словаря или микрофона, коробка не знает. ' +
-        'Теперь поменяйте размер и подайте вход снова.'];
-    }
-    var T = {
-      table: 'Одна квартира превращается в вектор формы (m,): по числу на признак. Двигайте ползунок, чтобы добавить или убрать столбцы.',
-      image: 'Картинка превращается в тензор формы (H × W × 3): по три числа на пиксель. Уже у картинки 32 × 32 это 3 072 числа.',
-      text: 'Слово превращается в вектор-эмбеддинг формы (d,). В реальных моделях d от 50 до 1000, здесь цветом показан знак и величина каждого числа.',
-      audio: 'Звук превращается в 1D-сигнал формы (t,): громкость в каждый момент. При 16 000 отсчётах в секунду одна секунда звука даёт 16 000 чисел.'
-    };
-    return [KIND[kind].name.charAt(0).toUpperCase() + KIND[kind].name.slice(1) + ' → ' + KIND[kind].into + ' ' + sh.txt, T[kind]];
-  }
-
-  var tensorG = null;
-  function render() {
-    [gRaw, gTen, gBox].forEach(clear);
-    var K = KIND[kind];
-    sizeIn.min = K.min; sizeIn.max = K.max; sizeIn.value = size[kind];
-    sizeLab.textContent = K.lab;
-    sizeOut.textContent = kind === 'audio' ? durLabel(size.audio) : size[kind];
-    kindBtns.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.kind === kind ? 'true' : 'false'); });
-    drawRaw();
-    tensorG = drawTensor();
-    drawBox();
-    feedBtn.disabled = busy;
-    var n = note();
-    titleEl.textContent = n[0];
-    textEl.textContent = n[1];
-  }
-
-  function feed() {
-    if (busy) return;
-    var sh = shape();
-    if (!expect[kind]) expect[kind] = { txt: sh.txt, n: sh.n, key: sh.key };
-    var ok = expect[kind].key === sh.key;
-    busy = true; feedBtn.disabled = true;
-    var copy = tensorG.cloneNode(true); gFly.appendChild(copy);
-    var bb = tensorG.getBBox(), t0 = null;
-    var dx = 780 - (bb.x + bb.width / 2), dy = 150 - (bb.y + bb.height / 2);
-    function frame(ts) {
-      if (t0 === null) t0 = ts;
-      var u = Math.min(1, (ts - t0) / 700), e = u * u * (3 - 2 * u), sc = 1 - 0.7 * e;
-      var cx = bb.x + bb.width / 2, cy = bb.y + bb.height / 2;
-      copy.setAttribute('transform', 'translate(' + (cx + dx * e) + ',' + (cy + dy * e) + ') scale(' + sc + ') translate(' + (-cx) + ',' + (-cy) + ')');
-      copy.setAttribute('opacity', 1 - 0.8 * e);
-      if (u < 1) { requestAnimationFrame(frame); return; }
-      gFly.removeChild(copy); busy = false;
-      lastFeed = { kind: kind, ok: ok, txt: sh.txt };
-      render();
-    }
-    requestAnimationFrame(frame);
-  }
-
-  sizeIn.addEventListener('input', function () { size[kind] = +sizeIn.value; lastFeed = null; render(); });
-  kindBtns.forEach(function (b) { b.addEventListener('click', function () { kind = b.dataset.kind; render(); }); });
-  feedBtn.addEventListener('click', feed);
-  root.querySelector('[data-sh-act="reset"]').addEventListener('click', function () { reset(); render(); });
-  render();
-})();
-</script>
 
 ## 4. Что внутри: коробка «что-то делает»
 
