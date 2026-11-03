@@ -2,25 +2,29 @@
 
 <style>
   .ai-live { margin: 26px 0 30px; }
+  /* ползунки одним рядом равной ширины, кнопки и галочки отдельным рядом под ними */
   .ai-live-controls {
-    display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px 24px;
-    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-soft);
+    display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px;
+    margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-soft);
   }
+  .ai-live-controls:has(.ai-slider)::before { content: ""; order: 1; flex-basis: 100%; height: 0; margin-top: -4px; }
+  .ai-slider { order: 0; flex: 1 1 0; min-width: 180px; padding: 0 2px; }
+  .ai-live-btns, .ai-check { order: 2; }
   .ai-live-btns { display: flex; flex-wrap: wrap; gap: 8px; }
   .ai-live-btns button {
-    font-family: inherit; font-size: 14px; font-weight: 700; color: var(--text);
+    font-family: inherit; font-size: 14px; font-weight: 700; line-height: 20px; color: var(--text);
     background: var(--bg-elev); border: 1px solid var(--accent); border-radius: 9px;
-    padding: 7px 14px; cursor: pointer;
+    min-height: 36px; padding: 7px 14px; cursor: pointer;
   }
   .ai-live-btns button:hover,
   .ai-live-btns button[aria-pressed="true"] { background: var(--accent); color: var(--bg-elev); }
   .ai-live-btns button[disabled] { opacity: 0.35; cursor: default; }
-  .ai-slider { flex: 1 1 170px; min-width: 160px; }
-  .ai-slider label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
-  .ai-slider output { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--text); }
-  .ai-slider input[type=range] { width: 100%; accent-color: #3576C0; }
-  .ai-check { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); cursor: pointer; }
-  .ai-check input { width: 17px; height: 17px; accent-color: #3576C0; }
+  .ai-slider label { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+  .ai-slider output { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--text); white-space: nowrap; }
+  .ai-slider input[type=range] { display: block; width: 100%; margin: 0; accent-color: #3576C0; }
+  .ai-check { display: flex; align-items: center; gap: 8px; min-height: 36px; font-size: 14px; font-weight: 700; color: var(--text); cursor: pointer; }
+  .ai-check input { width: 17px; height: 17px; margin: 0; accent-color: #3576C0; }
+  @media (max-width: 560px) { .ai-slider { flex-basis: 100%; } }
   .ai-live .stage-notes { min-height: 0; }
   .ai-live [hidden] { display: none !important; }
   .ai-live svg [data-hit] { cursor: pointer; }
@@ -702,6 +706,164 @@ $$\text{выход} = f(\text{вход})$$
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
+
+Те же шаги можно пройти руками. Щёлкните по строке, и внизу появится её вектор признаков. Щёлкните по заголовку столбца, и он станет целью y: какой столбец предсказывать, решаем мы сами. Кнопка «Переставить столбцы» показывает, почему порядок признаков в векторе важен.
+
+<div class="ai-live" id="vmTable">
+  <div class="stage-figure">
+<svg id="vmTableSvg" viewBox="0 0 900 400" role="img" aria-label="Таблица квартир: строка превращается в вектор признаков, выбранный столбец становится целью y, остальные образуют матрицу X">
+  <g data-tb="table"></g>
+  <g data-tb="side"></g>
+  <g data-tb="vec"></g>
+</svg>
+  </div>
+  <div class="ai-live-controls">
+    <div class="ai-live-btns">
+      <button type="button" data-tb-act="shuffle" aria-pressed="false">Переставить столбцы</button>
+      <button type="button" data-tb-act="add">Добавить квартиру</button>
+      <button type="button" data-tb-act="reset">Сначала</button>
+    </div>
+  </div>
+  <div class="stage-notes">
+    <div class="step-live">
+      <div class="step-kicker">Таблица · строка как вектор</div>
+      <h4></h4>
+      <p></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('vmTable');
+  if (!root) return;
+  var svg = root.querySelector('svg');
+  var NS = 'http://www.w3.org/2000/svg';
+  var F = 'Helvetica, Arial, sans-serif';
+  var COLS = ['Площадь', 'Комнаты', 'Этаж', 'Возраст', 'Цена, млн'];
+  var GEN = ['площадь', 'комнаты', 'этаж', 'возраст', 'цену'];
+  var ROWS = [[65, 2, 4, 10, 18], [80, 3, 7, 5, 25], [45, 1, 2, 20, 12], [120, 4, 12, 2, 40]];
+  var EXTRA = [[52, 2, 9, 35, 14], [95, 3, 5, 8, 31]];
+  var SUP = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶'];
+  var SHUFFLED = [1, 0, 3, 2, 4];
+  var TX = 70, CW = 96, HY = 44, HH = 34, RH = 32;
+  function el(name, attrs, parent, text) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function clear(g) { while (g.firstChild) g.removeChild(g.firstChild); }
+  var gt = svg.querySelector('[data-tb="table"]');
+  var gs = svg.querySelector('[data-tb="side"]');
+  var gv = svg.querySelector('[data-tb="vec"]');
+  var titleEl = root.querySelector('.step-live h4');
+  var textEl = root.querySelector('.step-live p');
+  var shBtn = root.querySelector('[data-tb-act="shuffle"]');
+  var addBtn = root.querySelector('[data-tb-act="add"]');
+
+  var rows, sel, target, shuffled, last;
+  function reset() { rows = ROWS.map(function (r) { return r.slice(); }); sel = 1; target = 4; shuffled = false; last = 'start'; }
+  reset();
+
+  function render() {
+    [gt, gs, gv].forEach(clear);
+    var order = (shuffled ? SHUFFLED : [0, 1, 2, 3, 4]).filter(function (c) { return c !== target; });
+    var disp = order.concat([target]), n = rows.length, m = order.length;
+
+    // таблица: признаки слева, цель справа
+    el('text', { x: TX, y: 26, 'font-size': 13, 'font-weight': 700, fill: '#3576C0', 'font-family': F }, gt, 'признаки X');
+    el('text', { x: TX + m * CW + 10, y: 26, 'font-size': 13, 'font-weight': 700, fill: '#4E8A12', 'font-family': F }, gt, 'цель y');
+    disp.forEach(function (c, k) {
+      var x = TX + k * CW + (k === m ? 10 : 0), isT = c === target;
+      var g = el('g', { 'data-hit': '1' }, gt);
+      el('rect', { x: x, y: HY, width: CW - 4, height: HH, rx: 6, fill: isT ? '#73B222' : '#3576C0' }, g);
+      el('text', { x: x + (CW - 4) / 2, y: HY + 22, 'font-size': 13, 'font-weight': 700, fill: '#ffffff', 'text-anchor': 'middle', 'font-family': F }, g, COLS[c]);
+      g.addEventListener('click', function () { if (c !== target) { target = c; last = 'target'; render(); } });
+      rows.forEach(function (r, i) {
+        var y = HY + HH + 4 + i * RH;
+        el('rect', { x: x, y: y, width: CW - 4, height: RH - 4, rx: 4, fill: isT ? '#F0FAF0' : '#F2F7FD' }, gt);
+        el('text', { x: x + (CW - 4) / 2, y: y + 19, 'font-size': 15, 'font-weight': i === sel ? 800 : 400, fill: '#111111', 'text-anchor': 'middle', 'font-family': F }, gt, r[c]);
+      });
+    });
+    rows.forEach(function (r, i) {
+      var y = HY + HH + 4 + i * RH;
+      var g = el('g', { 'data-hit': '1' }, gt);
+      el('rect', { x: 18, y: y - 2, width: TX + (m + 1) * CW + 16 - 18, height: RH, fill: 'transparent' }, g);
+      el('text', { x: TX - 12, y: y + 19, 'font-size': 13, fill: '#5E5850', 'text-anchor': 'end', 'font-family': F }, g, 'кв. ' + (i + 1));
+      g.addEventListener('click', function () { sel = i; last = 'row'; render(); });
+    });
+    var sy = HY + HH + 4 + sel * RH;
+    el('rect', { x: TX - 4, y: sy - 4, width: (m + 1) * CW + 14, height: RH + 4, rx: 7, fill: 'none', stroke: '#C30B0A', 'stroke-width': 2.5, 'pointer-events': 'none' }, gt);
+
+    // справа: формы X и y
+    var bx = 640, by = 52, c = 15;
+    el('text', { x: bx, y: 30, 'font-size': 15, 'font-weight': 800, fill: '#3576C0', 'font-family': F }, gs, 'X');
+    for (var i = 0; i < n; i++) for (var j = 0; j < m; j++) {
+      el('rect', { x: bx + j * c, y: by + i * c, width: c - 2, height: c - 2, rx: 2, fill: i === sel ? '#3576C0' : '#B9D0EA' }, gs);
+    }
+    var yx = bx + m * c + 30;
+    el('text', { x: yx, y: 30, 'font-size': 15, 'font-weight': 800, fill: '#4E8A12', 'font-family': F }, gs, 'y');
+    for (var q = 0; q < n; q++) el('rect', { x: yx, y: by + q * c, width: c - 2, height: c - 2, rx: 2, fill: q === sel ? '#73B222' : '#CFE6B5' }, gs);
+    el('text', { x: bx, y: by + n * c + 26, 'font-size': 14, 'font-weight': 700, fill: '#111111', 'font-family': F }, gs, 'X: (n × m) = (' + n + ' × ' + m + ')');
+    el('text', { x: bx, y: by + n * c + 48, 'font-size': 14, 'font-weight': 700, fill: '#111111', 'font-family': F }, gs, 'y: (n,) = (' + n + ',)');
+    el('text', { x: bx, y: by + n * c + 70, 'font-size': 12, fill: '#5E5850', 'font-family': F }, gs, 'n строк-объектов, m признаков');
+
+    // внизу: вектор выбранной строки
+    var vy = 310, r = rows[sel], sup = '⁽' + SUP[sel + 1] + '⁾';
+    var xl = el('text', { x: 24, y: vy + 26, 'font-size': 20, 'font-weight': 800, fill: '#3576C0', 'font-family': F }, gv, 'x');
+    el('tspan', { dy: -9, 'font-size': 13 }, xl, '(' + (sel + 1) + ')');
+    el('tspan', { dy: 9, 'font-size': 20 }, xl, ' =');
+    order.forEach(function (col, k) {
+      var x = 96 + k * 84;
+      el('rect', { x: x, y: vy, width: 76, height: 38, rx: 6, fill: '#F2F7FD', stroke: '#3576C0', 'stroke-width': 1.5 }, gv);
+      el('text', { x: x + 38, y: vy + 26, 'font-size': 18, 'font-weight': 800, fill: '#111111', 'text-anchor': 'middle', 'font-family': F }, gv, r[col]);
+      el('text', { x: x + 38, y: vy + 58, 'font-size': 12, fill: '#5E5850', 'text-anchor': 'middle', 'font-family': F }, gv, 'позиция ' + (k + 1));
+      el('text', { x: x + 38, y: vy + 74, 'font-size': 12, fill: '#3576C0', 'text-anchor': 'middle', 'font-family': F }, gv, COLS[col].split(',')[0].toLowerCase());
+    });
+    var ex = 96 + m * 84 + 14;
+    var yl = el('text', { x: ex, y: vy + 26, 'font-size': 20, 'font-weight': 800, fill: '#4E8A12', 'font-family': F }, gv, '→  y');
+    el('tspan', { dy: -9, 'font-size': 13 }, yl, '(' + (sel + 1) + ')');
+    el('tspan', { dy: 9, 'font-size': 20 }, yl, ' = ' + r[target]);
+    el('text', { x: ex + 30, y: vy + 58, 'font-size': 12, fill: '#4E8A12', 'font-family': F }, gv, COLS[target].toLowerCase());
+
+    shBtn.setAttribute('aria-pressed', shuffled ? 'true' : 'false');
+    addBtn.disabled = rows.length >= ROWS.length + EXTRA.length;
+    var vec = '[' + order.map(function (col) { return r[col]; }).join(', ') + ']';
+    var N;
+    if (last === 'shuffle') {
+      N = shuffled
+        ? ['Столбцы переставлены: x' + sup + ' = ' + vec,
+           'Числа те же, но теперь на первой позиции стоят комнаты, а на второй площадь. Названий столбцов модель не видит: она знает признак только по месту в векторе. ' +
+           'Модель, которую учили на прежнем порядке, прочтёт ' + r[order[0]] + ' как площадь и выдаст чепуху. Поэтому порядок столбцов фиксируют один раз и держат его и при обучении, и при прогнозе.']
+        : ['Порядок вернулся: x' + sup + ' = ' + vec, 'Площадь снова на первой позиции, комнаты на второй. Для модели это тот же порядок, на котором она училась.'];
+    } else if (last === 'target') {
+      N = ['Целью стал столбец «' + COLS[target] + '»',
+        'Теперь модель будет по остальным четырём столбцам угадывать ' + GEN[target] + '. Таблица та же, задача другая: какой столбец считать ответом y, решает постановка задачи. ' +
+        'Остальные столбцы превратились в признаки X.'];
+    } else if (last === 'add') {
+      N = ['Квартир стало ' + n + ': X имеет форму (' + n + ' × ' + m + ')',
+        'Новая квартира добавила в X строку, а в y одно число. Число признаков m не изменилось: каждая квартира по-прежнему описана вектором длины ' + m +
+        '. В реальных данных строк бывают миллионы, а форма остаётся той же.'];
+    } else {
+      N = ['Квартира ' + (sel + 1) + ': x' + sup + ' = ' + vec + ', y' + sup + ' = ' + r[target],
+        'Строка таблицы стала вектором из ' + m + ' чисел, а столбец «' + COLS[target] + '» ушёл в ответ y. Вся таблица без этого столбца даёт матрицу X формы (' + n + ' × ' + m +
+        '), а сам столбец даёт y формы (' + n + ',). Модель учится по X предсказывать y.'];
+    }
+    titleEl.textContent = N[0];
+    textEl.textContent = N[1];
+  }
+
+  shBtn.addEventListener('click', function () { shuffled = !shuffled; last = 'shuffle'; render(); });
+  addBtn.addEventListener('click', function () {
+    if (rows.length < ROWS.length + EXTRA.length) { rows.push(EXTRA[rows.length - ROWS.length].slice()); sel = rows.length - 1; last = 'add'; render(); }
+  });
+  root.querySelector('[data-tb-act="reset"]').addEventListener('click', function () { reset(); render(); });
+  render();
+})();
+</script>
 
 ### 3.2. Изображения тоже состоят из чисел
 
@@ -1792,8 +1954,6 @@ $$\text{выход} = f(\text{вход})$$
 | Текст (слово/токен) | вектор-эмбеддинг | `(d,)` |
 | Аудио, временные ряды | вектор / 1D-сигнал | `(t,)` |
 
-> *Аудио и временные ряды добавлены для полноты: они тоже сводятся к числам. При желании это отдельный мини-интерактив, но для статьи достаточно строки в таблице.*
-
 Вывод раздела: **любой вход сводится к тензору чисел фиксированной формы.** Эта форма первой определяет, какую модель мы вообще можем использовать.
 <div class="stage" id="stageTensors" tabindex="0">
   <div class="stage-figure">
@@ -1981,6 +2141,263 @@ $$\text{выход} = f(\text{вход})$$
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
+
+Ниже все четыре случая в одном месте. Выберите тип данных, поменяйте его размер и подайте результат в коробку. Коробка запоминает форму первого входа: модель строится под одну форму входа, и вход другой формы она не примет.
+
+<div class="ai-live" id="vmShapes">
+  <div class="stage-figure">
+<svg id="vmShapesSvg" viewBox="0 0 900 350" role="img" aria-label="Таблица, картинка, слово и звук превращаются в тензоры чисел фиксированной формы и подаются в одну и ту же чёрную коробку">
+  <defs>
+    <marker id="vmShArr" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#3576C0"/></marker>
+  </defs>
+  <g data-sh="raw"></g>
+  <g data-sh="tensor"></g>
+  <g data-sh="box"></g>
+  <g data-sh="fly"></g>
+</svg>
+  </div>
+  <div class="ai-live-controls">
+    <div class="ai-slider"><label for="vmShSize"><span id="vmShSizeLab">Признаков m</span> <output id="vmShSizeOut">4</output></label>
+      <input id="vmShSize" type="range" min="1" max="12" step="1" value="4"></div>
+    <div class="ai-live-btns" role="group" aria-label="Тип данных">
+      <button type="button" data-kind="table" aria-pressed="true">Таблица</button>
+      <button type="button" data-kind="image" aria-pressed="false">Картинка</button>
+      <button type="button" data-kind="text" aria-pressed="false">Текст</button>
+      <button type="button" data-kind="audio" aria-pressed="false">Звук</button>
+    </div>
+    <div class="ai-live-btns">
+      <button type="button" data-sh-act="feed">В коробку</button>
+      <button type="button" data-sh-act="reset">Сначала</button>
+    </div>
+  </div>
+  <div class="stage-notes">
+    <div class="step-live">
+      <div class="step-kicker">Общий знаменатель · тензор фиксированной формы</div>
+      <h4></h4>
+      <p></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('vmShapes');
+  if (!root) return;
+  var svg = root.querySelector('svg');
+  var NS = 'http://www.w3.org/2000/svg';
+  var F = 'Helvetica, Arial, sans-serif';
+  var FEAT = [['площадь', 65], ['комнаты', 2], ['этаж', 4], ['возраст', 10], ['до метро, мин', 12], ['потолки, см', 270],
+              ['балкон', 1], ['ремонт, лет', 3], ['этажей в доме', 16], ['парковка', 0], ['лифт', 1], ['окна во двор', 1]];
+  var AUDIO_MS = [1, 5, 10, 100, 1000], RATE = 16000;
+  var KIND = {
+    table: { name: 'строка таблицы', into: 'вектор', min: 1, max: 12, def: 4, lab: 'Признаков m',
+             fix: 'Модель учили на одном наборе столбцов, и прогноз она умеет делать только для того же набора в том же порядке.' },
+    image: { name: 'картинка', into: 'тензор', min: 2, max: 32, def: 8, lab: 'Сторона картинки H = W',
+             fix: 'Поэтому перед подачей все картинки приводят к одному размеру, например 224 × 224.' },
+    text: { name: 'слово', into: 'вектор-эмбеддинг', min: 2, max: 300, def: 8, lab: 'Длина эмбеддинга d',
+            fix: 'У одной модели все эмбеддинги одной длины d: она задаётся при обучении и потом не меняется.' },
+    audio: { name: 'звук', into: '1D-сигнал', min: 0, max: 4, def: 1, lab: 'Длительность',
+             fix: 'Поэтому звук режут на куски одной длины или дополняют нулями до нужной длины.' }
+  };
+  function el(name, attrs, parent, text) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function clear(g) { while (g.firstChild) g.removeChild(g.firstChild); }
+  function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+  function wave(i) { return 0.6 * Math.sin(i * 0.39) + 0.3 * Math.sin(i * 1.7 + 1) + 0.1 * Math.sin(i * 5.3); }
+  function embv(i) { return Math.sin(i * 2.17 + 0.5) * Math.cos(i * 0.61); }
+  function div(v) { // −1…1 → красный…белый…синий
+    var a = Math.min(1, Math.abs(v));
+    return v >= 0 ? 'rgb(' + Math.round(255 - 202 * a) + ',' + Math.round(255 - 137 * a) + ',' + Math.round(255 - 63 * a) + ')'
+                  : 'rgb(' + Math.round(255 - 60 * a) + ',' + Math.round(255 - 244 * a) + ',' + Math.round(255 - 245 * a) + ')';
+  }
+
+  var gRaw = svg.querySelector('[data-sh="raw"]'), gTen = svg.querySelector('[data-sh="tensor"]');
+  var gBox = svg.querySelector('[data-sh="box"]'), gFly = svg.querySelector('[data-sh="fly"]');
+  var sizeIn = document.getElementById('vmShSize'), sizeOut = document.getElementById('vmShSizeOut'), sizeLab = document.getElementById('vmShSizeLab');
+  var kindBtns = Array.prototype.slice.call(root.querySelectorAll('[data-kind]'));
+  var feedBtn = root.querySelector('[data-sh-act="feed"]');
+  var titleEl = root.querySelector('.step-live h4');
+  var textEl = root.querySelector('.step-live p');
+
+  var kind, size, expect, lastFeed, busy;
+  function reset() { kind = 'table'; size = { table: 4, image: 8, text: 8, audio: 1 }; expect = {}; lastFeed = null; busy = false; }
+  reset();
+
+  function shape() {
+    var s = size[kind];
+    if (kind === 'table') return { txt: '(' + s + ',)', n: s, key: s };
+    if (kind === 'image') return { txt: '(' + s + ' × ' + s + ' × 3)', n: s * s * 3, key: s };
+    if (kind === 'text') return { txt: '(' + s + ',)', n: s, key: s };
+    var t = AUDIO_MS[s] * RATE / 1000;
+    return { txt: '(' + fmt(t) + ',)', n: t, key: t };
+  }
+  function durLabel(i) { return AUDIO_MS[i] >= 1000 ? AUDIO_MS[i] / 1000 + ' с' : AUDIO_MS[i] + ' мс'; }
+
+  function drawRaw() {
+    var s = size[kind];
+    el('text', { x: 24, y: 30, 'font-size': 14, 'font-weight': 700, fill: '#111111', 'font-family': F }, gRaw, 'вход: ' + KIND[kind].name);
+    if (kind === 'table') {
+      for (var i = 0; i < s; i++) {
+        var y = 50 + i * 19;
+        el('rect', { x: 24, y: y, width: 250, height: 17, rx: 3, fill: i % 2 ? '#FAFAF7' : '#F2F7FD' }, gRaw);
+        el('text', { x: 32, y: y + 13, 'font-size': 12, fill: '#5E5850', 'font-family': F }, gRaw, FEAT[i][0]);
+        el('text', { x: 266, y: y + 13, 'font-size': 12, 'font-weight': 700, fill: '#111111', 'text-anchor': 'end', 'font-family': F }, gRaw, FEAT[i][1]);
+      }
+    } else if (kind === 'image') {
+      var c = 200 / s;
+      for (var r = 0; r < s; r++) for (var q = 0; q < s; q++) {
+        var u = (r + 0.5) / s, v = (q + 0.5) / s, d = Math.hypot(u - 0.5, v - 0.45);
+        var R = Math.round(90 + 150 * v), G = Math.round(110 + 110 * (1 - u)), B = Math.round(d < 0.3 ? 200 : 90 + 60 * u);
+        el('rect', { x: 50 + q * c, y: 50 + r * c, width: c + 0.3, height: c + 0.3, fill: 'rgb(' + R + ',' + G + ',' + B + ')' }, gRaw);
+      }
+      el('rect', { x: 50, y: 50, width: 200, height: 200, fill: 'none', stroke: '#8E8A82' }, gRaw);
+    } else if (kind === 'text') {
+      el('text', { x: 150, y: 150, 'font-size': 56, 'font-weight': 800, fill: '#111111', 'text-anchor': 'middle', 'font-family': F }, gRaw, '«кот»');
+      el('text', { x: 150, y: 186, 'font-size': 13, fill: '#5E5850', 'text-anchor': 'middle', 'font-family': F }, gRaw, 'одно слово из словаря');
+    } else {
+      var t = shape().n, show = Math.min(t, 160), pts = '';
+      el('line', { x1: 24, y1: 150, x2: 280, y2: 150, stroke: '#E0DDD3' }, gRaw);
+      for (var k = 0; k < show; k++) {
+        var x = 24 + 256 * k / Math.max(1, show - 1), yv = 150 - 80 * wave(k * t / show);
+        pts += (k ? ' ' : '') + x.toFixed(1) + ',' + yv.toFixed(1);
+        if (show <= 80) el('circle', { cx: x, cy: yv, r: 2.2, fill: '#3576C0' }, gRaw);
+      }
+      el('polyline', { points: pts, fill: 'none', stroke: '#3576C0', 'stroke-width': 1.4 }, gRaw);
+      el('text', { x: 24, y: 262, 'font-size': 12, fill: '#5E5850', 'font-family': F }, gRaw,
+         durLabel(size.audio) + ', 16 000 отсчётов в секунду');
+    }
+  }
+
+  function strip(vals, colorOf, labels, parent, x0, y0, total) {
+    total = total || vals.length;
+    var show = Math.min(vals.length, 10), g = el('g', {}, parent);
+    for (var i = 0; i < show; i++) {
+      el('rect', { x: x0 + i * 27, y: y0, width: 25, height: 34, rx: 3, fill: colorOf(vals[i]), stroke: '#3576C0', 'stroke-width': 1 }, g);
+      if (labels) el('text', { x: x0 + i * 27 + 12.5, y: y0 + 21, 'font-size': 10, 'font-weight': 700, fill: '#111111', 'text-anchor': 'middle', 'font-family': F }, g, labels[i]);
+    }
+    if (total > show) el('text', { x: x0, y: y0 + 54, 'font-size': 13, fill: '#5E5850', 'font-family': F }, g, '… и ещё ' + fmt(total - show));
+    return g;
+  }
+
+  function drawTensor() {
+    var s = size[kind], sh = shape(), X = 330, g;
+    el('line', { x1: 286, y1: 150, x2: 322, y2: 150, stroke: '#3576C0', 'stroke-width': 3, 'marker-end': 'url(#vmShArr)' }, gTen);
+    el('text', { x: X, y: 30, 'font-size': 14, 'font-weight': 700, fill: '#3576C0', 'font-family': F }, gTen, 'становится: ' + KIND[kind].into);
+    if (kind === 'table') {
+      var v = FEAT.slice(0, s).map(function (f) { return f[1]; });
+      g = strip(v, function () { return '#F2F7FD'; }, v, gTen, X, 130);
+    } else if (kind === 'image') {
+      g = el('g', {}, gTen);
+      [2, 1, 0].forEach(function (k) {
+        el('rect', { x: X + 46 + k * 16, y: 100 - k * 14, width: 120, height: 90, rx: 4, fill: ['#F8D9D9', '#DCEFD0', '#D6E5F6'][k], stroke: ['#C30B0A', '#4E8A12', '#3576C0'][k], 'stroke-width': 1.5 }, g);
+      });
+      el('text', { x: X + 40, y: 150, 'font-size': 12, 'font-weight': 700, fill: '#111111', 'text-anchor': 'end', 'font-family': F }, g, 'H = ' + s);
+      el('text', { x: X + 106, y: 206, 'font-size': 12, 'font-weight': 700, fill: '#111111', 'text-anchor': 'middle', 'font-family': F }, g, 'W = ' + s);
+      el('text', { x: X + 206, y: 78, 'font-size': 12, 'font-weight': 700, fill: '#111111', 'font-family': F }, g, 'C = 3');
+    } else if (kind === 'text') {
+      var e = []; for (var i = 0; i < s; i++) e.push(embv(i));
+      g = strip(e, div, null, gTen, X, 130);
+    } else {
+      var a = []; for (var j = 0; j < Math.min(sh.n, 10); j++) a.push(wave(j));
+      g = strip(a, div, null, gTen, X, 130, sh.n);
+    }
+    el('text', { x: X, y: 250, 'font-size': 26, 'font-weight': 800, fill: '#111111', 'font-family': F }, gTen, sh.txt);
+    el('text', { x: X, y: 276, 'font-size': 15, 'font-weight': 700, fill: '#3576C0', 'font-family': F }, gTen, '= ' + fmt(sh.n) + ' ' + plural(sh.n));
+    return g;
+  }
+  function plural(n) {
+    var a = n % 10, b = n % 100;
+    return a === 1 && b !== 11 ? 'число' : a >= 2 && a <= 4 && (b < 12 || b > 14) ? 'числа' : 'чисел';
+  }
+
+  function drawBox() {
+    el('rect', { x: 690, y: 90, width: 180, height: 120, rx: 16, fill: '#1b1d26' }, gBox);
+    el('text', { x: 780, y: 156, 'font-size': 18, 'font-weight': 700, fill: '#ffffff', 'text-anchor': 'middle', 'font-family': F }, gBox, 'модель');
+    var ex = expect[kind];
+    el('text', { x: 780, y: 182, 'font-size': 12, fill: '#C9C3B5', 'text-anchor': 'middle', 'font-family': F }, gBox,
+       ex ? 'вход ' + ex.txt : 'форма входа ещё не задана');
+    if (lastFeed && lastFeed.kind === kind) {
+      var ok = lastFeed.ok;
+      el('text', { x: 780, y: 240, 'font-size': 15, 'font-weight': 800, fill: ok ? '#4E8A12' : '#C30B0A', 'text-anchor': 'middle', 'font-family': F }, gBox,
+         ok ? 'принято: ' + lastFeed.txt : 'не подходит: ' + lastFeed.txt);
+      if (!ok) el('text', { x: 780, y: 262, 'font-size': 13, fill: '#C30B0A', 'text-anchor': 'middle', 'font-family': F }, gBox, 'модель ждёт ' + expect[kind].txt);
+    }
+  }
+
+  function note() {
+    var sh = shape(), ex = expect[kind];
+    if (lastFeed && lastFeed.kind === kind && !lastFeed.ok) {
+      return ['Форма ' + lastFeed.txt + ' не подходит: модель ждёт ' + ex.txt,
+        'Модель строится под одну форму входа: её первый слой рассчитан ровно на ' + fmt(ex.n) + ' ' + plural(ex.n) + '. ' + KIND[kind].fix +
+        ' Верните прежний размер или нажмите «Сначала», чтобы задать коробке новую форму.'];
+    }
+    if (lastFeed && lastFeed.kind === kind) {
+      return ['Принято: ' + sh.txt + ', ' + fmt(sh.n) + ' ' + plural(sh.n),
+        'В коробку зашёл тензор чисел формы ' + sh.txt + '. Откуда эти числа взялись, из таблицы, картинки, словаря или микрофона, коробка не знает. ' +
+        'Теперь поменяйте размер и подайте вход снова.'];
+    }
+    var T = {
+      table: 'Одна квартира превращается в вектор формы (m,): по числу на признак. Двигайте ползунок, чтобы добавить или убрать столбцы.',
+      image: 'Картинка превращается в тензор формы (H × W × 3): по три числа на пиксель. Уже у картинки 32 × 32 это 3 072 числа.',
+      text: 'Слово превращается в вектор-эмбеддинг формы (d,). В реальных моделях d от 50 до 1000, здесь цветом показан знак и величина каждого числа.',
+      audio: 'Звук превращается в 1D-сигнал формы (t,): громкость в каждый момент. При 16 000 отсчётах в секунду одна секунда звука даёт 16 000 чисел.'
+    };
+    return [KIND[kind].name.charAt(0).toUpperCase() + KIND[kind].name.slice(1) + ' → ' + KIND[kind].into + ' ' + sh.txt, T[kind]];
+  }
+
+  var tensorG = null;
+  function render() {
+    [gRaw, gTen, gBox].forEach(clear);
+    var K = KIND[kind];
+    sizeIn.min = K.min; sizeIn.max = K.max; sizeIn.value = size[kind];
+    sizeLab.textContent = K.lab;
+    sizeOut.textContent = kind === 'audio' ? durLabel(size.audio) : size[kind];
+    kindBtns.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.kind === kind ? 'true' : 'false'); });
+    drawRaw();
+    tensorG = drawTensor();
+    drawBox();
+    feedBtn.disabled = busy;
+    var n = note();
+    titleEl.textContent = n[0];
+    textEl.textContent = n[1];
+  }
+
+  function feed() {
+    if (busy) return;
+    var sh = shape();
+    if (!expect[kind]) expect[kind] = { txt: sh.txt, n: sh.n, key: sh.key };
+    var ok = expect[kind].key === sh.key;
+    busy = true; feedBtn.disabled = true;
+    var copy = tensorG.cloneNode(true); gFly.appendChild(copy);
+    var bb = tensorG.getBBox(), t0 = null;
+    var dx = 780 - (bb.x + bb.width / 2), dy = 150 - (bb.y + bb.height / 2);
+    function frame(ts) {
+      if (t0 === null) t0 = ts;
+      var u = Math.min(1, (ts - t0) / 700), e = u * u * (3 - 2 * u), sc = 1 - 0.7 * e;
+      var cx = bb.x + bb.width / 2, cy = bb.y + bb.height / 2;
+      copy.setAttribute('transform', 'translate(' + (cx + dx * e) + ',' + (cy + dy * e) + ') scale(' + sc + ') translate(' + (-cx) + ',' + (-cy) + ')');
+      copy.setAttribute('opacity', 1 - 0.8 * e);
+      if (u < 1) { requestAnimationFrame(frame); return; }
+      gFly.removeChild(copy); busy = false;
+      lastFeed = { kind: kind, ok: ok, txt: sh.txt };
+      render();
+    }
+    requestAnimationFrame(frame);
+  }
+
+  sizeIn.addEventListener('input', function () { size[kind] = +sizeIn.value; lastFeed = null; render(); });
+  kindBtns.forEach(function (b) { b.addEventListener('click', function () { kind = b.dataset.kind; render(); }); });
+  feedBtn.addEventListener('click', feed);
+  root.querySelector('[data-sh-act="reset"]').addEventListener('click', function () { reset(); render(); });
+  render();
+})();
+</script>
 
 ## 4. Что внутри: коробка «что-то делает»
 
