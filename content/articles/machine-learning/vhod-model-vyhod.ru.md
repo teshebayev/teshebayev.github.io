@@ -1,5 +1,32 @@
 > **В этой статье.** Прежде чем разбираться, *как* модель машинного обучения учится и что у неё внутри, полезно посмотреть на неё снаружи, как на **чёрную коробку**. У коробки есть только две стороны, которые нас сейчас интересуют: что мы в неё *кладём* (вход) и что из неё *достаём* (выход). Оказывается, почти все задачи ML можно разложить именно по этим двум осям. И заодно станет понятно, почему выбор самой модели во многом следует из того, *что у нас на входе* и *что мы хотим на выходе*.
 
+<style>
+  .ai-live { margin: 26px 0 30px; }
+  .ai-live-controls {
+    display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px 24px;
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border-soft);
+  }
+  .ai-live-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ai-live-btns button {
+    font-family: inherit; font-size: 14px; font-weight: 700; color: var(--text);
+    background: var(--bg-elev); border: 1px solid var(--accent); border-radius: 9px;
+    padding: 7px 14px; cursor: pointer;
+  }
+  .ai-live-btns button:hover,
+  .ai-live-btns button[aria-pressed="true"] { background: var(--accent); color: var(--bg-elev); }
+  .ai-live-btns button[disabled] { opacity: 0.35; cursor: default; }
+  .ai-slider { flex: 1 1 170px; min-width: 160px; }
+  .ai-slider label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); margin-bottom: 4px; }
+  .ai-slider output { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--text); }
+  .ai-slider input[type=range] { width: 100%; accent-color: #3576C0; }
+  .ai-check { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); cursor: pointer; }
+  .ai-check input { width: 17px; height: 17px; accent-color: #3576C0; }
+  .ai-live .stage-notes { min-height: 0; }
+  .ai-live [hidden] { display: none !important; }
+  .ai-live svg [data-hit] { cursor: pointer; }
+  .ai-live svg [data-drag] { cursor: grab; touch-action: none; }
+</style>
+
 ## 1. Карта машинного обучения: три области
 
 Прежде чем открывать коробку, полезно увидеть карту целиком. Машинное обучение обычно делят на три большие области по тому, **как** модель учится и какую обратную связь она при этом получает.
@@ -353,6 +380,212 @@ $$\text{выход} = f(\text{вход})$$
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
 
+Внутри коробки сидят параметры: числа, от которых зависит, что она выдаст. Ниже у коробки три таких параметра, и каждый можно покрутить, как ручку. Формулу внутри мы не показываем: здесь важно только то, что при одном и том же входе разные положения ручек дают разный выход.
+
+<div class="ai-live" id="vmKnobs">
+  <div class="stage-figure">
+<svg id="vmKnobsSvg" viewBox="0 0 900 400" role="img" aria-label="Чёрная коробка с тремя ручками-параметрами: вход фиксирован, при повороте ручек меняется прогноз температуры на завтра">
+  <defs>
+    <marker id="vmKnArrB" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#3576C0"/></marker>
+    <marker id="vmKnArrG" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#73B222"/></marker>
+  </defs>
+  <g data-kn="main"></g>
+  <g data-kn="days"></g>
+</svg>
+  </div>
+  <div class="ai-live-controls">
+    <div class="ai-slider"><label for="vmKnW1">Ручка w₁ <output id="vmKnW1Out">0.60</output></label>
+      <input id="vmKnW1" type="range" min="0" max="1.5" step="0.01" value="0.6"></div>
+    <div class="ai-slider"><label for="vmKnW2">Ручка w₂ <output id="vmKnW2Out">0.20</output></label>
+      <input id="vmKnW2" type="range" min="-1" max="1" step="0.01" value="0.2"></div>
+    <div class="ai-slider"><label for="vmKnB">Ручка b <output id="vmKnBOut">4.60</output></label>
+      <input id="vmKnB" type="range" min="-2" max="12" step="0.01" value="4.6"></div>
+    <div class="ai-live-btns" role="group" aria-label="Какой день подать на вход">
+      <button type="button" data-day="0" aria-pressed="true">День 1</button>
+      <button type="button" data-day="1" aria-pressed="false">День 2</button>
+      <button type="button" data-day="2" aria-pressed="false">День 3</button>
+      <button type="button" data-day="3" aria-pressed="false">День 4</button>
+    </div>
+    <div class="ai-live-btns">
+      <button type="button" data-kn-act="fit">Подобрать параметры</button>
+      <button type="button" data-kn-act="reset">Сначала</button>
+    </div>
+  </div>
+  <div class="stage-notes">
+    <div class="step-live">
+      <div class="step-kicker">Параметры · вход тот же, выход другой</div>
+      <h4></h4>
+      <p></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('vmKnobs');
+  if (!root) return;
+  var svg = root.querySelector('svg');
+  var NS = 'http://www.w3.org/2000/svg';
+  var F = 'Helvetica, Arial, sans-serif';
+  // четыре дня: температура сегодня (°C), облачность (баллы 0–10) → температура назавтра
+  var DAYS = [[22, 2, 23.6], [15, 8, 15.3], [19, 5, 20.5], [26, 1, 27.4]];
+  var START = [0.6, 0.2, 4.6];
+  var BEST = [0.841, -0.385, 6.008];          // метод наименьших квадратов по четырём дням
+  var RANGE = [[0, 1.5], [-1, 1], [-2, 12]];
+  var NAMES = ['w₁', 'w₂', 'b'];
+  function el(name, attrs, parent, text) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function num(v, d) { return (v < 0 ? '−' : '') + Math.abs(v).toFixed(d); }
+  function f(p, d) { return p[0] * d[0] + p[1] * d[1] + p[2]; }
+  function mse(p) {
+    var s = 0;
+    DAYS.forEach(function (d) { var r = f(p, d) - d[2]; s += r * r; });
+    return s / DAYS.length;
+  }
+
+  var g = svg.querySelector('[data-kn="main"]');
+  // вход
+  el('rect', { x: 20, y: 70, width: 220, height: 150, rx: 14, fill: '#F2F7FD', stroke: '#3576C0', 'stroke-width': 1.6 }, g);
+  var inTitle = el('text', { x: 130, y: 100, 'font-size': 16, 'font-weight': 700, fill: '#3576C0', 'text-anchor': 'middle', 'font-family': F }, g, '');
+  el('text', { x: 40, y: 140, 'font-size': 14, fill: '#5E5850', 'font-family': F }, g, 'температура сегодня');
+  var inT = el('text', { x: 40, y: 164, 'font-size': 20, 'font-weight': 800, fill: '#111111', 'font-family': F }, g, '');
+  el('text', { x: 40, y: 192, 'font-size': 14, fill: '#5E5850', 'font-family': F }, g, 'облачность, баллы');
+  var inC = el('text', { x: 40, y: 214, 'font-size': 20, 'font-weight': 800, fill: '#111111', 'font-family': F }, g, '');
+  el('line', { x1: 244, y1: 145, x2: 292, y2: 145, stroke: '#3576C0', 'stroke-width': 3, 'marker-end': 'url(#vmKnArrB)' }, g);
+
+  // коробка с ручками
+  el('rect', { x: 300, y: 40, width: 300, height: 220, rx: 18, fill: '#FAFAF7', stroke: '#1b1d26', 'stroke-width': 3 }, g);
+  el('text', { x: 450, y: 104, 'font-size': 46, 'font-style': 'italic', 'font-weight': 700, fill: '#111111', 'text-anchor': 'middle', 'font-family': 'Georgia, serif' }, g, 'f');
+  el('text', { x: 450, y: 284, 'font-size': 14, 'font-weight': 700, fill: '#8A6D00', 'text-anchor': 'middle', 'font-family': F }, g, 'параметры');
+  var knobs = [0, 1, 2].map(function (k) {
+    var cx = 360 + k * 90, cy = 170;
+    var grp = el('g', {}, g);
+    for (var t = -135; t <= 135; t += 45) {
+      var a = t * Math.PI / 180;
+      el('line', { x1: cx + 33 * Math.sin(a), y1: cy - 33 * Math.cos(a), x2: cx + 38 * Math.sin(a), y2: cy - 38 * Math.cos(a), stroke: '#C9C3B5', 'stroke-width': 2 }, grp);
+    }
+    el('circle', { cx: cx, cy: cy, r: 28, fill: '#FFFBEB', stroke: '#C29E08', 'stroke-width': 3 }, grp);
+    var hand = el('line', { x1: cx, y1: cy, x2: cx, y2: cy - 22, stroke: '#8A6D00', 'stroke-width': 4, 'stroke-linecap': 'round' }, grp);
+    el('text', { x: cx, y: cy + 52, 'font-size': 15, 'font-weight': 700, fill: '#8A6D00', 'text-anchor': 'middle', 'font-family': F }, grp, NAMES[k]);
+    var val = el('text', { x: cx, y: cy + 70, 'font-size': 13, fill: '#5E5850', 'text-anchor': 'middle', 'font-family': F }, grp, '');
+    return { hand: hand, val: val, cx: cx, cy: cy };
+  });
+  el('line', { x1: 604, y1: 145, x2: 652, y2: 145, stroke: '#73B222', 'stroke-width': 3, 'marker-end': 'url(#vmKnArrG)' }, g);
+
+  // выход
+  el('text', { x: 665, y: 100, 'font-size': 14, fill: '#5E5850', 'font-family': F }, g, 'выход: прогноз на завтра');
+  var yHat = el('text', { x: 665, y: 150, 'font-size': 36, 'font-weight': 800, fill: '#4E8A12', 'font-family': F }, g, '');
+  var yTrue = el('text', { x: 665, y: 184, 'font-size': 15, fill: '#111111', 'font-family': F }, g, '');
+  var yErr = el('text', { x: 665, y: 210, 'font-size': 15, 'font-weight': 700, fill: '#C30B0A', 'font-family': F }, g, '');
+
+  // четыре дня внизу
+  var gd = svg.querySelector('[data-kn="days"]');
+  el('text', { x: 20, y: 322, 'font-size': 14, fill: '#5E5850', 'font-family': F }, gd, 'те же ручки на всех днях:');
+  var chips = DAYS.map(function (d, i) {
+    var x = 215 + i * 165;
+    var grp = el('g', { 'data-hit': i }, gd);
+    var box = el('rect', { x: x, y: 300, width: 155, height: 62, rx: 10, fill: '#ffffff', stroke: '#E0DDD3', 'stroke-width': 1.4 }, grp);
+    el('text', { x: x + 12, y: 322, 'font-size': 13, 'font-weight': 700, fill: '#3576C0', 'font-family': F }, grp, 'день ' + (i + 1) + ': ' + d[0] + ' °C, обл. ' + d[1]);
+    var t = el('text', { x: x + 12, y: 344, 'font-size': 13, fill: '#111111', 'font-family': F }, grp, '');
+    var e = el('text', { x: x + 12, y: 358, 'font-size': 11, fill: '#5E5850', 'font-family': F }, grp, '');
+    grp.addEventListener('click', function () { setDay(i); });
+    return { box: box, t: t, e: e };
+  });
+  var mseText = el('text', { x: 20, y: 386, 'font-size': 14, 'font-weight': 700, fill: '#C30B0A', 'font-family': F }, gd, '');
+
+  var inputs = ['vmKnW1', 'vmKnW2', 'vmKnB'].map(function (id) { return document.getElementById(id); });
+  var outs = ['vmKnW1Out', 'vmKnW2Out', 'vmKnBOut'].map(function (id) { return document.getElementById(id); });
+  var dayBtns = Array.prototype.slice.call(root.querySelectorAll('[data-day]'));
+  var fitBtn = root.querySelector('[data-kn-act="fit"]');
+  var titleEl = root.querySelector('.step-live h4');
+  var textEl = root.querySelector('.step-live p');
+
+  var p = START.slice(), day = 0, state = 'start', timer = null;
+
+  function note() {
+    var d = DAYS[day], y = f(p, d);
+    if (state === 'start') {
+      return ['Ручки стоят наугад',
+        'На входе 22 °C и облачность 2 балла. При таких положениях трёх ручек коробка выдаёт ' + num(y, 1) +
+        ' °C, а на следующий день было 23.6 °C. Покрутите любую ручку: вход остаётся тем же, а выход меняется.'];
+    }
+    if (state === 'fit') {
+      return ['Ручки подобраны по четырём дням',
+        'Подбор поставил w₁ = ' + num(p[0], 2) + ', w₂ = ' + num(p[1], 2) + ', b = ' + num(p[2], 2) + '. При этих значениях средний квадрат ошибки на четырёх днях равен ' +
+        mse(p).toFixed(2) + ', и с этими тремя ручками меньше не получить. На первом дне ŷ = 23.7 °C при правильных 23.6. ' +
+        'Дальше ручки не трогают: для нового дня коробка просто считает ŷ = f(x).'];
+    }
+    return ['День ' + (day + 1) + ': ŷ = ' + num(y, 1) + ' °C',
+      'Правильный ответ ' + num(d[2], 1) + ' °C, ошибка ' + num(Math.abs(y - d[2]), 1) + ' °C. Средний квадрат ошибки по всем четырём дням: ' +
+      mse(p).toFixed(2) + '. Положение ручек, удачное для одного дня, может портить другие: переключите день и проверьте. ' +
+      'Обучение ищет одно положение ручек сразу для всех примеров; нажмите «Подобрать параметры».'];
+  }
+
+  function render() {
+    var d = DAYS[day], y = f(p, d);
+    inTitle.textContent = 'вход x · день ' + (day + 1);
+    inT.textContent = d[0] + ' °C';
+    inC.textContent = d[1];
+    knobs.forEach(function (k, i) {
+      var r = RANGE[i], a = (-135 + 270 * (p[i] - r[0]) / (r[1] - r[0])) * Math.PI / 180;
+      k.hand.setAttribute('x2', k.cx + 22 * Math.sin(a));
+      k.hand.setAttribute('y2', k.cy - 22 * Math.cos(a));
+      k.val.textContent = num(p[i], 2);
+      inputs[i].value = p[i];
+      outs[i].textContent = num(p[i], 2);
+    });
+    yHat.textContent = 'ŷ = ' + num(y, 1) + ' °C';
+    yTrue.textContent = 'правильный ответ y = ' + num(d[2], 1) + ' °C';
+    yErr.textContent = 'ошибка |ŷ − y| = ' + Math.abs(y - d[2]).toFixed(1) + ' °C';
+    chips.forEach(function (c, i) {
+      var yi = f(p, DAYS[i]);
+      c.box.setAttribute('stroke', i === day ? '#3576C0' : '#E0DDD3');
+      c.box.setAttribute('stroke-width', i === day ? 2.6 : 1.4);
+      c.t.textContent = 'ŷ = ' + num(yi, 1) + ',  y = ' + num(DAYS[i][2], 1);
+      c.e.textContent = 'ошибка ' + Math.abs(yi - DAYS[i][2]).toFixed(1) + ' °C';
+    });
+    mseText.textContent = 'средний квадрат ошибки по четырём дням: ' + mse(p).toFixed(2);
+    dayBtns.forEach(function (b, i) { b.setAttribute('aria-pressed', i === day ? 'true' : 'false'); });
+    fitBtn.disabled = state === 'fit';
+    var n = note();
+    titleEl.textContent = n[0];
+    textEl.textContent = n[1];
+  }
+
+  function stop() { if (timer) { cancelAnimationFrame(timer); timer = null; } }
+  function setDay(i) { day = i; if (state === 'start') state = 'manual'; render(); }
+  function fit() {
+    stop();
+    var from = p.slice(), t0 = null;
+    function frame(ts) {
+      if (t0 === null) t0 = ts;
+      var u = Math.min(1, (ts - t0) / 1400), e = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+      p = from.map(function (v, i) { return v + (BEST[i] - v) * e; });
+      state = u < 1 ? 'manual' : 'fit';
+      render();
+      timer = u < 1 ? requestAnimationFrame(frame) : null;
+    }
+    timer = requestAnimationFrame(frame);
+  }
+
+  inputs.forEach(function (inp, i) {
+    inp.addEventListener('input', function () { stop(); p[i] = +inp.value; state = 'manual'; render(); });
+  });
+  dayBtns.forEach(function (b, i) { b.addEventListener('click', function () { setDay(i); }); });
+  fitBtn.addEventListener('click', fit);
+  root.querySelector('[data-kn-act="reset"]').addEventListener('click', function () {
+    stop(); p = START.slice(); day = 0; state = 'start'; render();
+  });
+  render();
+})();
+</script>
+
 ## 3. Что на входе: всё сводится к числам
 
 Главная идея этого раздела одна, и её стоит проговорить сразу:
@@ -660,6 +893,344 @@ $$\text{выход} = f(\text{вход})$$
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
 
+Те же шаги можно пройти руками, начиная с чёрно-белого случая. Ниже цифра 7 размером 28 × 28 пикселей, как в наборе MNIST (сама картинка нарисована программно, это не образец из набора). Красная рамка вырезает кусок 5 × 5 и показывает его крупно: в нём только числа от 0 до 255. Рамку можно двигать по цифре, а выбранному пикселю менять значение.
+
+<div class="ai-live" id="vmGray">
+  <div class="stage-figure">
+<svg id="vmGraySvg" viewBox="0 0 900 455" role="img" aria-label="Цифра 7 из 28 на 28 пикселей, увеличенный кусок 5 на 5 с числами от 0 до 255 и та же картинка, вытянутая в вектор из 784 чисел">
+  <g data-gr="grid"></g>
+  <g data-gr="zoom"></g>
+  <g data-gr="side"></g>
+  <g data-gr="strip"></g>
+</svg>
+  </div>
+  <div class="ai-live-controls">
+    <div class="ai-slider"><label for="vmGrVal">Значение выбранного пикселя <output id="vmGrValOut">0</output></label>
+      <input id="vmGrVal" type="range" min="0" max="255" step="1" value="0"></div>
+    <div class="ai-live-btns">
+      <button type="button" data-gr-act="reset">Сначала</button>
+    </div>
+  </div>
+  <div class="stage-notes">
+    <div class="step-live">
+      <div class="step-kicker">Чёрно-белая картинка · одно число на пиксель</div>
+      <h4></h4>
+      <p></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('vmGray');
+  if (!root) return;
+  var svg = root.querySelector('svg');
+  var NS = 'http://www.w3.org/2000/svg';
+  var F = 'Helvetica, Arial, sans-serif';
+  var N = 28, C = 12, GX = 24, GY = 40, ZX = 390, ZY = 40, ZC = 56, SX = 24, SY = 398, SW = 852;
+  function el(name, attrs, parent, text) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function gray(v) { return 'rgb(' + v + ',' + v + ',' + v + ')'; }
+  // та же «7», что в видео: яркость падает с расстоянием до двух отрезков
+  function seven() {
+    function seg(x, y, p, q) {
+      var dx = q[0] - p[0], dy = q[1] - p[1];
+      var t = Math.max(0, Math.min(1, ((x - p[0]) * dx + (y - p[1]) * dy) / (dx * dx + dy * dy)));
+      return Math.hypot(x - (p[0] + t * dx), y - (p[1] + t * dy));
+    }
+    var img = [];
+    for (var r = 0; r < N; r++) for (var c = 0; c < N; c++) {
+      var d = Math.min(seg(c + 0.5, r + 0.5, [7, 7], [21, 6.5]), seg(c + 0.5, r + 0.5, [21, 6.5], [12, 23]));
+      img.push(Math.round(Math.max(0, Math.min(255, 255 * (1.6 - d) / 1.1))));
+    }
+    return img;
+  }
+
+  var img = seven(), lens = [4, 15], sel = [6, 17];
+
+  var gg = svg.querySelector('[data-gr="grid"]');
+  el('text', { x: GX, y: GY - 12, 'font-size': 15, 'font-weight': 700, fill: '#111111', 'font-family': F }, gg, '28 × 28 пикселей');
+  var cells = [];
+  for (var r = 0; r < N; r++) for (var c = 0; c < N; c++) {
+    cells.push(el('rect', { x: GX + c * C, y: GY + r * C, width: C, height: C, stroke: '#3a3a3a', 'stroke-width': 0.3 }, gg));
+  }
+  var hit = el('rect', { x: GX, y: GY, width: N * C, height: N * C, fill: 'transparent', 'data-drag': '1' }, gg);
+  var lensRect = el('rect', { width: 5 * C, height: 5 * C, fill: 'none', stroke: '#C30B0A', 'stroke-width': 2.5, 'pointer-events': 'none' }, gg);
+  var selSmall = el('rect', { width: C, height: C, fill: 'none', stroke: '#3576C0', 'stroke-width': 2, 'pointer-events': 'none' }, gg);
+
+  var gz = svg.querySelector('[data-gr="zoom"]');
+  el('text', { x: ZX, y: ZY - 12, 'font-size': 15, 'font-weight': 700, fill: '#C30B0A', 'font-family': F }, gz, 'кусок в рамке, крупно');
+  var zc = [];
+  for (var i = 0; i < 25; i++) {
+    var zr = Math.floor(i / 5), zcol = i % 5;
+    var grp = el('g', { 'data-hit': i }, gz);
+    var rect = el('rect', { x: ZX + zcol * ZC, y: ZY + zr * ZC, width: ZC, height: ZC, stroke: '#8E8A82', 'stroke-width': 1 }, grp);
+    var txt = el('text', { x: ZX + zcol * ZC + ZC / 2, y: ZY + zr * ZC + ZC / 2 + 6, 'font-size': 17, 'font-weight': 700, 'text-anchor': 'middle', 'font-family': F }, grp, '');
+    (function (k) { grp.addEventListener('click', function () { sel = [lens[0] + Math.floor(k / 5), lens[1] + k % 5]; render(); }); })(i);
+    zc.push({ rect: rect, txt: txt });
+  }
+  var selZoom = el('rect', { width: ZC, height: ZC, fill: 'none', stroke: '#3576C0', 'stroke-width': 4, 'pointer-events': 'none' }, gz);
+  el('text', { x: ZX, y: ZY + 5 * ZC + 26, 'font-size': 14, fill: '#5E5850', 'font-family': F }, gz, 'щёлкните по клетке, чтобы выбрать пиксель');
+  el('text', { x: ZX, y: ZY + 5 * ZC + 54, 'font-size': 20, 'font-weight': 800, fill: '#3576C0', 'font-family': F }, gz, '28 × 28 = 784 числа');
+
+  var gs = svg.querySelector('[data-gr="side"]');
+  el('text', { x: 700, y: ZY - 12, 'font-size': 15, 'font-weight': 700, fill: '#3576C0', 'font-family': F }, gs, 'выбранный пиксель');
+  var big = el('rect', { x: 700, y: ZY, width: 110, height: 110, rx: 6, stroke: '#3576C0', 'stroke-width': 2 }, gs);
+  var bigVal = el('text', { x: 700, y: ZY + 146, 'font-size': 26, 'font-weight': 800, fill: '#111111', 'font-family': F }, gs, '');
+  var bigPos = el('text', { x: 700, y: ZY + 170, 'font-size': 13, fill: '#5E5850', 'font-family': F }, gs, '');
+  var grad = el('linearGradient', { id: 'vmGrGrad' }, el('defs', {}, gs));
+  el('stop', { offset: '0', 'stop-color': '#000000' }, grad);
+  el('stop', { offset: '1', 'stop-color': '#ffffff' }, grad);
+  el('rect', { x: 700, y: ZY + 196, width: 170, height: 18, fill: 'url(#vmGrGrad)', stroke: '#8E8A82' }, gs);
+  el('text', { x: 700, y: ZY + 232, 'font-size': 12, fill: '#5E5850', 'font-family': F }, gs, '0 чёрный');
+  el('text', { x: 870, y: ZY + 232, 'font-size': 12, fill: '#5E5850', 'text-anchor': 'end', 'font-family': F }, gs, '255 белый');
+  var mark = el('path', { fill: '#C30B0A' }, gs);
+
+  var gst = svg.querySelector('[data-gr="strip"]');
+  var stripCells = [];
+  for (var j = 0; j < N * N; j++) {
+    stripCells.push(el('rect', { x: SX + j * SW / (N * N), y: SY, width: SW / (N * N) + 0.15, height: 22 }, gst));
+  }
+  var stripMarks = [0, 1, 2, 3, 4].map(function () { return el('rect', { y: SY - 4, height: 30, fill: 'none', stroke: '#C30B0A', 'stroke-width': 1.6 }, gst); });
+  var stripSel = el('line', { y1: SY - 8, y2: SY + 30, stroke: '#3576C0', 'stroke-width': 2 }, gst);
+  el('text', { x: SX, y: SY + 46, 'font-size': 13, fill: '#5E5850', 'font-family': F }, gst,
+     'та же картинка как вектор длины 784: строка 0, за ней строка 1 и так далее; красным отмечены пиксели из рамки');
+
+  var valIn = document.getElementById('vmGrVal');
+  var valOut = document.getElementById('vmGrValOut');
+  var titleEl = root.querySelector('.step-live h4');
+  var textEl = root.querySelector('.step-live p');
+
+  function render() {
+    for (var k = 0; k < N * N; k++) {
+      cells[k].setAttribute('fill', gray(img[k]));
+      stripCells[k].setAttribute('fill', gray(img[k]));
+    }
+    lensRect.setAttribute('x', GX + lens[1] * C); lensRect.setAttribute('y', GY + lens[0] * C);
+    selSmall.setAttribute('x', GX + sel[1] * C); selSmall.setAttribute('y', GY + sel[0] * C);
+    for (var i = 0; i < 25; i++) {
+      var v = img[(lens[0] + Math.floor(i / 5)) * N + lens[1] + i % 5];
+      zc[i].rect.setAttribute('fill', gray(v));
+      zc[i].txt.setAttribute('fill', v > 120 ? '#111111' : '#ffffff');
+      zc[i].txt.textContent = v;
+    }
+    selZoom.setAttribute('x', ZX + (sel[1] - lens[1]) * ZC); selZoom.setAttribute('y', ZY + (sel[0] - lens[0]) * ZC);
+    var idx = sel[0] * N + sel[1], v0 = img[idx];
+    big.setAttribute('fill', gray(v0));
+    bigVal.textContent = 'значение ' + v0;
+    bigPos.textContent = 'строка ' + sel[0] + ', столбец ' + sel[1];
+    var mx = 700 + 170 * v0 / 255;
+    mark.setAttribute('d', 'M' + mx + ' ' + (ZY + 194) + ' l-6 -10 l12 0 Z');
+    stripMarks.forEach(function (m, r) {
+      var s = (lens[0] + r) * N + lens[1];
+      m.setAttribute('x', SX + s * SW / (N * N)); m.setAttribute('width', 5 * SW / (N * N));
+    });
+    var sx = SX + (idx + 0.5) * SW / (N * N);
+    stripSel.setAttribute('x1', sx); stripSel.setAttribute('x2', sx);
+    valIn.value = v0; valOut.textContent = v0;
+    var shade = v0 === 0 ? 'чёрный' : v0 === 255 ? 'белый' : v0 < 100 ? 'тёмно-серый' : v0 < 180 ? 'серый' : 'светло-серый';
+    titleEl.textContent = 'Пиксель (' + sel[0] + ', ' + sel[1] + ') = ' + v0 + ': ' + shade;
+    textEl.textContent = 'Этот пиксель хранит одно число от 0 до 255. Сдвиньте ползунок: на цифре слева поменяется ровно одна клетка, ' +
+      'и в векторе внизу поменяется ровно одно число, на позиции ' + sel[0] + ' · 28 + ' + sel[1] + ' = ' + idx +
+      '. Модель получает именно этот вектор из 784 чисел, такой же по устройству, как строка таблицы, только длиннее.';
+  }
+
+  function cellAt(ev) {
+    var pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+    var q = pt.matrixTransform(svg.getScreenCTM().inverse());
+    return [Math.max(0, Math.min(N - 1, Math.floor((q.y - GY) / C))), Math.max(0, Math.min(N - 1, Math.floor((q.x - GX) / C)))];
+  }
+  function moveTo(ev) {
+    var rc = cellAt(ev);
+    lens = [Math.max(0, Math.min(N - 5, rc[0] - 2)), Math.max(0, Math.min(N - 5, rc[1] - 2))];
+    sel = rc;
+    render();
+  }
+  var dragging = false;
+  hit.addEventListener('pointerdown', function (ev) { dragging = true; hit.setPointerCapture(ev.pointerId); moveTo(ev); });
+  hit.addEventListener('pointermove', function (ev) { if (dragging) moveTo(ev); });
+  hit.addEventListener('pointerup', function () { dragging = false; });
+  hit.addEventListener('pointercancel', function () { dragging = false; });
+  valIn.addEventListener('input', function () { img[sel[0] * N + sel[1]] = +valIn.value; render(); });
+  root.querySelector('[data-gr-act="reset"]').addEventListener('click', function () {
+    img = seven(); lens = [4, 15]; sel = [6, 17]; render();
+  });
+  render();
+})();
+</script>
+
+Теперь цвет. Щёлкните по любому пикселю картинки 3 × 3: справа подсветятся три его числа, по одному в каждом канале. Ползунки R, G, B меняют эти числа, а вместе с ними и цвет пикселя. Внизу видно, сколько чисел получается у картинок настоящего размера.
+
+<div class="ai-live" id="vmColor">
+  <div class="stage-figure">
+<svg id="vmColorSvg" viewBox="0 0 900 430" role="img" aria-label="Картинка 3 на 3 раскладывается на три канала R, G, B; цвет пикселя собирается из трёх чисел; картинка целиком образует тензор высота на ширину на 3">
+  <g data-co="top"></g>
+  <g data-co="tensor"></g>
+</svg>
+  </div>
+  <div class="ai-live-controls">
+    <div class="ai-slider"><label for="vmCoR">R, красный <output id="vmCoROut">220</output></label>
+      <input id="vmCoR" type="range" min="0" max="255" step="1" value="220"></div>
+    <div class="ai-slider"><label for="vmCoG">G, зелёный <output id="vmCoGOut">130</output></label>
+      <input id="vmCoG" type="range" min="0" max="255" step="1" value="130"></div>
+    <div class="ai-slider"><label for="vmCoB">B, синий <output id="vmCoBOut">200</output></label>
+      <input id="vmCoB" type="range" min="0" max="255" step="1" value="200"></div>
+    <div class="ai-live-btns" role="group" aria-label="Размер картинки">
+      <button type="button" data-size="0" aria-pressed="true">3 × 3</button>
+      <button type="button" data-size="1" aria-pressed="false">CIFAR-10</button>
+      <button type="button" data-size="2" aria-pressed="false">ImageNet</button>
+      <button type="button" data-size="3" aria-pressed="false">Full HD</button>
+    </div>
+    <div class="ai-live-btns">
+      <button type="button" data-co-act="reset">Сначала</button>
+    </div>
+  </div>
+  <div class="stage-notes">
+    <div class="step-live">
+      <div class="step-kicker">Цветная картинка · три числа на пиксель</div>
+      <h4></h4>
+      <p></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('vmColor');
+  if (!root) return;
+  var svg = root.querySelector('svg');
+  var NS = 'http://www.w3.org/2000/svg';
+  var F = 'Helvetica, Arial, sans-serif';
+  var R0 = [[220, 250, 90], [80, 220, 200], [240, 60, 40]];
+  var G0 = [[70, 200, 180], [150, 130, 200], [150, 60, 40]];
+  var B0 = [[70, 80, 90], [220, 200, 200], [60, 150, 40]];
+  var SIZES = [['эта картинка', 3, 3, 'этой картинки'], ['CIFAR-10', 32, 32, 'картинки из CIFAR-10'],
+               ['ImageNet', 224, 224, 'картинки из ImageNet'], ['фото Full HD', 1080, 1920, 'фото Full HD']];
+  var LUM = [0.3, 0.59, 0.11];
+  var CH = [
+    { name: 'R, красный', ink: '#C30B0A', col: function (v) { return 'rgb(' + v + ',0,0)'; } },
+    { name: 'G, зелёный', ink: '#4E8A12', col: function (v) { return 'rgb(0,' + v + ',0)'; } },
+    { name: 'B, синий', ink: '#3576C0', col: function (v) { return 'rgb(0,0,' + v + ')'; } }
+  ];
+  function el(name, attrs, parent, text) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function copy(m) { return m.map(function (r) { return r.slice(); }); }
+  function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+
+  var M, sel, size;
+  function reset() { M = [copy(R0), copy(G0), copy(B0)]; sel = [1, 1]; size = 0; }
+  reset();
+
+  var top = svg.querySelector('[data-co="top"]');
+  el('text', { x: 24, y: 34, 'font-size': 15, 'font-weight': 700, fill: '#111111', 'font-family': F }, top, 'картинка 3 × 3');
+  var pix = [], chCells = [[], [], []];
+  for (var r = 0; r < 3; r++) for (var c = 0; c < 3; c++) {
+    (function (r, c) {
+      var rect = el('rect', { x: 24 + c * 66, y: 50 + r * 66, width: 66, height: 66, stroke: '#ffffff', 'stroke-width': 2, 'data-hit': '1' }, top);
+      rect.addEventListener('click', function () { sel = [r, c]; render(); });
+      pix.push(rect);
+    })(r, c);
+  }
+  var selPix = el('rect', { width: 66, height: 66, fill: 'none', stroke: '#111111', 'stroke-width': 4, 'pointer-events': 'none' }, top);
+  CH.forEach(function (ch, k) {
+    var x0 = 262 + k * 162;
+    el('text', { x: x0, y: 34, 'font-size': 15, 'font-weight': 700, fill: ch.ink, 'font-family': F }, top, ch.name);
+    for (var r = 0; r < 3; r++) for (var c = 0; c < 3; c++) {
+      (function (r, c) {
+        var grp = el('g', { 'data-hit': '1' }, top);
+        var rect = el('rect', { x: x0 + c * 46, y: 50 + r * 46, width: 46, height: 46, stroke: '#8E8A82', 'stroke-width': 0.8 }, grp);
+        var txt = el('text', { x: x0 + c * 46 + 23, y: 50 + r * 46 + 29, 'font-size': 15, 'font-weight': 700, 'text-anchor': 'middle', 'font-family': F }, grp, '');
+        grp.addEventListener('click', function () { sel = [r, c]; render(); });
+        chCells[k].push({ rect: rect, txt: txt });
+      })(r, c);
+    }
+  });
+  var selCh = [0, 1, 2].map(function (k) { return el('rect', { width: 46, height: 46, fill: 'none', stroke: '#111111', 'stroke-width': 3.5, 'pointer-events': 'none' }, top); });
+  el('text', { x: 772, y: 34, 'font-size': 15, 'font-weight': 700, fill: '#111111', 'font-family': F }, top, 'цвет пикселя');
+  var swatch = el('rect', { x: 772, y: 50, width: 104, height: 104, rx: 8, stroke: '#8E8A82', 'stroke-width': 1 }, top);
+  var sum = el('text', { x: 262, y: 222, 'font-size': 17, 'font-family': F }, top, '');
+  var tR = el('tspan', { 'font-weight': 800, fill: '#C30B0A' }, sum);
+  el('tspan', { fill: '#5E5850' }, sum, '  +  ');
+  var tG = el('tspan', { 'font-weight': 800, fill: '#4E8A12' }, sum);
+  el('tspan', { fill: '#5E5850' }, sum, '  +  ');
+  var tB = el('tspan', { 'font-weight': 800, fill: '#3576C0' }, sum);
+  el('tspan', { fill: '#5E5850' }, sum, '  =  цвет справа вверху');
+  el('line', { x1: 24, y1: 248, x2: 876, y2: 248, stroke: '#E0DDD3' }, top);
+
+  // тензор H × W × 3
+  var tg = svg.querySelector('[data-co="tensor"]');
+  var slabs = [2, 1, 0].map(function (k) {
+    return el('rect', { x: 120 + k * 22, y: 290 - k * 18, width: 170, height: 110, rx: 4, fill: ['#F8D9D9', '#DCEFD0', '#D6E5F6'][k], stroke: CH[k].ink, 'stroke-width': 1.6 }, tg);
+  });
+  var hLab = el('text', { x: 110, y: 350, 'font-size': 14, 'font-weight': 700, fill: '#111111', 'text-anchor': 'end', 'font-family': F }, tg, '');
+  var wLab = el('text', { x: 205, y: 420, 'font-size': 14, 'font-weight': 700, fill: '#111111', 'text-anchor': 'middle', 'font-family': F }, tg, '');
+  el('text', { x: 346, y: 262, 'font-size': 14, 'font-weight': 700, fill: '#111111', 'font-family': F }, tg, 'C = 3');
+  var tName = el('text', { x: 420, y: 300, 'font-size': 15, fill: '#5E5850', 'font-family': F }, tg, '');
+  var tShape = el('text', { x: 420, y: 340, 'font-size': 26, 'font-weight': 800, fill: '#111111', 'font-family': F }, tg, '');
+  var tCount = el('text', { x: 420, y: 380, 'font-size': 22, 'font-weight': 800, fill: '#3576C0', 'font-family': F }, tg, '');
+  var tNote = el('text', { x: 420, y: 408, 'font-size': 13, fill: '#5E5850', 'font-family': F }, tg, '');
+
+  var ins = ['vmCoR', 'vmCoG', 'vmCoB'].map(function (id) { return document.getElementById(id); });
+  var outs = ['vmCoROut', 'vmCoGOut', 'vmCoBOut'].map(function (id) { return document.getElementById(id); });
+  var sizeBtns = Array.prototype.slice.call(root.querySelectorAll('[data-size]'));
+  var titleEl = root.querySelector('.step-live h4');
+  var textEl = root.querySelector('.step-live p');
+
+  function rgb(r, c) { return 'rgb(' + M[0][r][c] + ',' + M[1][r][c] + ',' + M[2][r][c] + ')'; }
+  function render() {
+    for (var r = 0; r < 3; r++) for (var c = 0; c < 3; c++) {
+      pix[r * 3 + c].setAttribute('fill', rgb(r, c));
+      for (var k = 0; k < 3; k++) {
+        var v = M[k][r][c], cell = chCells[k][r * 3 + c];
+        cell.rect.setAttribute('fill', CH[k].col(v));
+        cell.txt.setAttribute('fill', LUM[k] * v > 105 ? '#111111' : '#ffffff');
+        cell.txt.textContent = v;
+      }
+    }
+    var sr = sel[0], sc = sel[1];
+    selPix.setAttribute('x', 24 + sc * 66); selPix.setAttribute('y', 50 + sr * 66);
+    selCh.forEach(function (s, k) { s.setAttribute('x', 262 + k * 162 + sc * 46); s.setAttribute('y', 50 + sr * 46); });
+    swatch.setAttribute('fill', rgb(sr, sc));
+    tR.textContent = M[0][sr][sc] + ' (R)'; tG.textContent = M[1][sr][sc] + ' (G)'; tB.textContent = M[2][sr][sc] + ' (B)';
+    ins.forEach(function (inp, k) { inp.value = M[k][sr][sc]; outs[k].textContent = M[k][sr][sc]; });
+
+    var S = SIZES[size], n = S[1] * S[2] * 3;
+    hLab.textContent = 'H = ' + fmt(S[1]);
+    wLab.textContent = 'W = ' + fmt(S[2]);
+    tName.textContent = S[0];
+    tShape.textContent = fmt(S[1]) + ' × ' + fmt(S[2]) + ' × 3';
+    tCount.textContent = '= ' + fmt(n) + ' чисел';
+    tNote.textContent = 'столько чисел от 0 до 255 модель получает за одну картинку';
+    sizeBtns.forEach(function (b, i) { b.setAttribute('aria-pressed', i === size ? 'true' : 'false'); });
+
+    var v3 = [M[0][sr][sc], M[1][sr][sc], M[2][sr][sc]];
+    titleEl.textContent = 'Пиксель (' + sr + ', ' + sc + ') = (' + v3.join(', ') + ')';
+    textEl.textContent = 'Цвета как такового в данных нет: у пикселя есть три числа, по одному в каждом канале. ' +
+      'Три нуля дают чёрный, три раза по 255 дают белый, 240, 220, 60 дают жёлтый. Вся картинка состоит из трёх матриц ' +
+      'одного размера, сложенных стопкой: это тензор формы H × W × 3, у ' + S[3] + ' в нём ' + fmt(n) + ' чисел.';
+  }
+
+  ins.forEach(function (inp, k) {
+    inp.addEventListener('input', function () { M[k][sel[0]][sel[1]] = +inp.value; render(); });
+  });
+  sizeBtns.forEach(function (b, i) { b.addEventListener('click', function () { size = i; render(); }); });
+  root.querySelector('[data-co-act="reset"]').addEventListener('click', function () { reset(); render(); });
+  render();
+})();
+</script>
+
 ### 3.3. Текст: самый хитрый случай
 
 С текстом сложнее всего, потому что «правильное» превращение в числа здесь неочевидно. Наивный путь (закодировать каждую букву её номером в ASCII) не работает: у слов *cat* и *car* почти одинаковые коды, но совершенно разный смысл, а у *cat* и *kitten* коды разные, хотя по смыслу они близки.
@@ -952,6 +1523,263 @@ $$\text{выход} = f(\text{вход})$$
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
+
+Ниже те же эмбеддинги на плоскости, у каждого слова по два числа. В режиме «Расстояния» щёлкните по слову: справа появятся расстояния от него до остальных слов. «Word2Vec» показывает, как два слова из одинаковых фраз съезжаются друг к другу. «Арифметика» складывает и вычитает векторы короля, мужчины и женщины.
+
+<div class="ai-live" id="vmEmb">
+  <div class="stage-figure">
+<svg id="vmEmbSvg" viewBox="0 0 900 430" role="img" aria-label="Эмбеддинги слов как точки на плоскости: расстояния между словами, сближение векторов при обучении Word2Vec и арифметика король минус мужчина плюс женщина">
+  <defs>
+    <marker id="vmEmArrG" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#4E8A12"/></marker>
+    <marker id="vmEmArrY" markerWidth="10" markerHeight="10" refX="7" refY="3.5" orient="auto"><path d="M0,0 L8,3.5 L0,7 Z" fill="#C29E08"/></marker>
+  </defs>
+  <g data-em="axes"></g>
+  <g data-em="plot"></g>
+  <g data-em="side"></g>
+</svg>
+  </div>
+  <div class="ai-live-controls">
+    <div class="ai-live-btns" role="group" aria-label="Режим">
+      <button type="button" data-mode="dist" aria-pressed="true">Расстояния</button>
+      <button type="button" data-mode="w2v" aria-pressed="false">Word2Vec</button>
+      <button type="button" data-mode="kq" aria-pressed="false">Арифметика</button>
+    </div>
+    <div class="ai-live-btns" data-for="w2v" hidden>
+      <button type="button" data-em-act="one">1 пример</button>
+      <button type="button" data-em-act="many">30 примеров</button>
+      <button type="button" data-em-act="reset">Сначала</button>
+    </div>
+    <div class="ai-live-btns" data-for="kq" hidden>
+      <button type="button" data-em-act="next">Дальше</button>
+      <button type="button" data-em-act="reset">Сначала</button>
+    </div>
+  </div>
+  <div class="stage-notes">
+    <div class="step-live">
+      <div class="step-kicker">Эмбеддинги · слова как точки</div>
+      <h4></h4>
+      <p></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('vmEmb');
+  if (!root) return;
+  var svg = root.querySelector('svg');
+  var NS = 'http://www.w3.org/2000/svg';
+  var F = 'Helvetica, Arial, sans-serif';
+  var P = { l: 50, t: 30, s: 360 };
+  var EMB = { 'кот': [0.85, 0.20], 'собака': [0.90, 0.35], 'молоко': [0.35, 0.25], 'автомобиль': [0.15, 0.85], 'дом': [0.20, 0.75] };
+  var LAB = { 'кот': [12, 18], 'собака': [-14, -12, 'end'], 'молоко': [12, 5], 'автомобиль': [12, -8], 'дом': [12, 16],
+              'пёс': [12, 18], 'мужчина': [-12, 20, 'end'], 'женщина': [12, 18], 'король': [-12, -10, 'end'], 'королева': [12, -10] };
+  var W2V0 = { 'кот': [0.15, 0.80], 'пёс': [0.85, 0.20], 'автомобиль': [0.80, 0.85] };
+  var CTX = [0.50, 0.39], RATE = 0.15;
+  var KQ = { 'мужчина': [0.22, 0.22], 'женщина': [0.70, 0.28], 'король': [0.28, 0.78], 'королева': [0.77, 0.82] };
+  var GUESS = [0.76, 0.84];
+  function el(name, attrs, parent, text) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function sx(v) { return P.l + v * P.s; }
+  function sy(v) { return P.t + (1 - v) * P.s; }
+  function dist(a, b) { return Math.hypot(a[0] - b[0], a[1] - b[1]); }
+  function n2(v) { return (v < 0 ? '−' : '') + Math.abs(v).toFixed(2); }
+
+  var axes = svg.querySelector('[data-em="axes"]');
+  el('rect', { x: P.l, y: P.t, width: P.s, height: P.s, fill: '#FAFAF7', stroke: '#E0DDD3' }, axes);
+  for (var t = 0.25; t < 1; t += 0.25) {
+    el('line', { x1: sx(t), y1: P.t, x2: sx(t), y2: P.t + P.s, stroke: '#ECECEC' }, axes);
+    el('line', { x1: P.l, y1: sy(t), x2: P.l + P.s, y2: sy(t), stroke: '#ECECEC' }, axes);
+  }
+  [0, 0.5, 1].forEach(function (v) {
+    el('text', { x: sx(v), y: P.t + P.s + 18, 'font-size': 12, fill: '#5E5850', 'text-anchor': 'middle', 'font-family': F }, axes, v);
+    el('text', { x: P.l - 8, y: sy(v) + 4, 'font-size': 12, fill: '#5E5850', 'text-anchor': 'end', 'font-family': F }, axes, v);
+  });
+  el('text', { x: P.l + P.s, y: P.t + P.s + 36, 'font-size': 13, fill: '#5E5850', 'text-anchor': 'end', 'font-family': F }, axes, 'первое число');
+  el('text', { x: P.l - 34, y: P.t - 10, 'font-size': 13, fill: '#5E5850', 'font-family': F }, axes, 'второе число');
+
+  var plot = svg.querySelector('[data-em="plot"]');
+  var side = svg.querySelector('[data-em="side"]');
+  var titleEl = root.querySelector('.step-live h4');
+  var textEl = root.querySelector('.step-live p');
+  var modeBtns = Array.prototype.slice.call(root.querySelectorAll('[data-mode]'));
+  var groups = Array.prototype.slice.call(root.querySelectorAll('[data-for]'));
+
+  var mode = 'dist', sel = ['кот', 'собака'], w2v, w2vN, trails, kqStep = 0;
+  function resetW2v() {
+    w2v = { 'кот': W2V0['кот'].slice(), 'пёс': W2V0['пёс'].slice(), 'автомобиль': W2V0['автомобиль'].slice() };
+    w2vN = 0; trails = { 'кот': [W2V0['кот'].slice()], 'пёс': [W2V0['пёс'].slice()] };
+  }
+  resetW2v();
+
+  function clear() { while (plot.firstChild) plot.removeChild(plot.firstChild); while (side.firstChild) side.removeChild(side.firstChild); }
+  function point(word, p, color, parent, onClick, hollow) {
+    var grp = el('g', onClick ? { 'data-hit': '1' } : {}, parent);
+    el('circle', { cx: sx(p[0]), cy: sy(p[1]), r: 16, fill: 'transparent' }, grp);
+    el('circle', { cx: sx(p[0]), cy: sy(p[1]), r: 7, fill: hollow ? '#ffffff' : color, stroke: hollow ? color : '#ffffff', 'stroke-width': hollow ? 2.5 : 1.5 }, grp);
+    var o = LAB[word] || [12, 5];
+    el('text', { x: sx(p[0]) + o[0], y: sy(p[1]) + o[1], 'font-size': 15, 'font-weight': 700, fill: '#111111', 'text-anchor': o[2] || 'start', 'font-family': F }, grp, word);
+    if (onClick) grp.addEventListener('click', onClick);
+    return grp;
+  }
+  function arrow(a, b, color, marker, dash) {
+    // наконечник не должен прятаться под точкой
+    var x1 = sx(a[0]), y1 = sy(a[1]), x2 = sx(b[0]), y2 = sy(b[1]), L = Math.hypot(x2 - x1, y2 - y1), k = (L - 11) / L;
+    return el('line', { x1: x1, y1: y1, x2: x1 + (x2 - x1) * k, y2: y1 + (y2 - y1) * k, stroke: color, 'stroke-width': 3, 'marker-end': marker, 'stroke-dasharray': dash || 'none' }, plot);
+  }
+  function text(x, y, s, attrs) {
+    var a = { x: x, y: y, 'font-size': 15, fill: '#111111', 'font-family': F };
+    for (var k in attrs || {}) a[k] = attrs[k];
+    return el('text', a, side, s);
+  }
+
+  function renderDist() {
+    var a = EMB[sel[0]], b = EMB[sel[1]];
+    el('line', { x1: sx(a[0]), y1: sy(a[1]), x2: sx(b[0]), y2: sy(b[1]), stroke: '#3576C0', 'stroke-width': 2.5, 'stroke-dasharray': '6 4' }, plot);
+    Object.keys(EMB).forEach(function (w) {
+      point(w, EMB[w], w === sel[0] ? '#C30B0A' : '#3576C0', plot, function () {
+        if (w !== sel[0]) { sel = [w, sel[0]]; render(); }
+      });
+    });
+    text(450, 46, 'расстояния от «' + sel[0] + '»', { 'font-weight': 700, fill: '#C30B0A' });
+    var others = Object.keys(EMB).filter(function (w) { return w !== sel[0]; })
+      .sort(function (u, v) { return dist(EMB[sel[0]], EMB[u]) - dist(EMB[sel[0]], EMB[v]); });
+    var X0 = 560, K = 200;
+    others.forEach(function (w, i) {
+      var y = 76 + i * 34, d = dist(a, EMB[w]);
+      text(X0 - 10, y + 5, w, { 'text-anchor': 'end', 'font-size': 14, 'font-weight': w === sel[1] ? 700 : 400 });
+      el('rect', { x: X0, y: y - 9, width: d * K, height: 18, rx: 3, fill: w === sel[1] ? '#3576C0' : '#B9D0EA' }, side);
+      text(X0 + d * K + 8, y + 5, d.toFixed(2), { 'font-size': 14, 'font-weight': 700 });
+    });
+    var oh = X0 + Math.SQRT2 * K;
+    el('line', { x1: oh, y1: 60, x2: oh, y2: 76 + 3 * 34 + 14, stroke: '#8E8A82', 'stroke-width': 1.6, 'stroke-dasharray': '4 4' }, side);
+    text(oh, 228, 'one-hot: √2 ≈ 1.41', { 'font-size': 12, fill: '#5E5850', 'text-anchor': 'end' });
+    text(450, 270, 'd(' + sel[0] + ', ' + sel[1] + ') =', { 'font-weight': 700 });
+    text(450, 296, '√((' + n2(b[0]) + ' − ' + n2(a[0]) + ')² + (' + n2(b[1]) + ' − ' + n2(a[1]) + ')²) = ' + dist(a, b).toFixed(2), { 'font-size': 14 });
+    text(450, 336, 'В one-hot у любой пары слов расстояние √2,', { 'font-size': 13, fill: '#5E5850' });
+    text(450, 354, 'поэтому оно ничего не говорит о смысле.', { 'font-size': 13, fill: '#5E5850' });
+    var near = others[0];
+    return ['Ближе всех к «' + sel[0] + '»: «' + near + '», ' + dist(a, EMB[near]).toFixed(2),
+      'Расстояние между словами считается как обычное расстояние между точками: разности координат в квадрат, сумма, корень. ' +
+      'От кота до собаки 0.16, от кота до автомобиля 0.96, в шесть раз дальше. В one-hot оба расстояния были бы равны √2. ' +
+      'Щёлкните по другому слову, и расстояния пересчитаются от него.'];
+  }
+
+  function renderW2v() {
+    el('circle', { cx: sx(CTX[0]), cy: sy(CTX[1]), r: 30, fill: '#FFFBEB', stroke: '#C29E08', 'stroke-width': 1.5, 'stroke-dasharray': '4 3' }, plot);
+    el('text', { x: sx(CTX[0]), y: sy(CTX[1]) + 48, 'font-size': 12, fill: '#8A6D00', 'text-anchor': 'middle', 'font-family': F }, plot, 'общий контекст');
+    ['кот', 'пёс'].forEach(function (w) {
+      el('polyline', { points: trails[w].map(function (q) { return sx(q[0]) + ',' + sy(q[1]); }).join(' '), fill: 'none', stroke: '#B9D0EA', 'stroke-width': 2 }, plot);
+    });
+    point('автомобиль', w2v['автомобиль'], '#8E8A82', plot);
+    var cur = w2vN === 0 ? null : (w2vN % 2 === 1 ? 'кот' : 'пёс');
+    point('кот', w2v['кот'], cur === 'кот' ? '#C30B0A' : '#3576C0', plot);
+    point('пёс', w2v['пёс'], cur === 'пёс' ? '#C30B0A' : '#3576C0', plot);
+    var phr = [['Пушистый ', 'кот', ' сидит на коврике'], ['Пушистый ', 'пёс', ' сидит на коврике']];
+    phr.forEach(function (s, i) {
+      var t = text(450, 50 + i * 30, '', { 'font-size': 16 });
+      el('tspan', { fill: '#8A6D00' }, t, s[0]);
+      el('tspan', { 'font-weight': 800, fill: cur === s[1] ? '#C30B0A' : '#3576C0' }, t, s[1]);
+      el('tspan', { fill: '#8A6D00' }, t, s[2]);
+    });
+    text(450, 130, 'обучающих примеров: ' + w2vN, { 'font-weight': 700 });
+    var dk = dist(w2v['кот'], w2v['пёс']), da = dist(w2v['кот'], w2v['автомобиль']);
+    text(450, 170, 'd(кот, пёс) = ' + dk.toFixed(2), { 'font-size': 18, 'font-weight': 800, fill: '#4E8A12' });
+    text(450, 200, 'd(кот, автомобиль) = ' + da.toFixed(2), { 'font-size': 18, 'font-weight': 800, fill: '#8E8A82' });
+    text(450, 250, 'Упрощение: настоящий Word2Vec сдвигает и вектор', { 'font-size': 13, fill: '#5E5850' });
+    text(450, 268, 'контекста, а векторов у него сотни измерений.', { 'font-size': 13, fill: '#5E5850' });
+    if (w2vN === 0) {
+      return ['Сначала векторы случайные',
+        'До обучения кот и пёс стоят в разных углах, расстояние между ними ' + dk.toFixed(2) + '. Word2Vec учится по слову предсказывать соседей. ' +
+        'У кота и пса соседи одни и те же («пушистый», «сидит на коврике»), поэтому на каждом примере вектор слова немного сдвигается к общему контексту. ' +
+        'Нажмите «1 пример».'];
+    }
+    return ['Пример ' + w2vN + ': сдвигаем «' + cur + '»',
+      'В этом примере встретилось слово «' + cur + '», и его вектор сдвинулся на 15 % пути к контексту фразы. Кот и пёс встречаются в одинаковых фразах, ' +
+      'поэтому оба тянутся к одной точке, и расстояние между ними уже ' + dk.toFixed(2) + '. Автомобиль в этих фразах не встречается и стоит на месте.'];
+  }
+
+  function renderKq() {
+    var w = KQ['женщина'], m = KQ['мужчина'], k = KQ['король'], q = KQ['королева'];
+    if (kqStep >= 4) {
+      arrow(m, k, '#C29E08', 'url(#vmEmArrY)');
+      arrow(w, q, '#C29E08', 'url(#vmEmArrY)');
+      el('text', { x: sx(0.17), y: sy(0.52), 'font-size': 13, 'font-weight': 700, fill: '#8A6D00', 'text-anchor': 'end', 'font-family': F }, plot, 'королевское');
+    }
+    if (kqStep >= 1) {
+      arrow(m, w, '#4E8A12', 'url(#vmEmArrG)');
+      el('text', { x: sx(0.46), y: sy(0.25) - 10, 'font-size': 13, 'font-weight': 700, fill: '#4E8A12', 'text-anchor': 'middle', 'font-family': F }, plot, 'женское');
+    }
+    if (kqStep >= 2) arrow(k, GUESS, '#4E8A12', 'url(#vmEmArrG)', '7 4');
+    if (kqStep >= 3) el('line', { x1: sx(GUESS[0]), y1: sy(GUESS[1]), x2: sx(q[0]), y2: sy(q[1]), stroke: '#C30B0A', 'stroke-width': 3 }, plot);
+    Object.keys(KQ).forEach(function (wd) { point(wd, KQ[wd], '#3576C0', plot); });
+    if (kqStep >= 2) el('circle', { cx: sx(GUESS[0]), cy: sy(GUESS[1]), r: 6, fill: '#ffffff', stroke: '#4E8A12', 'stroke-width': 2.5 }, plot);
+    var lines = [
+      ['король', '[0.28, 0.78]'], ['мужчина', '[0.22, 0.22]'], ['женщина', '[0.70, 0.28]']
+    ];
+    lines.forEach(function (l, i) {
+      var on = i === 0 || kqStep >= 1;
+      text(450, 50 + i * 28, (i === 0 ? '   ' : i === 1 ? '− ' : '+ ') + l[0], { fill: on ? '#111111' : '#C9C3B5', 'font-weight': 700 });
+      text(600, 50 + i * 28, l[1], { fill: on ? '#111111' : '#C9C3B5' });
+    });
+    if (kqStep >= 1) text(450, 140, 'женщина − мужчина = [0.48, 0.06]: «женское»', { 'font-size': 14, fill: '#4E8A12', 'font-weight': 700 });
+    if (kqStep >= 2) text(450, 172, '= [0.76, 0.84]', { 'font-size': 18, 'font-weight': 800, fill: '#4E8A12' });
+    if (kqStep >= 3) {
+      text(450, 210, 'ближайшее слово: королева [0.77, 0.82]', { 'font-size': 14, 'font-weight': 700 });
+      text(450, 234, 'промах √(0.01² + 0.02²) = 0.02', { 'font-size': 14, 'font-weight': 700, fill: '#C30B0A' });
+    }
+    if (kqStep >= 4) {
+      text(450, 272, 'мужчина → король и женщина → королева:', { 'font-size': 14, fill: '#8A6D00', 'font-weight': 700 });
+      text(450, 292, 'почти одна и та же стрелка', { 'font-size': 14, fill: '#8A6D00', 'font-weight': 700 });
+    }
+    var N = [
+      ['Четыре слова на плоскости', 'Возьмём вектор «король», вычтем «мужчину» и прибавим «женщину». Нажимайте «Дальше».'],
+      ['Разность «женщина − мужчина»', 'Вычитаем координаты: [0.70 − 0.22, 0.28 − 0.22] = [0.48, 0.06]. Это стрелка от мужчины к женщине, направление «женское».'],
+      ['Сдвигаем короля вдоль «женского»', 'Прибавляем ту же стрелку к королю: [0.28 + 0.48, 0.78 + 0.06] = [0.76, 0.84]. В этой точке слова нет, ищем ближайшее.'],
+      ['Ближе всех королева, промах 0.02', 'До королевы от полученной точки 0.02, остальные слова гораздо дальше. Значит, король − мужчина + женщина ≈ королева.'],
+      ['Королевское тоже стало направлением', 'От мужчины к королю и от женщины к королеве ведёт почти одна и та же стрелка. Модель выучила «королевское» и «женское» как направления, и по ним можно двигаться сложением векторов.']
+    ];
+    root.querySelector('[data-em-act="next"]').disabled = kqStep >= 4;
+    return N[kqStep];
+  }
+
+  function render() {
+    clear();
+    modeBtns.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.mode === mode ? 'true' : 'false'); });
+    groups.forEach(function (g) { g.hidden = g.dataset.for !== mode; });
+    var n = mode === 'dist' ? renderDist() : mode === 'w2v' ? renderW2v() : renderKq();
+    root.querySelector('.step-kicker').textContent = mode === 'dist' ? 'Эмбеддинги · расстояния' : mode === 'w2v' ? 'Эмбеддинги · как их выучивают' : 'Эмбеддинги · арифметика';
+    titleEl.textContent = n[0];
+    textEl.textContent = n[1];
+  }
+
+  function stepW2v() {
+    w2vN += 1;
+    var w = w2vN % 2 === 1 ? 'кот' : 'пёс', p = w2v[w];
+    p[0] += RATE * (CTX[0] - p[0]); p[1] += RATE * (CTX[1] - p[1]);
+    trails[w].push(p.slice());
+  }
+  var timer = null;
+  function stop() { if (timer) { clearInterval(timer); timer = null; } }
+  modeBtns.forEach(function (b) { b.addEventListener('click', function () { stop(); mode = b.dataset.mode; render(); }); });
+  root.querySelector('[data-em-act="one"]').addEventListener('click', function () { stop(); stepW2v(); render(); });
+  root.querySelector('[data-em-act="many"]').addEventListener('click', function () {
+    stop(); var left = 30;
+    timer = setInterval(function () { stepW2v(); render(); if (--left <= 0) stop(); }, 90);
+  });
+  root.querySelector('[data-em-act="next"]').addEventListener('click', function () { if (kqStep < 4) kqStep += 1; render(); });
+  Array.prototype.forEach.call(root.querySelectorAll('[data-em-act="reset"]'), function (b) {
+    b.addEventListener('click', function () { stop(); if (mode === 'w2v') resetW2v(); else kqStep = 0; render(); });
+  });
+  render();
+})();
+</script>
 
 ### 3.4. Общий знаменатель
 
@@ -1248,6 +2076,196 @@ $$p(y \mid x)$$
 Раз значения можно перечислить, распределение задаётся просто таблицей: каждому значению `k` своя вероятность `P(Y = k)`. У честного кубика все шесть вероятностей одинаковы и равны 1/6. Требований к такой таблице всего два:
 
 $$0 \le P(Y = k) \le 1, \qquad \sum_{k} P(Y = k) = 1$$
+
+Что эти вероятности значат на деле, видно, если бросать кубик много раз. Синие столбики ниже показывают вероятности, красные черты показывают долю бросков, в которых выпала каждая грань.
+
+<div class="ai-live" id="vmDice">
+  <div class="stage-figure">
+<svg id="vmDiceSvg" viewBox="0 0 900 345" role="img" aria-label="Вероятности граней кубика столбиками и доли выпадений после серии бросков: чем больше бросков, тем ближе доли к вероятностям">
+  <g data-di="axes"></g>
+  <g data-di="bars"></g>
+  <g data-di="side"></g>
+</svg>
+  </div>
+  <div class="ai-live-controls">
+    <div class="ai-live-btns" role="group" aria-label="Какой кубик">
+      <button type="button" data-die="unfair" aria-pressed="true">Нечестный</button>
+      <button type="button" data-die="fair" aria-pressed="false">Честный</button>
+    </div>
+    <div class="ai-live-btns">
+      <button type="button" data-di-act="1">Бросить 1 раз</button>
+      <button type="button" data-di-act="10">Бросить 10 раз</button>
+      <button type="button" data-di-act="600">До 600 бросков</button>
+      <button type="button" data-di-act="reset">Сначала</button>
+    </div>
+  </div>
+  <div class="stage-notes">
+    <div class="step-live">
+      <div class="step-kicker">Дискретная величина · вероятность и частота</div>
+      <h4></h4>
+      <p></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('vmDice');
+  if (!root) return;
+  var svg = root.querySelector('svg');
+  var NS = 'http://www.w3.org/2000/svg';
+  var F = 'Helvetica, Arial, sans-serif';
+  var PROB = { fair: [1 / 6, 1 / 6, 1 / 6, 1 / 6, 1 / 6, 1 / 6], unfair: [0.05, 0.05, 0.10, 0.10, 0.20, 0.50] };
+  // первые 600 бросков нечестного кубика те же, что в видео (numpy, seed 7)
+  var VIDEO = '666456166554456666664361165666541364516346666626665625536566666354526465663666633663666554165656151366566566566636166356166664353566546566666656562566466666554246636566565663256663666661114436163615666663616662553665663663666266665666316466545635366556445526642633326456635656266665266346663366666665636665551665665665366366632633656364625155652666454316336536464666566333664646561562456666666653636656362666466665566564662616556662666156626436356666566665656556656566561566666653445655566654656265535665655645662665264656456646454256633565666665455356333461335153463655636661666466351666666666561665';
+  var MAX = 600;
+  var P = { l: 60, r: 540, t: 40, b: 270, top: 0.6 };
+  function el(name, attrs, parent, text) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function sy(v) { return P.b - v / P.top * (P.b - P.t); }
+  function bx(i) { return P.l + 20 + i * 80; }
+
+  var axes = svg.querySelector('[data-di="axes"]');
+  [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6].forEach(function (v) {
+    el('line', { x1: P.l, y1: sy(v), x2: P.r, y2: sy(v), stroke: v ? '#ECECEC' : '#8E8A82', 'stroke-width': v ? 1 : 1.2 }, axes);
+    el('text', { x: P.l - 8, y: sy(v) + 4, 'font-size': 12, fill: '#5E5850', 'text-anchor': 'end', 'font-family': F }, axes, v.toFixed(1));
+  });
+  el('text', { x: P.l, y: 22, 'font-size': 13, fill: '#5E5850', 'font-family': F }, axes, 'вероятность (синие) и доля бросков (красные)');
+  for (var i = 0; i < 6; i++) {
+    el('text', { x: bx(i) + 30, y: P.b + 24, 'font-size': 18, 'font-weight': 800, fill: '#111111', 'text-anchor': 'middle', 'font-family': F }, axes, i + 1);
+  }
+  el('text', { x: (P.l + P.r) / 2, y: P.b + 64, 'font-size': 13, fill: '#5E5850', 'text-anchor': 'middle', 'font-family': F }, axes, 'грань и её вероятность');
+
+  var gb = svg.querySelector('[data-di="bars"]');
+  var bars = [], pLab = [], fLine = [], fLab = [];
+  for (var k = 0; k < 6; k++) {
+    bars.push(el('rect', { x: bx(k), width: 60, fill: '#B9D0EA', stroke: '#3576C0', 'stroke-width': 1.4 }, gb));
+    pLab.push(el('text', { x: bx(k) + 30, 'font-size': 13, 'font-weight': 700, fill: '#3576C0', 'text-anchor': 'middle', 'font-family': F }, gb, ''));
+    fLine.push(el('line', { x1: bx(k) - 6, x2: bx(k) + 66, stroke: '#C30B0A', 'stroke-width': 3.5 }, gb));
+    fLab.push(el('text', { x: bx(k) + 30, 'font-size': 13, 'font-weight': 700, fill: '#C30B0A', 'text-anchor': 'middle', 'font-family': F }, gb, ''));
+  }
+
+  var side = svg.querySelector('[data-di="side"]');
+  el('text', { x: 590, y: 52, 'font-size': 14, fill: '#5E5850', 'font-family': F }, side, 'бросков');
+  var nText = el('text', { x: 590, y: 96, 'font-size': 40, 'font-weight': 800, fill: '#111111', 'font-family': F }, side, '0');
+  el('text', { x: 590, y: 130, 'font-size': 14, fill: '#5E5850', 'font-family': F }, side, 'последние броски');
+  var last = [];
+  for (var j = 0; j < 10; j++) {
+    var g = el('g', {}, side);
+    var r = el('rect', { x: 590 + j * 29, y: 140, width: 25, height: 25, rx: 5, fill: '#ffffff', stroke: '#5E5850', 'stroke-width': 1.2 }, g);
+    var t = el('text', { x: 590 + j * 29 + 12.5, y: 158, 'font-size': 14, 'font-weight': 700, fill: '#111111', 'text-anchor': 'middle', 'font-family': F }, g, '');
+    last.push({ g: g, t: t });
+  }
+  var row6 = el('text', { x: 590, y: 210, 'font-size': 15, 'font-family': F }, side, '');
+  var row1 = el('text', { x: 590, y: 238, 'font-size': 15, 'font-family': F }, side, '');
+  el('text', { x: 590, y: 280, 'font-size': 14, fill: '#3576C0', 'font-weight': 700, 'font-family': F }, side, 'сумма вероятностей = 1');
+  el('text', { x: 590, y: 302, 'font-size': 14, fill: '#C30B0A', 'font-weight': 700, 'font-family': F }, side, 'сумма долей = 1');
+
+  var dieBtns = Array.prototype.slice.call(root.querySelectorAll('[data-die]'));
+  var actBtns = Array.prototype.slice.call(root.querySelectorAll('[data-di-act]'));
+  var titleEl = root.querySelector('.step-live h4');
+  var textEl = root.querySelector('.step-live p');
+
+  var die = 'unfair', seq, rolls, counts, timer = null, useVideo = true;
+  function sample() {
+    var u = Math.random(), p = PROB[die], acc = 0;
+    for (var k = 0; k < 6; k++) { acc += p[k]; if (u < acc) return k + 1; }
+    return 6;
+  }
+  function reset() {
+    rolls = []; counts = [0, 0, 0, 0, 0, 0];
+    seq = die === 'unfair' && useVideo ? VIDEO.split('').map(Number) : null;
+  }
+  function roll() {
+    if (rolls.length >= MAX) return;
+    var v = seq ? seq[rolls.length] : sample();
+    rolls.push(v); counts[v - 1] += 1;
+  }
+  function fr(k) { return rolls.length ? counts[k] / rolls.length : 0; }
+
+  function note() {
+    var n = rolls.length, p = PROB[die];
+    var name = die === 'fair' ? 'Честный кубик' : 'Нечестный кубик';
+    if (n === 0) {
+      return [name + ': бросков пока нет',
+        die === 'fair'
+          ? 'У честного кубика у всех граней вероятность 1/6 ≈ 0.17. Бросайте и следите за красными чертами.'
+          : 'Шестёрка выпадает с вероятностью 0.50, единица с вероятностью 0.05. Бросайте и следите за красными чертами.'];
+    }
+    var maxGap = 0;
+    for (var k = 0; k < 6; k++) maxGap = Math.max(maxGap, Math.abs(fr(k) - p[k]));
+    if (n < 60) {
+      return ['После ' + n + ' бросков доли скачут',
+        'Пока бросков мало, одна лишняя шестёрка заметно двигает долю. Сейчас доли отличаются от вероятностей до ' + maxGap.toFixed(2) + '.'];
+    }
+    return ['После ' + n + ' бросков доли почти у вероятностей',
+      'Шестёрка выпала в ' + (fr(5) * 100).toFixed(1) + ' % бросков при вероятности ' + (p[5] * 100).toFixed(0) + ' %, единица в ' +
+      (fr(0) * 100).toFixed(1) + ' % при ' + (p[0] * 100).toFixed(0) + ' %. Наибольшее отличие доли от вероятности сейчас ' + maxGap.toFixed(3) +
+      '. Вероятность и есть доля, к которой подходит частота исхода, если повторять бросок много раз.'];
+  }
+
+  function render() {
+    var p = PROB[die], n = rolls.length;
+    for (var k = 0; k < 6; k++) {
+      bars[k].setAttribute('y', sy(p[k])); bars[k].setAttribute('height', P.b - sy(p[k]));
+      var f = fr(k), on = n > 0;
+      fLine[k].setAttribute('y1', sy(f)); fLine[k].setAttribute('y2', sy(f));
+      fLine[k].setAttribute('visibility', on ? 'visible' : 'hidden');
+      fLab[k].setAttribute('visibility', on ? 'visible' : 'hidden');
+      fLab[k].setAttribute('y', sy(f) - 8);
+      pLab[k].setAttribute('y', P.b + 42);
+      pLab[k].textContent = p[k].toFixed(2);
+      fLab[k].textContent = f.toFixed(2);
+    }
+    nText.textContent = n;
+    last.forEach(function (c, j) {
+      var v = rolls[n - 10 + j];
+      c.g.setAttribute('visibility', v ? 'visible' : 'hidden');
+      c.t.textContent = v || '';
+    });
+    row6.textContent = '6: доля ' + fr(5).toFixed(3) + ' · вероятность ' + p[5].toFixed(2);
+    row1.textContent = '1: доля ' + fr(0).toFixed(3) + ' · вероятность ' + p[0].toFixed(2);
+    dieBtns.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.die === die ? 'true' : 'false'); });
+    actBtns.forEach(function (b) { if (b.dataset.diAct !== 'reset') b.disabled = n >= MAX; });
+    var t = note();
+    titleEl.textContent = t[0];
+    textEl.textContent = t[1];
+  }
+
+  function stop() { if (timer) { cancelAnimationFrame(timer); timer = null; } }
+  function runTo(target) {
+    stop();
+    function frame() {
+      var k = Math.max(1, Math.floor(rolls.length / 30));
+      for (var i = 0; i < k && rolls.length < target; i++) roll();
+      render();
+      timer = rolls.length < target ? requestAnimationFrame(frame) : null;
+    }
+    timer = requestAnimationFrame(frame);
+  }
+  actBtns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var a = b.dataset.diAct;
+      if (a === 'reset') { stop(); useVideo = false; reset(); render(); return; }
+      if (a === '600') { runTo(MAX); return; }
+      stop();
+      for (var i = 0; i < +a; i++) roll();
+      render();
+    });
+  });
+  dieBtns.forEach(function (b) {
+    b.addEventListener('click', function () { stop(); die = b.dataset.die; reset(); render(); });
+  });
+  reset();
+  render();
+})();
+</script>
 
 Модель с дискретным выходом выдаёт ровно такую таблицу: вектор из K чисел, по одному на каждый вариант. Последний слой сети сам по себе выдаёт K произвольных чисел `z₁, …, z_K`, и чтобы превратить их в честные вероятности, используют **softmax**:
 
@@ -1631,6 +2649,300 @@ $$P(Y = k \mid x) = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}$$
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
 
+Softmax для цифры можно покрутить самому. Сверху стоят десять логитов, которые последний слой сети выдал для картинки семёрки. Любой логит тянется мышью или пальцем вверх и вниз, а строки ниже пересчитываются: сначала экспонента, потом деление на сумму.
+
+<div class="ai-live" id="vmSoftmax">
+  <div class="stage-figure">
+<svg id="vmSoftmaxSvg" viewBox="0 0 900 445" role="img" aria-label="Десять логитов цифр от 0 до 9, их экспоненты и вероятности после softmax; логиты можно тянуть мышью">
+  <g data-sm="static"></g>
+  <g data-sm="live"></g>
+</svg>
+  </div>
+  <div class="ai-live-controls">
+    <div class="ai-live-btns">
+      <button type="button" data-sm-act="plus">+1 ко всем логитам</button>
+      <button type="button" data-sm-act="doubt">Модель сомневается</button>
+      <button type="button" data-sm-act="reset">Сначала</button>
+    </div>
+  </div>
+  <div class="stage-notes">
+    <div class="step-live">
+      <div class="step-kicker">Softmax · из логитов в вероятности</div>
+      <h4></h4>
+      <p></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('vmSoftmax');
+  if (!root) return;
+  var svg = root.querySelector('svg');
+  var NS = 'http://www.w3.org/2000/svg';
+  var F = 'Helvetica, Arial, sans-serif';
+  // логиты из статьи и видео: 4.2 у семёрки, 1.5 у единицы, 1.1 у девятки
+  var Z0 = [-2.3, 1.5, 0.4, -0.3, -2.4, -2.5, -2.2, 4.2, -0.3, 1.1];
+  var DOUBT = [-1.2, 1.9, 0.2, -0.3, -1.4, -1.5, -1.1, 2.1, -0.3, 1.7];
+  var ZMIN = -4, ZMAX = 6.5, Y0 = 118, KZ = 11, PB = 398, KP = 130;
+  function el(name, attrs, parent, text) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function cx(i) { return 160 + i * 70; }
+  function num(v, d) { return (v < 0 ? '−' : '') + Math.abs(v).toFixed(d); }
+  function eFmt(v) { return v >= 1000 ? v.toFixed(0) : v >= 100 ? v.toFixed(1) : v.toFixed(2); }
+
+  var st = svg.querySelector('[data-sm="static"]');
+  el('text', { x: 20, y: 52, 'font-size': 15, 'font-weight': 700, fill: '#3576C0', 'font-family': F }, st, 'z, логиты');
+  el('text', { x: 20, y: 72, 'font-size': 12, fill: '#5E5850', 'font-family': F }, st, 'тяните столбик');
+  el('line', { x1: 120, y1: Y0, x2: 870, y2: Y0, stroke: '#8E8A82', 'stroke-width': 1.2 }, st);
+  el('text', { x: 116, y: Y0 + 4, 'font-size': 12, fill: '#5E5850', 'text-anchor': 'end', 'font-family': F }, st, '0');
+  el('text', { x: 20, y: 222, 'font-size': 15, 'font-weight': 700, fill: '#8A6D00', 'font-family': F }, st, 'eᶻ');
+  el('text', { x: 20, y: 290, 'font-size': 15, 'font-weight': 700, fill: '#4E8A12', 'font-family': F }, st, 'p = eᶻ / Σ');
+  el('line', { x1: 120, y1: PB, x2: 870, y2: PB, stroke: '#8E8A82', 'stroke-width': 1.2 }, st);
+  el('text', { x: 20, y: PB + 24, 'font-size': 14, fill: '#5E5850', 'font-family': F }, st, 'цифра');
+  for (var i = 0; i < 10; i++) {
+    el('text', { x: cx(i), y: PB + 26, 'font-size': 20, 'font-weight': 800, fill: '#111111', 'text-anchor': 'middle', 'font-family': F }, st, i);
+  }
+
+  var live = svg.querySelector('[data-sm="live"]');
+  var cols = [];
+  for (var j = 0; j < 10; j++) {
+    (function (j) {
+      var zb = el('rect', { x: cx(j) - 22, width: 44, rx: 3, fill: '#B9D0EA', stroke: '#3576C0', 'stroke-width': 1.4 }, live);
+      var zt = el('text', { x: cx(j), 'font-size': 13, 'font-weight': 700, fill: '#3576C0', 'text-anchor': 'middle', 'font-family': F }, live, '');
+      var et = el('text', { x: cx(j), y: 222, 'font-size': 14, 'font-weight': 700, fill: '#8A6D00', 'text-anchor': 'middle', 'font-family': F }, live, '');
+      var pb = el('rect', { x: cx(j) - 22, width: 44, rx: 3, fill: '#CFE6B5', stroke: '#73B222', 'stroke-width': 1.4 }, live);
+      var pt = el('text', { x: cx(j), 'font-size': 13, 'font-weight': 700, fill: '#4E8A12', 'text-anchor': 'middle', 'font-family': F }, live, '');
+      var hit = el('rect', { x: cx(j) - 32, y: Y0 - (ZMAX * KZ) - 8, width: 64, height: (ZMAX - ZMIN) * KZ + 16, fill: 'transparent', 'data-drag': '1' }, live);
+      var drag = false;
+      function setFrom(ev) {
+        var p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
+        var q = p.matrixTransform(svg.getScreenCTM().inverse());
+        z[j] = Math.round(Math.max(ZMIN, Math.min(ZMAX, (Y0 - q.y) / KZ)) * 10) / 10;
+        last = 'drag'; lastJ = j; render();
+      }
+      hit.addEventListener('pointerdown', function (ev) { drag = true; hit.setPointerCapture(ev.pointerId); setFrom(ev); });
+      hit.addEventListener('pointermove', function (ev) { if (drag) setFrom(ev); });
+      hit.addEventListener('pointerup', function () { drag = false; });
+      hit.addEventListener('pointercancel', function () { drag = false; });
+      cols.push({ zb: zb, zt: zt, et: et, pb: pb, pt: pt });
+    })(j);
+  }
+  var sumText = el('text', { x: 20, y: 242, 'font-size': 13, 'font-weight': 700, fill: '#8A6D00', 'font-family': F }, live, '');
+  var amax = el('text', { 'font-size': 12, 'font-weight': 800, fill: '#C30B0A', 'text-anchor': 'middle', 'font-family': F }, live, 'argmax');
+
+  var titleEl = root.querySelector('.step-live h4');
+  var textEl = root.querySelector('.step-live p');
+  var plusBtn = root.querySelector('[data-sm-act="plus"]');
+  var z = Z0.slice(), last = 'start', lastJ = 7;
+
+  function soft() {
+    var e = z.map(Math.exp), s = e.reduce(function (a, b) { return a + b; }, 0);
+    return { e: e, s: s, p: e.map(function (v) { return v / s; }) };
+  }
+
+  function note(r) {
+    var order = z.map(function (v, i) { return i; }).sort(function (a, b) { return r.p[b] - r.p[a]; });
+    var a = order[0], b = order[1], c = order[2];
+    var top = 'Цифра ' + a + ': ' + r.p[a].toFixed(2) + ', дальше ' + b + ': ' + r.p[b].toFixed(2) + ' и ' + c + ': ' + r.p[c].toFixed(2);
+    if (last === 'start') {
+      return ['Семёрка забирает 0.86',
+        'Логит семёрки 4.2, у единицы 1.5. Разница всего 2.7, но после экспоненты 66.69 против 4.48, почти в 15 раз. ' +
+        'Сумма всех десяти eᶻ равна 77.53, и после деления на неё у семёрки 0.86, у единицы 0.06, у девятки 0.04. Потяните любой логит.'];
+    }
+    if (last === 'plus') {
+      return ['Все логиты выросли на 1, вероятности те же',
+        'Каждое eᶻ выросло в e ≈ 2.72 раза, сумма тоже выросла в 2.72 раза, и при делении множитель сократился. ' +
+        'Softmax зависит только от разностей логитов: одна и та же прибавка ко всем ничего не меняет. ' + top + '.'];
+    }
+    if (last === 'doubt') {
+      return ['Логиты близки, и вероятности близки',
+        'У семёрки 2.1, у единицы 1.9, у девятки 1.7: разницы маленькие, и после экспоненты они остаются маленькими. ' +
+        top + '. Такой выход честно говорит, что модель не может выбрать между похожими цифрами. Argmax всё равно назовёт семёрку.'];
+    }
+    return ['z' + lastJ + ' = ' + num(z[lastJ], 1) + ', p' + lastJ + ' = ' + r.p[lastJ].toFixed(2),
+      top + '. Сумма вероятностей по-прежнему ' + r.p.reduce(function (s, v) { return s + v; }, 0).toFixed(2) +
+      ': если поднять один логит, его вероятность растёт за счёт всех остальных. Отрицательный логит даёт маленькое, но положительное eᶻ.'];
+  }
+
+  function render() {
+    var r = soft(), best = 0;
+    for (var i = 1; i < 10; i++) if (r.p[i] > r.p[best]) best = i;
+    cols.forEach(function (c, i) {
+      var y = Y0 - z[i] * KZ;
+      c.zb.setAttribute('y', Math.min(y, Y0)); c.zb.setAttribute('height', Math.max(1, Math.abs(y - Y0)));
+      c.zt.setAttribute('y', z[i] >= 0 ? y - 6 : y + 16);
+      c.zt.textContent = num(z[i], 1);
+      c.et.textContent = eFmt(r.e[i]);
+      var ph = r.p[i] * KP;
+      c.pb.setAttribute('y', PB - ph); c.pb.setAttribute('height', Math.max(0.5, ph));
+      c.pb.setAttribute('fill', i === best ? '#73B222' : '#CFE6B5');
+      c.pt.setAttribute('y', PB - ph - 6);
+      c.pt.textContent = r.p[i].toFixed(2);
+    });
+    amax.setAttribute('x', cx(best)); amax.setAttribute('y', PB - r.p[best] * KP - 22);
+    sumText.textContent = 'Σ = ' + eFmt(r.s);
+    plusBtn.disabled = Math.max.apply(null, z) + 1 > ZMAX;
+    var n = note(r);
+    titleEl.textContent = n[0];
+    textEl.textContent = n[1];
+  }
+
+  plusBtn.addEventListener('click', function () { z = z.map(function (v) { return Math.round((v + 1) * 10) / 10; }); last = 'plus'; render(); });
+  root.querySelector('[data-sm-act="doubt"]').addEventListener('click', function () { z = DOUBT.slice(); last = 'doubt'; render(); });
+  root.querySelector('[data-sm-act="reset"]').addEventListener('click', function () { z = Z0.slice(); last = 'start'; render(); });
+  render();
+})();
+</script>
+
+Как из вектора вероятностей достают один ответ, видно на полосе шансов. Её длина равна 1, и каждый токен занимает кусок длиной в свою вероятность. Argmax всегда берёт самый длинный кусок. Сэмплирование роняет указатель в случайную точку полосы, поэтому чем длиннее кусок, тем чаще в него попадает указатель.
+
+<div class="ai-live" id="vmSample">
+  <div class="stage-figure">
+<svg id="vmSampleSvg" viewBox="0 0 900 290" role="img" aria-label="Полоса шансов следующего токена после фразы «Кот сидит на»: argmax всегда выбирает «ковре», сэмплирование тянет жребий">
+  <g data-sa="bar"></g>
+  <g data-sa="live"></g>
+</svg>
+  </div>
+  <div class="ai-live-controls">
+    <div class="ai-live-btns" role="group" aria-label="Способ выбора">
+      <button type="button" data-sa-mode="sample" aria-pressed="true">Сэмплирование</button>
+      <button type="button" data-sa-mode="argmax" aria-pressed="false">Argmax</button>
+    </div>
+    <div class="ai-live-btns">
+      <button type="button" data-sa-act="1">Ответить 1 раз</button>
+      <button type="button" data-sa-act="8">8 раз</button>
+      <button type="button" data-sa-act="100">100 раз</button>
+      <button type="button" data-sa-act="reset">Сначала</button>
+    </div>
+  </div>
+  <div class="stage-notes">
+    <div class="step-live">
+      <div class="step-kicker">Ответ из распределения · argmax и жребий</div>
+      <h4></h4>
+      <p></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('vmSample');
+  if (!root) return;
+  var svg = root.querySelector('svg');
+  var NS = 'http://www.w3.org/2000/svg';
+  var F = 'Helvetica, Arial, sans-serif';
+  var TOK = [['ковре', 0.28], ['окне', 0.21], ['диване', 0.14], ['стуле', 0.09], ['полу', 0.07], ['все прочие', 0.21]];
+  var FILL = ['#73B222', '#97C65A', '#B5D78A', '#CFE6B5', '#E2F0D3', '#EEEDE8'];
+  // первые восемь жребиев те же, что в видео
+  var VIDEO = [0, 0, 5, 2, 0, 1, 1, 0];
+  var L = 40, W = 820, BY = 78, BH = 50;
+  function el(name, attrs, parent, text) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  var starts = [], acc = 0;
+  TOK.forEach(function (t) { starts.push(acc); acc += t[1]; });
+
+  var gb = svg.querySelector('[data-sa="bar"]');
+  var head = el('text', { x: L, y: 36, 'font-size': 18, 'font-family': F }, gb, '');
+  el('tspan', { 'font-weight': 800, fill: '#3576C0' }, head, 'Кот сидит на …');
+  el('tspan', { fill: '#5E5850', 'font-size': 14 }, head, '   шансы следующего токена, длина полосы = 1');
+  var counts = TOK.map(function (t, i) {
+    var x = L + starts[i] * W, w = t[1] * W;
+    el('rect', { x: x, y: BY, width: w, height: BH, fill: FILL[i], stroke: '#ffffff', 'stroke-width': 2 }, gb);
+    el('text', { x: x + w / 2, y: BY + 30, 'font-size': 14, 'font-weight': 700, fill: '#111111', 'text-anchor': 'middle', 'font-family': F }, gb, t[0]);
+    el('text', { x: x + w / 2, y: BY + BH + 20, 'font-size': 13, fill: '#4E8A12', 'font-weight': 700, 'text-anchor': 'middle', 'font-family': F }, gb, t[1].toFixed(2));
+    return el('text', { x: x + w / 2, y: BY + BH + 40, 'font-size': 13, fill: '#C30B0A', 'font-weight': 700, 'text-anchor': 'middle', 'font-family': F }, gb, '');
+  });
+
+  var gl = svg.querySelector('[data-sa="live"]');
+  var ptr = el('g', { visibility: 'hidden' }, gl);
+  el('path', { d: 'M0 ' + (BY - 4) + ' l-8 -14 l16 0 Z', fill: '#C30B0A' }, ptr);
+  el('line', { x1: 0, y1: BY - 4, x2: 0, y2: BY + BH, stroke: '#C30B0A', 'stroke-width': 2.5 }, ptr);
+  el('text', { x: L, y: 210, 'font-size': 14, fill: '#5E5850', 'font-family': F }, gl, 'последние ответы модели:');
+  var chips = [];
+  for (var j = 0; j < 8; j++) {
+    var g = el('g', { visibility: 'hidden' }, gl);
+    var r = el('rect', { x: L + j * 103, y: 222, width: 96, height: 34, rx: 8, fill: '#F0FAF0', stroke: '#73B222', 'stroke-width': 1.4 }, g);
+    var t = el('text', { x: L + j * 103 + 48, y: 244, 'font-size': 14, 'font-weight': 700, fill: '#111111', 'text-anchor': 'middle', 'font-family': F }, g, '');
+    chips.push({ g: g, r: r, t: t });
+  }
+  var total = el('text', { x: L, y: 280, 'font-size': 13, fill: '#5E5850', 'font-family': F }, gl, '');
+
+  var modeBtns = Array.prototype.slice.call(root.querySelectorAll('[data-sa-mode]'));
+  var titleEl = root.querySelector('.step-live h4');
+  var textEl = root.querySelector('.step-live p');
+  var mode = 'sample', answers = [], cnt, useVideo = true, lastU = null;
+
+  function reset() { answers = []; cnt = [0, 0, 0, 0, 0, 0]; lastU = null; }
+  function draw() {
+    var k, u;
+    if (mode === 'argmax') { k = 0; u = TOK[0][1] / 2; }
+    else if (useVideo && answers.length < VIDEO.length) { k = VIDEO[answers.length]; u = starts[k] + TOK[k][1] * (0.2 + 0.6 * Math.random()); }
+    else {
+      u = Math.random(); k = 0;
+      while (k < TOK.length - 1 && u >= starts[k] + TOK[k][1]) k++;
+    }
+    answers.push(k); cnt[k] += 1; lastU = u;
+  }
+
+  function note() {
+    var n = answers.length;
+    if (mode === 'argmax') {
+      if (!n) return ['Argmax: всегда самый вероятный', 'Argmax не тянет жребий: он смотрит на вектор и берёт самый длинный кусок. Нажмите «Ответить» несколько раз.'];
+      return ['Argmax: «ковре» ' + n + ' раз из ' + n,
+        'На одну и ту же фразу argmax каждый раз отвечает одинаково, потому что вектор вероятностей не меняется. Так ведёт себя LLM с температурой 0.'];
+    }
+    if (!n) return ['Сэмплирование: жребий с этими шансами', 'Указатель падает в случайную точку полосы, и ответом становится токен, на чей кусок он попал. Нажмите «8 раз».'];
+    var share = (cnt[0] / n).toFixed(2);
+    return ['Сэмплирование: ' + n + ' ответов, «ковре» ' + cnt[0] + ' раз',
+      'Вектор вероятностей всё время один и тот же, а ответы разные: «ковре» выпало в доле ' + share + ' ответов при вероятности 0.28. ' +
+      (n >= 100 ? 'Чем больше ответов, тем ближе доли к длинам кусков, как у кубика. ' : 'Попробуйте «100 раз»: доли подойдут к длинам кусков, как у кубика. ') +
+      'Поэтому LLM на одну и ту же фразу пишет разный текст.'];
+  }
+
+  function render() {
+    var n = answers.length;
+    if (lastU === null) ptr.setAttribute('visibility', 'hidden');
+    else { ptr.setAttribute('visibility', 'visible'); ptr.setAttribute('transform', 'translate(' + (L + lastU * W) + ',0)'); }
+    counts.forEach(function (c, i) { c.textContent = n ? '×' + cnt[i] : ''; });
+    chips.forEach(function (c, j) {
+      var k = answers[n - 8 + j];
+      c.g.setAttribute('visibility', k === undefined ? 'hidden' : 'visible');
+      if (k !== undefined) c.t.textContent = TOK[k][0];
+    });
+    total.textContent = n ? 'всего ответов: ' + n : '';
+    modeBtns.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.saMode === mode ? 'true' : 'false'); });
+    var t = note();
+    titleEl.textContent = t[0];
+    textEl.textContent = t[1];
+  }
+
+  Array.prototype.forEach.call(root.querySelectorAll('[data-sa-act]'), function (b) {
+    b.addEventListener('click', function () {
+      var a = b.dataset.saAct;
+      if (a === 'reset') { useVideo = false; reset(); render(); return; }
+      for (var i = 0; i < +a; i++) draw();
+      render();
+    });
+  });
+  modeBtns.forEach(function (b) { b.addEventListener('click', function () { mode = b.dataset.saMode; reset(); render(); }); });
+  reset();
+  render();
+})();
+</script>
+
 > **Дискретный выход всегда задаётся вектором вероятностей длины K**, где K равно числу вариантов: 2 для спама, 10 для цифр, десятки тысяч для токенов. Сумма вектора равна 1, а конкретный ответ получают из него через argmax или сэмплирование.
 
 ### 5.2. Непрерывный выход: плотность вероятности
@@ -1712,6 +3024,198 @@ $$P(Y = k \mid x) = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}$$
 $$P(a \le Y \le b) = \int_a^b p(y)\,dy, \qquad \int_{-\infty}^{\infty} p(y)\,dy = 1$$
 
 Сумма из дискретного случая превращается в интеграл, а «вероятность значения» в «вероятность отрезка».
+
+Переход от таблицы к плотности можно проделать руками. Ниже рост взрослых (центр 170 см, разброс σ = 10 см), разбитый на корзины. Сузьте корзины, потом включите деление на ширину, затем подвигайте отрезок и посмотрите на площадь. Кнопка «Сжать вокруг 172.4» показывает, почему у одного точного значения вероятность нулевая.
+
+<div class="ai-live" id="vmHeight">
+  <div class="stage-figure">
+<svg id="vmHeightSvg" viewBox="0 0 900 400" role="img" aria-label="Гистограмма роста с корзинами разной ширины; после деления на ширину столбики сходятся к кривой плотности, вероятность отрезка равна площади под кривой">
+  <defs><clipPath id="vmHeClip"><rect x="60" y="30" width="540" height="300" /></clipPath></defs>
+  <g data-he="axes"></g>
+  <g data-he="plot" clip-path="url(#vmHeClip)"></g>
+  <g data-he="over"></g>
+  <g data-he="side"></g>
+</svg>
+  </div>
+  <div class="ai-live-controls">
+    <div class="ai-slider"><label for="vmHeW">Ширина корзины <output id="vmHeWOut">10 см</output></label>
+      <input id="vmHeW" type="range" min="0" max="4" step="1" value="0"></div>
+    <label class="ai-check"><input id="vmHeDiv" type="checkbox"> делить на ширину корзины</label>
+    <div class="ai-slider"><label for="vmHeA">Отрезок от <output id="vmHeAOut">170.0 см</output></label>
+      <input id="vmHeA" type="range" min="140" max="200" step="0.1" value="170"></div>
+    <div class="ai-slider"><label for="vmHeB">до <output id="vmHeBOut">175.0 см</output></label>
+      <input id="vmHeB" type="range" min="140" max="200" step="0.1" value="175"></div>
+    <div class="ai-live-btns">
+      <button type="button" data-he-act="shrink">Сжать вокруг 172.4</button>
+      <button type="button" data-he-act="reset">Сначала</button>
+    </div>
+  </div>
+  <div class="stage-notes">
+    <div class="step-live">
+      <div class="step-kicker">Непрерывная величина · от столбиков к плотности</div>
+      <h4></h4>
+      <p></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('vmHeight');
+  if (!root) return;
+  var svg = root.querySelector('svg');
+  var NS = 'http://www.w3.org/2000/svg';
+  var F = 'Helvetica, Arial, sans-serif';
+  var MU = 170, SIG = 10, X0 = 140, X1 = 200, WIDTHS = [10, 5, 2, 1, 0.5], PT = 172.4;
+  var P = { l: 60, r: 600, t: 30, b: 330 };
+  function el(name, attrs, parent, text) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function erf(x) {
+    var s = x < 0 ? -1 : 1; x = Math.abs(x);
+    var t = 1 / (1 + 0.3275911 * x);
+    var y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+    return s * y;
+  }
+  function cdf(v) { return 0.5 * (1 + erf((v - MU) / (SIG * Math.SQRT2))); }
+  function pdf(v) { return Math.exp(-0.5 * Math.pow((v - MU) / SIG, 2)) / (SIG * Math.sqrt(2 * Math.PI)); }
+  function area(a, b) { return cdf(b) - cdf(a); }
+  function sx(v) { return P.l + (v - X0) / (X1 - X0) * (P.r - P.l); }
+  function cm(v) { return (Math.round(v * 10) / 10).toFixed(1); }
+
+  var axes = svg.querySelector('[data-he="axes"]');
+  var plot = svg.querySelector('[data-he="plot"]');
+  var over = svg.querySelector('[data-he="over"]');
+  var side = svg.querySelector('[data-he="side"]');
+  var wIn = document.getElementById('vmHeW'), divIn = document.getElementById('vmHeDiv');
+  var aIn = document.getElementById('vmHeA'), bIn = document.getElementById('vmHeB');
+  var titleEl = root.querySelector('.step-live h4');
+  var textEl = root.querySelector('.step-live p');
+
+  var wi = 0, dens = false, a = 170, b = 175, shrinkH = null, timer = null;
+
+  function clear(g) { while (g.firstChild) g.removeChild(g.firstChild); }
+  function render() {
+    [axes, plot, over, side].forEach(clear);
+    var w = WIDTHS[wi], top = dens ? 0.045 : 0.36;
+    function sy(v) { return P.b - v / top * (P.b - P.t); }
+    // оси
+    var ticks = dens ? [0, 0.01, 0.02, 0.03, 0.04] : [0, 0.1, 0.2, 0.3];
+    ticks.forEach(function (v) {
+      el('line', { x1: P.l, y1: sy(v), x2: P.r, y2: sy(v), stroke: v ? '#ECECEC' : '#8E8A82', 'stroke-width': v ? 1 : 1.2 }, axes);
+      el('text', { x: P.l - 8, y: sy(v) + 4, 'font-size': 12, fill: '#5E5850', 'text-anchor': 'end', 'font-family': F }, axes, dens ? v.toFixed(2) : v.toFixed(1));
+    });
+    for (var x = X0; x <= X1; x += 10) {
+      el('text', { x: sx(x), y: P.b + 18, 'font-size': 12, fill: '#5E5850', 'text-anchor': 'middle', 'font-family': F }, axes, x);
+    }
+    el('text', { x: P.r, y: P.b + 40, 'font-size': 13, fill: '#5E5850', 'text-anchor': 'end', 'font-family': F }, axes, 'рост, см');
+    el('text', { x: P.l, y: 20, 'font-size': 13, fill: '#5E5850', 'font-family': F }, axes,
+       dens ? 'высота = доля ÷ ширину корзины: вероятность на 1 см (плотность)' : 'высота = доля людей в корзине');
+
+    var lo = Math.min(a, b), hi = Math.max(a, b), pr = area(lo, hi);
+    // столбики
+    var n = Math.round((X1 - X0) / w), total = 0;
+    for (var i = 0; i < n; i++) {
+      var e0 = X0 + i * w, pb = area(e0, e0 + w), h = dens ? pb / w : pb;
+      total += pb;
+      el('rect', { x: sx(e0), y: sy(h), width: sx(e0 + w) - sx(e0), height: P.b - sy(h), fill: '#B9D0EA', stroke: '#3576C0', 'stroke-width': n > 30 ? 0.5 : 1.2, opacity: dens ? 0.8 : 1 }, plot);
+      if (n <= 6) el('text', { x: sx(e0 + w / 2), y: sy(h) - 6, 'font-size': 13, 'font-weight': 700, fill: '#3576C0', 'text-anchor': 'middle', 'font-family': F }, plot, h.toFixed(dens ? 3 : 2));
+    }
+    // отрезок [a, b]
+    if (dens) {
+      var d = 'M' + sx(lo) + ' ' + P.b;
+      for (var k = 0; k <= 80; k++) { var v = lo + (hi - lo) * k / 80; d += ' L' + sx(v).toFixed(1) + ' ' + sy(pdf(v)).toFixed(1); }
+      d += ' L' + sx(hi) + ' ' + P.b + ' Z';
+      el('path', { d: d, fill: shrinkH !== null ? 'rgba(195,11,10,0.35)' : 'rgba(115,178,34,0.35)' }, plot);
+    } else {
+      el('rect', { x: sx(lo), y: P.t, width: Math.max(1, sx(hi) - sx(lo)), height: P.b - P.t, fill: 'rgba(53,118,192,0.08)' }, plot);
+    }
+    // кривая плотности
+    if (dens) {
+      var c = '';
+      for (var m = 0; m <= 240; m++) { var y = X0 + (X1 - X0) * m / 240; c += (m ? ' L' : 'M') + sx(y).toFixed(1) + ' ' + sy(pdf(y)).toFixed(1); }
+      el('path', { d: c, fill: 'none', stroke: '#4E8A12', 'stroke-width': 3 }, plot);
+    }
+    el('line', { x1: sx(lo), y1: P.t + 8, x2: sx(lo), y2: P.b, stroke: dens ? '#4E8A12' : '#3576C0', 'stroke-width': 1.6, 'stroke-dasharray': '5 4' }, over);
+    el('line', { x1: sx(hi), y1: P.t + 8, x2: sx(hi), y2: P.b, stroke: dens ? '#4E8A12' : '#3576C0', 'stroke-width': 1.6, 'stroke-dasharray': '5 4' }, over);
+    if (dens && shrinkH !== null && shrinkH < 1.5) {
+      el('line', { x1: sx(PT), y1: sy(pdf(PT)), x2: P.r, y2: sy(pdf(PT)), stroke: '#C30B0A', 'stroke-width': 1.2, 'stroke-dasharray': '3 3' }, over);
+      el('circle', { cx: sx(PT), cy: sy(pdf(PT)), r: 6, fill: '#C30B0A', stroke: '#ffffff', 'stroke-width': 1.5 }, over);
+      el('text', { x: P.r - 4, y: sy(pdf(PT)) - 8, 'font-size': 13, 'font-weight': 700, fill: '#C30B0A', 'text-anchor': 'end', 'font-family': F }, over, 'p(172.4) = 0.039');
+    }
+
+    // правая колонка
+    function t(y, s, attrs) {
+      var at = { x: 630, y: y, 'font-size': 15, fill: '#111111', 'font-family': F };
+      for (var k in attrs || {}) at[k] = attrs[k];
+      return el('text', at, side, s);
+    }
+    t(52, 'корзины по ' + String(w) + ' см: ' + n + ' шт.', { 'font-weight': 700 });
+    t(78, (dens ? 'сумма площадей столбиков ' : 'сумма столбиков ') + total.toFixed(2), { fill: '#3576C0', 'font-size': 14 });
+    if (dens && wi === 0) t(102, '170–180: 0.34 ÷ 10 = 0.034 на 1 см', { fill: '#5E5850', 'font-size': 13 });
+    t(150, 'P(' + cm(lo) + ' ≤ рост ≤ ' + cm(hi) + ')', { 'font-size': 14, fill: '#5E5850' });
+    t(190, '= ' + (pr < 0.001 && pr > 0 ? pr.toFixed(5) : pr.toFixed(3)), { 'font-size': 34, 'font-weight': 800, fill: shrinkH !== null ? '#C30B0A' : '#4E8A12' });
+    t(214, dens ? 'площадь под кривой на отрезке' : 'включите деление, чтобы увидеть площадь', { 'font-size': 13, fill: '#5E5850' });
+    if (shrinkH !== null) {
+      t(256, 'отрезок 172.4 ± ' + (shrinkH >= 0.1 ? shrinkH.toFixed(2) : shrinkH.toFixed(3)) + ' см', { 'font-weight': 700, fill: '#C30B0A' });
+      t(282, 'ширина → 0, площадь → 0', { 'font-size': 14, fill: '#C30B0A' });
+    }
+    t(326, 'вся площадь под кривой = 1', { 'font-size': 13, fill: '#4E8A12', 'font-weight': 700 });
+
+    document.getElementById('vmHeWOut').textContent = String(w) + ' см';
+    document.getElementById('vmHeAOut').textContent = cm(a) + ' см';
+    document.getElementById('vmHeBOut').textContent = cm(b) + ' см';
+    wIn.value = wi; divIn.checked = dens; aIn.value = a; bIn.value = b;
+
+    var N;
+    if (shrinkH !== null) {
+      N = ['Отрезок вокруг 172.4 сжимается: площадь ' + (pr < 0.001 && pr > 0 ? pr.toFixed(5) : pr.toFixed(3)),
+        'Полуширина 5 см даёт площадь 0.37, 1 см даёт 0.077, миллиметр даёт 0.0078. При нулевой ширине площади не остаётся: ' +
+        'вероятность ровно 172.4000… см равна нулю. Высота кривой в этой точке, 0.039, это плотность: вероятность на 1 см вокруг точки. ' +
+        'Чтобы получить вероятность, плотность надо умножить на ширину отрезка, то есть взять площадь.'];
+    } else if (!dens) {
+      N = ['Корзины по ' + String(w) + ' см, сумма столбиков ' + total.toFixed(2),
+        'Здесь высота столбика равна доле людей, попавших в корзину, как в таблице кубика. Сужайте корзины: каждая ловит всё меньше людей, ' +
+        'и при корзинах по 0.5 см столбики почти лежат на нуле. Чтобы высота не зависела от ширины, включите деление на ширину.'];
+    } else {
+      N = ['Плотность: доля на 1 см, корзины по ' + String(w) + ' см',
+        'После деления на ширину высота столбика больше не падает при сужении корзин: это вероятность на 1 см. Чем уже корзины, ' +
+        'тем ближе верхушки к зелёной кривой p(y). Вероятность попасть в отрезок теперь равна площади под кривой: сейчас ' + pr.toFixed(3) +
+        ' для отрезка ' + cm(lo) + '–' + cm(hi) + ' см.'];
+    }
+    titleEl.textContent = N[0];
+    textEl.textContent = N[1];
+  }
+
+  function stop() { if (timer) { cancelAnimationFrame(timer); timer = null; } }
+  function shrink() {
+    stop(); dens = true; var t0 = null;
+    function frame(ts) {
+      if (t0 === null) t0 = ts;
+      var u = Math.min(1, (ts - t0) / 4500);
+      shrinkH = u < 1 ? 5 * Math.pow(1 - u, 3) : 0;
+      a = PT - shrinkH; b = PT + shrinkH;
+      render();
+      timer = u < 1 ? requestAnimationFrame(frame) : null;
+    }
+    timer = requestAnimationFrame(frame);
+  }
+  wIn.addEventListener('input', function () { stop(); wi = +wIn.value; render(); });
+  divIn.addEventListener('change', function () { stop(); dens = divIn.checked; if (!dens) shrinkH = null; render(); });
+  aIn.addEventListener('input', function () { stop(); shrinkH = null; a = +aIn.value; render(); });
+  bIn.addEventListener('input', function () { stop(); shrinkH = null; b = +bIn.value; render(); });
+  root.querySelector('[data-he-act="shrink"]').addEventListener('click', shrink);
+  root.querySelector('[data-he-act="reset"]').addEventListener('click', function () {
+    stop(); wi = 0; dens = false; a = 170; b = 175; shrinkH = null; render();
+  });
+  render();
+})();
+</script>
 
 Самую частую форму такой кривой называют нормальным распределением, или «колоколом». Его задают всего два числа: центр `μ` и ширина `σ`. Регрессионная модель, по сути, выдаёт именно их, а чаще всего только центр `μ`.
 
@@ -2054,6 +3558,135 @@ $$P(a \le Y \le b) = \int_a^b p(y)\,dy, \qquad \int_{-\infty}^{\infty} p(y)\,dy 
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
+
+Вот как два числа μ и σ задают кривую. Модель прогнозирует температуру: центр μ показывает её лучший прогноз, ширина σ показывает, насколько она в нём уверена. Закрашена вероятность того, что будет от 22 до 25 °C.
+
+<div class="ai-live" id="vmTemp">
+  <div class="stage-figure">
+<svg id="vmTempSvg" viewBox="0 0 900 340" role="img" aria-label="Нормальная кривая прогноза температуры: ползунки двигают центр μ и меняют ширину σ, площадь на отрезке от 22 до 25 градусов пересчитывается">
+  <g data-te="axes"></g>
+  <g data-te="plot"></g>
+  <g data-te="side"></g>
+</svg>
+  </div>
+  <div class="ai-live-controls">
+    <div class="ai-slider"><label for="vmTeMu">Центр μ <output id="vmTeMuOut">23.7 °C</output></label>
+      <input id="vmTeMu" type="range" min="15" max="32" step="0.1" value="23.7"></div>
+    <div class="ai-slider"><label for="vmTeSig">Ширина σ <output id="vmTeSigOut">1.5 °C</output></label>
+      <input id="vmTeSig" type="range" min="0.5" max="6" step="0.1" value="1.5"></div>
+    <div class="ai-live-btns">
+      <button type="button" data-te-preset="1.5">На завтра: σ = 1.5</button>
+      <button type="button" data-te-preset="4">На неделю: σ = 4</button>
+    </div>
+  </div>
+  <div class="stage-notes">
+    <div class="step-live">
+      <div class="step-kicker">Регрессия · кривая из двух чисел</div>
+      <h4></h4>
+      <p></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('vmTemp');
+  if (!root) return;
+  var svg = root.querySelector('svg');
+  var NS = 'http://www.w3.org/2000/svg';
+  var F = 'Helvetica, Arial, sans-serif';
+  var X0 = 10, X1 = 38, A = 22, B = 25, TOP = 0.85;
+  var P = { l: 60, r: 600, t: 30, b: 290 };
+  function el(name, attrs, parent, text) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function erf(x) {
+    var s = x < 0 ? -1 : 1; x = Math.abs(x);
+    var t = 1 / (1 + 0.3275911 * x);
+    var y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+    return s * y;
+  }
+  function sx(v) { return P.l + (v - X0) / (X1 - X0) * (P.r - P.l); }
+  function sy(v) { return P.b - v / TOP * (P.b - P.t); }
+
+  var axes = svg.querySelector('[data-te="axes"]');
+  [0, 0.2, 0.4, 0.6, 0.8].forEach(function (v) {
+    el('line', { x1: P.l, y1: sy(v), x2: P.r, y2: sy(v), stroke: v ? '#ECECEC' : '#8E8A82', 'stroke-width': v ? 1 : 1.2 }, axes);
+    el('text', { x: P.l - 8, y: sy(v) + 4, 'font-size': 12, fill: '#5E5850', 'text-anchor': 'end', 'font-family': F }, axes, v.toFixed(1));
+  });
+  for (var x = X0; x <= X1; x += 4) {
+    el('text', { x: sx(x), y: P.b + 18, 'font-size': 12, fill: '#5E5850', 'text-anchor': 'middle', 'font-family': F }, axes, x);
+  }
+  el('text', { x: P.r, y: P.b + 40, 'font-size': 13, fill: '#5E5850', 'text-anchor': 'end', 'font-family': F }, axes, 'температура, °C');
+  el('text', { x: P.l, y: 20, 'font-size': 13, fill: '#5E5850', 'font-family': F }, axes, 'плотность p(t | x)');
+
+  var plot = svg.querySelector('[data-te="plot"]');
+  var shade = el('path', { fill: 'rgba(115,178,34,0.35)' }, plot);
+  var curve = el('path', { fill: 'none', stroke: '#4E8A12', 'stroke-width': 3 }, plot);
+  var muLine = el('line', { y1: P.t, y2: P.b, stroke: '#4E8A12', 'stroke-width': 1.5, 'stroke-dasharray': '5 4' }, plot);
+  var sigLine = el('line', { stroke: '#C29E08', 'stroke-width': 3 }, plot);
+  var sigLab = el('text', { 'font-size': 13, 'font-weight': 700, fill: '#8A6D00', 'text-anchor': 'middle', 'font-family': F }, plot, 'σ');
+  [A, B].forEach(function (v) { el('line', { x1: sx(v), y1: P.t + 8, x2: sx(v), y2: P.b, stroke: '#8E8A82', 'stroke-width': 1.2, 'stroke-dasharray': '3 3' }, plot); });
+
+  var side = svg.querySelector('[data-te="side"]');
+  function t(y, s, attrs) {
+    var at = { x: 630, y: y, 'font-size': 15, fill: '#111111', 'font-family': F };
+    for (var k in attrs || {}) at[k] = attrs[k];
+    return el('text', at, side, s);
+  }
+  var muT = t(52, '', { 'font-weight': 700, fill: '#4E8A12' });
+  var sigT = t(80, '', { 'font-weight': 700, fill: '#8A6D00' });
+  t(128, 'P(22 ≤ t ≤ 25)', { 'font-size': 14, fill: '#5E5850' });
+  var pT = t(170, '', { 'font-size': 38, 'font-weight': 800, fill: '#4E8A12' });
+  t(196, 'закрашенная площадь', { 'font-size': 13, fill: '#5E5850' });
+  var peakT = t(240, '', { 'font-size': 14 });
+  t(264, 'вся площадь под кривой = 1', { 'font-size': 13, fill: '#4E8A12', 'font-weight': 700 });
+
+  var muIn = document.getElementById('vmTeMu'), sigIn = document.getElementById('vmTeSig');
+  var titleEl = root.querySelector('.step-live h4');
+  var textEl = root.querySelector('.step-live p');
+  var mu = 23.7, sig = 1.5;
+
+  function render() {
+    function pdf(v) { return Math.exp(-0.5 * Math.pow((v - mu) / sig, 2)) / (sig * Math.sqrt(2 * Math.PI)); }
+    function cdf(v) { return 0.5 * (1 + erf((v - mu) / (sig * Math.SQRT2))); }
+    var d = '';
+    for (var k = 0; k <= 280; k++) { var v = X0 + (X1 - X0) * k / 280; d += (k ? ' L' : 'M') + sx(v).toFixed(1) + ' ' + sy(pdf(v)).toFixed(1); }
+    curve.setAttribute('d', d);
+    var s = 'M' + sx(A) + ' ' + P.b;
+    for (var j = 0; j <= 60; j++) { var u = A + (B - A) * j / 60; s += ' L' + sx(u).toFixed(1) + ' ' + sy(pdf(u)).toFixed(1); }
+    shade.setAttribute('d', s + ' L' + sx(B) + ' ' + P.b + ' Z');
+    muLine.setAttribute('x1', sx(mu)); muLine.setAttribute('x2', sx(mu));
+    var hy = sy(pdf(mu + sig));
+    sigLine.setAttribute('x1', sx(mu)); sigLine.setAttribute('x2', sx(mu + sig));
+    sigLine.setAttribute('y1', hy); sigLine.setAttribute('y2', hy);
+    sigLab.setAttribute('x', sx(mu + sig / 2)); sigLab.setAttribute('y', hy - 6);
+    var p = cdf(B) - cdf(A), peak = 1 / (sig * Math.sqrt(2 * Math.PI));
+    muT.textContent = 'μ = ' + mu.toFixed(1) + ' °C: прогноз';
+    sigT.textContent = 'σ = ' + sig.toFixed(1) + ' °C: разброс';
+    pT.textContent = p.toFixed(2);
+    peakT.textContent = 'высота пика 1 / (σ√2π) = ' + peak.toFixed(2);
+    muIn.value = mu; sigIn.value = sig;
+    document.getElementById('vmTeMuOut').textContent = mu.toFixed(1) + ' °C';
+    document.getElementById('vmTeSigOut').textContent = sig.toFixed(1) + ' °C';
+    titleEl.textContent = 'μ = ' + mu.toFixed(1) + ', σ = ' + sig.toFixed(1) + ': на 22–25 °C приходится ' + p.toFixed(2);
+    textEl.textContent = 'При μ = 23.7 и σ = 1.5, как в прогнозе на завтра, отрезок 22–25 °C получает 0.68 площади. С тем же центром и σ = 4, как в прогнозе ' +
+      'на неделю, тот же отрезок получает только 0.29. Кривая расплывается, пик опускается, а вся площадь остаётся равной 1: ' +
+      'вероятность растекается на соседние температуры. Двигая μ, вы сдвигаете прогноз, двигая σ, меняете уверенность модели.';
+  }
+  muIn.addEventListener('input', function () { mu = +muIn.value; render(); });
+  sigIn.addEventListener('input', function () { sig = +sigIn.value; render(); });
+  Array.prototype.forEach.call(root.querySelectorAll('[data-te-preset]'), function (b) {
+    b.addEventListener('click', function () { mu = 23.7; sig = +b.dataset.tePreset; render(); });
+  });
+  render();
+})();
+</script>
 
 > **Непрерывный выход задаётся кривой плотности `p(y | x)`, а не таблицей.** Вероятность есть только у отрезка значений, а «число на выходе» регрессии равно центру `μ` этой кривой.
 
