@@ -1,21 +1,5 @@
 <style>
-  .console {
-    background: #1D1B17; color: #E8E4DA; border-radius: 12px;
-    padding: 15px 18px; margin: 22px 0; overflow-x: auto;
-    font-family: Menlo, Consolas, "Courier New", monospace;
-    font-size: 13.5px; line-height: 1.6; white-space: pre;
-  }
-  .console .cmd { color: #8FD14F; }
-  .console .chi { color: #FFD166; }
-  .console-title {
-    font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
-    color: #5E5850; font-weight: 800; margin: 26px 0 -12px;
-  }
-</style>
-
-
-
-<style>
+  .prose .stage-figure .is-focus .svg-math > span:not(.katex) { font-weight: 700; }
   .lr-live-stage { border: 1px solid #E0DDD3; border-radius: 16px; padding: 20px 22px; margin: 26px 0; background: #FFFFFF; }
   .lr-live-head strong { font-size: 17px; }
   .lr-live-head p { margin: 6px 0 0; font-size: 14px; color: #5E5850; }
@@ -31,7 +15,7 @@
   .lr-metric span { display: block; font-size: 12px; color: #5E5850; }
   .lr-metric strong { font-size: 17px; font-variant-numeric: tabular-nums; }
   .lr-live-formula { border: 1px solid #E0DDD3; border-radius: 10px; padding: 10px; text-align: center;
-                     font-family: Menlo, Consolas, "Courier New", monospace; font-size: 15px; }
+                     font-size: 15px; }
   .lr-live-note { font-size: 13px; color: #5E5850; margin-top: 4px; }
   @media (max-width: 820px) { .lr-live-grid { grid-template-columns: 1fr; } }
 </style>
@@ -55,15 +39,8 @@
 <p>
   Порядок такой. Сначала задача и данные на плоскости, потом прямая, которую можно подвигать
   руками. Затем модель как один нейрон и она же в матричной записи. Потом прямой проход
-  в формах и в числах, а обратный на графе, в матрицах и в числах. В конце шаг спуска, карта
-  размерностей, весь цикл кодом на NumPy и PyTorch и анатомия обучения, общая для всех моделей.
+  в формах и в числах, а обратный на графе, в матрицах и в числах. В конце шаг спуска, весь цикл кодом на NumPy и PyTorch и анатомия обучения, общая для всех моделей.
 </p>
-
-<div class="reading-contract">
-  <div class="contract-card"><span>На входе</span><strong>Производная сложной функции и умножение матриц</strong><p>Больше ничего не нужно: остальное выводится в статье с нуля.</p></div>
-  <div class="contract-card"><span>Сквозной пример</span><strong>Четыре дома из ста пятидесяти</strong><p>Один батч проходит все формулы статьи, а затем полный прогон в 3000 шагов.</p></div>
-  <div class="contract-card"><span>На выходе</span><strong>Цикл обучения целиком</strong><p>Вы сможете написать обучение на голом numpy и объяснить каждое число в его логе.</p></div>
-</div>
 
 <div class="semantic-key">
   <span>данные: признаки и цены</span>
@@ -119,8 +96,8 @@
 <div class="callout-blue">
   <strong>Почему признаки поделены на десять:</strong> чтобы числа были одного порядка.
   Площадь в квадратных метрах даёт значения около 75, возраст в годах около 25, и признаки
-  разъезжаются втрое. В части 14 видно, что это не косметика: та же скорость обучения
-  на неотнормированных признаках разваливает модель за пятнадцать шагов.
+  разъезжаются втрое. Порог устойчивой скорости обучения падает с 0,0185 до 0,00019,
+  и шаг <span class="math-inline" data-tex="\eta = 0{,}001"></span> разваливает модель за пятнадцать шагов.
 </div>
 
 <p>Посмотрим пошагово, как задача выглядит на плоскости.</p>
@@ -145,15 +122,15 @@
     <marker id="tk-arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#73B222"/></marker>
   </defs>
 <rect x="35" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="105" y="35" class="mm" text-anchor="middle">дома → X</text>
+<foreignObject x="-105" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>дома → <span data-tex="X"></span></span></div></foreignObject>
 <rect x="185" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="255" y="35" class="mm" text-anchor="middle">w · b</text>
+<foreignObject x="209" y="15.68" width="92" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" data-tex="w,\  b"></div></foreignObject>
 <rect x="335" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="405" y="35" class="mm" text-anchor="middle">предсказания ŷ</text>
+<foreignObject x="195" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>предсказания <span data-tex="\hat y"></span></span></div></foreignObject>
 <rect x="485" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="555" y="35" class="mm" text-anchor="middle">остатки r</text>
+<foreignObject x="345" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>остатки <span data-tex="\hat y - y"></span></span></div></foreignObject>
 <rect x="635" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="705" y="35" class="mm" text-anchor="middle">потеря L</text>
+<foreignObject x="495" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>потеря <span data-tex="L"></span></span></div></foreignObject>
 <rect x="785" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
 <text x="855" y="35" class="mm" text-anchor="middle">градиент и шаг</text>
 <g data-key="mm0" data-only="1"><rect x="33" y="16" width="144" height="30" rx="6" fill="none" stroke="#C30B0A" stroke-width="2"/></g>
@@ -166,9 +143,9 @@
 <text x="68" y="224" font-size="16" fill="#111111" text-anchor="start">   • площадь (в десятках м²)</text>
 <text x="68" y="250" font-size="16" fill="#111111" text-anchor="start">   • цена (в миллионах)</text>
 <text x="68" y="290" font-size="16" fill="#111111" text-anchor="start" font-weight="700">Хотим выучить зависимость:</text>
-<text x="68" y="316" font-size="17" fill="#2A5E9B" text-anchor="start" font-weight="700">цена ≈ f(площадь)</text>
-<text x="68" y="356" font-size="14" fill="#2A5E9B" text-anchor="start" font-weight="700">ФИЧА X: то, что подаём на вход</text>
-<text x="68" y="382" font-size="14" fill="#5F9420" text-anchor="start" font-weight="700">ТАРГЕТ y: то, что предсказываем</text>
+<foreignObject x="68" y="289.48" width="261" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:17px;color:#2A5E9B;font-weight:700" data-tex="\text{цена}\approx f(\text{площадь})"></div></foreignObject>
+<foreignObject x="68" y="334.16" width="872" height="33.6"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:14px;color:#2A5E9B;font-weight:700" ><span>ФИЧА <span data-tex="X"></span>: то, что подаём на вход</span></div></foreignObject>
+<foreignObject x="68" y="360.16" width="872" height="33.6"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:14px;color:#5F9420;font-weight:700" ><span>ТАРГЕТ <span data-tex="y"></span>: то, что предсказываем</span></div></foreignObject>
 </g>
 <g data-key="c2" data-only="1">
 <rect x="40" y="88" width="446" height="392" rx="14" fill="#FFFFFF" stroke="#3576C0" stroke-width="1.5"/>
@@ -187,7 +164,7 @@
 <text x="68" y="130" font-size="19" fill="#111111" text-anchor="start" font-weight="800">Самая простая модель</text>
 <text x="68" y="172" font-size="16" fill="#111111" text-anchor="start">Что если для любого дома предсказывать</text>
 <text x="68" y="198" font-size="16" fill="#111111" text-anchor="start">одно и то же число, среднюю цену?</text>
-<text x="68" y="238" font-size="17" fill="#111111" text-anchor="start" font-weight="700">ŷ = 0 · площадь + 6,378</text>
+<foreignObject x="68" y="211.48" width="339" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:17px;color:#111111;font-weight:700" data-tex="\hat y = 0\cdot\text{площадь} + 6{,}378"></div></foreignObject>
 <text x="68" y="278" font-size="16" fill="#111111" text-anchor="start">Площадь при этом полностью</text>
 <text x="68" y="304" font-size="16" fill="#9C0908" text-anchor="start" font-weight="700">игнорируется.</text>
 <text x="68" y="344" font-size="14" fill="#5E5850" text-anchor="start">Очевидно, что это плохо.</text>
@@ -198,7 +175,7 @@
 <text x="68" y="130" font-size="19" fill="#111111" text-anchor="start" font-weight="800">Ошибки модели</text>
 <text x="68" y="172" font-size="16" fill="#111111" text-anchor="start">Для каждой точки смотрим, насколько</text>
 <text x="68" y="198" font-size="16" fill="#111111" text-anchor="start">модель промахнулась.</text>
-<text x="68" y="238" font-size="16" fill="#111111" text-anchor="start" font-weight="700">остаток = предсказание − настоящая цена</text>
+<foreignObject x="68" y="213.04" width="547" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:16px;color:#111111;font-weight:700" data-tex="\text{остаток} = \text{предсказание} - \text{настоящая цена}"></div></foreignObject>
 <text x="68" y="278" font-size="16" fill="#111111" text-anchor="start">Красные отрезки показывают расстояние от</text>
 <text x="68" y="304" font-size="16" fill="#111111" text-anchor="start">настоящей цены до того, что предсказала</text>
 <text x="68" y="330" font-size="16" fill="#111111" text-anchor="start">модель.</text>
@@ -209,7 +186,7 @@
 <text x="68" y="130" font-size="19" fill="#111111" text-anchor="start" font-weight="800">Функция потерь: MSE</text>
 <text x="68" y="172" font-size="16" fill="#111111" text-anchor="start">Сводим все ошибки к одному числу,</text>
 <text x="68" y="198" font-size="16" fill="#111111" text-anchor="start">среднему квадрату:</text>
-<text x="68" y="238" font-size="17" fill="#111111" text-anchor="start" font-weight="700">MSE = среднее (остаток)²</text>
+<foreignObject x="68" y="211.48" width="352" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:17px;color:#111111;font-weight:700" data-tex="\text{MSE} = \text{среднее}\,(\text{остаток})^2"></div></foreignObject>
 <text x="68" y="278" font-size="16" fill="#111111" text-anchor="start">Квадрат нужен, чтобы плюсы и минусы не</text>
 <text x="68" y="304" font-size="16" fill="#111111" text-anchor="start">сократили друг друга и чтобы крупные</text>
 <text x="68" y="330" font-size="16" fill="#111111" text-anchor="start">промахи стоили дороже мелких.</text>
@@ -221,7 +198,7 @@
 <text x="68" y="130" font-size="19" fill="#111111" text-anchor="start" font-weight="800">Лучшая прямая</text>
 <text x="68" y="172" font-size="16" fill="#111111" text-anchor="start">Подбираем наклон и высоту так, чтобы</text>
 <text x="68" y="198" font-size="16" fill="#111111" text-anchor="start">MSE стала как можно меньше.</text>
-<text x="68" y="238" font-size="17" fill="#111111" text-anchor="start" font-weight="700">ŷ = 0,782 · площадь + 1,048</text>
+<foreignObject x="68" y="211.48" width="391" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:17px;color:#111111;font-weight:700" data-tex="\hat y = 0{,}782\cdot\text{площадь} + 1{,}048"></div></foreignObject>
 <text x="68" y="278" font-size="16" fill="#111111" text-anchor="start">Точки не лежат на прямой идеально, но</text>
 <text x="68" y="304" font-size="16" fill="#111111" text-anchor="start">красные отрезки в сумме минимально</text>
 <text x="68" y="330" font-size="16" fill="#111111" text-anchor="start">возможные.</text>
@@ -243,21 +220,21 @@
 <rect x="40" y="88" width="446" height="392" rx="14" fill="#FFFBEB" stroke="#C29E08" stroke-width="1.5"/>
 <text x="68" y="130" font-size="19" fill="#111111" text-anchor="start" font-weight="800">Как называют параметры</text>
 <text x="68" y="172" font-size="16" fill="#111111" text-anchor="start">В статистике наклон и свободный член</text>
-<text x="68" y="198" font-size="16" fill="#111111" text-anchor="start">пишут как β̂₁ и β̂₀.</text>
+<foreignObject x="68" y="173.04" width="872" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:16px;color:#111111;font-weight:400" ><span>пишут как <span data-tex="\hat\beta_1"></span> и <span data-tex="\hat\beta_0"></span>.</span></div></foreignObject>
 <text x="68" y="238" font-size="16" fill="#111111" text-anchor="start">В машинном обучении принята другая</text>
-<text x="68" y="264" font-size="16" fill="#111111" text-anchor="start">запись: веса обозначают буквой w, а сдвиг</text>
-<text x="68" y="290" font-size="16" fill="#111111" text-anchor="start">буквой b.</text>
-<text x="68" y="330" font-size="18" fill="#111111" text-anchor="start" font-weight="700">ŷ = w · x + b</text>
+<foreignObject x="68" y="239.04" width="872" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:16px;color:#111111;font-weight:400" ><span>запись: веса обозначают буквой <span data-tex="w"></span>, а сдвиг</span></div></foreignObject>
+<foreignObject x="68" y="265.04" width="872" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:16px;color:#111111;font-weight:400" ><span>буквой <span data-tex="b"></span>.</span></div></foreignObject>
+<foreignObject x="68" y="301.92" width="209" height="43.2"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:18px;color:#111111;font-weight:700" data-tex="\hat y = w \cdot  x + b"></div></foreignObject>
 <text x="68" y="370" font-size="16" fill="#111111" text-anchor="start">Так удобнее, когда параметров много: у</text>
-<text x="68" y="396" font-size="16" fill="#111111" text-anchor="start">каждого признака свой вес w₁, w₂, …, а b</text>
+<foreignObject x="68" y="371.04" width="872" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:16px;color:#111111;font-weight:400" ><span>каждого признака свой вес <span data-tex="w_1,\  w_2"></span>, …, а <span data-tex="b"></span></span></div></foreignObject>
 <text x="68" y="422" font-size="16" fill="#111111" text-anchor="start">по-прежнему один.</text>
 </g>
 <g data-key="tab" data-only="1">
 <text x="720" y="106" font-size="13" fill="#5E5850" text-anchor="middle">фрагмент таблицы</text>
 <rect x="530" y="118" width="190" height="30" rx="8" fill="#3576C0"/>
-<text x="625" y="138" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="700">площадь: фича X</text>
+<foreignObject x="415" y="116.16" width="420" height="33.6"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#FFFFFF;font-weight:700" ><span>площадь: фича <span data-tex="X"></span></span></div></foreignObject>
 <rect x="726" y="118" width="190" height="30" rx="8" fill="#73B222"/>
-<text x="821" y="138" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="700">цена: таргет y</text>
+<foreignObject x="611" y="116.16" width="420" height="33.6"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#FFFFFF;font-weight:700" ><span>цена: таргет <span data-tex="y"></span></span></div></foreignObject>
 <rect x="530" y="154" width="386" height="28" fill="#F5F8FC" stroke="#E1E5EA"/>
 <text x="625" y="173" font-size="15" fill="#111111" text-anchor="middle">3,0</text>
 <text x="821" y="173" font-size="15" fill="#111111" text-anchor="middle">2,92</text>
@@ -319,7 +296,7 @@
 </g>
 <g data-key="cst" data-only="1">
 <line x1="546.0" y1="246.1" x2="924.0" y2="246.1" stroke="#C29E08" stroke-width="2.8"/>
-<text x="916" y="236.105" font-size="13" fill="#8F7406" text-anchor="end" font-weight="700">ŷ = 6,378</text>
+<foreignObject x="759" y="215.825" width="157" height="31.2"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:13px;color:#8F7406;font-weight:700;justify-content:flex-end" data-tex="\hat y = 6{,}378"></div></foreignObject>
 </g>
 <g data-key="rc" data-only="1">
 <line x1="573.7" y1="390.0" x2="573.7" y2="246.1" stroke="#C30B0A" stroke-width="1.8" opacity="0.8"/>
@@ -352,7 +329,7 @@
 </g>
 <g data-key="fit" data-only="1">
 <line x1="546.0" y1="389.8" x2="924.0" y2="122.9" stroke="#73B222" stroke-width="3"/>
-<text x="916" y="123.957" font-size="13" fill="#5F9420" text-anchor="end" font-weight="700">ŷ = 0,782 x + 1,048</text>
+<foreignObject x="629" y="103.677" width="287" height="31.2"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:13px;color:#5F9420;font-weight:700;justify-content:flex-end" data-tex="\hat y = 0{,}782\,x + 1{,}048"></div></foreignObject>
 </g>
 <g data-key="rf" data-only="1">
 <line x1="573.7" y1="390.0" x2="573.7" y2="370.3" stroke="#C30B0A" stroke-width="1.6" opacity="0.7"/>
@@ -385,8 +362,8 @@
 </g>
 <g data-key="nt" data-only="1">
 <rect x="520" y="470" width="420" height="70" rx="14" fill="#FFFBEB" stroke="#C29E08" stroke-width="1.5"/>
-<text x="730" y="496" font-size="15" fill="#111111" text-anchor="middle" font-weight="700">ŷ = w · x + b</text>
-<text x="730" y="518" font-size="13" fill="#5E5850" text-anchor="middle">w: вес признака, b: сдвиг</text>
+<foreignObject x="625.5" y="472.6" width="209" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="\hat y = w \cdot  x + b"></div></foreignObject>
+<foreignObject x="520" y="497.72" width="420" height="31.2"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" ><span><span data-tex="w"></span>: вес признака, <span data-tex="b"></span>: сдвиг</span></div></foreignObject>
 </g>
 <text x="40" y="572" class="legend" text-anchor="start">жёлтые точки: дома · жёлтая линия: константа · зелёная: обученная модель · красные отрезки: остатки</text>
 </svg>
@@ -404,7 +381,7 @@
       <div class="step-kicker">Шаг 1 · данные: фичи и таргет</div>
       <h4>Что подаём на вход и что хотим предсказать</h4>
 <p>Про каждый дом известно несколько чисел, и одно из них мы объявляем ответом. Площадь будет фичей, цена таргетом.</p>
-<p>В обучающей выборке 150 таких строк. Модель увидит их все, а качество мы потом проверим на других пятидесяти.</p>
+<p>В обучающей выборке 150 таких строк.</p>
     </div>
     <div class="step-panel" data-on="c2 pts" data-focus="pts">
       <div class="step-kicker">Шаг 2 · смотрим на точки</div>
@@ -444,9 +421,9 @@
     </div>
     <div class="step-panel" data-on="c8 pts fit nt" data-focus="c8 nt">
       <div class="step-kicker">Шаг 8 · как принято обозначать</div>
-      <h4>В машинном обучении это w и b</h4>
-<p>В учебниках статистики наклон и свободный член пишут как β̂₁ и β̂₀. В машинном обучении договорились иначе: параметры при признаках называют весами и обозначают w, а свободный член называют сдвигом b.</p>
-<p>Причина практическая: признаков бывает много, и удобно, когда у каждого свой вес с номером (w₁, w₂, w₃), а сдвиг остаётся один. Вся дальнейшая статья написана в этих обозначениях.</p>
+      <h4>В машинном обучении это <span class="math-inline" data-tex="w"></span> и <span class="math-inline" data-tex="b"></span></h4>
+<p>В учебниках статистики наклон и свободный член пишут как <span class="math-inline" data-tex="\hat\beta_1"></span> и <span class="math-inline" data-tex="\hat\beta_0"></span>. В машинном обучении договорились иначе: параметры при признаках называют весами и обозначают <span class="math-inline" data-tex="w"></span>, а свободный член называют сдвигом <span class="math-inline" data-tex="b"></span>.</p>
+<p>Причина практическая: признаков бывает много, и удобно, когда у каждого свой вес с номером <span class="math-inline" data-tex="(w_1,\  w_2,\  w_3)"></span>, а сдвиг остаётся один. Вся дальнейшая статья написана в этих обозначениях.</p>
     </div>
   </div>
 </div>
@@ -481,16 +458,16 @@
   <div class="lr-live-grid">
     <div class="lr-live-figure"><svg id="lineFitSvg" viewBox="0 0 700 420" role="img" aria-label="Точки данных, прямая и остатки"><style>#lineFitSvg { font-family: Helvetica, Arial, sans-serif; }</style></svg></div>
     <div class="lr-controls">
-      <div class="lr-control"><label for="lineW">Вес w <output id="lineWOut">0,50</output></label>
+      <div class="lr-control"><label for="lineW"><span>Вес <span class="math-inline" data-tex="w"></span></span> <output id="lineWOut">0,50</output></label>
         <input id="lineW" type="range" min="0" max="1.6" value="0.5" step="0.02"></div>
-      <div class="lr-control"><label for="lineB">Сдвиг b <output id="lineBOut">2,00</output></label>
+      <div class="lr-control"><label for="lineB"><span>Сдвиг <span class="math-inline" data-tex="b"></span></span> <output id="lineBOut">2,00</output></label>
         <input id="lineB" type="range" min="-1" max="4" value="2" step="0.05"></div>
       <div class="lr-live-metrics">
         <div class="lr-metric"><span>MSE</span><strong id="lineLoss">—</strong></div>
         <div class="lr-metric"><span>средний остаток</span><strong id="lineMeanR">—</strong></div>
       </div>
-      <div class="lr-live-formula" id="lineFormula">ŷ = 0,50 · x + 2,00</div>
-      <p class="lr-live-note">Лучшее, чего можно добиться на этих 22 домах: w = 0,78, b = 1,05, MSE = 0,2949.</p>
+      <div class="lr-live-formula" id="lineFormula"></div>
+      <p class="lr-live-note">Лучшее, чего можно добиться на этих 22 домах: <span class="math-inline" data-tex="w = 0{,}78"></span>, <span class="math-inline" data-tex="b = 1{,}05"></span>, MSE = 0,2949.</p>
     </div>
   </div>
 </div>
@@ -552,7 +529,10 @@
     document.getElementById('lineBOut').textContent = fmt(b, 2);
     document.getElementById('lineLoss').textContent = fmt(sum, 4);
     document.getElementById('lineMeanR').textContent = fmt(mean, 3);
-    document.getElementById('lineFormula').textContent = 'ŷ = ' + fmt(w, 2) + ' · x ' + (b >= 0 ? '+ ' : '− ') + fmt(Math.abs(b), 2);
+    var fNode = document.getElementById('lineFormula');
+    var fTex = '\\hat y = ' + fmt(w, 2).replace(',', '{,}') + '\\cdot x ' + (b >= 0 ? '+ ' : '- ') + fmt(Math.abs(b), 2).replace(',', '{,}');
+    if (window.katex) { window.katex.render(fTex, fNode, {throwOnError: false}); }
+    else { fNode.textContent = 'ŷ = ' + fmt(w, 2) + ' · x ' + (b >= 0 ? '+ ' : '− ') + fmt(Math.abs(b), 2); }
     draw(w, b);
   }
   document.getElementById('lineW').addEventListener('input', update);
@@ -583,7 +563,7 @@
   <strong>Почему квадрат, а не модуль:</strong> из-за формы штрафа. Производная модуля равна
   <span class="math-inline" data-tex="\pm 1"></span> при любом остатке, поэтому и грубый промах,
   и мелкий тянут параметры с одинаковой силой. У квадрата производная равна
-  <span class="math-inline" data-tex="2r"></span>: она сама подстраивается под размер ошибки,
+  <span class="math-inline" data-tex="2(\hat y - y)"></span>: она сама подстраивается под размер ошибки,
   а вблизи минимума становится маленькой и позволяет спуску остановиться. Платить за это
   приходится чувствительностью к выбросам: один дом с опечаткой в цене перетянет прямую на себя.
 </div>
@@ -649,7 +629,7 @@
 
 <div class="stage" id="stageNN" tabindex="0">
   <div class="stage-figure">
-<svg id="nn" viewBox="0 0 960 500" role="img" aria-label="Модель как один нейрон: два входа, два веса, сдвиг и выход">
+<svg id="nn" viewBox="0 0 960 442" role="img" aria-label="Модель как один нейрон: два входа, два веса, сдвиг и выход">
   <style>
     #nn { font-family: Helvetica, Arial, sans-serif; }
     #nn .lbl { font-size: 16px; fill: #111111; }
@@ -663,18 +643,20 @@
   <defs>
     <marker id="nn-arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5E5850"/></marker>
     <marker id="nn-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C30B0A"/></marker>
+    <marker id="nn-arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3576C0"/></marker>
+    <marker id="nn-ary" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8F7406"/></marker>
     <marker id="nn-arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#73B222"/></marker>
   </defs>
 <rect x="35" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="105" y="35" class="mm" text-anchor="middle">дома → X</text>
+<foreignObject x="-105" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>дома → <span data-tex="X"></span></span></div></foreignObject>
 <rect x="185" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="255" y="35" class="mm" text-anchor="middle">w · b</text>
+<foreignObject x="209" y="15.68" width="92" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" data-tex="w,\  b"></div></foreignObject>
 <rect x="335" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="405" y="35" class="mm" text-anchor="middle">предсказания ŷ</text>
+<foreignObject x="195" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>предсказания <span data-tex="\hat y"></span></span></div></foreignObject>
 <rect x="485" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="555" y="35" class="mm" text-anchor="middle">остатки r</text>
+<foreignObject x="345" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>остатки <span data-tex="\hat y - y"></span></span></div></foreignObject>
 <rect x="635" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="705" y="35" class="mm" text-anchor="middle">потеря L</text>
+<foreignObject x="495" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>потеря <span data-tex="L"></span></span></div></foreignObject>
 <rect x="785" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
 <text x="855" y="35" class="mm" text-anchor="middle">градиент и шаг</text>
 <g data-key="mm0" data-only="1"><rect x="33" y="16" width="144" height="30" rx="6" fill="none" stroke="#C30B0A" stroke-width="2"/></g>
@@ -683,48 +665,13 @@
 <g data-key="mm3" data-only="1"><rect x="483" y="16" width="144" height="30" rx="6" fill="none" stroke="#C30B0A" stroke-width="2"/></g>
 <g data-key="mm4" data-only="1"><rect x="633" y="16" width="144" height="30" rx="6" fill="none" stroke="#C30B0A" stroke-width="2"/></g>
 <text x="480" y="62" class="cap" text-anchor="middle">один дом проходит модель слева направо</text>
-<g data-key="inp">
-<circle cx="120" cy="150" r="38" fill="#3576C0" fill-opacity="0.45" stroke="#3576C0" stroke-width="1.8"/>
-<text x="120" y="155.667" text-anchor="middle" font-size="17" fill="#111111">x₁</text>
-<circle cx="120" cy="300" r="38" fill="#3576C0" fill-opacity="0.45" stroke="#3576C0" stroke-width="1.8"/>
-<text x="120" y="305.667" text-anchor="middle" font-size="17" fill="#111111">x₂</text>
-<text x="120" y="100" class="cap" text-anchor="middle">площадь</text>
-<text x="120" y="358" class="cap" text-anchor="middle">возраст</text>
-</g>
-<g data-key="wts">
-<line x1="158" y1="165" x2="382" y2="205" stroke="#5E5850" stroke-width="1.6" fill="none" marker-end="url(#nn-arw)"/>
-<line x1="158" y1="285" x2="382" y2="245" stroke="#5E5850" stroke-width="1.6" fill="none" marker-end="url(#nn-arw)"/>
-<text x="262" y="168" text-anchor="middle" font-size="16" fill="#C29E08">w₁</text>
-<text x="262" y="290" text-anchor="middle" font-size="16" fill="#C29E08">w₂</text>
-</g>
-<g data-key="bias">
-<circle cx="430" cy="378" r="28" fill="#C29E08" fill-opacity="0.85" stroke="#C29E08" stroke-width="1.8"/>
-<text x="430" y="383.333" text-anchor="middle" font-size="16" fill="#FFFFFF">b</text>
-<line x1="430" y1="348" x2="430" y2="274" stroke="#5E5850" stroke-width="1.6" fill="none" marker-end="url(#nn-arw)"/>
-</g>
-<g data-key="z">
-<circle cx="430" cy="225" r="44" fill="#73B222" fill-opacity="0.45" stroke="#73B222" stroke-width="1.8"/>
-<text x="430" y="230.667" text-anchor="middle" font-size="17" fill="#111111">z</text>
-<text x="430" y="158" class="cap" text-anchor="middle">сумматор</text>
-</g>
-<g data-key="yh">
-<line x1="476" y1="225" x2="618" y2="225" stroke="#5E5850" stroke-width="1.6" fill="none" marker-end="url(#nn-arw)"/>
-<text x="547" y="214" class="cap" text-anchor="middle">ŷ = z</text>
-<circle cx="658" cy="225" r="38" fill="#73B222" fill-opacity="0.45" stroke="#73B222" stroke-width="1.8"/>
-<text x="658" y="230.667" text-anchor="middle" font-size="17" fill="#111111">ŷ</text>
-<text x="658" y="158" class="cap" text-anchor="middle">предсказание</text>
-</g>
-<g data-key="cmp" data-only="1">
-<circle cx="658" cy="380" r="34" fill="#3576C0" fill-opacity="0.3" stroke="#3576C0" stroke-width="1.8"/>
-<text x="658" y="385.667" text-anchor="middle" font-size="17" fill="#111111">y</text>
-<text x="658" y="434" class="cap" text-anchor="middle">настоящая цена</text>
-<line x1="658" y1="340" x2="658" y2="268" stroke="#5E5850" stroke-width="1.6" fill="none" marker-end="url(#nn-arw)"/>
-<rect x="770" y="250" width="160" height="76" rx="12" fill="#FFF2F2" stroke="#C30B0A" stroke-width="1.7"/>
-<text x="850" y="284" text-anchor="middle" font-size="16" fill="#111111">ℓ = (ŷ − y)²</text>
-<text x="850" y="308" class="cap" text-anchor="middle">промах в квадрате</text>
-<line x1="698" y1="245" x2="764" y2="274" stroke="#5E5850" stroke-width="1.6" fill="none" marker-end="url(#nn-arw)"/>
-</g>
-<text x="40" y="486" class="legend" text-anchor="start">синее: данные · жёлтое: обучаемые числа · зелёное: то, что модель посчитала</text>
+<g data-key="inp"><circle cx="100" cy="118" r="30" fill="#FFFFFF" stroke="#3576C0" stroke-width="2.2"/><foreignObject x="70" y="88" width="60" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#111111;font-weight:400" data-tex="x_1"></div></foreignObject><foreignObject x="40" y="152" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" ><span>площадь</span></div></foreignObject><circle cx="100" cy="235" r="30" fill="#FFFFFF" stroke="#3576C0" stroke-width="2.2"/><foreignObject x="70" y="205" width="60" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#111111;font-weight:400" data-tex="x_2"></div></foreignObject><foreignObject x="40" y="269" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" ><span>возраст</span></div></foreignObject></g>
+<g data-key="wts"><line x1="128.1" y1="131.1" x2="320.1" y2="221.0" stroke="#5E5850" stroke-width="1.8" marker-end="url(#nn-arw)"/><line x1="131.0" y1="235.0" x2="317.0" y2="235.0" stroke="#5E5850" stroke-width="1.8" marker-end="url(#nn-arw)"/><foreignObject x="191.358" y="149.914" width="80" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#8F7406;font-weight:400" data-tex="\cdot\, w_1"></div></foreignObject><foreignObject x="185" y="207" width="80" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#8F7406;font-weight:400" data-tex="\cdot\, w_2"></div></foreignObject></g>
+<g data-key="bias"><circle cx="100" cy="352" r="30" fill="#E9E1C2" stroke="#C29E08" stroke-width="2.2"/><foreignObject x="70" y="322" width="60" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#111111;font-weight:400" data-tex="b"></div></foreignObject><foreignObject x="40" y="386" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" ><span>сдвиг</span></div></foreignObject><line x1="128.1" y1="338.9" x2="320.1" y2="249.0" stroke="#5E5850" stroke-width="1.8" marker-end="url(#nn-arw)"/><foreignObject x="211.782" y="294.992" width="40" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="+"></div></foreignObject></g>
+<g data-key="z"><circle cx="350" cy="235" r="30" fill="#F4F7EE" stroke="#C29E08" stroke-width="2.2"/><foreignObject x="320" y="205" width="60" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#111111;font-weight:400" data-tex="z"></div></foreignObject><foreignObject x="290" y="179" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" ><span>сумматор</span></div></foreignObject></g>
+<g data-key="yh"><line x1="381.0" y1="235.0" x2="537.0" y2="235.0" stroke="#5E5850" stroke-width="1.8" marker-end="url(#nn-arw)"/><foreignObject x="440" y="207" width="40" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="="></div></foreignObject><circle cx="570" cy="235" r="30" fill="#F4F7EE" stroke="#73B222" stroke-width="2.2"/><foreignObject x="540" y="205" width="60" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#111111;font-weight:400" data-tex="\hat y"></div></foreignObject><foreignObject x="500" y="179" width="140" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" ><span>предсказание</span></div></foreignObject></g>
+<g data-key="cmp" data-only="1"><line x1="601.0" y1="235.0" x2="757.0" y2="235.0" stroke="#5E5850" stroke-width="1.8" marker-end="url(#nn-arw)"/><foreignObject x="620" y="202" width="120" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:400" data-tex="(\,\cdot - y)^2"></div></foreignObject><circle cx="790" cy="118" r="30" fill="#FFFFFF" stroke="#3576C0" stroke-width="2.2"/><foreignObject x="760" y="88" width="60" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#111111;font-weight:400" data-tex="y"></div></foreignObject><foreignObject x="830" y="108" width="130" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:13px;color:#5E5850;font-weight:400" ><span>настоящая цена</span></div></foreignObject><line x1="790.0" y1="149.0" x2="790.0" y2="202.0" stroke="#3576C0" stroke-width="1.8" marker-end="url(#nn-arb)"/><circle cx="790" cy="235" r="30" fill="#F4F7EE" stroke="#C30B0A" stroke-width="2.2"/><foreignObject x="760" y="205" width="60" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#111111;font-weight:400" data-tex="\ell"></div></foreignObject><foreignObject x="830" y="225" width="100" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:13px;color:#5E5850;font-weight:400" ><span>потеря</span></div></foreignObject></g>
+<text x="40" y="428" font-size="13" fill="#5E5850" font-weight="400" text-anchor="start">синее: данные · жёлтое: обучаемые числа · зелёное: то, что модель посчитала · красное: потеря</text>
 </svg>
   </div>
 
@@ -739,31 +686,31 @@
     <div class="step-panel" data-on="inp mm0" data-focus="inp">
       <div class="step-kicker">Шаг 1 · вход</div>
       <h4>Квартира сводится к двум числам</h4>
-<p><b>1) x₁, x₂: вход.</b> Площадь в десятках квадратных метров и возраст дома в десятках лет. Больше модель о доме ничего не знает.</p>
+<p><b>1) <span class="math-inline" data-tex="x_1,\  x_2"></span>: вход.</b> Площадь в десятках квадратных метров и возраст дома в десятках лет. Больше модель о доме ничего не знает.</p>
 <p>Эти два числа приходят извне и при обучении не меняются.</p>
     </div>
     <div class="step-panel" data-on="inp wts mm1" data-focus="wts">
       <div class="step-kicker">Шаг 2 · веса</div>
       <h4>У каждого входа свой множитель</h4>
-<p><b>2) w₁, w₂: веса.</b> По одному на признак: сколько миллионов добавляют десять квадратных метров и сколько отнимают десять лет возраста.</p>
+<p><b>2) <span class="math-inline" data-tex="w_1,\  w_2"></span>: веса.</b> По одному на признак: сколько миллионов добавляют десять квадратных метров и сколько отнимают десять лет возраста.</p>
 <p>Это первые два из тех чисел, которые модель будет подбирать.</p>
     </div>
     <div class="step-panel" data-on="inp wts z mm1" data-focus="z">
       <div class="step-kicker">Шаг 3 · взвешенная сумма</div>
       <h4>Складываем произведения</h4>
-<p><b>3) z = x₁·w₁ + x₂·w₂.</b> Каждый признак умножается на свой вес, результаты складываются. Никаких перекрёстных произведений нет: вес площади встречается только с площадью.</p>
+<p><b>3) <span class="math-inline" data-tex="z = x_1\cdot w_1 + x_2\cdot w_2"></span>.</b> Каждый признак умножается на свой вес, результаты складываются. Никаких перекрёстных произведений нет: вес площади встречается только с площадью.</p>
 <p><div class="math-display" data-tex="z = x_1 w_1 + x_2 w_2"></div></p>
     </div>
     <div class="step-panel" data-on="inp wts z bias mm1" data-focus="bias">
       <div class="step-kicker">Шаг 4 · сдвиг</div>
       <h4>Одно число, не привязанное ни к какому признаку</h4>
-<p><b>3) … + b.</b> Сдвиг поднимает или опускает предсказание целиком. Без него прямая была бы обязана проходить через ноль: дом нулевой площади стоил бы ноль.</p>
+<p><b>3) … + <span class="math-inline" data-tex="b"></span>.</b> Сдвиг поднимает или опускает предсказание целиком. Без него прямая была бы обязана проходить через ноль: дом нулевой площади стоил бы ноль.</p>
 <p><div class="math-display" data-tex="z = x_1 w_1 + x_2 w_2 + b"></div></p>
     </div>
     <div class="step-panel" data-on="inp wts z bias yh mm2" data-focus="yh">
       <div class="step-kicker">Шаг 5 · выход</div>
       <h4>В линейной регрессии выход равен сумматору</h4>
-<p><b>4) z → ŷ.</b> У логистической регрессии здесь стояла бы сигмоида, у нейрона ReLU. У линейной регрессии не стоит ничего: предсказание и есть z.</p>
+<p><b>4) <span class="math-inline" data-tex="z \rightarrow  \hat y"></span>.</b> У логистической регрессии здесь стояла бы сигмоида, у нейрона ReLU. У линейной регрессии не стоит ничего: предсказание и есть <span class="math-inline" data-tex="z"></span>.</p>
 <p><div class="math-display" data-tex="\hat y = z = x_1 w_1 + x_2 w_2 + b"></div></p>
     </div>
     <div class="step-panel" data-on="inp wts z bias yh cmp mm3 mm4" data-focus="cmp">
@@ -801,9 +748,11 @@
 
 <div class="callout-blue">
   <strong>Что означает «сокращение размерностей»:</strong> в произведении
-  <span class="math-inline" data-tex="[1\times 2]\cdot[2\times 1]"></span> внутренние числа
+  <span class="math-inline" data-tex="[1\times P]\cdot[P\times 1]"></span> внутренние числа
   обязаны совпасть, а внешние дают форму результата: <span class="math-inline" data-tex="[1\times 1]"></span>.
-  Двойка здесь равна числу признаков, и она исчезает: после умножения от дома остаётся одно число.
+  В нашем примере <span class="math-inline" data-tex="P = 2"></span>, то есть
+  <span class="math-inline" data-tex="[1\times 2]\cdot[2\times 1] = [1\times 1]"></span>: двойка исчезает,
+  и после умножения от дома остаётся одно число.
 </div>
 
 <p>Посмотрим пошагово, как сумма по индексам превращается в произведение матриц.</p>
@@ -828,59 +777,44 @@
     <marker id="mx-arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#73B222"/></marker>
   </defs>
 <rect x="35" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="105" y="35" class="mm" text-anchor="middle">дома → X</text>
+<foreignObject x="-105" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>дома → <span data-tex="X"></span></span></div></foreignObject>
 <rect x="185" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="255" y="35" class="mm" text-anchor="middle">w · b</text>
+<foreignObject x="209" y="15.68" width="92" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" data-tex="\mathbf{w},\  b"></div></foreignObject>
 <rect x="335" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="405" y="35" class="mm" text-anchor="middle">предсказания ŷ</text>
+<foreignObject x="195" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>предсказания <span data-tex="\hat{\mathbf{y}}"></span></span></div></foreignObject>
 <rect x="485" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="555" y="35" class="mm" text-anchor="middle">остатки r</text>
+<foreignObject x="345" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>остатки <span data-tex="\hat{\mathbf{y}} - \mathbf{y}"></span></span></div></foreignObject>
 <rect x="635" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="705" y="35" class="mm" text-anchor="middle">потеря L</text>
+<foreignObject x="495" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>потеря <span data-tex="L"></span></span></div></foreignObject>
 <rect x="785" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
 <text x="855" y="35" class="mm" text-anchor="middle">градиент и шаг</text>
 <g data-key="mm1" data-only="1"><rect x="183" y="16" width="144" height="30" rx="6" fill="none" stroke="#C30B0A" stroke-width="2"/></g>
 <g data-key="mm2" data-only="1"><rect x="333" y="16" width="144" height="30" rx="6" fill="none" stroke="#C30B0A" stroke-width="2"/></g>
 <text x="480" y="62" class="cap" text-anchor="middle">та же сумма, записанная так, чтобы не удлиняться с ростом числа признаков</text>
-<g data-key="nrn">
-<circle cx="90" cy="140" r="30" fill="#3576C0" fill-opacity="0.45" stroke="#3576C0" stroke-width="1.8"/>
-<text x="90" y="145" text-anchor="middle" font-size="15" fill="#111111">x₁</text>
-<circle cx="90" cy="250" r="30" fill="#3576C0" fill-opacity="0.45" stroke="#3576C0" stroke-width="1.8"/>
-<text x="90" y="255" text-anchor="middle" font-size="15" fill="#111111">x₂</text>
-<line x1="120" y1="152" x2="214" y2="185" stroke="#5E5850" stroke-width="1.6" fill="none" marker-end="url(#mx-arw)"/>
-<line x1="120" y1="238" x2="214" y2="205" stroke="#5E5850" stroke-width="1.6" fill="none" marker-end="url(#mx-arw)"/>
-<text x="167" y="158" text-anchor="middle" font-size="14" fill="#C29E08">w₁</text>
-<text x="167" y="248" text-anchor="middle" font-size="14" fill="#C29E08">w₂</text>
-<circle cx="246" cy="195" r="32" fill="#73B222" fill-opacity="0.45" stroke="#73B222" stroke-width="1.8"/>
-<text x="246" y="200" text-anchor="middle" font-size="15" fill="#111111">z</text>
-<circle cx="246" cy="300" r="22" fill="#C29E08" fill-opacity="0.85" stroke="#C29E08" stroke-width="1.8"/>
-<text x="246" y="304.333" text-anchor="middle" font-size="13" fill="#FFFFFF">b</text>
-<line x1="246" y1="278" x2="246" y2="233" stroke="#5E5850" stroke-width="1.6" fill="none" marker-end="url(#mx-arw)"/>
-<text x="168" y="348" class="cap" text-anchor="middle">запись по индексам</text>
-</g>
+<g data-key="nrn"><line x1="94.1" y1="127.3" x2="238.0" y2="187.9" stroke="#5E5850" stroke-width="1.8" marker-end="url(#mx-arw)"/><line x1="96.0" y1="198.0" x2="236.0" y2="198.0" stroke="#5E5850" stroke-width="1.8" marker-end="url(#mx-arw)"/><line x1="94.1" y1="268.7" x2="238.0" y2="208.1" stroke="#5E5850" stroke-width="1.8" marker-end="url(#mx-arw)"/><circle cx="72" cy="118" r="23" fill="#FFFFFF" stroke="#3576C0" stroke-width="2.2"/><foreignObject x="49" y="95" width="46" height="46"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:400" data-tex="x_1"></div></foreignObject><circle cx="72" cy="198" r="23" fill="#FFFFFF" stroke="#3576C0" stroke-width="2.2"/><foreignObject x="49" y="175" width="46" height="46"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:400" data-tex="x_2"></div></foreignObject><circle cx="72" cy="278" r="23" fill="#E9E1C2" stroke="#C29E08" stroke-width="2.2"/><foreignObject x="49" y="255" width="46" height="46"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:400" data-tex="b"></div></foreignObject><circle cx="262" cy="198" r="23" fill="#F4F7EE" stroke="#C29E08" stroke-width="2.2"/><foreignObject x="239" y="175" width="46" height="46"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:400" data-tex="z"></div></foreignObject><foreignObject x="146.545" y="138.019" width="70" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#8F7406;font-weight:400" data-tex="\cdot\, w_1"></div></foreignObject><foreignObject x="141.5" y="173" width="70" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#8F7406;font-weight:400" data-tex="\cdot\, w_2"></div></foreignObject><foreignObject x="166.933" y="234.903" width="30" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#111111;font-weight:400" data-tex="+"></div></foreignObject><text x="168" y="338" font-size="13" fill="#5E5850" font-weight="400" text-anchor="middle">запись по индексам</text></g>
 <g data-key="row">
 <rect x="400" y="112" width="120" height="44" rx="2" fill="#3576C0" opacity="0.5" stroke="#ffffff" stroke-width="1"/>
 <line x1="460.0" y1="112" x2="460.0" y2="156" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="460" y="100" text-anchor="middle" font-size="13" fill="#111111">1 × 2</text>
-<text x="460" y="180" text-anchor="middle" font-size="17" fill="#2A5E9B" font-weight="700" font-style="italic">x</text>
-<text x="460" y="86" class="cap" text-anchor="middle">признаки в строку</text>
+<foreignObject x="375" y="83.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="1\times P=1\times 2"></div></foreignObject>
+<foreignObject x="425" y="153.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#2A5E9B;font-weight:700" data-tex="\mathbf{x}"></div></foreignObject>
+<text x="460" y="202" class="cap" text-anchor="middle">признаки в строку</text>
 </g>
 <g data-key="col">
 <rect x="580" y="100" width="46" height="88" rx="2" fill="#C29E08" opacity="0.85" stroke="#ffffff" stroke-width="1"/>
 <line x1="580" y1="144.0" x2="626" y2="144.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="603" y="88" text-anchor="middle" font-size="13" fill="#111111">2 × 1</text>
-<text x="603" y="212" text-anchor="middle" font-size="17" fill="#8F7406" font-weight="700" font-style="italic">w</text>
+<foreignObject x="518" y="71.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="P\times 1=2\times 1"></div></foreignObject>
+<foreignObject x="568" y="185.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#8F7406;font-weight:700" data-tex="\mathbf{w}"></div></foreignObject>
 </g>
 <g data-key="mul" data-only="1">
-<text x="552" y="140" class="lbl" text-anchor="middle">·</text>
-<text x="654" y="140" class="lbl" text-anchor="middle">+</text>
+<foreignObject x="522" y="115.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="\cdot"></div></foreignObject>
+<foreignObject x="624" y="115.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="+"></div></foreignObject>
 <rect x="676" y="112" width="44" height="44" rx="2" fill="#C29E08" opacity="0.85" stroke="#ffffff" stroke-width="1"/>
-<text x="698" y="180" text-anchor="middle" font-size="17" fill="#8F7406" font-weight="700" font-style="italic">b</text>
-<text x="746" y="140" class="lbl" text-anchor="middle">=</text>
+<foreignObject x="663" y="153.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#8F7406;font-weight:700" data-tex="b"></div></foreignObject>
+<foreignObject x="716" y="115.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="="></div></foreignObject>
 <rect x="768" y="112" width="44" height="44" rx="2" fill="#73B222" opacity="0.55" stroke="#ffffff" stroke-width="1"/>
-<text x="790" y="100" text-anchor="middle" font-size="13" fill="#111111">1 × 1</text>
-<text x="790" y="180" text-anchor="middle" font-size="17" fill="#5F9420" font-weight="700" font-style="italic">z</text>
-<text x="600" y="232" class="cap" text-anchor="middle">[1 × 2] · [2 × 1] = [1 × 1]: внутренние двойки сокращаются</text>
+<foreignObject x="705" y="83.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="1\times 1"></div></foreignObject>
+<foreignObject x="755" y="153.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#5F9420;font-weight:700" data-tex="z"></div></foreignObject>
+<foreignObject x="390" y="211.72" width="420" height="31.2"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" ><span><span data-tex="[1 \times  P] \cdot  [P \times  1] = [1 \times  1]"></span>: внутренние <span data-tex="P"></span> сокращаются</span></div></foreignObject>
 </g>
 <g data-key="bat" data-only="1">
 <rect x="400" y="300" width="120" height="96" rx="2" fill="#3576C0" opacity="0.5" stroke="#ffffff" stroke-width="1"/>
@@ -888,23 +822,23 @@
 <line x1="400" y1="324.0" x2="520" y2="324.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="400" y1="348.0" x2="520" y2="348.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="400" y1="372.0" x2="520" y2="372.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="460" y="288" text-anchor="middle" font-size="13" fill="#111111">4 × 2</text>
-<text x="460" y="420" text-anchor="middle" font-size="17" fill="#2A5E9B" font-weight="700" font-style="italic">X</text>
-<text x="538" y="354" class="lbl" text-anchor="middle">·</text>
+<foreignObject x="375" y="271.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="N\times P=4\times 2"></div></foreignObject>
+<foreignObject x="425" y="393.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#2A5E9B;font-weight:700" data-tex="X"></div></foreignObject>
+<foreignObject x="508" y="329.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="\cdot"></div></foreignObject>
 <rect x="556" y="322" width="44" height="52" rx="2" fill="#C29E08" opacity="0.85" stroke="#ffffff" stroke-width="1"/>
 <line x1="556" y1="348.0" x2="600" y2="348.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="578" y="310" text-anchor="middle" font-size="13" fill="#111111">2 × 1</text>
-<text x="578" y="398" text-anchor="middle" font-size="17" fill="#8F7406" font-weight="700" font-style="italic">w</text>
-<text x="620" y="354" class="lbl" text-anchor="middle">+</text>
+<foreignObject x="493" y="293.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="P\times 1=2\times 1"></div></foreignObject>
+<foreignObject x="543" y="371.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#8F7406;font-weight:700" data-tex="\mathbf{w}"></div></foreignObject>
+<foreignObject x="590" y="329.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="+"></div></foreignObject>
 <rect x="638" y="336" width="44" height="26" rx="2" fill="#C29E08" opacity="0.85" stroke="#ffffff" stroke-width="1"/>
-<text x="660" y="386" text-anchor="middle" font-size="17" fill="#8F7406" font-weight="700" font-style="italic">b</text>
-<text x="702" y="354" class="lbl" text-anchor="middle">=</text>
+<foreignObject x="625" y="359.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#8F7406;font-weight:700" data-tex="b"></div></foreignObject>
+<foreignObject x="672" y="329.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="="></div></foreignObject>
 <rect x="722" y="300" width="44" height="96" rx="2" fill="#73B222" opacity="0.55" stroke="#ffffff" stroke-width="1"/>
 <line x1="722" y1="324.0" x2="766" y2="324.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="722" y1="348.0" x2="766" y2="348.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="722" y1="372.0" x2="766" y2="372.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="744" y="288" text-anchor="middle" font-size="13" fill="#111111">4 × 1</text>
-<text x="744" y="420" text-anchor="middle" font-size="17" fill="#5F9420" font-weight="700" font-style="italic">ŷ</text>
+<foreignObject x="659" y="271.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="N\times 1=4\times 1"></div></foreignObject>
+<foreignObject x="709" y="393.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#5F9420;font-weight:700" data-tex="\hat{\mathbf{y}}"></div></foreignObject>
 <text x="838" y="340" class="cap" text-anchor="middle">весь батч</text>
 <text x="838" y="364" class="cap" text-anchor="middle">одной строкой</text>
 </g>
@@ -928,28 +862,28 @@
     </div>
     <div class="step-panel" data-on="nrn row mm1" data-focus="row">
       <div class="step-kicker">Шаг 2 · признаки в строку</div>
-      <h4>Один объект: строка из P чисел</h4>
-<p><b>1) x = [x₁ x₂].</b> Порядок фиксируется раз и навсегда: первое число всегда площадь, второе всегда возраст.</p>
-<p><div class="math-display" data-tex="\mathbf{x} \in \mathbb{R}^{1\times 2}"></div></p>
+      <h4>Один объект: строка из <span class="math-inline" data-tex="P"></span> чисел</h4>
+<p><b>1) x = [<span class="math-inline" data-tex="x_1"></span> <span class="math-inline" data-tex="x_2"></span>].</b> Порядок фиксируется раз и навсегда: первое число всегда площадь, второе всегда возраст.</p>
+<p><div class="math-display" data-tex="\mathbf{x} \in \mathbb{R}^{1\times P}\quad(1\times 2)"></div></p>
     </div>
     <div class="step-panel" data-on="nrn row col mm1" data-focus="col">
       <div class="step-kicker">Шаг 3 · веса в столбец</div>
       <h4>Тот же порядок, что у признаков</h4>
-<p><b>2) w = [w₁; w₂].</b> В первой строке столбца стоит вес площади, во второй вес возраста. Именно это соответствие превращает сумму в одну операцию.</p>
-<p><div class="math-display" data-tex="\mathbf{w} \in \mathbb{R}^{2\times 1}"></div></p>
+<p><b>2) w = [<span class="math-inline" data-tex="w_1"></span>; <span class="math-inline" data-tex="w_2"></span>].</b> В первой строке столбца стоит вес площади, во второй вес возраста. Именно это соответствие превращает сумму в одну операцию.</p>
+<p><div class="math-display" data-tex="\mathbf{w} \in \mathbb{R}^{P\times 1}\quad(2\times 1)"></div></p>
     </div>
     <div class="step-panel" data-on="row col mul mm1 mm2" data-focus="mul">
       <div class="step-kicker">Шаг 4 · строка на столбец</div>
       <h4>Внутренние размеры совпали</h4>
-<p><b>3) z = x·w + b.</b> Строка проходит по столбцу: элементы с одинаковым номером перемножаются, результаты складываются. Это ровно та же сумма, что была на шаге 1.</p>
-<p><div class="math-display" data-tex="\mathbf{x}\mathbf{w} + b = \sum_{p=1}^{P} x_p w_p + b"></div></p>
-<p>Результат имеет форму 1 × 1, то есть это обычное число. Запись не изменится ни при десяти признаках, ни при тысяче: изменится только цифра в размерности.</p>
+<p><b>3) <span class="math-inline" data-tex="z = \mathbf{x}\cdot \mathbf{w} + b"></span>.</b> Строка проходит по столбцу: элементы с одинаковым номером перемножаются, результаты складываются. Это ровно та же сумма, что была на шаге 1.</p>
+<p><div class="math-display" data-tex="\mathbf{x}\mathbf{w} + b = \sum_{p=1}^{P} x_p w_p + b \qquad [1\times P]\cdot[P\times 1] \rightarrow [1\times 1]"></div></p>
+<p>Результат имеет форму <span class="math-inline" data-tex="1 \times  1"></span>, то есть это обычное число. Запись не изменится ни при десяти признаках, ни при тысяче: изменится только цифра в размерности.</p>
     </div>
     <div class="step-panel" data-on="mul bat mm2" data-focus="bat">
       <div class="step-kicker">Шаг 5 · весь батч сразу</div>
       <h4>Строки складываются друг под друга</h4>
-<p>Если поставить дома строками в матрицу X, та же операция сделает все предсказания за один раз. Столбец весов при этом остаётся один: модель общая для всех домов.</p>
-<p><div class="math-display" data-tex="\hat{\mathbf{y}} = X\mathbf{w} + b \qquad [4\times 2]\cdot[2\times 1] \rightarrow [4\times 1]"></div></p>
+<p>Если поставить дома строками в матрицу <span class="math-inline" data-tex="X"></span>, та же операция сделает все предсказания за один раз. Столбец весов при этом остаётся один: модель общая для всех домов.</p>
+<p><div class="math-display" data-tex="\begin{gathered}\hat{\mathbf{y}} = X\mathbf{w} + b\\[4pt] [N\times P]\cdot[P\times 1] \rightarrow [N\times 1]\qquad [4\times 2]\cdot[2\times 1] \rightarrow [4\times 1]\end{gathered}"></div></p>
     </div>
     <div class="step-panel" data-on="bat mm2" data-focus="bat">
       <div class="step-kicker">Шаг 6 · зачем это нужно</div>
@@ -1004,15 +938,15 @@
     <marker id="f1-arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#73B222"/></marker>
   </defs>
 <rect x="35" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="105" y="35" class="mm" text-anchor="middle">дома → X</text>
+<foreignObject x="-105" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>дома → <span data-tex="X"></span></span></div></foreignObject>
 <rect x="185" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="255" y="35" class="mm" text-anchor="middle">w · b</text>
+<foreignObject x="209" y="15.68" width="92" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" data-tex="\mathbf{w},\  b"></div></foreignObject>
 <rect x="335" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="405" y="35" class="mm" text-anchor="middle">предсказания ŷ</text>
+<foreignObject x="195" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>предсказания <span data-tex="\hat y"></span></span></div></foreignObject>
 <rect x="485" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="555" y="35" class="mm" text-anchor="middle">остатки r</text>
+<foreignObject x="345" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>остатки <span data-tex="\hat y - y"></span></span></div></foreignObject>
 <rect x="635" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="705" y="35" class="mm" text-anchor="middle">потеря L</text>
+<foreignObject x="495" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>потеря <span data-tex="L"></span></span></div></foreignObject>
 <rect x="785" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
 <text x="855" y="35" class="mm" text-anchor="middle">градиент и шаг</text>
 <g data-key="mm0" data-only="1"><rect x="33" y="16" width="144" height="30" rx="6" fill="none" stroke="#C30B0A" stroke-width="2"/></g>
@@ -1020,30 +954,30 @@
 <g data-key="mm2" data-only="1"><rect x="333" y="16" width="144" height="30" rx="6" fill="none" stroke="#C30B0A" stroke-width="2"/></g>
 <g data-key="mm3" data-only="1"><rect x="483" y="16" width="144" height="30" rx="6" fill="none" stroke="#C30B0A" stroke-width="2"/></g>
 <g data-key="mm4" data-only="1"><rect x="633" y="16" width="144" height="30" rx="6" fill="none" stroke="#C30B0A" stroke-width="2"/></g>
-<text x="480" y="62" class="cap" text-anchor="middle">формы и формулы · чисел здесь нет, они будут в части 6</text>
+<text x="480" y="62" class="cap" text-anchor="middle">формы и формулы · значений здесь нет, они будут в части 7</text>
 <g data-key="x">
 <rect x="60" y="130" width="130" height="46" rx="2" fill="#3576C0" opacity="0.5" stroke="#ffffff" stroke-width="1"/>
 <line x1="125.0" y1="130" x2="125.0" y2="176" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="125" y="118" text-anchor="middle" font-size="13" fill="#111111">1 × 2</text>
-<text x="125" y="200" text-anchor="middle" font-size="17" fill="#2A5E9B" font-weight="700" font-style="italic">x</text>
+<foreignObject x="40" y="101.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="1\times P=1\times 2"></div></foreignObject>
+<foreignObject x="90" y="173.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#2A5E9B;font-weight:700" data-tex="\mathbf{x}"></div></foreignObject>
 </g>
 <g data-key="w">
-<text x="212" y="160" class="lbl" text-anchor="middle">·</text>
+<foreignObject x="182" y="135.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="\cdot"></div></foreignObject>
 <rect x="234" y="108" width="46" height="90" rx="2" fill="#C29E08" opacity="0.85" stroke="#ffffff" stroke-width="1"/>
 <line x1="234" y1="153.0" x2="280" y2="153.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="257" y="96" text-anchor="middle" font-size="13" fill="#111111">2 × 1</text>
-<text x="257" y="222" text-anchor="middle" font-size="17" fill="#8F7406" font-weight="700" font-style="italic">w</text>
+<foreignObject x="172" y="79.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="P\times 1=2\times 1"></div></foreignObject>
+<foreignObject x="222" y="195.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#8F7406;font-weight:700" data-tex="\mathbf{w}"></div></foreignObject>
 </g>
 <g data-key="bb">
-<text x="306" y="160" class="lbl" text-anchor="middle">+</text>
+<foreignObject x="276" y="135.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="+"></div></foreignObject>
 <rect x="328" y="130" width="46" height="46" rx="2" fill="#C29E08" opacity="0.85" stroke="#ffffff" stroke-width="1"/>
-<text x="351" y="200" text-anchor="middle" font-size="17" fill="#8F7406" font-weight="700" font-style="italic">b</text>
+<foreignObject x="316" y="173.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#8F7406;font-weight:700" data-tex="b"></div></foreignObject>
 </g>
 <g data-key="z">
-<text x="400" y="160" class="lbl" text-anchor="middle">=</text>
+<foreignObject x="370" y="135.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="="></div></foreignObject>
 <rect x="422" y="130" width="46" height="46" rx="2" fill="#73B222" opacity="0.55" stroke="#ffffff" stroke-width="1"/>
-<text x="445" y="118" text-anchor="middle" font-size="13" fill="#111111">1 × 1</text>
-<text x="445" y="200" text-anchor="middle" font-size="17" fill="#5F9420" font-weight="700" font-style="italic">ŷ</text>
+<foreignObject x="360" y="101.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="1\times 1"></div></foreignObject>
+<foreignObject x="410" y="173.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#5F9420;font-weight:700" data-tex="\hat y"></div></foreignObject>
 </g>
 <g data-key="cell" data-only="1">
 <rect x="60" y="130.0" width="130" height="46.0" fill="#C30B0A" opacity="0.12"/>
@@ -1055,25 +989,25 @@
 <text x="264" y="232" class="cap" text-anchor="middle">малиновым: строка, столбец и клетка, которая из них получается</text>
 </g>
 <g data-key="cmp" data-only="1">
-<text x="500" y="160" class="lbl" text-anchor="middle">−</text>
+<foreignObject x="470" y="135.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="-"></div></foreignObject>
 <rect x="522" y="130" width="46" height="46" rx="2" fill="#3576C0" opacity="0.5" stroke="#ffffff" stroke-width="1"/>
-<text x="545" y="118" text-anchor="middle" font-size="13" fill="#111111">1 × 1</text>
-<text x="545" y="200" text-anchor="middle" font-size="17" fill="#2A5E9B" font-weight="700" font-style="italic">y</text>
-<text x="600" y="160" class="lbl" text-anchor="middle">=</text>
+<foreignObject x="460" y="101.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="1\times 1"></div></foreignObject>
+<foreignObject x="510" y="173.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#2A5E9B;font-weight:700" data-tex="y"></div></foreignObject>
+<foreignObject x="570" y="135.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="="></div></foreignObject>
 <rect x="622" y="130" width="46" height="46" rx="2" fill="#C30B0A" opacity="0.38" stroke="#ffffff" stroke-width="1"/>
-<text x="645" y="118" text-anchor="middle" font-size="13" fill="#111111">1 × 1</text>
-<text x="645" y="200" text-anchor="middle" font-size="17" fill="#9C0908" font-weight="700" font-style="italic">r</text>
+<foreignObject x="560" y="101.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="1\times 1"></div></foreignObject>
+<foreignObject x="610" y="173.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#9C0908;font-weight:700" data-tex="r"></div></foreignObject>
 <line x1="676" y1="153" x2="716" y2="153" stroke="#C30B0A" stroke-width="2" fill="none" marker-end="url(#f1-arr)"/>
 <rect x="730" y="128" width="170" height="62" rx="10" fill="#FFF2F2" stroke="#C30B0A" stroke-width="1.8"/>
-<text x="815" y="159" text-anchor="middle" font-size="17" fill="#111111" font-weight="700">ℓ = r²</text>
+<foreignObject x="756" y="132.48" width="118" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#111111;font-weight:700" data-tex="\ell = r^2"></div></foreignObject>
 <text x="815" y="181" class="cap" text-anchor="middle">одно число</text>
 </g>
 <g data-key="shp" data-only="1">
 <rect x="60" y="280" width="840" height="128" rx="12" fill="#F0F6FC" stroke="#3576C0" stroke-width="1.4"/>
 <text x="78" y="306" class="cap" text-anchor="start">ПРАВИЛО ФОРМ</text>
 <text x="78" y="336" class="val" text-anchor="start">внутренние размеры обязаны совпасть и сокращаются, внешние дают форму результата</text>
-<text x="78" y="364" class="val" text-anchor="start">[1 × 2] · [2 × 1] = [1 × 1]        сложение и вычитание форму не меняют</text>
-<text x="78" y="392" class="val" text-anchor="start">при P признаках вместо двойки стоит P, и больше ничего не меняется</text>
+<foreignObject x="78" y="342.16" width="862" height="33.6"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:14px;color:#111111;font-weight:400" ><span><span data-tex="[1 \times  P] \cdot  [P \times  1] = [1 \times  1]"></span>, при <span data-tex="P = 2"></span>: <span data-tex="[1 \times  2] \cdot  [2 \times  1] = [1 \times  1]"></span></span></div></foreignObject>
+<text x="78" y="392" class="val" text-anchor="start">сложение и вычитание форму не меняют</text>
 </g>
 <text x="40" y="456" class="legend" text-anchor="start">синее: данные · тёмно-жёлтое: обучаемые числа · зелёное: результат · красное: ошибка</text>
 </svg>
@@ -1090,20 +1024,20 @@
     <div class="step-panel" data-on="x mm0" data-focus="x">
       <div class="step-kicker">Шаг 1 · один объект</div>
       <h4>Строка из двух чисел</h4>
-<p>Один дом лежит строкой: сначала площадь, потом возраст. Его форма 1 × 2.</p>
-<p><div class="math-display" data-tex="\mathbf{x} \in \mathbb{R}^{1\times 2}"></div></p>
+<p>Один дом лежит строкой: сначала площадь, потом возраст. Его форма <span class="math-inline" data-tex="1 \times  P"></span>, в нашем примере <span class="math-inline" data-tex="1 \times  2"></span>.</p>
+<p><div class="math-display" data-tex="\mathbf{x} \in \mathbb{R}^{1\times P}\quad(1\times 2)"></div></p>
     </div>
     <div class="step-panel" data-on="x w mm1" data-focus="w">
       <div class="step-kicker">Шаг 2 · веса</div>
       <h4>Столбец той же длины</h4>
 <p>Веса живут отдельно от данных: они одни и те же для всех домов и меняются только во время обучения. Тёмная заливка на схемах означает ровно это.</p>
-<p><div class="math-display" data-tex="\mathbf{w} \in \mathbb{R}^{2\times 1}"></div></p>
+<p><div class="math-display" data-tex="\mathbf{w} \in \mathbb{R}^{P\times 1}\quad(2\times 1)"></div></p>
     </div>
     <div class="step-panel" data-on="x w z cell mm2" data-focus="cell">
       <div class="step-kicker">Шаг 3 · строка на столбец</div>
       <h4>Два произведения складываются в одну клетку</h4>
-<p>Внутренние двойки встречаются и сокращаются, остаётся [1 × 1]. Двойка равна числу признаков, и после умножения от дома остаётся одно число.</p>
-<p><div class="math-display" data-tex="\mathbf{x}\mathbf{w} = x_1w_1 + x_2w_2 \qquad [1\times 2]\cdot[2\times 1] \rightarrow [1\times 1]"></div></p>
+<p>Внутренние размеры <span class="math-inline" data-tex="P = 2"></span> встречаются и сокращаются, остаётся <span class="math-inline" data-tex="[1 \times  1]"></span>: после умножения от дома остаётся одно число.</p>
+<p><div class="math-display" data-tex="\begin{gathered}\mathbf{x}\mathbf{w} = x_1w_1 + x_2w_2\\[4pt] [1\times P]\cdot[P\times 1] \rightarrow [1\times 1]\qquad [1\times 2]\cdot[2\times 1] \rightarrow [1\times 1]\end{gathered}"></div></p>
     </div>
     <div class="step-panel" data-on="x w bb z mm2" data-focus="bb z">
       <div class="step-kicker">Шаг 4 · сдвиг и ответ</div>
@@ -1129,10 +1063,10 @@
 
 <table class="shape-table">
   <tr><th>Обозначение</th><th>Что это</th><th>Форма</th><th>В примере</th></tr>
-  <tr><td><span class="math-inline" data-tex="\mathbf{x}"></span></td><td>признаки одного дома</td><td><span class="math-inline" data-tex="1\times P"></span></td><td>1 × 2</td></tr>
-  <tr><td><span class="math-inline" data-tex="\mathbf{w}"></span></td><td>по одному весу на признак</td><td><span class="math-inline" data-tex="P\times 1"></span></td><td>2 × 1</td></tr>
-  <tr><td><span class="math-inline" data-tex="b"></span></td><td>сдвиг</td><td>число</td><td>1 × 1</td></tr>
-  <tr><td><span class="math-inline" data-tex="\hat y = \mathbf{x}\mathbf{w} + b"></span></td><td>предсказание</td><td>число</td><td>1 × 1</td></tr>
+  <tr><td><span class="math-inline" data-tex="\mathbf{x}"></span></td><td>признаки одного дома</td><td><span class="math-inline" data-tex="1\times P"></span></td><td><span class="math-inline" data-tex="1 \times  2"></span></td></tr>
+  <tr><td><span class="math-inline" data-tex="\mathbf{w}"></span></td><td>по одному весу на признак</td><td><span class="math-inline" data-tex="P\times 1"></span></td><td><span class="math-inline" data-tex="2 \times  1"></span></td></tr>
+  <tr><td><span class="math-inline" data-tex="b"></span></td><td>сдвиг</td><td><span class="math-inline" data-tex="1 \times  1"></span></td><td><span class="math-inline" data-tex="1 \times  1"></span></td></tr>
+  <tr><td><span class="math-inline" data-tex="\hat y = \mathbf{x}\mathbf{w} + b"></span></td><td>предсказание</td><td><span class="math-inline" data-tex="1 \times  1"></span></td><td><span class="math-inline" data-tex="1 \times  1"></span></td></tr>
 </table>
 
 <div class="callout">
@@ -1159,7 +1093,7 @@
 
 <div class="callout-blue">
   <strong>Где формы не совпадают буквально:</strong> сдвиг задан одним числом, а прибавляем мы его
-  к столбцу <span class="math-inline" data-tex="N\times 1"></span>. Оно размножается по всем
+  к столбцу <span class="math-inline" data-tex="N\times 1"></span>, в примере <span class="math-inline" data-tex="4\times 1"></span>. Оно размножается по всем
   строкам, и в numpy это делает broadcasting. Место стоит запомнить: на обратном проходе
   размножение обернётся суммированием, и это единственная неочевидная деталь во всём выводе.
 </div>
@@ -1186,15 +1120,15 @@
     <marker id="fb-arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#73B222"/></marker>
   </defs>
 <rect x="35" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="105" y="35" class="mm" text-anchor="middle">дома → X</text>
+<foreignObject x="-105" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>дома → <span data-tex="X"></span></span></div></foreignObject>
 <rect x="185" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="255" y="35" class="mm" text-anchor="middle">w · b</text>
+<foreignObject x="209" y="15.68" width="92" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" data-tex="\mathbf{w},\  b"></div></foreignObject>
 <rect x="335" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="405" y="35" class="mm" text-anchor="middle">предсказания ŷ</text>
+<foreignObject x="195" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>предсказания <span data-tex="\hat{\mathbf{y}}"></span></span></div></foreignObject>
 <rect x="485" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="555" y="35" class="mm" text-anchor="middle">остатки r</text>
+<foreignObject x="345" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>остатки <span data-tex="\hat{\mathbf{y}} - \mathbf{y}"></span></span></div></foreignObject>
 <rect x="635" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="705" y="35" class="mm" text-anchor="middle">потеря L</text>
+<foreignObject x="495" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>потеря <span data-tex="L"></span></span></div></foreignObject>
 <rect x="785" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
 <text x="855" y="35" class="mm" text-anchor="middle">градиент и шаг</text>
 <g data-key="mm0" data-only="1"><rect x="33" y="16" width="144" height="30" rx="6" fill="none" stroke="#C30B0A" stroke-width="2"/></g>
@@ -1209,52 +1143,52 @@
 <line x1="40" y1="155.0" x2="150" y2="155.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="40" y1="190.0" x2="150" y2="190.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="40" y1="225.0" x2="150" y2="225.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="95" y="108" text-anchor="middle" font-size="13" fill="#111111">4 × 2</text>
-<text x="95" y="284" text-anchor="middle" font-size="17" fill="#2A5E9B" font-weight="700" font-style="italic">X</text>
+<foreignObject x="35" y="77.32" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="N\times P"></div></foreignObject><foreignObject x="35" y="93.32" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="4\times 2"></div></foreignObject>
+<foreignObject x="60" y="257.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#2A5E9B;font-weight:700" data-tex="X"></div></foreignObject>
 </g>
 <g data-key="w">
-<text x="168" y="196" class="lbl" text-anchor="middle">·</text>
+<foreignObject x="138" y="171.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="\cdot"></div></foreignObject>
 <rect x="188" y="155" width="46" height="70" rx="2" fill="#C29E08" opacity="0.85" stroke="#ffffff" stroke-width="1"/>
 <line x1="188" y1="190.0" x2="234" y2="190.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="211" y="143" text-anchor="middle" font-size="13" fill="#111111">2 × 1</text>
-<text x="211" y="249" text-anchor="middle" font-size="17" fill="#8F7406" font-weight="700" font-style="italic">w</text>
+<foreignObject x="151" y="112.32" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="P\times 1"></div></foreignObject><foreignObject x="151" y="128.32" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="2\times 1"></div></foreignObject>
+<foreignObject x="176" y="222.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#8F7406;font-weight:700" data-tex="\mathbf{w}"></div></foreignObject>
 </g>
 <g data-key="bb">
-<text x="256" y="196" class="lbl" text-anchor="middle">+</text>
+<foreignObject x="226" y="171.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="+"></div></foreignObject>
 <rect x="276" y="173" width="46" height="34" rx="2" fill="#C29E08" opacity="0.85" stroke="#ffffff" stroke-width="1"/>
-<text x="299" y="231" text-anchor="middle" font-size="17" fill="#8F7406" font-weight="700" font-style="italic">b</text>
+<foreignObject x="264" y="204.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#8F7406;font-weight:700" data-tex="b"></div></foreignObject>
 </g>
 <g data-key="yh">
-<text x="344" y="196" class="lbl" text-anchor="middle">=</text>
+<foreignObject x="314" y="171.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="="></div></foreignObject>
 <rect x="364" y="120" width="46" height="140" rx="2" fill="#73B222" opacity="0.55" stroke="#ffffff" stroke-width="1"/>
 <line x1="364" y1="155.0" x2="410" y2="155.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="364" y1="190.0" x2="410" y2="190.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="364" y1="225.0" x2="410" y2="225.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="387" y="108" text-anchor="middle" font-size="13" fill="#111111">4 × 1</text>
-<text x="387" y="284" text-anchor="middle" font-size="17" fill="#5F9420" font-weight="700" font-style="italic">ŷ</text>
+<foreignObject x="327" y="77.32" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="N\times 1"></div></foreignObject><foreignObject x="327" y="93.32" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="4\times 1"></div></foreignObject>
+<foreignObject x="352" y="257.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#5F9420;font-weight:700" data-tex="\hat{\mathbf{y}}"></div></foreignObject>
 </g>
 <g data-key="y">
-<text x="432" y="196" class="lbl" text-anchor="middle">−</text>
+<foreignObject x="402" y="171.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="-"></div></foreignObject>
 <rect x="452" y="120" width="46" height="140" rx="2" fill="#3576C0" opacity="0.5" stroke="#ffffff" stroke-width="1"/>
 <line x1="452" y1="155.0" x2="498" y2="155.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="452" y1="190.0" x2="498" y2="190.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="452" y1="225.0" x2="498" y2="225.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="475" y="108" text-anchor="middle" font-size="13" fill="#111111">4 × 1</text>
-<text x="475" y="284" text-anchor="middle" font-size="17" fill="#2A5E9B" font-weight="700" font-style="italic">y</text>
+<foreignObject x="415" y="77.32" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="N\times 1"></div></foreignObject><foreignObject x="415" y="93.32" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="4\times 1"></div></foreignObject>
+<foreignObject x="440" y="257.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#2A5E9B;font-weight:700" data-tex="\mathbf{y}"></div></foreignObject>
 </g>
 <g data-key="r">
-<text x="520" y="196" class="lbl" text-anchor="middle">=</text>
+<foreignObject x="490" y="171.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="="></div></foreignObject>
 <rect x="540" y="120" width="46" height="140" rx="2" fill="#C30B0A" opacity="0.38" stroke="#ffffff" stroke-width="1"/>
 <line x1="540" y1="155.0" x2="586" y2="155.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="540" y1="190.0" x2="586" y2="190.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="540" y1="225.0" x2="586" y2="225.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="563" y="108" text-anchor="middle" font-size="13" fill="#111111">4 × 1</text>
-<text x="563" y="284" text-anchor="middle" font-size="17" fill="#9C0908" font-weight="700" font-style="italic">r</text>
+<foreignObject x="503" y="77.32" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="N\times 1"></div></foreignObject><foreignObject x="503" y="93.32" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="4\times 1"></div></foreignObject>
+<foreignObject x="528" y="257.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#9C0908;font-weight:700" data-tex="\mathbf{r}"></div></foreignObject>
 </g>
 <g data-key="L">
 <line x1="594" y1="190" x2="646" y2="190" stroke="#C30B0A" stroke-width="2" fill="none" marker-end="url(#fb-arr)"/>
 <rect x="660" y="158" width="190" height="66" rx="10" fill="#FFF2F2" stroke="#C30B0A" stroke-width="1.8"/>
-<text x="755" y="191" text-anchor="middle" font-size="17" fill="#111111" font-weight="700">L</text>
+<foreignObject x="720" y="164.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#111111;font-weight:700" data-tex="L"></div></foreignObject>
 <text x="755" y="213" class="cap" text-anchor="middle">среднее квадратов</text>
 </g>
 <g data-key="row" data-only="1">
@@ -1264,12 +1198,12 @@
 <rect x="188.0" y="155" width="46.0" height="70" fill="none" stroke="#C30B0A" stroke-width="2.4"/>
 <rect x="364.0" y="155.0" width="46.0" height="35.0" fill="#C30B0A" opacity="0.14"/>
 <rect x="364.0" y="155.0" width="46.0" height="35.0" fill="none" stroke="#C30B0A" stroke-width="2.4"/>
-<text x="220" y="300" class="cap" text-anchor="middle">вторая строка X встречается с тем же столбцом w</text>
+<foreignObject x="10" y="279.72" width="420" height="31.2"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" ><span>вторая строка <span data-tex="X"></span> встречается с тем же столбцом <span data-tex="\mathbf{w}"></span></span></div></foreignObject>
 </g>
 <g data-key="note" data-only="1">
 <rect x="60" y="330" width="840" height="96" rx="12" fill="#FFFBEB" stroke="#C29E08" stroke-width="1.5"/>
 <text x="78" y="356" class="cap" text-anchor="start">ГДЕ ФОРМЫ НЕ СОВПАДАЮТ БУКВАЛЬНО</text>
-<text x="78" y="384" class="val" text-anchor="start">число b одно, а прибавляется к столбцу 4 × 1: оно размножается по всем строкам</text>
+<foreignObject x="78" y="362.16" width="862" height="33.6"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:14px;color:#111111;font-weight:400" ><span>число <span data-tex="b"></span> одно, а прибавляется к столбцу <span data-tex="4 \times  1"></span>: оно размножается по всем строкам</span></div></foreignObject>
 <text x="78" y="410" class="val" text-anchor="start">на обратном проходе это размножение обернётся суммированием</text>
 </g>
 <text x="40" y="470" class="legend" text-anchor="start">синее: данные · тёмно-жёлтое: обучаемые числа · зелёное: предсказания · красное: ошибка</text>
@@ -1288,45 +1222,56 @@
       <div class="step-kicker">Шаг 1 · батч</div>
       <h4>Дома складываются друг под друга</h4>
 <p>Строк столько, сколько домов; столбцов столько, сколько признаков. Порядок столбцов тот же, что был у одного объекта.</p>
-<p><div class="math-display" data-tex="X \in \mathbb{R}^{4\times 2}"></div></p>
+<p><div class="math-display" data-tex="X \in \mathbb{R}^{N\times P}\quad(4\times 2)"></div></p>
     </div>
     <div class="step-panel" data-on="X w mm1" data-focus="w">
       <div class="step-kicker">Шаг 2 · веса те же самые</div>
       <h4>Модель одна на весь батч</h4>
-<p>Веса не размножаются по строкам: столбец w ровно один. Именно поэтому обучение на батче ищет общую закономерность, а не подгоняет каждый дом отдельно.</p>
+<p>Веса не размножаются по строкам: столбец <span class="math-inline" data-tex="\mathbf{w}"></span> ровно один. Именно поэтому обучение на батче ищет общую закономерность, а не подгоняет каждый дом отдельно.</p>
     </div>
     <div class="step-panel" data-on="X w yh row mm2" data-focus="row">
       <div class="step-kicker">Шаг 3 · строка за строкой</div>
-      <h4>Каждая строка X даёт свою клетку ŷ</h4>
-<p>Это тот же forward одного объекта, повторённый четыре раза. Внутренние двойки сходятся, поэтому результат получается столбцом высоты 4.</p>
-<p><div class="math-display" data-tex="[4\times 2]\cdot[2\times 1] \rightarrow [4\times 1]"></div></p>
+      <h4>Каждая строка <span class="math-inline" data-tex="X"></span> даёт свою клетку <span class="math-inline" data-tex="\hat{\mathbf{y}}"></span></h4>
+<p>Это тот же forward одного объекта, повторённый четыре раза. Внутренние размеры <span class="math-inline" data-tex="P = 2"></span> сходятся, поэтому результат получается столбцом высоты <span class="math-inline" data-tex="N = 4"></span>.</p>
+<p><div class="math-display" data-tex="[N\times P]\cdot[P\times 1] \rightarrow [N\times 1]\qquad [4\times 2]\cdot[2\times 1] \rightarrow [4\times 1]"></div></p>
     </div>
     <div class="step-panel" data-on="X w bb yh note mm2" data-focus="bb note">
       <div class="step-kicker">Шаг 4 · сдвиг</div>
       <h4>Одно число прибавляется ко всем строкам</h4>
-<p>Формально это <span class="math-inline" data-tex="b\mathbf{1}_N"></span>, то есть столбец из N одинаковых значений. В коде то же самое делает broadcasting, и это единственное место во всём прямом проходе, где формы не совпадают буквально.</p>
+<p>Формально это <span class="math-inline" data-tex="b\mathbf{1}_N"></span>, то есть столбец из <span class="math-inline" data-tex="N"></span> одинаковых значений. В коде то же самое делает broadcasting, и это единственное место во всём прямом проходе, где формы не совпадают буквально.</p>
 <p><div class="math-display" data-tex="\hat{\mathbf{y}} = X\mathbf{w} + b\mathbf{1}_N"></div></p>
     </div>
     <div class="step-panel" data-on="yh y r mm3" data-focus="r">
       <div class="step-kicker">Шаг 5 · остатки</div>
       <h4>Вычитание клетка в клетку</h4>
 <p>Формы совпадают буквально, поэтому вычитание поэлементное. Знак читается прямо: минус значит, что модель занизила цену, плюс значит, что завысила.</p>
-<p><div class="math-display" data-tex="\mathbf{r} = \hat{\mathbf{y}} - \mathbf{y} \in \mathbb{R}^{4\times 1}"></div></p>
+<p><div class="math-display" data-tex="\mathbf{r} = \hat{\mathbf{y}} - \mathbf{y} \in \mathbb{R}^{N\times 1}\quad(4\times 1)"></div></p>
     </div>
     <div class="step-panel" data-on="r L mm4" data-focus="L">
       <div class="step-kicker">Шаг 6 · потеря</div>
       <h4>Столбец схлопывается в скаляр</h4>
-<p>Квадрат убирает знак и сильнее наказывает крупные промахи, деление на N делает потерю сравнимой между батчами разного размера.</p>
-<p><div class="math-display" data-tex="L = \frac{1}{N}\mathbf{r}^\top\mathbf{r}"></div></p>
+<p>Квадрат убирает знак и сильнее наказывает крупные промахи, деление на <span class="math-inline" data-tex="N"></span> делает потерю сравнимой между батчами разного размера.</p>
+<p><div class="math-display" data-tex="\begin{gathered}L = \frac{1}{N}\mathbf{r}^\top\mathbf{r}\\[4pt] [1\times N]\cdot[N\times 1] \rightarrow [1\times 1]\qquad [1\times 4]\cdot[4\times 1] \rightarrow [1\times 1]\end{gathered}"></div></p>
     </div>
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и листайте стрелками ← →.</p>
 
+
+<table class="shape-table">
+  <tr><th>Обозначение</th><th>Что это</th><th>Форма</th><th>В примере</th></tr>
+  <tr><td><span class="math-inline" data-tex="X"></span></td><td>признаки батча</td><td><span class="math-inline" data-tex="N \times  P"></span></td><td><span class="math-inline" data-tex="4 \times  2"></span></td></tr>
+  <tr><td><span class="math-inline" data-tex="\mathbf{w}"></span></td><td>веса, по одному на признак</td><td><span class="math-inline" data-tex="P \times  1"></span></td><td><span class="math-inline" data-tex="2 \times  1"></span></td></tr>
+  <tr><td><span class="math-inline" data-tex="b"></span></td><td>сдвиг, размножается по строкам</td><td><span class="math-inline" data-tex="1 \times  1"></span></td><td><span class="math-inline" data-tex="1 \times  1"></span></td></tr>
+  <tr><td><span class="math-inline" data-tex="\hat{\mathbf{y}},\  \mathbf{y},\  \mathbf{r}"></span></td><td>предсказания, цены, остатки</td><td><span class="math-inline" data-tex="N \times  1"></span></td><td><span class="math-inline" data-tex="4 \times  1"></span></td></tr>
+  <tr><td><span class="math-inline" data-tex="L"></span></td><td>потеря</td><td><span class="math-inline" data-tex="1 \times  1"></span></td><td><span class="math-inline" data-tex="1 \times  1"></span></td></tr>
+</table>
+
 <div class="callout">
   <strong>Главная мысль части:</strong> батч не добавляет ни одной новой операции. Он добавляет
-  только ось объектов, и она проходит через всю цепочку насквозь: N строк на входе,
-  N остатков на выходе, и лишь последний шаг схлопывает их в скаляр.
+  только ось объектов, и она проходит через всю цепочку насквозь: <span class="math-inline" data-tex="N = 4"></span> строки на входе,
+  <span class="math-inline" data-tex="N = 4"></span> остатка на выходе, и лишь последний шаг схлопывает их в скаляр. Ось признаков <span class="math-inline" data-tex="P = 2"></span>
+  исчезает при первом же умножении на <span class="math-inline" data-tex="\mathbf{w}"></span>.
 </div>
 
 ---
@@ -1366,15 +1311,15 @@
     <marker id="fx-arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#73B222"/></marker>
   </defs>
 <rect x="35" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="105" y="35" class="mm" text-anchor="middle">дома → X</text>
+<foreignObject x="-105" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>дома → <span data-tex="X"></span></span></div></foreignObject>
 <rect x="185" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="255" y="35" class="mm" text-anchor="middle">w · b</text>
+<foreignObject x="209" y="15.68" width="92" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" data-tex="\mathbf{w},\  b"></div></foreignObject>
 <rect x="335" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="405" y="35" class="mm" text-anchor="middle">предсказания ŷ</text>
+<foreignObject x="195" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>предсказания <span data-tex="\hat{\mathbf{y}}"></span></span></div></foreignObject>
 <rect x="485" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="555" y="35" class="mm" text-anchor="middle">остатки r</text>
+<foreignObject x="345" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>остатки <span data-tex="\hat{\mathbf{y}} - \mathbf{y}"></span></span></div></foreignObject>
 <rect x="635" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="705" y="35" class="mm" text-anchor="middle">потеря L</text>
+<foreignObject x="495" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>потеря <span data-tex="L"></span></span></div></foreignObject>
 <rect x="785" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
 <text x="855" y="35" class="mm" text-anchor="middle">градиент и шаг</text>
 <g data-key="mm0" data-only="1"><rect x="33" y="16" width="144" height="30" rx="6" fill="none" stroke="#C30B0A" stroke-width="2"/></g>
@@ -1397,26 +1342,26 @@
 <text x="161.5" y="191.5" text-anchor="middle" font-size="14" fill="#111111">4,0</text>
 <text x="96.5" y="224.5" text-anchor="middle" font-size="14" fill="#111111">10,0</text>
 <text x="161.5" y="224.5" text-anchor="middle" font-size="14" fill="#111111">2,0</text>
-<text x="129" y="92" text-anchor="middle" font-size="13" fill="#111111">4 × 2</text>
-<text x="129" y="260" text-anchor="middle" font-size="17" fill="#2A5E9B" font-weight="700" font-style="italic">X</text>
+<foreignObject x="44" y="75.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="N\times P=4\times 2"></div></foreignObject>
+<foreignObject x="94" y="233.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#2A5E9B;font-weight:700" data-tex="X"></div></foreignObject>
 </g>
 <g data-key="w">
-<text x="230" y="176" class="lbl" text-anchor="middle">·</text>
+<foreignObject x="200" y="151.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="\cdot"></div></foreignObject>
 <rect x="256" y="126" width="62" height="88" rx="2" fill="#C29E08" opacity="0.45" stroke="#ffffff" stroke-width="1"/>
 <line x1="256" y1="170.0" x2="318" y2="170.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <text x="287.0" y="153.0" text-anchor="middle" font-size="14" fill="#111111">0,7</text>
 <text x="287.0" y="197.0" text-anchor="middle" font-size="14" fill="#111111">−0,2</text>
-<text x="287" y="114" text-anchor="middle" font-size="13" fill="#111111">2 × 1</text>
-<text x="287" y="238" text-anchor="middle" font-size="17" fill="#8F7406" font-weight="700" font-style="italic">w</text>
+<foreignObject x="202" y="97.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="P\times 1=2\times 1"></div></foreignObject>
+<foreignObject x="252" y="211.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#8F7406;font-weight:700" data-tex="\mathbf{w}"></div></foreignObject>
 </g>
 <g data-key="bb">
-<text x="354" y="176" class="lbl" text-anchor="middle">+</text>
+<foreignObject x="324" y="151.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="+"></div></foreignObject>
 <rect x="380" y="156" width="56" height="34" rx="2" fill="#C29E08" opacity="0.45" stroke="#ffffff" stroke-width="1"/>
 <text x="408.0" y="178.0" text-anchor="middle" font-size="14" fill="#111111">1,0</text>
-<text x="408" y="214" text-anchor="middle" font-size="17" fill="#8F7406" font-weight="700" font-style="italic">b</text>
+<foreignObject x="373" y="187.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#8F7406;font-weight:700" data-tex="b"></div></foreignObject>
 </g>
 <g data-key="yh">
-<text x="472" y="176" class="lbl" text-anchor="middle">=</text>
+<foreignObject x="442" y="151.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="="></div></foreignObject>
 <rect x="500" y="104" width="62" height="132" rx="2" fill="#73B222" opacity="0.4" stroke="#ffffff" stroke-width="1"/>
 <line x1="500" y1="137.0" x2="562" y2="137.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="500" y1="170.0" x2="562" y2="170.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
@@ -1425,11 +1370,11 @@
 <text x="531.0" y="158.5" text-anchor="middle" font-size="14" fill="#111111">6,4</text>
 <text x="531.0" y="191.5" text-anchor="middle" font-size="14" fill="#111111">4,4</text>
 <text x="531.0" y="224.5" text-anchor="middle" font-size="14" fill="#111111">7,6</text>
-<text x="531" y="92" text-anchor="middle" font-size="13" fill="#111111">4 × 1</text>
-<text x="531" y="260" text-anchor="middle" font-size="17" fill="#5F9420" font-weight="700" font-style="italic">ŷ</text>
+<foreignObject x="446" y="75.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="N\times 1=4\times 1"></div></foreignObject>
+<foreignObject x="496" y="233.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#5F9420;font-weight:700" data-tex="\hat{\mathbf{y}}"></div></foreignObject>
 </g>
 <g data-key="y">
-<text x="596" y="176" class="lbl" text-anchor="middle">−</text>
+<foreignObject x="566" y="151.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="-"></div></foreignObject>
 <rect x="624" y="104" width="68" height="132" rx="2" fill="#3576C0" opacity="0.3" stroke="#ffffff" stroke-width="1"/>
 <line x1="624" y1="137.0" x2="692" y2="137.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="624" y1="170.0" x2="692" y2="170.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
@@ -1438,11 +1383,11 @@
 <text x="658.0" y="158.5" text-anchor="middle" font-size="14" fill="#111111">7,85</text>
 <text x="658.0" y="191.5" text-anchor="middle" font-size="14" fill="#111111">4,90</text>
 <text x="658.0" y="224.5" text-anchor="middle" font-size="14" fill="#111111">9,55</text>
-<text x="658" y="92" text-anchor="middle" font-size="13" fill="#111111">4 × 1</text>
-<text x="658" y="260" text-anchor="middle" font-size="17" fill="#2A5E9B" font-weight="700" font-style="italic">y</text>
+<foreignObject x="573" y="75.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="N\times 1=4\times 1"></div></foreignObject>
+<foreignObject x="623" y="233.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#2A5E9B;font-weight:700" data-tex="\mathbf{y}"></div></foreignObject>
 </g>
 <g data-key="r">
-<text x="728" y="176" class="lbl" text-anchor="middle">=</text>
+<foreignObject x="698" y="151.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="="></div></foreignObject>
 <rect x="756" y="104" width="74" height="132" rx="2" fill="#C30B0A" opacity="0.3" stroke="#ffffff" stroke-width="1"/>
 <line x1="756" y1="137.0" x2="830" y2="137.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="756" y1="170.0" x2="830" y2="170.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
@@ -1451,8 +1396,8 @@
 <text x="793.0" y="158.5" text-anchor="middle" font-size="14" fill="#111111">−1,45</text>
 <text x="793.0" y="191.5" text-anchor="middle" font-size="14" fill="#111111">−0,50</text>
 <text x="793.0" y="224.5" text-anchor="middle" font-size="14" fill="#111111">−1,95</text>
-<text x="793" y="92" text-anchor="middle" font-size="13" fill="#111111">4 × 1</text>
-<text x="793" y="260" text-anchor="middle" font-size="17" fill="#9C0908" font-weight="700" font-style="italic">r</text>
+<foreignObject x="708" y="75.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="N\times 1=4\times 1"></div></foreignObject>
+<foreignObject x="758" y="233.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#9C0908;font-weight:700" data-tex="\mathbf{r}"></div></foreignObject>
 </g>
 <g data-key="hl" data-only="1">
 <rect x="64" y="104.0" width="130" height="33.0" fill="#C30B0A" opacity="0.12"/>
@@ -1485,18 +1430,18 @@
       <div class="step-kicker">Шаг 1 · данные</div>
       <h4>Четыре дома и два признака</h4>
 <p><b>Дано.</b> Четыре дома: 40 м² возрастом 20 лет, 80 м² возрастом 10 лет, 60 м² возрастом 40 лет и 100 м² возрастом 20 лет.</p>
-<p><div class="math-display" data-tex="X = \begin{bmatrix}4{,}0 &amp; 2{,}0\\8{,}0 &amp; 1{,}0\\6{,}0 &amp; 4{,}0\\10{,}0 &amp; 2{,}0\end{bmatrix}"></div></p>
+<p><div class="math-display" data-tex="X = \begin{bmatrix}4{,}0 &amp; 2{,}0\\8{,}0 &amp; 1{,}0\\6{,}0 &amp; 4{,}0\\10{,}0 &amp; 2{,}0\end{bmatrix} \in \mathbb{R}^{4\times 2}"></div></p>
     </div>
     <div class="step-panel" data-on="X w bb mm1" data-focus="w bb">
       <div class="step-kicker">Шаг 2 · веса</div>
       <h4>Разумная догадка, не подобранная</h4>
 <p><b>Текущие веса.</b> Пока это просто разумная догадка: 0,7 млн за десять квадратных метров и минус 0,2 млн за десять лет возраста, плюс миллион базовой цены.</p>
-<p><div class="math-display" data-tex="\mathbf{w} = (0{,}7;\ -0{,}2)^\top, \qquad b = 1{,}0"></div></p>
+<p><div class="math-display" data-tex="\mathbf{w} = (0{,}7;\ -0{,}2)^\top \in \mathbb{R}^{2\times 1}, \qquad b = 1{,}0"></div></p>
     </div>
     <div class="step-panel" data-on="X w hl mm2" data-focus="hl">
       <div class="step-kicker">Шаг 3 · строка на столбец</div>
       <h4>Два произведения для первого дома</h4>
-<p><b>Первая строка.</b> Малиновым выделено ровно то, что участвует: первая строка X, весь столбец w и клетка, куда попадёт результат.</p>
+<p><b>Первая строка.</b> Малиновым выделено ровно то, что участвует: первая строка <span class="math-inline" data-tex="X"></span>, весь столбец <span class="math-inline" data-tex="\mathbf{w}"></span> и клетка, куда попадёт результат.</p>
 <p><div class="math-display" data-tex="4{,}0\cdot 0{,}7 + 2{,}0\cdot(-0{,}2) = 2{,}8 - 0{,}4 = 2{,}4"></div></p>
     </div>
     <div class="step-panel" data-on="X w bb yh mm2" data-focus="yh">
@@ -1509,13 +1454,13 @@
       <div class="step-kicker">Шаг 5 · остальные строки</div>
       <h4>Те же две операции ещё трижды</h4>
 <p><b>Остальные три строки.</b> Считаются точно так же: те же два умножения и то же прибавление сдвига.</p>
-<p><div class="math-display" data-tex="\hat{\mathbf{y}} = (3{,}4;\ 6{,}4;\ 4{,}4;\ 7{,}6)^\top"></div></p>
+<p><div class="math-display" data-tex="\hat{\mathbf{y}} = (3{,}4;\ 6{,}4;\ 4{,}4;\ 7{,}6)^\top \in \mathbb{R}^{4\times 1}"></div></p>
     </div>
     <div class="step-panel" data-on="yh y r mm3" data-focus="r">
       <div class="step-kicker">Шаг 6 · остатки</div>
       <h4>Все четыре предсказания занижены</h4>
-<p><b>Сравниваем с правдой.</b> Настоящие цены: 4,14; 7,85; 4,90 и 9,55 млн. Модель занизила все четыре дома, и это не случайность: стартовый вес площади меньше настоящего.</p>
-<p><div class="math-display" data-tex="\mathbf{r} = (-0{,}74;\ -1{,}45;\ -0{,}50;\ -1{,}95)^\top"></div></p>
+<p><b>Сравниваем с правдой.</b> Настоящие цены: 4,14; 7,85; 4,90 и 9,55 млн. Модель занизила все четыре дома, и это не случайность: стартовый вес площади 0,7 меньше значения 0,875, к которому придёт обучение.</p>
+<p><div class="math-display" data-tex="\mathbf{r} = (-0{,}74;\ -1{,}45;\ -0{,}50;\ -1{,}95)^\top \in \mathbb{R}^{4\times 1}"></div></p>
     </div>
     <div class="step-panel" data-on="r L mm4" data-focus="L">
       <div class="step-kicker">Шаг 7 · потеря</div>
@@ -1552,16 +1497,18 @@
 </p>
 
 <p>
-  Удобно смотреть на вычисление как на граф: узлы обозначают величины, рёбра операции. Прямой проход
-  идёт по стрелкам слева направо, обратный против стрелок, и на каждом ребре забирает свою
+  Удобно смотреть на вычисление как на граф: кружки обозначают величины, стрелки операции. Прямой проход
+  идёт по стрелкам слева направо, обратный против стрелок, и на каждой стрелке забирает свою
   локальную производную.
 </p>
 
 <div class="callout-blue">
   <strong>Что такое локальная производная:</strong> она зависит только от той операции, которая
-  стоит на ребре, и ничего не знает об остальном графе. У сложения производная равна единице,
-  у умножения на <span class="math-inline" data-tex="x_1"></span> она равна
-  <span class="math-inline" data-tex="x_1"></span>, у квадрата удвоенному аргументу.
+  стоит на стрелке, и ничего не знает об остальном графе. У сложения производная равна единице,
+  у умножения веса на <span class="math-inline" data-tex="x_1"></span> она равна
+  <span class="math-inline" data-tex="x_1"></span>, у квадрата разности
+  <span class="math-inline" data-tex="(\hat y - y)^2"></span> удвоенной разности
+  <span class="math-inline" data-tex="2(\hat y - y)"></span>.
   Именно поэтому обратный проход можно собирать из готовых кусочков, не выводя каждый раз всё
   заново.
 </div>
@@ -1571,7 +1518,7 @@
 
 <div class="stage" id="stageBG" tabindex="0">
   <div class="stage-figure">
-<svg id="bg" viewBox="0 0 960 520" role="img" aria-label="Обратный проход на графе: сигнал ошибки течёт справа налево">
+<svg id="bg" viewBox="0 0 960 628" role="img" aria-label="Обратный проход на графе: сигнал ошибки течёт справа налево">
   <style>
     #bg { font-family: Helvetica, Arial, sans-serif; }
     #bg .lbl { font-size: 16px; fill: #111111; }
@@ -1585,91 +1532,33 @@
   <defs>
     <marker id="bg-arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5E5850"/></marker>
     <marker id="bg-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C30B0A"/></marker>
+    <marker id="bg-arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3576C0"/></marker>
+    <marker id="bg-ary" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8F7406"/></marker>
     <marker id="bg-arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#73B222"/></marker>
   </defs>
 <rect x="35" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="105" y="35" class="mm" text-anchor="middle">дома → X</text>
+<foreignObject x="-105" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>дома → <span data-tex="X"></span></span></div></foreignObject>
 <rect x="185" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="255" y="35" class="mm" text-anchor="middle">w · b</text>
+<foreignObject x="209" y="15.68" width="92" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" data-tex="w,\  b"></div></foreignObject>
 <rect x="335" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="405" y="35" class="mm" text-anchor="middle">предсказания ŷ</text>
+<foreignObject x="195" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>предсказания <span data-tex="\hat y"></span></span></div></foreignObject>
 <rect x="485" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="555" y="35" class="mm" text-anchor="middle">остатки r</text>
+<foreignObject x="345" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>остатки <span data-tex="\hat y - y"></span></span></div></foreignObject>
 <rect x="635" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="705" y="35" class="mm" text-anchor="middle">потеря L</text>
+<foreignObject x="495" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>потеря <span data-tex="L"></span></span></div></foreignObject>
 <rect x="785" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
 <text x="855" y="35" class="mm" text-anchor="middle">градиент и шаг</text>
 
 <text x="480" y="62" class="cap" text-anchor="middle">вперёд считаются числа, назад производные</text>
-<g data-key="fw">
-<line x1="146" y1="164" x2="356" y2="206" stroke="#8A857C" stroke-width="1.5"/>
-<line x1="146" y1="286" x2="356" y2="244" stroke="#8A857C" stroke-width="1.5"/>
-<line x1="400" y1="346" x2="400" y2="270" stroke="#8A857C" stroke-width="1.5"/>
-<line x1="444" y1="225" x2="578" y2="225" stroke="#8A857C" stroke-width="1.5"/>
-<line x1="656" y1="225" x2="778" y2="225" stroke="#8A857C" stroke-width="1.5"/>
-<circle cx="110" cy="150" r="36" fill="#C29E08" fill-opacity="0.13" stroke="#C29E08" stroke-width="2.2"/>
-<text x="110" y="155.333" text-anchor="middle" font-size="16" fill="#8F7406" font-weight="700">w₁</text>
-<circle cx="110" cy="300" r="36" fill="#C29E08" fill-opacity="0.13" stroke="#C29E08" stroke-width="2.2"/>
-<text x="110" y="305.333" text-anchor="middle" font-size="16" fill="#8F7406" font-weight="700">w₂</text>
-<circle cx="400" cy="372" r="26" fill="#C29E08" fill-opacity="0.13" stroke="#C29E08" stroke-width="2.2"/>
-<text x="400" y="377" text-anchor="middle" font-size="15" fill="#8F7406" font-weight="700">b</text>
-<circle cx="400" cy="225" r="44" fill="#73B222" fill-opacity="0.13" stroke="#73B222" stroke-width="2.2"/>
-<text x="400" y="230.667" text-anchor="middle" font-size="17" fill="#5F9420" font-weight="700">z</text>
-<circle cx="618" cy="225" r="38" fill="#73B222" fill-opacity="0.13" stroke="#73B222" stroke-width="2.2"/>
-<text x="618" y="230.667" text-anchor="middle" font-size="17" fill="#5F9420" font-weight="700">ŷ</text>
-<rect x="782" y="194" width="152" height="62" rx="14" fill="#FFF7F7" stroke="#C30B0A" stroke-width="1.5"/>
-<text x="858" y="232" font-size="16" fill="#9C0908" text-anchor="middle" font-weight="700">ℓ = (ŷ − y)²</text>
-<text x="858" y="274" class="cap" text-anchor="middle">потеря одного дома</text>
-</g>
-<g data-key="loc" data-only="1">
-<rect x="202.0" y="148.0" width="96.1" height="20" rx="10" fill="#FFFFFF" stroke="#C30B0A" stroke-opacity="0.35" stroke-width="1"/>
-<text x="250" y="162" text-anchor="middle" font-size="13" fill="#C30B0A">∂z/∂w₁ = x₁</text>
-<rect x="202.0" y="286.0" width="96.1" height="20" rx="10" fill="#FFFFFF" stroke="#C30B0A" stroke-opacity="0.35" stroke-width="1"/>
-<text x="250" y="300" text-anchor="middle" font-size="13" fill="#C30B0A">∂z/∂w₂ = x₂</text>
-<rect x="415.2" y="326.0" width="81.5" height="20" rx="10" fill="#FFFFFF" stroke="#C30B0A" stroke-opacity="0.35" stroke-width="1"/>
-<text x="456" y="340" text-anchor="middle" font-size="13" fill="#C30B0A">∂z/∂b = 1</text>
-<rect x="470.2" y="200.0" width="81.5" height="20" rx="10" fill="#FFFFFF" stroke="#C30B0A" stroke-opacity="0.35" stroke-width="1"/>
-<text x="511" y="214" text-anchor="middle" font-size="13" fill="#C30B0A">∂ŷ/∂z = 1</text>
-<rect x="672.6" y="200.0" width="88.8" height="20" rx="10" fill="#FFFFFF" stroke="#C30B0A" stroke-opacity="0.35" stroke-width="1"/>
-<text x="717" y="214" text-anchor="middle" font-size="13" fill="#C30B0A">∂ℓ/∂ŷ = 2r</text>
-</g>
-<g data-key="b1" data-only="1">
-<path d="M 800 264 C 762 306 700 306 652 254" fill="none" stroke="#C30B0A" stroke-width="2.6" marker-end="url(#bg-arr)"/>
-<rect x="678.0" y="302.0" width="96.1" height="20" rx="10" fill="#FFFFFF" stroke="#C30B0A" stroke-opacity="0.35" stroke-width="1"/>
-<text x="726" y="316" text-anchor="middle" font-size="13" fill="#C30B0A">приходит 2r</text>
-</g>
-<g data-key="b2" data-only="1">
-<path d="M 588 256 C 548 300 478 302 436 254" fill="none" stroke="#C30B0A" stroke-width="2.6" marker-end="url(#bg-arr)"/>
-<rect x="405.7" y="300.0" width="212.6" height="20" rx="10" fill="#FFFFFF" stroke="#C30B0A" stroke-opacity="0.35" stroke-width="1"/>
-<text x="512" y="314" text-anchor="middle" font-size="13" fill="#C30B0A">умножили на 1, осталось 2r</text>
-</g>
-<g data-key="b3" data-only="1">
-<path d="M 368 198 C 300 150 218 134 150 132" fill="none" stroke="#C30B0A" stroke-width="2.6" marker-end="url(#bg-arr)"/>
-<path d="M 368 252 C 300 300 218 318 150 318" fill="none" stroke="#C30B0A" stroke-width="2.6" marker-end="url(#bg-arr)"/>
-<rect x="204.5" y="98.0" width="67.0" height="20" rx="10" fill="#FFFFFF" stroke="#C30B0A" stroke-opacity="0.35" stroke-width="1"/>
-<text x="238" y="112" text-anchor="middle" font-size="13" fill="#C30B0A">2r · x₁</text>
-<rect x="204.5" y="334.0" width="67.0" height="20" rx="10" fill="#FFFFFF" stroke="#C30B0A" stroke-opacity="0.35" stroke-width="1"/>
-<text x="238" y="348" text-anchor="middle" font-size="13" fill="#C30B0A">2r · x₂</text>
-</g>
-<g data-key="b4" data-only="1">
-<path d="M 384 268 C 352 320 356 362 372 372" fill="none" stroke="#C30B0A" stroke-width="2.6" marker-end="url(#bg-arr)"/>
-<rect x="286.2" y="386.0" width="59.7" height="20" rx="10" fill="#FFFFFF" stroke="#C30B0A" stroke-opacity="0.35" stroke-width="1"/>
-<text x="316" y="400" text-anchor="middle" font-size="13" fill="#C30B0A">2r · 1</text>
-</g>
-<g data-key="ch" data-only="1">
-<rect x="96" y="424" width="200" height="52" rx="14" fill="#FFF7F7" stroke="#C30B0A" stroke-width="1.5"/>
-<text x="196" y="456" font-size="15" fill="#111111" text-anchor="middle">∂ℓ/∂ŷ = 2r</text>
-<text x="316" y="456" class="lbl" text-anchor="middle">·</text>
-<rect x="336" y="424" width="176" height="52" rx="14" fill="#FFF7F7" stroke="#C30B0A" stroke-width="1.5"/>
-<text x="424" y="456" font-size="15" fill="#111111" text-anchor="middle">∂ŷ/∂z = 1</text>
-<text x="532" y="456" class="lbl" text-anchor="middle">·</text>
-<rect x="552" y="424" width="200" height="52" rx="14" fill="#FFF7F7" stroke="#C30B0A" stroke-width="1.5"/>
-<text x="652" y="456" font-size="15" fill="#111111" text-anchor="middle">∂z/∂w₁ = x₁</text>
-<text x="772" y="456" class="lbl" text-anchor="middle">=</text>
-<rect x="792" y="424" width="140" height="52" rx="14" fill="#FDF2FA" stroke="#D83BB9" stroke-width="1.5"/>
-<text x="862" y="456" font-size="15" fill="#A62E8E" text-anchor="middle" font-weight="700">2r · x₁</text>
-</g>
-<text x="40" y="508" class="legend" text-anchor="start">серые линии: прямой проход · красные дуги: обратный · на плашках: то, что течёт назад</text>
+<g data-key="fw"><line x1="128.1" y1="131.1" x2="320.1" y2="221.0" stroke="#5E5850" stroke-width="1.8" marker-end="url(#bg-arw)"/><line x1="131.0" y1="235.0" x2="317.0" y2="235.0" stroke="#5E5850" stroke-width="1.8" marker-end="url(#bg-arw)"/><foreignObject x="191.358" y="149.914" width="80" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#8F7406;font-weight:400" data-tex="\cdot\, w_1"></div></foreignObject><foreignObject x="185" y="207" width="80" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#8F7406;font-weight:400" data-tex="\cdot\, w_2"></div></foreignObject><circle cx="100" cy="352" r="30" fill="#E9E1C2" stroke="#C29E08" stroke-width="2.2"/><foreignObject x="70" y="322" width="60" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#111111;font-weight:400" data-tex="b"></div></foreignObject><foreignObject x="40" y="386" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" ><span>сдвиг</span></div></foreignObject><line x1="128.1" y1="338.9" x2="320.1" y2="249.0" stroke="#5E5850" stroke-width="1.8" marker-end="url(#bg-arw)"/><foreignObject x="211.782" y="294.992" width="40" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="+"></div></foreignObject><circle cx="100" cy="118" r="30" fill="#FFFFFF" stroke="#3576C0" stroke-width="2.2"/><foreignObject x="70" y="88" width="60" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#111111;font-weight:400" data-tex="x_1"></div></foreignObject><foreignObject x="40" y="152" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" ><span>площадь</span></div></foreignObject><circle cx="100" cy="235" r="30" fill="#FFFFFF" stroke="#3576C0" stroke-width="2.2"/><foreignObject x="70" y="205" width="60" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#111111;font-weight:400" data-tex="x_2"></div></foreignObject><foreignObject x="40" y="269" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" ><span>возраст</span></div></foreignObject><circle cx="350" cy="235" r="30" fill="#F4F7EE" stroke="#C29E08" stroke-width="2.2"/><foreignObject x="320" y="205" width="60" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#111111;font-weight:400" data-tex="z"></div></foreignObject><foreignObject x="290" y="179" width="120" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" ><span>сумматор</span></div></foreignObject><line x1="381.0" y1="235.0" x2="537.0" y2="235.0" stroke="#5E5850" stroke-width="1.8" marker-end="url(#bg-arw)"/><foreignObject x="440" y="207" width="40" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="="></div></foreignObject><circle cx="570" cy="235" r="30" fill="#F4F7EE" stroke="#73B222" stroke-width="2.2"/><foreignObject x="540" y="205" width="60" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#111111;font-weight:400" data-tex="\hat y"></div></foreignObject><foreignObject x="500" y="179" width="140" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" ><span>предсказание</span></div></foreignObject><line x1="601.0" y1="235.0" x2="757.0" y2="235.0" stroke="#5E5850" stroke-width="1.8" marker-end="url(#bg-arw)"/><foreignObject x="620" y="202" width="120" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:400" data-tex="(\,\cdot - y)^2"></div></foreignObject><circle cx="790" cy="118" r="30" fill="#FFFFFF" stroke="#3576C0" stroke-width="2.2"/><foreignObject x="760" y="88" width="60" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#111111;font-weight:400" data-tex="y"></div></foreignObject><foreignObject x="830" y="108" width="130" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:13px;color:#5E5850;font-weight:400" ><span>настоящая цена</span></div></foreignObject><line x1="790.0" y1="149.0" x2="790.0" y2="202.0" stroke="#3576C0" stroke-width="1.8" marker-end="url(#bg-arb)"/><circle cx="790" cy="235" r="30" fill="#F4F7EE" stroke="#C30B0A" stroke-width="2.2"/><foreignObject x="760" y="205" width="60" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#111111;font-weight:400" data-tex="\ell"></div></foreignObject><foreignObject x="830" y="225" width="100" height="20"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:13px;color:#5E5850;font-weight:400" ><span>потеря</span></div></foreignObject></g>
+<g data-key="loc" data-only="1"><foreignObject x="82.3702" y="156.403" width="170" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#C30B0A;font-weight:400" data-tex="x_1"></div></foreignObject><foreignObject x="90" y="240" width="170" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#C30B0A;font-weight:400" data-tex="x_2"></div></foreignObject><foreignObject x="76.4359" y="274.917" width="170" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#C30B0A;font-weight:400" data-tex="1"></div></foreignObject><foreignObject x="430" y="251" width="60" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#C30B0A;font-weight:400" data-tex="1"></div></foreignObject><foreignObject x="595" y="252" width="170" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#C30B0A;font-weight:400" data-tex="2(\hat y - y)"></div></foreignObject></g>
+<g data-key="val" data-only="1"><foreignObject x="80" y="401" width="800" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#5E5850;font-weight:400" data-tex="\text{первый дом:}\quad x_1 = 4{,}0,\quad x_2 = 2{,}0,\quad \hat y = 3{,}4,\quad y = 4{,}14"></div></foreignObject></g>
+<g data-key="b1" data-only="1"><line x1="750.0" y1="246.0" x2="610.0" y2="246.0" stroke="#C30B0A" stroke-width="2.4" marker-end="url(#bg-arr)"/><rect x="587" y="273" width="186" height="30" rx="15" fill="#FFF7F7" stroke="#C30B0A" stroke-opacity=".45"/><foreignObject x="587" y="273" width="186" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#9C0908;font-weight:400" data-tex="2(\hat y - y) = -1{,}48"></div></foreignObject></g>
+<g data-key="b2" data-only="1"><line x1="530.0" y1="246.0" x2="390.0" y2="246.0" stroke="#C30B0A" stroke-width="2.4" marker-end="url(#bg-arr)"/><rect x="367" y="273" width="186" height="30" rx="15" fill="#FFF7F7" stroke="#C30B0A" stroke-opacity=".45"/><foreignObject x="367" y="273" width="186" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#9C0908;font-weight:400" data-tex="2(\hat y - y)\cdot 1 = -1{,}48"></div></foreignObject></g>
+<g data-key="b3" data-only="1"><line x1="309.1" y1="228.0" x2="210.3" y2="181.8" stroke="#C30B0A" stroke-width="2.4" marker-end="url(#bg-arr)"/><line x1="310.0" y1="246.0" x2="215.0" y2="246.0" stroke="#C30B0A" stroke-width="2.4" marker-end="url(#bg-arr)"/><rect x="60" y="438" width="840" height="48" rx="12" fill="#FFF7F7" stroke="#C30B0A" stroke-opacity=".35"/><foreignObject x="210" y="430" width="680" height="64"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:15px;color:#111111;font-weight:400" data-tex="\dfrac{\partial\ell}{\partial w_1} = 2(\hat y - y)\,x_1 = -1{,}48\cdot 4{,}0 = -5{,}92"></div></foreignObject><rect x="60" y="492" width="840" height="48" rx="12" fill="#FFF7F7" stroke="#C30B0A" stroke-opacity=".35"/><foreignObject x="210" y="484" width="680" height="64"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:15px;color:#111111;font-weight:400" data-tex="\dfrac{\partial\ell}{\partial w_2} = 2(\hat y - y)\,x_2 = -1{,}48\cdot 2{,}0 = -2{,}96"></div></foreignObject></g>
+<g data-key="b4" data-only="1"><line x1="309.1" y1="242.0" x2="131.6" y2="325.1" stroke="#C30B0A" stroke-width="2.4" marker-end="url(#bg-arr)"/><rect x="60" y="546" width="840" height="48" rx="12" fill="#FFF7F7" stroke="#C30B0A" stroke-opacity=".35"/><foreignObject x="210" y="538" width="680" height="64"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:15px;color:#111111;font-weight:400" data-tex="\dfrac{\partial\ell}{\partial b} = 2(\hat y - y)\cdot 1 = -1{,}48"></div></foreignObject></g>
+<g data-key="ch" data-only="1"><rect x="60" y="438" width="840" height="48" rx="12" fill="#FFF7F7" stroke="#C30B0A" stroke-opacity=".35"/><foreignObject x="210" y="430" width="680" height="64"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:15px;color:#111111;font-weight:400" data-tex="\dfrac{\partial\ell}{\partial w_1} = \dfrac{\partial\ell}{\partial\hat y}\cdot\dfrac{\partial\hat y}{\partial z}\cdot\dfrac{\partial z}{\partial w_1} = 2(\hat y - y)\cdot 1\cdot x_1"></div></foreignObject></g>
+<text x="40" y="614" font-size="13" fill="#5E5850" font-weight="400" text-anchor="start">серые стрелки: прямой проход · красные стрелки и подписи: обратный, на них производные</text>
 </svg>
   </div>
 
@@ -1684,51 +1573,49 @@
     <div class="step-panel" data-on="fw" data-focus="fw">
       <div class="step-kicker">Шаг 1 · граф вычислений</div>
       <h4>Сначала запишем, что от чего зависит</h4>
-<p>Прямой проход устроен цепочкой: из весов и признаков получается сумматор, из него предсказание, из предсказания и настоящей цены потеря. Каждая линия здесь означает одну операцию.</p>
-<p>Признаки не нарисованы кружками: они не обучаются, и производные по ним не нужны. Обучаются w₁, w₂ и b.</p>
+<p>В кружках слева стоят признаки и сдвиг, на стрелках от признаков подписаны веса. Каждая стрелка означает одну операцию: признак умножается на свой вес, всё складывается в сумматоре, из него получается предсказание, а из предсказания и настоящей цены потеря.</p>
+<p>Признаки и цена приходят из данных и не обучаются. Обучаются три числа: <span class="math-inline" data-tex="w_1"></span> и <span class="math-inline" data-tex="w_2"></span> на стрелках и <span class="math-inline" data-tex="b"></span> в кружке, и производные нужны именно по ним.</p>
     </div>
     <div class="step-panel" data-on="fw" data-focus="fw">
       <div class="step-kicker">Шаг 2 · что мы спрашиваем</div>
       <h4>Насколько потеря чувствительна к каждому весу</h4>
-<p>Производная <span class="math-inline" data-tex="\partial\ell/\partial w_1"></span> отвечает: если чуть-чуть увеличить w₁, потеря вырастет или упадёт и насколько быстро.</p>
-<p>Брать её сразу от всей цепочки не нужно и не получится: цепочку разбирают по звеньям.</p>
+<p>Производная <span class="math-inline" data-tex="\partial \ell/\partial w_1"></span> отвечает: если чуть-чуть увеличить <span class="math-inline" data-tex="w_1"></span>, потеря вырастет или упадёт и насколько быстро.</p>
+<p>Брать её сразу от всей цепочки не нужно: цепочку разбирают по звеньям.</p>
+<p><div class="math-display" data-tex="\frac{\partial \ell}{\partial w_1} = \;?"></div></p>
     </div>
     <div class="step-panel" data-on="fw loc" data-focus="loc">
       <div class="step-kicker">Шаг 3 · локальные производные</div>
-      <h4>У каждой линии своя, и все они простые</h4>
-<p>Локальная производная зависит только от той операции, которая стоит на ребре, и ничего не знает об остальном графе.</p>
-<p><div class="math-display" data-tex="\frac{\partial \ell}{\partial \hat y} = 2r, \qquad \frac{\partial \hat y}{\partial z} = 1, \qquad \frac{\partial z}{\partial w_p} = x_p, \qquad \frac{\partial z}{\partial b} = 1"></div></p>
+      <h4>У каждой стрелки своя, и все они простые</h4>
+<p>Локальная производная зависит только от той операции, которая стоит на стрелке. Красным под стрелками подписаны её значения. Потеря равна квадрату разности, поэтому её производная по предсказанию равна удвоенной разности.</p>
+<p><div class="math-display" data-tex="\frac{\partial \ell}{\partial \hat y} = \frac{\partial}{\partial \hat y}(\hat y - y)^2 = 2(\hat y - y), \qquad \frac{\partial \hat y}{\partial z} = 1, \qquad \frac{\partial z}{\partial w_p} = x_p, \qquad \frac{\partial z}{\partial b} = 1"></div></p>
     </div>
-    <div class="step-panel" data-on="fw loc b1" data-focus="b1">
+    <div class="step-panel" data-on="fw loc val b1" data-focus="b1">
       <div class="step-kicker">Шаг 4 · поток стартует</div>
-      <h4>Из потери в предсказание приходит 2r</h4>
+      <h4>Из потери в предсказание приходит <span class="math-inline" data-tex="2(\hat y - y)"></span></h4>
 <p>Обратный проход начинается с самого правого узла и идёт против стрелок. Первой он несёт производную потери по предсказанию.</p>
-<p>Если модель занизила цену на 0,74 млн, сюда придёт −1,48. Знак сохраняется и дальше по всей цепочке.</p>
+<p>У первого дома предсказание 3,4 при цене 4,14: модель занизила цену на 0,74 млн, и сюда приходит 2(3,4 − 4,14) = −1,48. Знак сохраняется и дальше по всей цепочке.</p>
     </div>
-    <div class="step-panel" data-on="fw loc b1 b2" data-focus="b2">
+    <div class="step-panel" data-on="fw loc val b1 b2" data-focus="b2">
       <div class="step-kicker">Шаг 5 · через сумматор</div>
       <h4>Множитель равен единице, значение не меняется</h4>
-<p>В линейной регрессии предсказание совпадает с сумматором, поэтому на этом участке сигнал проходит без потерь: 2r · 1 = 2r.</p>
-<p>У логистической регрессии здесь стояла бы производная сигмоиды, а у нейрона маска ReLU, и сигнал бы ослаб или обнулился. Вот почему у линейной модели самый короткий из всех обратных проходов.</p>
+<p>В линейной регрессии предсказание совпадает с сумматором, поэтому на этом участке сигнал проходит без потерь: <span class="math-inline" data-tex="2(\hat y - y) \cdot  1 = 2(\hat y - y)"></span>.</p>
+<p>У логистической регрессии здесь стояла бы производная сигмоиды, а у нейрона маска ReLU, и сигнал бы ослаб или обнулился. Поэтому у линейной модели самый короткий из всех обратных проходов.</p>
     </div>
-    <div class="step-panel" data-on="fw loc b1 b2 b3" data-focus="b3">
+    <div class="step-panel" data-on="fw loc val b1 b2 b3" data-focus="b3">
       <div class="step-kicker">Шаг 6 · в веса</div>
-      <h4>Домножаем на признак и попадаем в w₁ и w₂</h4>
-<p>Здесь пути расходятся. К весу площади сигнал приходит домноженным на площадь, к весу возраста домноженным на возраст. Общий множитель у них один и тот же.</p>
-<p><div class="math-display" data-tex="\frac{\partial \ell}{\partial w_1} = 2r\,x_1, \qquad \frac{\partial \ell}{\partial w_2} = 2r\,x_2"></div></p>
-<p>Отсюда видно, почему признаки полезно приводить к одному масштабу: если один из них в тридцать раз крупнее, его градиент будет в тридцать раз больше, и не потому, что он важнее.</p>
+      <h4>Домножаем на признак и попадаем в <span class="math-inline" data-tex="w_1"></span> и <span class="math-inline" data-tex="w_2"></span></h4>
+<p>Здесь пути расходятся. К весу площади сигнал приходит домноженным на площадь, к весу возраста домноженным на возраст. Общий множитель <span class="math-inline" data-tex="2(\hat y - y)"></span> у них один и тот же.</p>
+<p>Отсюда видно, почему признаки полезно приводить к одному масштабу: если один из них в тридцать раз крупнее, его градиент будет в тридцать раз больше, даже если важность у него та же.</p>
     </div>
-    <div class="step-panel" data-on="fw loc b1 b2 b4" data-focus="b4">
+    <div class="step-panel" data-on="fw loc val b1 b2 b3 b4" data-focus="b4">
       <div class="step-kicker">Шаг 7 · в сдвиг</div>
       <h4>Последний множитель равен единице</h4>
 <p>У сдвига нет своего признака: он входит в сумму с коэффициентом 1. Поэтому его производная совпадает с самим сигналом ошибки.</p>
-<p><div class="math-display" data-tex="\frac{\partial \ell}{\partial b} = 2r"></div></p>
     </div>
-    <div class="step-panel" data-on="loc ch" data-focus="ch">
+    <div class="step-panel" data-on="fw loc ch" data-focus="ch">
       <div class="step-kicker">Шаг 8 · цепочка целиком</div>
       <h4>Три множителя вдоль одного пути</h4>
-<p>Путь от потери до w₁ ровно один, поэтому и слагаемое одно. Перемножаем то, что стояло на каждом ребре, и получаем готовую формулу.</p>
-<p><div class="math-display" data-tex="\frac{\partial \ell}{\partial w_1} = \frac{\partial \ell}{\partial \hat y}\cdot\frac{\partial \hat y}{\partial z}\cdot\frac{\partial z}{\partial w_1} = 2r\cdot 1\cdot x_1"></div></p>
+<p>Путь от потери до <span class="math-inline" data-tex="w_1"></span> ровно один, поэтому и слагаемое одно. Перемножаем то, что стояло на каждой стрелке, и получаем готовую формулу.</p>
 <p>Если путей несколько, как в сети со скрытыми слоями, производные вдоль них складываются. Больше никаких правил в backpropagation нет.</p>
     </div>
   </div>
@@ -1756,14 +1643,14 @@
   складываются по объектам. Это и есть цепное правило для функции многих переменных:
 </p>
 
-<div class="math-display" data-tex="\frac{\partial L}{\partial w_p} = \sum_{n=1}^{N} \frac{\partial L}{\partial \hat y_n}\cdot\frac{\partial \hat y_n}{\partial w_p} = \sum_{n=1}^{N} \frac{2}{N}r_n\,x_{np}"></div>
+<div class="math-display" data-tex="\frac{\partial L}{\partial w_p} = \sum_{n=1}^{N} \frac{\partial L}{\partial \hat y_n}\cdot\frac{\partial \hat y_n}{\partial w_p} = \sum_{n=1}^{N} \frac{2}{N}(\hat y_n - y_n)\,x_{np}"></div>
 
 <p>
   Сумма произведений по номеру объекта в точности совпадает с одной клеткой матричного произведения,
   в котором ось объектов стоит внутри. Отсюда обе итоговые формулы:
 </p>
 
-<div class="math-display" data-tex="\nabla_{\mathbf{w}} L = \frac{2}{N}X^\top\mathbf{r} \in \mathbb{R}^{P\times 1},\qquad \frac{\partial L}{\partial b} = \frac{2}{N}\sum_{n=1}^{N} r_n \in \mathbb{R}"></div>
+<div class="math-display" data-tex="\begin{gathered}\nabla_{\mathbf{w}} L = \frac{2}{N}X^\top(\hat{\mathbf{y}} - \mathbf{y}) \in \mathbb{R}^{P\times 1}\quad(2\times 1)\\[6pt] \frac{\partial L}{\partial b} = \frac{2}{N}\sum_{n=1}^{N} (\hat y_n - y_n) \in \mathbb{R}^{1\times 1}\end{gathered}"></div>
 
 <div class="callout-blue">
   <strong>Откуда в градиенте сдвига взялась сумма:</strong> на прямом проходе
@@ -1795,15 +1682,15 @@
     <marker id="bm-arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#73B222"/></marker>
   </defs>
 <rect x="35" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="105" y="35" class="mm" text-anchor="middle">дома → X</text>
+<foreignObject x="-105" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>дома → <span data-tex="X"></span></span></div></foreignObject>
 <rect x="185" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="255" y="35" class="mm" text-anchor="middle">w · b</text>
+<foreignObject x="209" y="15.68" width="92" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" data-tex="\mathbf{w},\  b"></div></foreignObject>
 <rect x="335" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="405" y="35" class="mm" text-anchor="middle">предсказания ŷ</text>
+<foreignObject x="195" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>предсказания <span data-tex="\hat{\mathbf{y}}"></span></span></div></foreignObject>
 <rect x="485" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="555" y="35" class="mm" text-anchor="middle">остатки r</text>
+<foreignObject x="345" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>остатки <span data-tex="\hat{\mathbf{y}} - \mathbf{y}"></span></span></div></foreignObject>
 <rect x="635" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="705" y="35" class="mm" text-anchor="middle">потеря L</text>
+<foreignObject x="495" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>потеря <span data-tex="L"></span></span></div></foreignObject>
 <rect x="785" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
 <text x="855" y="35" class="mm" text-anchor="middle">градиент и шаг</text>
 <g data-key="mm3" data-only="1"><rect x="483" y="16" width="144" height="30" rx="6" fill="none" stroke="#C30B0A" stroke-width="2"/></g>
@@ -1814,58 +1701,58 @@
 <line x1="60" y1="130.0" x2="106" y2="130.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="60" y1="160.0" x2="106" y2="160.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="60" y1="190.0" x2="106" y2="190.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="83" y="88" text-anchor="middle" font-size="13" fill="#111111">4 × 1</text>
-<text x="83" y="244" text-anchor="middle" font-size="17" fill="#9C0908" font-weight="700" font-style="italic">r</text>
-<text x="140" y="166" class="lbl" text-anchor="middle">·</text>
-<text x="172" y="172" class="lbl" text-anchor="middle">2/N</text>
-<text x="206" y="166" class="lbl" text-anchor="middle">=</text>
+<foreignObject x="-2" y="71.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="N\times 1=4\times 1"></div></foreignObject>
+<foreignObject x="23" y="223.88" width="120" height="28"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#9C0908;font-weight:400" data-tex="\hat{\mathbf{y}} - \mathbf{y}"></div></foreignObject>
+<foreignObject x="110" y="141.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="\cdot"></div></foreignObject>
+<foreignObject x="132.5" y="134.24" width="79" height="64"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="\dfrac{2}{N}"></div></foreignObject>
+<foreignObject x="176" y="141.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="="></div></foreignObject>
 </g>
 <g data-key="sig">
 <rect x="230" y="100" width="46" height="120" rx="2" fill="#E88919" opacity="0.6" stroke="#ffffff" stroke-width="1"/>
 <line x1="230" y1="130.0" x2="276" y2="130.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="230" y1="160.0" x2="276" y2="160.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="230" y1="190.0" x2="276" y2="190.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="253" y="88" text-anchor="middle" font-size="13" fill="#111111">4 × 1</text>
-<text x="253" y="244" text-anchor="middle" font-size="17" fill="#B76A11" font-weight="700" font-style="italic">∂L/∂ŷ</text>
+<foreignObject x="168" y="71.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="N\times 1=4\times 1"></div></foreignObject>
+<foreignObject x="200.5" y="217.48" width="105" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#B76A11;font-weight:700" data-tex="\partial L/\partial \hat{\mathbf{y}}"></div></foreignObject>
 </g>
-<g data-key="XT">
-<path d="M 253 250 C 253 272 272 262 288 276" fill="none" stroke="#5E5850" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#bm-arw)"/>
-<text x="352" y="250" class="cap" text-anchor="start">тот же столбец</text>
+<g data-key="XT" transform="translate(40 0)">
+<path d="M 213 252 C 218 285 250 300 285 300" fill="none" stroke="#5E5850" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#bm-arw)"/>
+
 <rect x="60" y="288" width="180" height="68" rx="2" fill="#3576C0" opacity="0.3" stroke="#ffffff" stroke-width="1"/>
 <line x1="105.0" y1="288" x2="105.0" y2="356" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="150.0" y1="288" x2="150.0" y2="356" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="195.0" y1="288" x2="195.0" y2="356" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="60" y1="322.0" x2="240" y2="322.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="150" y="276" text-anchor="middle" font-size="13" fill="#111111">2 × 4</text>
-<text x="150" y="380" text-anchor="middle" font-size="17" fill="#2A5E9B" font-weight="700" font-style="italic">Xᵀ</text>
+<foreignObject x="65" y="259.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="P\times N=2\times 4"></div></foreignObject>
+<foreignObject x="115" y="353.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#2A5E9B;font-weight:700" data-tex="X^\top"></div></foreignObject>
 </g>
-<g data-key="sig2">
-<text x="266" y="326" class="lbl" text-anchor="middle">·</text>
+<g data-key="sig2" transform="translate(40 0)">
+<foreignObject x="236" y="301.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="\cdot"></div></foreignObject>
 <rect x="292" y="262" width="46" height="120" rx="2" fill="#E88919" opacity="0.6" stroke="#ffffff" stroke-width="1"/>
 <line x1="292" y1="292.0" x2="338" y2="292.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="292" y1="322.0" x2="338" y2="322.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="292" y1="352.0" x2="338" y2="352.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="315" y="250" text-anchor="middle" font-size="13" fill="#111111">4 × 1</text>
-<text x="315" y="406" text-anchor="middle" font-size="17" fill="#B76A11" font-weight="700" font-style="italic">∂L/∂ŷ</text>
+<foreignObject x="230" y="233.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="N\times 1=4\times 1"></div></foreignObject>
+<foreignObject x="262.5" y="379.48" width="105" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#B76A11;font-weight:700" data-tex="\partial L/\partial \hat{\mathbf{y}}"></div></foreignObject>
 </g>
-<g data-key="nab">
-<text x="370" y="326" class="lbl" text-anchor="middle">=</text>
+<g data-key="nab" transform="translate(40 0)">
+<foreignObject x="340" y="301.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="="></div></foreignObject>
 <rect x="396" y="288" width="46" height="68" rx="2" fill="#D83BB9" opacity="0.55" stroke="#ffffff" stroke-width="1"/>
 <line x1="396" y1="322.0" x2="442" y2="322.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="419" y="276" text-anchor="middle" font-size="13" fill="#111111">2 × 1</text>
-<text x="419" y="380" text-anchor="middle" font-size="17" fill="#A62E8E" font-weight="700" font-style="italic">∇wL</text>
+<foreignObject x="334" y="259.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="P\times 1=2\times 1"></div></foreignObject>
+<foreignObject x="379.5" y="353.48" width="79" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#A62E8E;font-weight:700" data-tex="\nabla_{\mathbf{w}}L"></div></foreignObject>
 </g>
 <g data-key="bias" data-only="1">
 <rect x="520" y="262" width="400" height="120" rx="12" fill="#FFF2F2" stroke="#C30B0A" stroke-width="1.6"/>
 <text x="538" y="288" class="cap" text-anchor="start">ГРАДИЕНТ СДВИГА</text>
-<text x="538" y="320" class="val" text-anchor="start">∂L/∂b = сумма всех клеток ∂L/∂ŷ</text>
+<foreignObject x="538" y="298.16" width="402" height="33.6"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:14px;color:#111111;font-weight:400" ><span><span data-tex="\partial L/\partial b"></span> = сумма всех клеток <span data-tex="\partial L/\partial \hat{\mathbf{y}}"></span></span></div></foreignObject>
 <text x="538" y="350" class="cap" text-anchor="start">размножение вперёд → суммирование назад</text>
 </g>
 <g data-key="rule" data-only="1">
 <rect x="520" y="100" width="400" height="120" rx="12" fill="#F0FAF0" stroke="#73B222" stroke-width="1.6"/>
 <text x="538" y="126" class="cap" text-anchor="start">ПРАВИЛО ПРОВЕРКИ</text>
-<text x="538" y="156" class="val" text-anchor="start">w:  2 × 1   →   ∇wL:  2 × 1</text>
-<text x="538" y="184" class="val" text-anchor="start">b:  число   →   ∂L/∂b:  число</text>
+<foreignObject x="538" y="134.16" width="391" height="33.6"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:14px;color:#111111;font-weight:400" data-tex="\mathbf{w}:\ P\times 1=2\times 1\ \rightarrow\ \nabla_{\mathbf{w}}L:\ P\times 1=2\times 1"></div></foreignObject>
+<foreignObject x="538" y="162.16" width="417" height="33.6"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:14px;color:#111111;font-weight:400" data-tex="b:\ 1\times 1\ \rightarrow\ \partial L/\partial b:\ 1\times 1"></div></foreignObject>
 <text x="538" y="208" class="cap" text-anchor="start">если формы разошлись, ошибка в выкладке</text>
 </g>
 <text x="40" y="436" class="legend" text-anchor="start">красное: всё, что связано с ошибкой и градиентом · синее: данные</text>
@@ -1883,47 +1770,57 @@
     <div class="step-panel" data-on="r mm3" data-focus="r">
       <div class="step-kicker">Шаг 1 · с чего начинается обратный проход</div>
       <h4>Нужен только столбец остатков</h4>
-<p>Прямой проход уже посчитал остатки, и заново ничего вычислять не придётся. Ни предсказания, ни настоящие цены по отдельности больше не понадобятся.</p>
-<p><div class="math-display" data-tex="\mathbf{r} = \hat{\mathbf{y}} - \mathbf{y} \in \mathbb{R}^{N\times 1}"></div></p>
+<p>Прямой проход уже посчитал разность между предсказаниями и настоящими ценами, и заново ничего вычислять не придётся.</p>
+<p><div class="math-display" data-tex="\hat{\mathbf{y}} - \mathbf{y} \in \mathbb{R}^{N\times 1}\quad(4\times 1)"></div></p>
     </div>
     <div class="step-panel" data-on="r sig mm5" data-focus="sig">
       <div class="step-kicker">Шаг 2 · сигнал ошибки</div>
       <h4>Производная потери по каждому предсказанию</h4>
-<p>Квадрат даёт множитель 2, усреднение даёт деление на N. Форма при этом не меняется: сколько было предсказаний, столько и производных.</p>
-<p><div class="math-display" data-tex="\frac{\partial L}{\partial \hat{\mathbf{y}}} = \frac{2}{N}\,\mathbf{r} \in \mathbb{R}^{N\times 1}"></div></p>
+<p>Квадрат даёт множитель 2, усреднение даёт деление на <span class="math-inline" data-tex="N"></span>. Форма при этом не меняется: сколько было предсказаний, столько и производных.</p>
+<p><div class="math-display" data-tex="\frac{\partial L}{\partial \hat{\mathbf{y}}} = \frac{2}{N}(\hat{\mathbf{y}} - \mathbf{y}) \in \mathbb{R}^{N\times 1}\quad(4\times 1)"></div></p>
     </div>
     <div class="step-panel" data-on="sig XT sig2 mm5" data-focus="XT">
       <div class="step-kicker">Шаг 3 · откуда берётся транспонирование</div>
       <h4>Нужно свернуть ось объектов, а не ось признаков</h4>
-<p>У сигнала ошибки высота N, по числу домов. У градиента весов высота должна быть P, по числу признаков. Свернуть N способна только матрица, у которой N стоит в столбцах, а это <span class="math-inline" data-tex="X^\top"></span>.</p>
+<p>У сигнала ошибки высота <span class="math-inline" data-tex="N"></span>, по числу домов. У градиента весов высота должна быть <span class="math-inline" data-tex="P"></span>, по числу признаков. Свернуть <span class="math-inline" data-tex="N"></span> способна только матрица, у которой <span class="math-inline" data-tex="N"></span> стоит в столбцах, а это <span class="math-inline" data-tex="X^\top"></span>.</p>
 <p>Смысл строки <span class="math-inline" data-tex="X^\top"></span> прямой: это один признак у всех домов сразу.</p>
     </div>
     <div class="step-panel" data-on="XT sig2 nab mm5" data-focus="nab">
       <div class="step-kicker">Шаг 4 · градиент весов</div>
-      <h4>Формы сходятся, получается столбец 2 × 1</h4>
+      <h4>Формы сходятся, получается столбец <span class="math-inline" data-tex="2 \times  1"></span></h4>
 <p>Каждая клетка результата содержит сумму по всем домам: признак, умноженный на сигнал ошибки этого дома. Ровно то же, что мы получили на графе, только сразу для всего батча.</p>
-<p><div class="math-display" data-tex="\nabla_{\mathbf{w}} L = \frac{2}{N}X^\top\mathbf{r} \qquad [2\times 4]\cdot[4\times 1] \rightarrow [2\times 1]"></div></p>
+<p><div class="math-display" data-tex="\begin{gathered}\nabla_{\mathbf{w}} L = \frac{2}{N}X^\top(\hat{\mathbf{y}} - \mathbf{y})\\[4pt] [P\times N]\cdot[N\times 1] \rightarrow [P\times 1]\qquad [2\times 4]\cdot[4\times 1] \rightarrow [2\times 1]\end{gathered}"></div></p>
     </div>
     <div class="step-panel" data-on="sig bias mm5" data-focus="bias">
       <div class="step-kicker">Шаг 5 · градиент сдвига</div>
       <h4>Сдвиг входит во все строки с коэффициентом единица</h4>
-<p>Поэтому взвешивать признаками нечего, и остаётся просто сумма сигналов ошибки. Помните размножение b по строкам на прямом проходе? Здесь оно обернулось суммированием, и так бывает всегда.</p>
-<p><div class="math-display" data-tex="\frac{\partial L}{\partial b} = \frac{2}{N}\sum_{n=1}^{N} r_n"></div></p>
+<p>Поэтому взвешивать признаками нечего, и остаётся просто сумма сигналов ошибки. Помните размножение <span class="math-inline" data-tex="b"></span> по строкам на прямом проходе? Здесь оно обернулось суммированием, и так бывает всегда.</p>
+<p><div class="math-display" data-tex="\begin{gathered}\frac{\partial L}{\partial b} = \frac{2}{N}\sum_{n=1}^{N} (\hat y_n - y_n)\\[4pt] [1\times N]\cdot[N\times 1] \rightarrow [1\times 1]\qquad [1\times 4]\cdot[4\times 1] \rightarrow [1\times 1]\end{gathered}"></div></p>
     </div>
     <div class="step-panel" data-on="nab bias rule" data-focus="rule">
       <div class="step-kicker">Шаг 6 · как проверить себя</div>
       <h4>Форма градиента повторяет форму параметра</h4>
-<p>Это самая дешёвая проверка выкладки: если у градиента весов получилась форма N × 1 или 1 × P, ошибка в производной, а не в данных: вычесть такой градиент из w всё равно не из чего.</p>
+<p>Проверок две. Первая: в каждом произведении внутренние размеры совпадают. Вторая: форма градиента равна форме параметра, у весов это <span class="math-inline" data-tex="P \times  1"></span> <span class="math-inline" data-tex="(2 \times  1)"></span>, у сдвига <span class="math-inline" data-tex="1 \times  1"></span>. Если у градиента весов получилась форма <span class="math-inline" data-tex="N \times  1"></span> <span class="math-inline" data-tex="(4 \times  1)"></span> или <span class="math-inline" data-tex="1 \times  P"></span> <span class="math-inline" data-tex="(1 \times  2)"></span>, вычесть его из <span class="math-inline" data-tex="\mathbf{w}"></span> нельзя, и ошибка сидит в производной.</p>
 <p>Весь обратный проход линейной регрессии состоит из одного умножения матрицы на столбец и одного суммирования того же столбца.</p>
     </div>
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и листайте стрелками ← →.</p>
 
+
+<table class="shape-table">
+  <tr><th>Обозначение</th><th>Что это</th><th>Форма</th><th>В примере</th></tr>
+  <tr><td><span class="math-inline" data-tex="\hat{\mathbf{y}} - \mathbf{y}"></span></td><td>разность предсказаний и цен</td><td><span class="math-inline" data-tex="N \times  1"></span></td><td><span class="math-inline" data-tex="4 \times  1"></span></td></tr>
+  <tr><td><span class="math-inline" data-tex="\partial L/\partial \hat{\mathbf{y}}"></span></td><td>сигнал ошибки, форма не меняется</td><td><span class="math-inline" data-tex="N \times  1"></span></td><td><span class="math-inline" data-tex="4 \times  1"></span></td></tr>
+  <tr><td><span class="math-inline" data-tex="X^\top"></span></td><td>признаки на боку</td><td><span class="math-inline" data-tex="P \times  N"></span></td><td><span class="math-inline" data-tex="2 \times  4"></span></td></tr>
+  <tr><td><span class="math-inline" data-tex="\nabla_{\mathbf{w}}L"></span></td><td>градиент весов</td><td><span class="math-inline" data-tex="P \times  1"></span></td><td><span class="math-inline" data-tex="2 \times  1"></span></td></tr>
+  <tr><td><span class="math-inline" data-tex="\partial L/\partial b"></span></td><td>градиент сдвига</td><td><span class="math-inline" data-tex="1 \times  1"></span></td><td><span class="math-inline" data-tex="1 \times  1"></span></td></tr>
+</table>
+
 <div class="callout">
   <strong>Главная мысль части:</strong> у градиента всегда форма того, по чему дифференцировали.
   <span class="math-inline" data-tex="\mathbf{w}"></span> имеет форму
-  <span class="math-inline" data-tex="P\times 1"></span>, и градиент тоже;
+  <span class="math-inline" data-tex="P\times 1"></span> (в примере <span class="math-inline" data-tex="2\times 1"></span>), и градиент тоже;
   <span class="math-inline" data-tex="b"></span> задан числом, и его производная тоже число. Если формы
   разошлись, ошибка в выкладке, а не в данных.
 </div>
@@ -1933,15 +1830,15 @@
 ## Часть 10. Подставляем числа в обратный проход
 
 <p>
-  Все величины уже посчитаны в части 7. Остатки лежат готовым столбцом, матрица признаков
+  Все величины уже посчитаны в части 7. Столбец разностей <span class="math-inline" data-tex="\hat{\mathbf{y}} - \mathbf{y}"></span> лежит готовым, матрица признаков
   не менялась, и заново вычислять нечего: обратный проход переиспользует результаты прямого
   целиком.
 </p>
 
-<pre><code>def backward(X, r):
-    g  = 2 / len(r) * r       # сигнал ошибки, [4,1]
-    dw = X.T @ g              # [2,4]·[4,1] → [2,1]
-    db = g.sum()              # одно число
+<pre><code>def backward(X, yhat, y):
+    g  = 2 / len(y) * (yhat - y)   # сигнал ошибки, [4,1]
+    dw = X.T @ g                   # [2,4]·[4,1] → [2,1]
+    db = g.sum()                   # одно число
     return dw, db</code></pre>
 
 <p>Посмотрим пошагово, что за числа получаются назад.</p>
@@ -1966,15 +1863,15 @@
     <marker id="bx-arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#73B222"/></marker>
   </defs>
 <rect x="35" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="105" y="35" class="mm" text-anchor="middle">дома → X</text>
+<foreignObject x="-105" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>дома → <span data-tex="X"></span></span></div></foreignObject>
 <rect x="185" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="255" y="35" class="mm" text-anchor="middle">w · b</text>
+<foreignObject x="209" y="15.68" width="92" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" data-tex="\mathbf{w},\  b"></div></foreignObject>
 <rect x="335" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="405" y="35" class="mm" text-anchor="middle">предсказания ŷ</text>
+<foreignObject x="195" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>предсказания <span data-tex="\hat{\mathbf{y}}"></span></span></div></foreignObject>
 <rect x="485" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="555" y="35" class="mm" text-anchor="middle">остатки r</text>
+<foreignObject x="345" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>остатки <span data-tex="\hat{\mathbf{y}} - \mathbf{y}"></span></span></div></foreignObject>
 <rect x="635" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="705" y="35" class="mm" text-anchor="middle">потеря L</text>
+<foreignObject x="495" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>потеря <span data-tex="L"></span></span></div></foreignObject>
 <rect x="785" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
 <text x="855" y="35" class="mm" text-anchor="middle">градиент и шаг</text>
 <g data-key="mm3" data-only="1"><rect x="483" y="16" width="144" height="30" rx="6" fill="none" stroke="#C30B0A" stroke-width="2"/></g>
@@ -1989,11 +1886,11 @@
 <text x="107.0" y="140.0" text-anchor="middle" font-size="14" fill="#111111">−1,45</text>
 <text x="107.0" y="166.0" text-anchor="middle" font-size="14" fill="#111111">−0,50</text>
 <text x="107.0" y="192.0" text-anchor="middle" font-size="14" fill="#111111">−1,95</text>
-<text x="107" y="84" text-anchor="middle" font-size="13" fill="#111111">4 × 1</text>
-<text x="107" y="224" text-anchor="middle" font-size="17" fill="#9C0908" font-weight="700" font-style="italic">r</text>
-<text x="186" y="150" class="lbl" text-anchor="middle">·</text>
-<text x="216" y="156" class="lbl" text-anchor="middle">2/4</text>
-<text x="250" y="150" class="lbl" text-anchor="middle">=</text>
+<foreignObject x="22" y="67.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="N\times 1=4\times 1"></div></foreignObject>
+<foreignObject x="47" y="203.88" width="120" height="28"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#9C0908;font-weight:400" data-tex="\hat{\mathbf{y}} - \mathbf{y}"></div></foreignObject>
+<foreignObject x="156" y="125.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="\cdot"></div></foreignObject>
+<foreignObject x="176.5" y="118.24" width="79" height="64"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="\dfrac{2}{4}"></div></foreignObject>
+<foreignObject x="220" y="125.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="="></div></foreignObject>
 </g>
 <g data-key="sig">
 <rect x="280" y="96" width="84" height="104" rx="2" fill="#E88919" opacity="0.42" stroke="#ffffff" stroke-width="1"/>
@@ -2004,8 +1901,8 @@
 <text x="322.0" y="140.0" text-anchor="middle" font-size="14" fill="#111111">−0,725</text>
 <text x="322.0" y="166.0" text-anchor="middle" font-size="14" fill="#111111">−0,25</text>
 <text x="322.0" y="192.0" text-anchor="middle" font-size="14" fill="#111111">−0,975</text>
-<text x="322" y="84" text-anchor="middle" font-size="13" fill="#111111">4 × 1</text>
-<text x="322" y="224" text-anchor="middle" font-size="17" fill="#B76A11" font-weight="700" font-style="italic">∂L/∂ŷ</text>
+<foreignObject x="237" y="67.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="N\times 1=4\times 1"></div></foreignObject>
+<foreignObject x="269.5" y="197.48" width="105" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#B76A11;font-weight:700" data-tex="\partial L/\partial \hat{\mathbf{y}}"></div></foreignObject>
 </g>
 <g data-key="XT">
 <path d="M 320 218 C 320 246 340 240 372 262" fill="none" stroke="#5E5850" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#bx-arw)"/>
@@ -2023,11 +1920,11 @@
 <text x="145.0" y="336.0" text-anchor="middle" font-size="14" fill="#111111">1,0</text>
 <text x="195.0" y="336.0" text-anchor="middle" font-size="14" fill="#111111">4,0</text>
 <text x="245.0" y="336.0" text-anchor="middle" font-size="14" fill="#111111">2,0</text>
-<text x="170" y="268" text-anchor="middle" font-size="13" fill="#111111">2 × 4</text>
-<text x="170" y="372" text-anchor="middle" font-size="17" fill="#2A5E9B" font-weight="700" font-style="italic">Xᵀ</text>
+<foreignObject x="85" y="251.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="P\times N=2\times 4"></div></foreignObject>
+<foreignObject x="135" y="345.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#2A5E9B;font-weight:700" data-tex="X^\top"></div></foreignObject>
 </g>
 <g data-key="sig2">
-<text x="300" y="318" class="lbl" text-anchor="middle">·</text>
+<foreignObject x="270" y="293.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="\cdot"></div></foreignObject>
 <rect x="336" y="258" width="84" height="112" rx="2" fill="#E88919" opacity="0.42" stroke="#ffffff" stroke-width="1"/>
 <line x1="336" y1="286.0" x2="420" y2="286.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <line x1="336" y1="314.0" x2="420" y2="314.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
@@ -2036,16 +1933,16 @@
 <text x="378.0" y="305.0" text-anchor="middle" font-size="14" fill="#111111">−0,725</text>
 <text x="378.0" y="333.0" text-anchor="middle" font-size="14" fill="#111111">−0,25</text>
 <text x="378.0" y="361.0" text-anchor="middle" font-size="14" fill="#111111">−0,975</text>
-<text x="378" y="394" text-anchor="middle" font-size="17" fill="#B76A11" font-weight="700" font-style="italic">∂L/∂ŷ</text>
+<foreignObject x="325.5" y="367.48" width="105" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#B76A11;font-weight:700" data-tex="\partial L/\partial \hat{\mathbf{y}}"></div></foreignObject>
 </g>
 <g data-key="nab">
-<text x="456" y="318" class="lbl" text-anchor="middle">=</text>
+<foreignObject x="426" y="293.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="="></div></foreignObject>
 <rect x="492" y="280" width="94" height="68" rx="2" fill="#D83BB9" opacity="0.4" stroke="#ffffff" stroke-width="1"/>
 <line x1="492" y1="314.0" x2="586" y2="314.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <text x="539.0" y="302.0" text-anchor="middle" font-size="14" fill="#111111">−18,53</text>
 <text x="539.0" y="336.0" text-anchor="middle" font-size="14" fill="#111111">−4,415</text>
-<text x="539" y="268" text-anchor="middle" font-size="13" fill="#111111">2 × 1</text>
-<text x="539" y="372" text-anchor="middle" font-size="17" fill="#A62E8E" font-weight="700" font-style="italic">∇wL</text>
+<foreignObject x="454" y="251.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="P\times 1=2\times 1"></div></foreignObject>
+<foreignObject x="499.5" y="345.48" width="79" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#A62E8E;font-weight:700" data-tex="\nabla_{\mathbf{w}}L"></div></foreignObject>
 </g>
 <g data-key="hl" data-only="1">
 <rect x="70" y="280.0" width="200" height="34.0" fill="#C30B0A" opacity="0.12"/>
@@ -2058,16 +1955,16 @@
 <g data-key="bias" data-only="1">
 <rect x="646" y="258" width="274" height="112" rx="12" fill="#FFF2F2" stroke="#C30B0A" stroke-width="1.6"/>
 <text x="664" y="284" class="cap" text-anchor="start">ГРАДИЕНТ СДВИГА</text>
-<text x="664" y="314" class="val" text-anchor="start">−0,37 − 0,725 − 0,25 − 0,975</text>
-<text x="664" y="346" class="nm" text-anchor="start">∂L/∂b = −2,32</text>
+<foreignObject x="664" y="292.16" width="404" height="33.6"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:14px;color:#111111;font-weight:400" data-tex="-0{,}37 - 0{,}725 - 0{,}25 - 0{,}975"></div></foreignObject>
+<foreignObject x="664" y="324.16" width="209" height="33.6"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:14px;color:#111111;font-weight:700" data-tex="\partial L/\partial b = -2{,}32"></div></foreignObject>
 </g>
 <g data-key="chk" data-only="1">
 <rect x="646" y="96" width="274" height="104" rx="12" fill="#F0FAF0" stroke="#73B222" stroke-width="1.6"/>
 <text x="664" y="122" class="cap" text-anchor="start">ЧИСЛЕННАЯ СВЕРКА</text>
-<text x="664" y="150" class="val" text-anchor="start">(L(w+ε) − L(w−ε)) / 2ε</text>
-<text x="664" y="178" class="val" text-anchor="start">расхождение 7,4 · 10⁻¹⁰</text>
+<foreignObject x="664" y="112.96" width="326" height="64"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:14px;color:#111111;font-weight:400" data-tex="\dfrac{L(\mathbf{w}+\varepsilon) - L(\mathbf{w}-\varepsilon)}{2\varepsilon}"></div></foreignObject>
+<text x="664" y="178" class="val" text-anchor="start">совпало с аналитическим</text>
 </g>
-<text x="40" y="416" class="legend" text-anchor="start">малиновым: строка, столбец и клетка, которую они дают · зелёное: независимая проверка</text>
+<text x="40" y="416" class="legend" text-anchor="start">малиновым: строка, столбец и клетка, которую они дают · справа: сверка</text>
 </svg>
   </div>
 
@@ -2080,28 +1977,28 @@
 
   <div class="stage-notes">
     <div class="step-panel" data-on="r mm3" data-focus="r">
-      <div class="step-kicker">Шаг 1 · остатки</div>
+      <div class="step-kicker">Шаг 1 · предсказание минус цена</div>
       <h4>Ничего пересчитывать не нужно</h4>
-<p><b>Остатки из прямого прохода.</b> Берём готовый столбец, ничего не пересчитывая. Потеря на нём была 1,6757, её и предстоит уменьшить.</p>
-<p><div class="math-display" data-tex="\mathbf{r} = (-0{,}74;\ -1{,}45;\ -0{,}50;\ -1{,}95)^\top"></div></p>
+<p><b>Разность из прямого прохода.</b> Берём готовый столбец <span class="math-inline" data-tex="\hat{\mathbf{y}} - \mathbf{y}"></span>, ничего не пересчитывая. Потеря на нём была 1,6757, её и предстоит уменьшить.</p>
+<p><div class="math-display" data-tex="\hat{\mathbf{y}} - \mathbf{y} = (-0{,}74;\ -1{,}45;\ -0{,}50;\ -1{,}95)^\top \in \mathbb{R}^{4\times 1}"></div></p>
     </div>
     <div class="step-panel" data-on="r sig mm5" data-focus="sig">
       <div class="step-kicker">Шаг 2 · сигнал ошибки</div>
-      <h4>Умножаем на 2/N</h4>
-<p><b>Сигнал ошибки.</b> Умножаем на 2/N = 2/4 = 0,5. Знаки сохранились: все четыре дома модель занизила, поэтому весь столбец отрицательный.</p>
-<p><div class="math-display" data-tex="\frac{\partial L}{\partial \hat{\mathbf{y}}} = 0{,}5\cdot\mathbf{r} = (-0{,}37;\ -0{,}725;\ -0{,}25;\ -0{,}975)^\top"></div></p>
+      <h4>Умножаем на <span class="math-inline" data-tex="2/N"></span></h4>
+<p><b>Сигнал ошибки.</b> Умножаем на <span class="math-inline" data-tex="2/N = 2/4 = 0{,}5"></span>. Знаки сохранились: все четыре дома модель занизила, поэтому весь столбец отрицательный.</p>
+<p><div class="math-display" data-tex="\frac{\partial L}{\partial \hat{\mathbf{y}}} = 0{,}5\cdot(\hat{\mathbf{y}} - \mathbf{y}) = (-0{,}37;\ -0{,}725;\ -0{,}25;\ -0{,}975)^\top"></div></p>
     </div>
     <div class="step-panel" data-on="sig XT sig2 mm5" data-focus="XT">
-      <div class="step-kicker">Шаг 3 · Xᵀ</div>
+      <div class="step-kicker">Шаг <span class="math-inline" data-tex="3 \cdot  X^\top"></span></div>
       <h4>Та же матрица, повёрнутая на бок</h4>
 <p><b>Та же таблица на боку.</b> В первой строке <span class="math-inline" data-tex="X^\top"></span> стоят площади всех четырёх домов, во второй их возраст. Ни одно число не изменилось, изменился только порядок осей.</p>
-<p><div class="math-display" data-tex="X^\top = \begin{bmatrix}4{,}0 &amp; 8{,}0 &amp; 6{,}0 &amp; 10{,}0\\2{,}0 &amp; 1{,}0 &amp; 4{,}0 &amp; 2{,}0\end{bmatrix}"></div></p>
+<p><div class="math-display" data-tex="X^\top = \begin{bmatrix}4{,}0 &amp; 8{,}0 &amp; 6{,}0 &amp; 10{,}0\\2{,}0 &amp; 1{,}0 &amp; 4{,}0 &amp; 2{,}0\end{bmatrix} \in \mathbb{R}^{2\times 4}"></div></p>
     </div>
     <div class="step-panel" data-on="XT sig2 nab hl mm5" data-focus="hl">
       <div class="step-kicker">Шаг 4 · вес площади</div>
       <h4>Четыре произведения и их сумма</h4>
 <p><b>Первая клетка градиента.</b> Малиновым выделено то, что её даёт: строка площадей, весь столбец сигнала ошибки и клетка результата.</p>
-<p><div class="math-display" data-tex="4{,}0(-0{,}37) + 8{,}0(-0{,}725) + 6{,}0(-0{,}25) + 10{,}0(-0{,}975) = -18{,}53"></div></p>
+<p><div class="math-display" data-tex="\begin{gathered}[2\times 4]\cdot[4\times 1] \rightarrow [2\times 1]\\[4pt] 4{,}0(-0{,}37) + 8{,}0(-0{,}725) + 6{,}0(-0{,}25) + 10{,}0(-0{,}975) = -18{,}53\end{gathered}"></div></p>
     </div>
     <div class="step-panel" data-on="XT sig2 nab mm5" data-focus="nab">
       <div class="step-kicker">Шаг 5 · вес возраста</div>
@@ -2120,19 +2017,12 @@
     <div class="step-panel" data-on="nab bias chk" data-focus="chk">
       <div class="step-kicker">Шаг 7 · сверка</div>
       <h4>Сдвинуть вес и посмотреть на потерю</h4>
-<p><b>Проверка без формул.</b> Производную можно оценить в лоб: изменить один вес на 10⁻⁶ в обе стороны, посчитать потерю дважды и поделить разность на удвоенное приращение. Формулы при этом не используются вообще.</p>
-<p>Все три числа совпали с аналитическими до 7,4 · 10⁻¹⁰. Такой проверкой стоит сопровождать любой выведенный руками обратный проход: она ловит опечатки, которые глазами не видны.</p>
+<p><b>Проверка без формул.</b> Производную можно оценить в лоб: изменить один вес на <span class="math-inline" data-tex="10^{-6}"></span> в обе стороны, посчитать потерю дважды и поделить разность на удвоенное приращение. Формулы при этом не используются вообще.</p>
+<p>Все три числа совпадают с аналитическими. Такой проверкой стоит сопровождать любой выведенный руками обратный проход: она ловит опечатки, которые глазами не видны.</p>
     </div>
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и листайте стрелками ← →.</p>
-
-<div class="console-title">Сверка аналитического градиента с численным · настоящий вывод</div>
-<div class="console"><span class="cmd">$ python3 grad_check.py</span>
-аналитически: dw = [-18.53   -4.415]  db = -2.32
-численно:     dw = [-18.53   -4.415]  db = -2.32
-максимальное расхождение: 7.382254807453137e-10
-</div>
 
 <div class="callout-blue">
   <strong>Знаки читаются буквально:</strong> у всех трёх производных знак минус, значит
@@ -2195,51 +2085,51 @@
     <marker id="gd-arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#73B222"/></marker>
   </defs>
 <rect x="35" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="105" y="35" class="mm" text-anchor="middle">дома → X</text>
+<foreignObject x="-105" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>дома → <span data-tex="X"></span></span></div></foreignObject>
 <rect x="185" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="255" y="35" class="mm" text-anchor="middle">w · b</text>
+<foreignObject x="209" y="15.68" width="92" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" data-tex="\mathbf{w},\  b"></div></foreignObject>
 <rect x="335" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="405" y="35" class="mm" text-anchor="middle">предсказания ŷ</text>
+<foreignObject x="195" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>предсказания <span data-tex="\hat y"></span></span></div></foreignObject>
 <rect x="485" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="555" y="35" class="mm" text-anchor="middle">остатки r</text>
+<foreignObject x="345" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>остатки <span data-tex="\hat y - y"></span></span></div></foreignObject>
 <rect x="635" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="705" y="35" class="mm" text-anchor="middle">потеря L</text>
+<foreignObject x="495" y="15.68" width="420" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:12px;color:#5E5850;font-weight:400" ><span>потеря <span data-tex="L"></span></span></div></foreignObject>
 <rect x="785" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
 <text x="855" y="35" class="mm" text-anchor="middle">градиент и шаг</text>
 <g data-key="mm5" data-only="1"><rect x="783" y="16" width="144" height="30" rx="6" fill="none" stroke="#C30B0A" stroke-width="2"/></g>
-<text x="480" y="62" class="cap" text-anchor="middle">градиент даёт направление, η задаёт длину шага</text>
+<foreignObject x="270" y="41.72" width="420" height="31.2"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" ><span>градиент даёт направление, <span data-tex="\eta"></span> задаёт длину шага</span></div></foreignObject>
 <g data-key="w0">
 <rect x="78" y="118" width="72" height="70" rx="2" fill="#C29E08" opacity="0.45" stroke="#ffffff" stroke-width="1"/>
 <line x1="78" y1="153.0" x2="150" y2="153.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <text x="114.0" y="140.5" text-anchor="middle" font-size="14" fill="#111111">0,7</text>
 <text x="114.0" y="175.5" text-anchor="middle" font-size="14" fill="#111111">−0,2</text>
-<text x="114" y="106" text-anchor="middle" font-size="13" fill="#111111">2 × 1</text>
-<text x="114" y="212" text-anchor="middle" font-size="17" fill="#8F7406" font-weight="700" font-style="italic">w</text>
+<foreignObject x="29" y="89.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="P\times 1=2\times 1"></div></foreignObject>
+<foreignObject x="79" y="185.48" width="70" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#8F7406;font-weight:700" data-tex="\mathbf{w}"></div></foreignObject>
 </g>
 <g data-key="gr">
-<text x="186" y="158" class="lbl" text-anchor="middle">−</text>
-<text x="220" y="162" class="lbl" text-anchor="middle">η ·</text>
+<foreignObject x="156" y="133.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="-"></div></foreignObject>
+<foreignObject x="180.5" y="137.04" width="79" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="\eta\,\cdot"></div></foreignObject>
 <rect x="262" y="118" width="96" height="70" rx="2" fill="#D83BB9" opacity="0.4" stroke="#ffffff" stroke-width="1"/>
 <line x1="262" y1="153.0" x2="358" y2="153.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <text x="310.0" y="140.5" text-anchor="middle" font-size="14" fill="#111111">−18,53</text>
 <text x="310.0" y="175.5" text-anchor="middle" font-size="14" fill="#111111">−4,415</text>
-<text x="310" y="106" text-anchor="middle" font-size="13" fill="#111111">2 × 1</text>
-<text x="310" y="212" text-anchor="middle" font-size="17" fill="#A62E8E" font-weight="700" font-style="italic">∇wL</text>
+<foreignObject x="225" y="89.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="P\times 1=2\times 1"></div></foreignObject>
+<foreignObject x="270.5" y="185.48" width="79" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#A62E8E;font-weight:700" data-tex="\nabla_{\mathbf{w}}L"></div></foreignObject>
 </g>
 <g data-key="w1">
-<text x="400" y="158" class="lbl" text-anchor="middle">=</text>
+<foreignObject x="370" y="133.04" width="60" height="38.4"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="="></div></foreignObject>
 <rect x="434" y="118" width="100" height="70" rx="2" fill="#C29E08" opacity="0.5" stroke="#ffffff" stroke-width="1"/>
 <line x1="434" y1="153.0" x2="534" y2="153.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
 <text x="484.0" y="140.5" text-anchor="middle" font-size="14" fill="#111111">0,8853</text>
 <text x="484.0" y="175.5" text-anchor="middle" font-size="14" fill="#111111">−0,1558</text>
-<text x="484" y="106" text-anchor="middle" font-size="13" fill="#111111">2 × 1</text>
-<text x="484" y="212" text-anchor="middle" font-size="17" fill="#8F7406" font-weight="700" font-style="italic">w после шага</text>
+<foreignObject x="399" y="89.32" width="170" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#111111;font-weight:400" data-tex="P\times 1=2\times 1"></div></foreignObject>
+<foreignObject x="274" y="185.48" width="420" height="40.8"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:17px;color:#8F7406;font-weight:700" ><span><span data-tex="\mathbf{w}"></span> после шага</span></div></foreignObject>
 </g>
 <g data-key="bs" data-only="1">
 <rect x="60" y="250" width="490" height="96" rx="12" fill="#FFFBEB" stroke="#C29E08" stroke-width="1.6"/>
 <text x="78" y="276" class="cap" text-anchor="start">СДВИГ ОБНОВЛЯЕТСЯ ПО ТОМУ ЖЕ ПРАВИЛУ</text>
-<text x="78" y="306" class="val" text-anchor="start">b ← 1,0 − 0,01 · (−2,32) = 1,0232</text>
-<text x="78" y="332" class="cap" text-anchor="start">отдельной формулы для b не существует: это такой же параметр</text>
+<foreignObject x="78" y="284.16" width="469" height="33.6"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:14px;color:#111111;font-weight:400" data-tex="b \leftarrow 1{,}0 - 0{,}01\cdot(-2{,}32) = 1{,}0232"></div></foreignObject>
+<foreignObject x="78" y="311.72" width="862" height="31.2"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:13px;color:#5E5850;font-weight:400" ><span>отдельной формулы для <span data-tex="b"></span> не существует: это такой же параметр</span></div></foreignObject>
 </g>
 <g data-key="pl" data-only="1">
 <rect x="586" y="96" width="340" height="266" rx="12" fill="#FFFFFF" stroke="#E4E1D7" stroke-width="1.3"/>
@@ -2249,14 +2139,14 @@
 <polyline points="620.0,215.3 641.4,255.9 662.9,285.6 684.3,304.4 705.7,312.3 727.1,309.4 748.6,295.5 770.0,270.8 791.4,235.2 812.9,188.7 834.3,131.3" fill="none" stroke="#3576C0" stroke-width="2.4"/>
 <line x1="620" y1="215.3" x2="920" y2="215.3" stroke="#5E5850" stroke-width="1.2" stroke-dasharray="4 4"/>
 <text x="626" y="209.269" class="cap" text-anchor="start">было 1,6757</text>
-<text x="620" y="338" class="cap" text-anchor="start">η = 0</text>
+<foreignObject x="620" y="317.72" width="105" height="31.2"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:13px;color:#5E5850;font-weight:400" data-tex="\eta = 0"></div></foreignObject>
 <text x="920" y="338" class="cap" text-anchor="end">0,028</text>
 <circle cx="727.1" cy="309.4" r="5" fill="#73B222"/>
-<text x="719.143" y="295.35" class="cap" text-anchor="end">η = 0,01 → 0,1704</text>
+<foreignObject x="745" y="293.72" width="261" height="31.2"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:13px;color:#5E5850;font-weight:400" data-tex="\eta = 0{,}01 \rightarrow  0{,}1704"></div></foreignObject>
 </g>
 <g data-key="bad" data-only="1">
 <circle cx="834.3" cy="131.3" r="6" fill="#C30B0A"/>
-<text x="824.286" y="151.294" class="cap" text-anchor="end">η = 0,02 → 3,0193</text>
+<foreignObject x="563.286" y="131.014" width="261" height="31.2"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:13px;color:#5E5850;font-weight:400;justify-content:flex-end" data-tex="\eta = 0{,}02 \rightarrow  3{,}0193"></div></foreignObject>
 </g>
 <text x="40" y="396" class="legend" text-anchor="start">зелёное: результат шага · красное: градиент и шаг, который делает хуже</text>
 </svg>
@@ -2273,37 +2163,38 @@
     <div class="step-panel" data-on="w0 gr mm5" data-focus="w0 gr">
       <div class="step-kicker">Шаг 1 · что на руках</div>
       <h4>Веса и градиент одной формы</h4>
-<p>После обратного прохода у нас два столбца 2 × 1: сами веса и их производные. Дальше только арифметика.</p>
-<p>Совпадение форм здесь не украшение: будь у градиента другая форма, вычесть его было бы физически не из чего.</p>
+<p>После обратного прохода у нас два столбца формы <span class="math-inline" data-tex="P \times  1"></span>, в примере <span class="math-inline" data-tex="2 \times  1"></span>: сами веса и их производные. Дальше только арифметика.</p>
+<p><div class="math-display" data-tex="[P\times 1] - \eta\,[P\times 1] = [P\times 1]\qquad [2\times 1] - \eta\,[2\times 1] = [2\times 1]"></div></p>
+<p>Если бы градиент имел форму <span class="math-inline" data-tex="1 \times  P"></span> <span class="math-inline" data-tex="(1 \times  2)"></span>, эта строка просто не выполнилась бы. Ради совпадения форм в градиенте и стоит транспонирование.</p>
     </div>
     <div class="step-panel" data-on="w0 gr mm5" data-focus="gr">
       <div class="step-kicker">Шаг 2 · почему минус</div>
       <h4>Градиент показывает, куда потеря растёт</h4>
-<p>Производная −18,53 означает: увеличение w₁ уменьшает потерю. Значит, двигаться надо против градиента, то есть вычитать его.</p>
+<p>Производная −18,53 означает: увеличение <span class="math-inline" data-tex="w_1"></span> уменьшает потерю. Значит, двигаться надо против градиента, то есть вычитать его.</p>
 <p><div class="math-display" data-tex="\theta \leftarrow \theta - \eta\,\frac{\partial L}{\partial \theta}"></div></p>
     </div>
     <div class="step-panel" data-on="w0 gr w1 mm5" data-focus="w1">
       <div class="step-kicker">Шаг 3 · новые веса</div>
       <h4>Каждая клетка меняется независимо</h4>
 <p><div class="math-display" data-tex="0{,}7 - 0{,}01\cdot(-18{,}53) = 0{,}8853, \qquad -0{,}2 - 0{,}01\cdot(-4{,}415) = -0{,}1558"></div></p>
-<p>Вес площади прибавил 0,185 и сразу подошёл близко к настоящему 0,9. Вес возраста сдвинулся всего на 0,044: его градиент был вчетверо меньше.</p>
+<p>Вес площади прибавил 0,185 и сразу подошёл близко к значению 0,875, на котором спуск остановится. Вес возраста сдвинулся всего на 0,044: его градиент был вчетверо меньше.</p>
     </div>
     <div class="step-panel" data-on="w1 bs mm5" data-focus="bs">
       <div class="step-kicker">Шаг 4 · сдвиг</div>
-      <h4>b обновляется той же строкой</h4>
+      <h4><span class="math-inline" data-tex="b"></span> обновляется той же строкой</h4>
 <p>Никакого особого правила для сдвига нет, и в коде он обычно даже не выделяется в отдельную переменную.</p>
     </div>
     <div class="step-panel" data-on="w1 bs pl" data-focus="pl">
       <div class="step-kicker">Шаг 5 · насколько длинный шаг</div>
-      <h4>Потеря после шага зависит от η не монотонно</h4>
-<p>При η = 0,01 потеря батча падает с 1,6757 до 0,1704, почти в десять раз за один шаг. Дальше кривая идёт вверх.</p>
+      <h4>Потеря после шага зависит от <span class="math-inline" data-tex="\eta"></span> не монотонно</h4>
+<p>При <span class="math-inline" data-tex="\eta = 0{,}01"></span> потеря батча падает с 1,6757 до 0,1704, почти в десять раз за один шаг. Дальше кривая идёт вверх.</p>
 <p>Лучший одиночный шаг здесь около 0,0085, но гнаться за ним не нужно: следующий шаг всё равно будет делаться из другой точки.</p>
     </div>
     <div class="step-panel" data-on="pl bad" data-focus="bad">
       <div class="step-kicker">Шаг 6 · когда шаг ломает всё</div>
       <h4>После порога потеря начинает расти</h4>
-<p>При η = 0,02 потеря после шага равна 3,0193, вдвое хуже, чем была до него. Направление было правильным, а длина нет.</p>
-<p>Порог считается точно: удвоенная обратная величина наибольшего собственного числа матрицы вторых производных. На всей обучающей выборке это 0,0185, и в части 14 видно, что бывает при его переходе.</p>
+<p>При <span class="math-inline" data-tex="\eta = 0{,}02"></span> потеря после шага равна 3,0193, вдвое хуже, чем была до него. Направление было правильным, а длина нет.</p>
+<p>Порог считается точно: удвоенная обратная величина наибольшего собственного числа матрицы вторых производных. На всей обучающей выборке это 0,0185: при <span class="math-inline" data-tex="\eta = 0{,}01"></span> спуск сходится к потере 0,1049, а при <span class="math-inline" data-tex="\eta = 0{,}02"></span> веса улетают на 214-м шаге.</p>
     </div>
   </div>
 </div>
@@ -2319,37 +2210,17 @@
 </div>
 
 <p>
-  Дальше цикл повторяется: новый прямой проход, новая потеря, новый градиент. Вот настоящий
-  лог обучения на всех 150 домах при
-  <span class="math-inline" data-tex="\eta = 0{,}01"></span>.
+  Дальше цикл повторяется: новый прямой проход, новая потеря, новый градиент. На всех 150 домах
+  при <span class="math-inline" data-tex="\eta = 0{,}01"></span> потеря за первый шаг падает с 1,6718 до 0,2149, к тридцатому шагу доходит до 0,1196,
+  а к трёхтысячному до 0,1049. Параметры при этом приходят к
+  <span class="math-inline" data-tex="\mathbf{w} = (0{,}8751;\ -0{,}36)^\top"></span> и
+  <span class="math-inline" data-tex="b = 1{,}3869"></span>.
 </p>
-
-<div class="console-title">Полный прогон · настоящий вывод</div>
-<div class="console"><span class="cmd">$ python3 train.py</span>
-шаг    потеря обуч   потеря отл
-    0      1.6718   1.6553
-    1      0.2149   —
-   30      0.1196   —
-  300      0.1092   —
- 3000      0.1049   0.0967
-w = [0.8751, -0.36]  b = 1.3869
-<span class="chi">правило данных: [0.9, -0.35]  b = 1.2</span>
-</div>
 
 <p>
-  Почти вся работа делается за первый же шаг: потеря падает с 1,67 до 0,21. С тридцатого
-  по трёхтысячный шаг она улучшается всего на 0,015. Это типичная картина, и длинный хвост
+  С тридцатого по трёхтысячный шаг потеря улучшается всего на 0,015, поэтому длинный хвост
   кривой обучения стоит дорого, а даёт мало.
 </p>
-
-<div class="callout-yellow">
-  <strong>Ниже дисперсии шума не спуститься:</strong> данные порождены правилом плюс случайная
-  добавка со стандартным отклонением 0,35. Даже модель, знающая настоящие коэффициенты, будет
-  ошибаться на этот шум, и её потеря составит примерно
-  <span class="math-inline" data-tex="0{,}35^2 = 0{,}1225"></span>. Мы дошли до 0,1049, то есть оказались рядом
-  с этим пределом. Остаток не закономерность, а случайность, и улучшать здесь нужно не обучение,
-  а данные.
-</div>
 
 <div class="callout">
   <strong>Главная мысль части:</strong> направление даёт обратный проход, длину выбираете вы.
@@ -2360,235 +2231,7 @@ w = [0.8751, -0.36]  b = 1.3869
 
 ---
 
-## Часть 12. Размерности одной картинкой
-
-<p>
-  Соберём в одну карту формы всех величин, от матрицы признаков до обновлённых весов.
-  Здесь <span class="math-inline" data-tex="N"></span> обозначает число объектов в батче,
-  <span class="math-inline" data-tex="P"></span> число признаков; в нашем примере это 4 и 2.
-</p>
-
-<p>
-  Смотреть на неё стоит так: найдите ось <span class="math-inline" data-tex="N"></span>
-  и проследите, где она появляется и где исчезает. Она входит с батчем, доживает до столбца
-  остатков, ещё раз всплывает в сигнале ошибки и пропадает ровно там, где
-  <span class="math-inline" data-tex="X^\top"></span> сворачивает её в градиент.
-</p>
-
-<p>Посмотрим пошагово, как формы стыкуются между собой.</p>
-
-
-<div class="stage" id="stageDM" tabindex="0">
-  <div class="stage-figure">
-<svg id="dm" viewBox="0 0 960 600" role="img" aria-label="Карта размерностей: прямой проход, обратный и шаг">
-  <style>
-    #dm { font-family: Helvetica, Arial, sans-serif; }
-    #dm .lbl { font-size: 16px; fill: #111111; }
-    #dm .cap { font-size: 13px; fill: #5E5850; }
-    #dm .dim { font-size: 13px; fill: #5E5850; font-weight: 700; }
-    #dm .nm  { font-size: 14px; fill: #111111; font-weight: 700; }
-    #dm .val { font-size: 14px; fill: #111111; }
-    #dm .mm  { font-size: 12px; fill: #5E5850; }
-    #dm .legend { font-size: 13px; fill: #5E5850; }
-  </style>
-  <defs>
-    <marker id="dm-arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5E5850"/></marker>
-    <marker id="dm-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C30B0A"/></marker>
-    <marker id="dm-arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#73B222"/></marker>
-  </defs>
-<rect x="35" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="105" y="35" class="mm" text-anchor="middle">дома → X</text>
-<rect x="185" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="255" y="35" class="mm" text-anchor="middle">w · b</text>
-<rect x="335" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="405" y="35" class="mm" text-anchor="middle">предсказания ŷ</text>
-<rect x="485" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="555" y="35" class="mm" text-anchor="middle">остатки r</text>
-<rect x="635" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="705" y="35" class="mm" text-anchor="middle">потеря L</text>
-<rect x="785" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="855" y="35" class="mm" text-anchor="middle">градиент и шаг</text>
-
-<text x="480" y="62" class="cap" text-anchor="middle">все формы одной картинкой: N объектов, P признаков</text>
-<g data-key="f">
-<text x="40" y="82" class="cap" text-anchor="start">ПРЯМОЙ ПРОХОД</text>
-<rect x="40" y="112" width="90" height="96" rx="2" fill="#3576C0" opacity="0.5" stroke="#ffffff" stroke-width="1"/>
-<line x1="85.0" y1="112" x2="85.0" y2="208" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="40" y1="136.0" x2="130" y2="136.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="40" y1="160.0" x2="130" y2="160.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="40" y1="184.0" x2="130" y2="184.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="85" y="100" text-anchor="middle" font-size="13" fill="#111111">N × P</text>
-<text x="85" y="232" text-anchor="middle" font-size="17" fill="#2A5E9B" font-weight="700" font-style="italic">X</text>
-<text x="148" y="164" class="lbl" text-anchor="middle">·</text>
-<rect x="166" y="132" width="40" height="56" rx="2" fill="#C29E08" opacity="0.85" stroke="#ffffff" stroke-width="1"/>
-<line x1="166" y1="160.0" x2="206" y2="160.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="186" y="120" text-anchor="middle" font-size="13" fill="#111111">P × 1</text>
-<text x="186" y="212" text-anchor="middle" font-size="17" fill="#8F7406" font-weight="700" font-style="italic">w</text>
-<text x="224" y="164" class="lbl" text-anchor="middle">+</text>
-<rect x="242" y="148" width="40" height="28" rx="2" fill="#C29E08" opacity="0.85" stroke="#ffffff" stroke-width="1"/>
-<text x="262" y="136" text-anchor="middle" font-size="13" fill="#111111">1</text>
-<text x="262" y="200" text-anchor="middle" font-size="17" fill="#8F7406" font-weight="700" font-style="italic">b</text>
-<text x="300" y="164" class="lbl" text-anchor="middle">=</text>
-<rect x="318" y="112" width="40" height="96" rx="2" fill="#73B222" opacity="0.55" stroke="#ffffff" stroke-width="1"/>
-<line x1="318" y1="136.0" x2="358" y2="136.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="318" y1="160.0" x2="358" y2="160.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="318" y1="184.0" x2="358" y2="184.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="338" y="100" text-anchor="middle" font-size="13" fill="#111111">N × 1</text>
-<text x="338" y="232" text-anchor="middle" font-size="17" fill="#5F9420" font-weight="700" font-style="italic">ŷ</text>
-<text x="376" y="164" class="lbl" text-anchor="middle">−</text>
-<rect x="394" y="112" width="40" height="96" rx="2" fill="#3576C0" opacity="0.5" stroke="#ffffff" stroke-width="1"/>
-<line x1="394" y1="136.0" x2="434" y2="136.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="394" y1="160.0" x2="434" y2="160.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="394" y1="184.0" x2="434" y2="184.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="414" y="100" text-anchor="middle" font-size="13" fill="#111111">N × 1</text>
-<text x="414" y="232" text-anchor="middle" font-size="17" fill="#2A5E9B" font-weight="700" font-style="italic">y</text>
-<text x="452" y="164" class="lbl" text-anchor="middle">=</text>
-<rect x="470" y="112" width="40" height="96" rx="2" fill="#C30B0A" opacity="0.38" stroke="#ffffff" stroke-width="1"/>
-<line x1="470" y1="136.0" x2="510" y2="136.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="470" y1="160.0" x2="510" y2="160.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="470" y1="184.0" x2="510" y2="184.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="490" y="100" text-anchor="middle" font-size="13" fill="#111111">N × 1</text>
-<text x="490" y="232" text-anchor="middle" font-size="17" fill="#9C0908" font-weight="700" font-style="italic">r</text>
-<line x1="518" y1="160" x2="556" y2="160" stroke="#C30B0A" stroke-width="2" fill="none" marker-end="url(#dm-arr)"/>
-<rect x="570" y="132" width="130" height="56" rx="10" fill="#FFF2F2" stroke="#C30B0A" stroke-width="1.8"/>
-<text x="635" y="160" text-anchor="middle" font-size="17" fill="#111111" font-weight="700">L</text>
-<text x="635" y="182" class="cap" text-anchor="middle">1 × 1</text>
-</g>
-<g data-key="b1">
-<text x="40" y="254" class="cap" text-anchor="start">ОБРАТНЫЙ ПРОХОД</text>
-<rect x="40" y="284" width="40" height="96" rx="2" fill="#C30B0A" opacity="0.38" stroke="#ffffff" stroke-width="1"/>
-<line x1="40" y1="308.0" x2="80" y2="308.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="40" y1="332.0" x2="80" y2="332.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="40" y1="356.0" x2="80" y2="356.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="60" y="272" text-anchor="middle" font-size="13" fill="#111111">N × 1</text>
-<text x="60" y="404" text-anchor="middle" font-size="17" fill="#9C0908" font-weight="700" font-style="italic">r</text>
-<text x="98" y="336" class="lbl" text-anchor="middle">·</text>
-<text x="126" y="342" class="lbl" text-anchor="middle">2/N</text>
-<text x="154" y="336" class="lbl" text-anchor="middle">=</text>
-<rect x="172" y="284" width="40" height="96" rx="2" fill="#E88919" opacity="0.6" stroke="#ffffff" stroke-width="1"/>
-<line x1="172" y1="308.0" x2="212" y2="308.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="172" y1="332.0" x2="212" y2="332.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="172" y1="356.0" x2="212" y2="356.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="192" y="272" text-anchor="middle" font-size="13" fill="#111111">N × 1</text>
-<text x="192" y="404" text-anchor="middle" font-size="17" fill="#B76A11" font-weight="700" font-style="italic">∂L/∂ŷ</text>
-</g>
-<g data-key="b2">
-<rect x="280" y="300" width="130" height="64" rx="2" fill="#3576C0" opacity="0.3" stroke="#ffffff" stroke-width="1"/>
-<line x1="312.5" y1="300" x2="312.5" y2="364" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="345.0" y1="300" x2="345.0" y2="364" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="377.5" y1="300" x2="377.5" y2="364" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="280" y1="332.0" x2="410" y2="332.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="345" y="288" text-anchor="middle" font-size="13" fill="#111111">P × N</text>
-<text x="345" y="388" text-anchor="middle" font-size="17" fill="#2A5E9B" font-weight="700" font-style="italic">Xᵀ</text>
-<text x="428" y="336" class="lbl" text-anchor="middle">·</text>
-<rect x="446" y="284" width="40" height="96" rx="2" fill="#E88919" opacity="0.6" stroke="#ffffff" stroke-width="1"/>
-<line x1="446" y1="308.0" x2="486" y2="308.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="446" y1="332.0" x2="486" y2="332.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="446" y1="356.0" x2="486" y2="356.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="466" y="272" text-anchor="middle" font-size="13" fill="#111111">N × 1</text>
-<text x="466" y="404" text-anchor="middle" font-size="17" fill="#B76A11" font-weight="700" font-style="italic">∂L/∂ŷ</text>
-<text x="504" y="336" class="lbl" text-anchor="middle">=</text>
-<rect x="522" y="300" width="40" height="64" rx="2" fill="#D83BB9" opacity="0.55" stroke="#ffffff" stroke-width="1"/>
-<line x1="522" y1="332.0" x2="562" y2="332.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="542" y="288" text-anchor="middle" font-size="13" fill="#111111">P × 1</text>
-<text x="542" y="388" text-anchor="middle" font-size="17" fill="#A62E8E" font-weight="700" font-style="italic">∇wL</text>
-</g>
-<g data-key="b3">
-<rect x="620" y="316" width="130" height="32" rx="2" fill="#9A9489" opacity="0.3" stroke="#ffffff" stroke-width="1"/>
-<line x1="652.5" y1="316" x2="652.5" y2="348" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="685.0" y1="316" x2="685.0" y2="348" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<line x1="717.5" y1="316" x2="717.5" y2="348" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="685" y="304" text-anchor="middle" font-size="13" fill="#111111">1 × N</text>
-<text x="685" y="372" text-anchor="middle" font-size="17" fill="#6E6960" font-weight="700" font-style="italic">1ᵀ</text>
-<text x="768" y="336" class="lbl" text-anchor="middle">·</text>
-<text x="806" y="336" class="lbl" text-anchor="middle">→</text>
-<rect x="830" y="316" width="40" height="32" rx="2" fill="#D83BB9" opacity="0.55" stroke="#ffffff" stroke-width="1"/>
-<text x="850" y="304" text-anchor="middle" font-size="13" fill="#111111">1 × 1</text>
-<text x="850" y="372" text-anchor="middle" font-size="17" fill="#A62E8E" font-weight="700" font-style="italic">∂L/∂b</text>
-</g>
-<g data-key="s">
-<text x="40" y="426" class="cap" text-anchor="start">ШАГ</text>
-<rect x="40" y="456" width="40" height="64" rx="2" fill="#C29E08" opacity="0.85" stroke="#ffffff" stroke-width="1"/>
-<line x1="40" y1="488.0" x2="80" y2="488.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="60" y="444" text-anchor="middle" font-size="13" fill="#111111">P × 1</text>
-<text x="60" y="544" text-anchor="middle" font-size="17" fill="#8F7406" font-weight="700" font-style="italic">w</text>
-<text x="98" y="492" class="lbl" text-anchor="middle">−</text>
-<text x="126" y="498" class="lbl" text-anchor="middle">η ·</text>
-<rect x="154" y="456" width="40" height="64" rx="2" fill="#D83BB9" opacity="0.55" stroke="#ffffff" stroke-width="1"/>
-<line x1="154" y1="488.0" x2="194" y2="488.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="174" y="444" text-anchor="middle" font-size="13" fill="#111111">P × 1</text>
-<text x="174" y="544" text-anchor="middle" font-size="17" fill="#A62E8E" font-weight="700" font-style="italic">∇wL</text>
-<text x="212" y="492" class="lbl" text-anchor="middle">=</text>
-<rect x="230" y="456" width="40" height="64" rx="2" fill="#C29E08" opacity="0.5" stroke="#ffffff" stroke-width="1"/>
-<line x1="230" y1="488.0" x2="270" y2="488.0" stroke="#ffffff" stroke-width="1.35" stroke-opacity="0.75"/>
-<text x="250" y="444" text-anchor="middle" font-size="13" fill="#111111">P × 1</text>
-<text x="250" y="544" text-anchor="middle" font-size="17" fill="#8F7406" font-weight="700" font-style="italic">w</text>
-</g>
-<g data-key="rule" data-only="1">
-<rect x="330" y="440" width="590" height="96" rx="12" fill="#F0FAF0" stroke="#73B222" stroke-width="1.6"/>
-<text x="348" y="466" class="cap" text-anchor="start">ДВЕ ПРОВЕРКИ, КОТОРЫЕ ЛОВЯТ ПОЧТИ ВСЁ</text>
-<text x="348" y="494" class="val" text-anchor="start">1. в каждом произведении внутренние размеры совпадают</text>
-<text x="348" y="520" class="val" text-anchor="start">2. форма градиента равна форме своего параметра</text>
-</g>
-<text x="40" y="580" class="legend" text-anchor="start">N: число объектов в батче, P: число признаков · в нашем примере N = 4, P = 2</text>
-</svg>
-  </div>
-
-  <div class="stage-bar">
-    <button type="button" data-nav="prev">← Назад</button>
-    <button type="button" data-nav="next">Далее →</button>
-    <div class="stage-progress"></div>
-    <div class="stage-counter"></div>
-  </div>
-
-  <div class="stage-notes">
-    <div class="step-panel" data-on="f" data-focus="f">
-      <div class="step-kicker">Шаг 1 · прямой проход</div>
-      <h4>Ось объектов проходит насквозь</h4>
-<p>N входит в X и выходит в r: сколько домов дали, столько промахов получили. P исчезает при первом же умножении.</p>
-<p><div class="math-display" data-tex="[N,P]\cdot[P,1] \rightarrow [N,1], \qquad [N,1] - [N,1] \rightarrow [N,1], \qquad [N,1] \rightarrow [1]"></div></p>
-    </div>
-    <div class="step-panel" data-on="f b1" data-focus="b1">
-      <div class="step-kicker">Шаг 2 · сигнал ошибки</div>
-      <h4>Форма та же, что у предсказаний</h4>
-<p>Умножение на скаляр 2/N ничего с формой не делает. Это единственная величина обратного прохода, которая живёт на оси объектов.</p>
-    </div>
-    <div class="step-panel" data-on="b1 b2" data-focus="b2">
-      <div class="step-kicker">Шаг 3 · градиент весов</div>
-      <h4>Транспонирование меняет местами N и P</h4>
-<p>Xᵀ имеет форму P × N, поэтому в произведении с сигналом ошибки сокращается именно N, а остаётся P. Это и есть техническая причина, по которой в формуле стоит транспонирование.</p>
-<p><div class="math-display" data-tex="[P,N]\cdot[N,1] \rightarrow [P,1]"></div></p>
-    </div>
-    <div class="step-panel" data-on="b1 b3" data-focus="b3">
-      <div class="step-kicker">Шаг 4 · градиент сдвига</div>
-      <h4>Строка из единиц сворачивает столбец в число</h4>
-<p>Формально это умножение на <span class="math-inline" data-tex="\mathbf{1}^\top"></span> формы 1 × N, а на практике просто сумма. Результат имеет форму 1 × 1, как и сам сдвиг.</p>
-    </div>
-    <div class="step-panel" data-on="s" data-focus="s">
-      <div class="step-kicker">Шаг 5 · шаг</div>
-      <h4>Вычитание требует совпадения форм буквально</h4>
-<p>Здесь и становится видно, зачем нужна вся возня с транспонированием: если бы градиент имел форму 1 × P, эта строка просто не выполнилась бы.</p>
-    </div>
-    <div class="step-panel" data-on="f b2 rule" data-focus="rule">
-      <div class="step-kicker">Шаг 6 · две проверки</div>
-      <h4>Они ловят почти все ошибки реализации</h4>
-<p>Прежде чем искать опечатку в числах, проверьте формы. Внутренние размеры в каждом произведении должны совпадать, а каждый градиент повторять форму своего параметра.</p>
-<p>Обе проверки делаются на бумаге за минуту и не требуют ни одного вычисления.</p>
-    </div>
-  </div>
-</div>
-<p class="stage-hint">Наведите фокус на сцену и листайте стрелками ← →.</p>
-
-<div class="callout">
-  <strong>Главная мысль части:</strong> проверка форм ловит почти все ошибки реализации.
-  Прежде чем искать опечатку в числах, убедитесь, что в каждом произведении совпадают
-  внутренние размеры, а каждый градиент повторяет форму своего параметра. Обе проверки делаются
-  на бумаге за минуту.
-</div>
-
----
-
-## Часть 13. От таблицы к коду: три версии одного и того же
+## Часть 12. От таблицы к коду: три версии одного и того же
 
 <p>
   Соберём всю математику в код. В реальных проектах данные читают из CSV, выгружают из базы
@@ -2655,8 +2298,7 @@ def mse(yhat, y):                      # LOSS: средний квадрат о�
     return np.mean((yhat - y) ** 2)
 
 def gradients(X, y, yhat):             # BACKWARD: выведено в части 9
-    r = yhat - y                       # остатки, [n]
-    g = 2 / len(y) * r                 # сигнал ошибки
+    g = 2 / len(y) * (yhat - y)        # сигнал ошибки, [n]
     return X.T @ g, g.sum()            # ∂L/∂w — [2], ∂L/∂b — число
 
 w = np.array([0.7, -0.2])              # стартовая догадка из части 7
@@ -2671,18 +2313,6 @@ for step in range(3000):               # тот самый цикл из чет�
 
 print(np.round(w, 4), round(b, 4))     # [0.8751 -0.36 ] 1.3869
 print(round(mse(forward(X, w, b), y), 4))   # 0.1049</code></pre>
-
-<div class="console-title">Результат прогона · настоящий вывод</div>
-<div class="console"><span class="cmd">$ python3 train.py</span>
-шаг    потеря обуч   потеря отл
-    0      1.6718   1.6553
-    1      0.2149   —
-   30      0.1196   —
-  300      0.1092   —
- 3000      0.1049   0.0967
-w = [0.8751, -0.36]  b = 1.3869
-<span class="chi">правило данных: [0.9, -0.35]  b = 1.2</span>
-</div>
 
 ### Проверка градиента без формул
 
@@ -2700,8 +2330,7 @@ w = [0.8751, -0.36]  b = 1.3869
     gb = (mse(forward(X, w, b + eps), y) -
           mse(forward(X, w, b - eps), y)) / (2 * eps)
     return g, gb
-
-# на батче из четырёх домов расхождение — 7.4e-10</code></pre>
+</code></pre>
 
 ### Аналитическое решение без градиентного спуска
 
@@ -2715,7 +2344,7 @@ Xb = np.hstack([X, np.ones((len(y), 1))])
 theta = np.linalg.solve(Xb.T @ Xb, Xb.T @ y)
 
 print(np.round(theta, 4))   # [ 0.8747 -0.3602  1.3901 ]
-# те же числа, что дали 3000 шагов спуска выше</code></pre>
+# почти те же числа: за 3000 шагов спуск ещё не дошёл до самого минимума</code></pre>
 
 ### Версия 2. Тот же код, но в объектном виде
 
@@ -2793,8 +2422,8 @@ print(model.weight.detach().numpy().round(4),
 <table class="shape-table">
   <tr><th>Действие</th><th>Формула</th><th>NumPy</th><th>PyTorch</th></tr>
   <tr><td>forward</td><td><span class="math-inline" data-tex="\hat{\mathbf{y}} = X\mathbf{w} + b"></span></td><td><code>X @ w + b</code></td><td><code>model(Xt)</code></td></tr>
-  <tr><td>loss</td><td><span class="math-inline" data-tex="L = \frac{1}{N}\mathbf{r}^\top\mathbf{r}"></span></td><td><code>((yhat - y) ** 2).mean()</code></td><td><code>loss_fn(yhat, yt)</code></td></tr>
-  <tr><td>backward</td><td><span class="math-inline" data-tex="\nabla_{\mathbf{w}} L = \frac{2}{N}X^\top\mathbf{r}"></span></td><td><code>X.T @ g</code></td><td><code>loss.backward()</code></td></tr>
+  <tr><td>loss</td><td><span class="math-inline" data-tex="L = \frac{1}{N}\sum_{n=1}^{N}(\hat y_n - y_n)^2"></span></td><td><code>((yhat - y) ** 2).mean()</code></td><td><code>loss_fn(yhat, yt)</code></td></tr>
+  <tr><td>backward</td><td><span class="math-inline" data-tex="\nabla_{\mathbf{w}} L = \frac{2}{N}X^\top(\hat{\mathbf{y}} - \mathbf{y})"></span></td><td><code>X.T @ g</code></td><td><code>loss.backward()</code></td></tr>
   <tr><td>update</td><td><span class="math-inline" data-tex="\theta \leftarrow \theta - \eta\nabla_\theta L"></span></td><td><code>w -= eta * dw</code></td><td><code>opt.step()</code></td></tr>
 </table>
 
@@ -2807,7 +2436,7 @@ print(model.weight.detach().numpy().round(4),
 
 ---
 
-## Часть 14. Анатомия обучения: так устроены все модели
+## Часть 13. Анатомия обучения: так устроены все модели
 
 <p>
   Ничего из разобранного выше не специфично для линейной регрессии. Это скелет обучения любой
@@ -2820,7 +2449,7 @@ print(model.weight.detach().numpy().round(4),
 
 <div class="stage" id="stageCY" tabindex="0">
   <div class="stage-figure">
-<svg id="cy" viewBox="0 0 960 560" role="img" aria-label="Анатомия обучения: Task, Data, Model, Loss и цикл между ними">
+<svg id="cy" viewBox="0 0 960 522" role="img" aria-label="Анатомия обучения: Task, Data, Model, Loss и цикл между ними">
   <style>
     #cy { font-family: Helvetica, Arial, sans-serif; }
     #cy .lbl { font-size: 16px; fill: #111111; }
@@ -2834,72 +2463,37 @@ print(model.weight.detach().numpy().round(4),
   <defs>
     <marker id="cy-arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5E5850"/></marker>
     <marker id="cy-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C30B0A"/></marker>
+    <marker id="cy-arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3576C0"/></marker>
+    <marker id="cy-ary" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8F7406"/></marker>
     <marker id="cy-arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#73B222"/></marker>
   </defs>
-<rect x="35" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="105" y="35" class="mm" text-anchor="middle">дома → X</text>
-<rect x="185" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="255" y="35" class="mm" text-anchor="middle">w · b</text>
-<rect x="335" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="405" y="35" class="mm" text-anchor="middle">предсказания ŷ</text>
-<rect x="485" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="555" y="35" class="mm" text-anchor="middle">остатки r</text>
-<rect x="635" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="705" y="35" class="mm" text-anchor="middle">потеря L</text>
-<rect x="785" y="18" width="140" height="26" rx="5" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/>
-<text x="855" y="35" class="mm" text-anchor="middle">градиент и шаг</text>
-
-<text x="480" y="62" class="cap" text-anchor="middle">Task · Data · Model · Loss. Один и тот же каркас для всех ML-моделей</text>
-<rect x="40" y="88" width="430" height="420" rx="14" fill="#FFFFFF" stroke="#3576C0" stroke-width="1.5"/>
-<text x="66" y="126" font-size="20" fill="#111111" text-anchor="start" font-weight="800">Анатомия обучения</text>
-<text x="66" y="166" font-size="16" fill="#111111" text-anchor="start">У любой модели, от линейной</text>
-<text x="66" y="192" font-size="16" fill="#111111" text-anchor="start">регрессии до GPT, обучение</text>
-<text x="66" y="218" font-size="16" fill="#111111" text-anchor="start">устроено одинаково.</text>
-<text x="66" y="258" font-size="16" fill="#111111" text-anchor="start" font-weight="700">Всегда есть четыре блока:</text>
-<text x="94" y="292" font-size="16" fill="#3576C0" text-anchor="start" font-weight="700">Task</text>
-<text x="140" y="292" font-size="16" fill="#111111" text-anchor="start">что мы вообще делаем</text>
-<text x="94" y="320" font-size="16" fill="#3576C0" text-anchor="start" font-weight="700">Data</text>
-<text x="140" y="320" font-size="16" fill="#111111" text-anchor="start">примеры (x, y)</text>
-<text x="94" y="348" font-size="16" fill="#3576C0" text-anchor="start" font-weight="700">Model</text>
-<text x="150" y="348" font-size="16" fill="#111111" text-anchor="start">то, что обучаем</text>
-<text x="94" y="376" font-size="16" fill="#C30B0A" text-anchor="start" font-weight="700">Loss</text>
-<text x="140" y="376" font-size="16" fill="#111111" text-anchor="start">насколько ошибается</text>
-<text x="66" y="416" font-size="16" fill="#111111" text-anchor="start">И один цикл, который повторяется</text>
-<text x="66" y="442" font-size="16" fill="#111111" text-anchor="start">тысячи раз: модель предсказывает,</text>
-<text x="66" y="468" font-size="16" fill="#111111" text-anchor="start">loss считает ошибку, модель обновляется.</text>
-<g data-key="task">
-<rect x="534" y="96" width="250" height="74" rx="14" fill="#FFFFFF" stroke="#3576C0" stroke-width="1.5"/>
-<text x="659" y="130" font-size="18" fill="#3576C0" text-anchor="middle" font-weight="700">Task</text>
-<text x="659" y="156" font-size="13" fill="#5E5850" text-anchor="middle">определяет вид Loss</text>
-<line x1="659" y1="174" x2="659" y2="232" stroke="#5E5850" stroke-width="1.4" fill="none" marker-end="url(#cy-arw)"/>
-</g>
-<g data-key="loss">
-<rect x="534" y="240" width="250" height="128" rx="14" fill="#FFF2F2" stroke="#C30B0A" stroke-width="1.5"/>
-<text x="659" y="274" font-size="18" fill="#C30B0A" text-anchor="middle" font-weight="700">Loss</text>
-<text x="659" y="300" font-size="13" fill="#5E5850" text-anchor="middle">L = «насколько</text>
-<text x="659" y="322" font-size="13" fill="#5E5850" text-anchor="middle">модель ошиблась»</text>
-<text x="659" y="344" font-size="13" fill="#5E5850" text-anchor="middle">→ одно число</text>
-</g>
-<g data-key="data">
-<rect x="800" y="240" width="134" height="128" rx="14" fill="#FFFFFF" stroke="#3576C0" stroke-width="1.5"/>
-<text x="867" y="274" font-size="18" fill="#3576C0" text-anchor="middle" font-weight="700">Data</text>
-<text x="867" y="300" font-size="13" fill="#5E5850" text-anchor="middle">(x, y)</text>
-<text x="867" y="322" font-size="13" fill="#5E5850" text-anchor="middle">примеры:</text>
-<text x="867" y="344" font-size="13" fill="#5E5850" text-anchor="middle">вход и правда</text>
-<line x1="796" y1="304" x2="786" y2="304" stroke="#5E5850" stroke-width="1.4" fill="none" marker-end="url(#cy-arw)"/>
-</g>
-<g data-key="model">
-<rect x="534" y="424" width="250" height="74" rx="14" fill="#FFFFFF" stroke="#3576C0" stroke-width="1.5"/>
-<text x="659" y="458" font-size="18" fill="#3576C0" text-anchor="middle" font-weight="700">Model</text>
-<text x="659" y="484" font-size="13" fill="#5E5850" text-anchor="middle">принимает x → даёт ŷ</text>
-</g>
-<g data-key="cycle" data-only="1">
-<path d="M 580 420 L 580 374" fill="none" stroke="#C29E08" stroke-width="2.4" marker-end="url(#cy-arw)"/>
-<text x="560" y="400" font-size="15" fill="#8F7406" text-anchor="end" font-weight="700">ŷ</text>
-<path d="M 740 374 L 740 420" fill="none" stroke="#C30B0A" stroke-width="2.4" stroke-dasharray="6 4" marker-end="url(#cy-arr)"/>
-<text x="756" y="400" font-size="14" fill="#9C0908" text-anchor="start" font-weight="700">градиенты</text>
-</g>
-<text x="40" y="546" class="legend" text-anchor="start">синие блоки: что задаёт задача · красный: то, что измеряет промах и порождает градиенты</text>
+<text x="480" y="34" font-size="13" fill="#5E5850" font-weight="400" text-anchor="middle">Task · Data · Model · Loss: один и тот же каркас для всех моделей</text>
+<rect x="30" y="54" width="376" height="432" rx="14" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.6"/>
+<text x="54" y="92" font-size="20" fill="#111111" font-weight="800" text-anchor="start">Анатомия обучения</text>
+<text x="54" y="124" font-size="15" fill="#111111" font-weight="400" text-anchor="start">У любой модели, от линейной регрессии</text>
+<text x="54" y="146" font-size="15" fill="#111111" font-weight="400" text-anchor="start">до GPT, обучение устроено одинаково.</text>
+<text x="54" y="186" font-size="15" fill="#111111" font-weight="700" text-anchor="start">Четыре блока</text>
+<text x="54" y="214" font-size="15" fill="#3576C0" font-weight="700" text-anchor="start">Task</text>
+<foreignObject x="122" y="191" width="270" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:15px;color:#111111;font-weight:400" ><span>что мы вообще делаем</span></div></foreignObject>
+<text x="54" y="242" font-size="15" fill="#3576C0" font-weight="700" text-anchor="start">Data</text>
+<foreignObject x="122" y="219" width="270" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:15px;color:#111111;font-weight:400" ><span>примеры <span data-tex="(x,\  y)"></span></span></div></foreignObject>
+<text x="54" y="270" font-size="15" fill="#3576C0" font-weight="700" text-anchor="start">Model</text>
+<foreignObject x="122" y="247" width="270" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:15px;color:#111111;font-weight:400" ><span>то, что обучаем</span></div></foreignObject>
+<text x="54" y="298" font-size="15" fill="#C30B0A" font-weight="700" text-anchor="start">Loss</text>
+<foreignObject x="122" y="275" width="270" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:15px;color:#111111;font-weight:400" ><span>насколько ошибается</span></div></foreignObject>
+<text x="54" y="346" font-size="15" fill="#111111" font-weight="700" text-anchor="start">Один цикл, тысячи повторений</text>
+<foreignObject x="54" y="361" width="130" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:15px;color:#111111;font-weight:400" data-tex="\hat y = f_\theta(x)"></div></foreignObject>
+<text x="192" y="381" font-size="15" fill="#5E5850" font-weight="400" text-anchor="start">модель предсказывает</text>
+<foreignObject x="54" y="393" width="130" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:15px;color:#111111;font-weight:400" data-tex="L(\hat y,\ y)"></div></foreignObject>
+<text x="192" y="413" font-size="15" fill="#5E5850" font-weight="400" text-anchor="start">потеря считает ошибку</text>
+<foreignObject x="54" y="425" width="130" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:15px;color:#111111;font-weight:400" data-tex="\theta \leftarrow \theta - \eta\nabla_\theta L"></div></foreignObject>
+<text x="192" y="445" font-size="15" fill="#5E5850" font-weight="400" text-anchor="start">модель обновляется</text>
+<g data-key="task"><rect x="620" y="54" width="240" height="62" rx="14" fill="#FFFFFF" stroke="#3576C0" stroke-width="1.6"/><text x="740" y="80" font-size="17" fill="#3576C0" font-weight="700" text-anchor="middle">Task</text><text x="740" y="102" font-size="13" fill="#5E5850" font-weight="400" text-anchor="middle">определяет вид потери</text><line x1="740" y1="118" x2="740" y2="146" stroke="#5E5850" stroke-width="1.6" marker-end="url(#cy-arw)"/></g>
+<g data-key="loss"><rect x="620" y="150" width="240" height="92" rx="14" fill="#FFF7F7" stroke="#C30B0A" stroke-width="1.6"/><text x="740" y="176" font-size="17" fill="#C30B0A" font-weight="700" text-anchor="middle">Loss</text><foreignObject x="630" y="186" width="220" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="L(\hat y,\ y)"></div></foreignObject><text x="740" y="228" font-size="12.5" fill="#5E5850" font-weight="400" text-anchor="middle">промах модели одним числом</text></g>
+<g data-key="data"><rect x="424" y="264" width="122" height="110" rx="14" fill="#FFFFFF" stroke="#3576C0" stroke-width="1.6"/><text x="485" y="294" font-size="17" fill="#3576C0" font-weight="700" text-anchor="middle">Data</text><foreignObject x="430" y="306" width="110" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="(x,\ y)"></div></foreignObject><text x="485" y="348" font-size="12.5" fill="#5E5850" font-weight="400" text-anchor="middle">вход и правда</text><line x1="548" y1="290" x2="616" y2="212" stroke="#5E5850" stroke-width="1.6" marker-end="url(#cy-arw)"/><line x1="548" y1="348" x2="616" y2="426" stroke="#5E5850" stroke-width="1.6" marker-end="url(#cy-arw)"/><foreignObject x="551" y="224" width="30" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#3576C0;font-weight:400" data-tex="y"></div></foreignObject><foreignObject x="551" y="390" width="30" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#3576C0;font-weight:400" data-tex="x"></div></foreignObject></g>
+<g data-key="model"><rect x="620" y="396" width="240" height="80" rx="14" fill="#FFFFFF" stroke="#3576C0" stroke-width="1.6"/><text x="740" y="424" font-size="17" fill="#3576C0" font-weight="700" text-anchor="middle">Model</text><foreignObject x="630" y="436" width="220" height="28"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="\hat y = f_\theta(x)"></div></foreignObject></g>
+<g data-key="cycle" data-only="1"><path d="M 680 394 C 628 358 628 280 680 244" fill="none" stroke="#8F7406" stroke-width="2.8" marker-end="url(#cy-ary)"/><path d="M 800 244 C 852 280 852 358 800 394" fill="none" stroke="#C30B0A" stroke-width="2.8" stroke-dasharray="7 5" marker-end="url(#cy-arr)"/><rect x="658" y="292" width="164" height="54" rx="27" fill="#FFFBEB" stroke="#C29E08" stroke-width="1.4"/><text x="740" y="311" font-size="12" fill="#5E5850" font-weight="400" text-anchor="middle">один шаг обучения</text><foreignObject x="660" y="317" width="160" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#111111;font-weight:400" data-tex="\theta \leftarrow \theta - \eta\nabla_\theta L"></div></foreignObject><foreignObject x="576" y="293" width="50" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:16px;color:#8F7406;font-weight:400;justify-content:flex-end" data-tex="\hat y"></div></foreignObject><text x="626" y="338" font-size="12.5" fill="#8F7406" font-weight="700" text-anchor="end">вперёд</text><foreignObject x="854" y="293" width="70" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit " style="font-size:16px;color:#9C0908;font-weight:400" data-tex="\nabla_\theta L"></div></foreignObject><text x="854" y="338" font-size="12.5" fill="#9C0908" font-weight="700" text-anchor="start">назад</text></g>
+<text x="40" y="508" font-size="13" fill="#5E5850" font-weight="400" text-anchor="start">синие блоки: что задаёт задача · красный: то, что измеряет промах и порождает градиенты</text>
 </svg>
   </div>
 
@@ -2917,34 +2511,34 @@ print(model.weight.detach().numpy().round(4),
 <p>У любой задачи машинного обучения есть Task, Data, Model и Loss. Всё остальное относится к деталям реализации: какая именно модель внутри и как считается градиент.</p>
 <p>Эта часть стоит в конце статьи не случайно: теперь у каждого из четырёх слов есть конкретное содержание, которое вы посчитали руками.</p>
     </div>
-    <div class="step-panel" data-on="task loss data model" data-focus="task">
+    <div class="step-panel" data-on="task" data-focus="task">
       <div class="step-kicker">Шаг 2 · Task</div>
       <h4>Задача определяет всё остальное</h4>
 <p>Мы предсказываем цену, то есть непрерывное число. Отсюда следует и выбор функции потерь: для регрессии берут квадрат ошибки, для классификации кросс-энтропию.</p>
 <p>Только Task не выбирают: он приходит извне вместе с задачей.</p>
     </div>
-    <div class="step-panel" data-on="task loss data model" data-focus="data">
+    <div class="step-panel" data-on="data" data-focus="data">
       <div class="step-kicker">Шаг 3 · Data</div>
       <h4>Пары «вход → правильный ответ»</h4>
-<p>Для нас это 150 домов: две матрицы одинаковой высоты, X и y. Данные не меняются при обучении и целиком определяют, чему модель способна научиться.</p>
+<p>Для нас это 150 домов: две матрицы одинаковой высоты, <span class="math-inline" data-tex="X"></span> и <span class="math-inline" data-tex="y"></span>. Данные не меняются при обучении и целиком определяют, чему модель способна научиться.</p>
 <p>В части 1 было видно, что это ограничение реальное: по одной площади потеря 0,4213, по двум признакам 0,1049.</p>
     </div>
-    <div class="step-panel" data-on="task loss data model" data-focus="model">
+    <div class="step-panel" data-on="model" data-focus="model">
       <div class="step-kicker">Шаг 4 · Model</div>
       <h4>То, что обучаем</h4>
 <p>Здесь это три числа и правило <span class="math-inline" data-tex="\hat{\mathbf{y}} = X\mathbf{w} + b"></span>. В логистической регрессии добавится сигмоида, в нейросети несколько слоёв, в трансформере миллиарды весов.</p>
-<p>Модель принимает x и выдаёт ŷ. Больше от неё ничего не требуется.</p>
+<p>Модель принимает <span class="math-inline" data-tex="x"></span> и выдаёт <span class="math-inline" data-tex="\hat y"></span>. Больше от неё ничего не требуется.</p>
     </div>
-    <div class="step-panel" data-on="task loss data model" data-focus="loss">
+    <div class="step-panel" data-on="loss" data-focus="loss">
       <div class="step-kicker">Шаг 5 · Loss</div>
       <h4>Одно число, которое можно уменьшать</h4>
-<p>Loss сравнивает ŷ с настоящим ответом и выдаёт скаляр. Именно скаляр: по столбцу остатков нельзя сказать, какая модель лучше, а по одному числу можно.</p>
+<p>Loss сравнивает <span class="math-inline" data-tex="\hat y"></span> с настоящим ответом и выдаёт скаляр. Именно скаляр: по столбцу остатков нельзя сказать, какая модель лучше, а по одному числу можно.</p>
 <p>И у этого числа есть производная по каждому параметру, ради которой всё и затевалось.</p>
     </div>
     <div class="step-panel" data-on="task loss data model cycle" data-focus="cycle">
       <div class="step-kicker">Шаг 6 · цикл</div>
       <h4>Предсказание вперёд, градиенты назад</h4>
-<p>Модель отдаёт ŷ в Loss, Loss возвращает градиенты в Model. Один оборот даёт один шаг обучения; таких оборотов тысячи.</p>
+<p>Модель отдаёт <span class="math-inline" data-tex="\hat y"></span> в Loss, Loss возвращает градиенты в Model, и параметры сдвигаются на шаг против градиента. Один оборот даёт один шаг обучения; таких оборотов тысячи.</p>
 <p>Именно этот круг мы прошли по частям: forward в частях 6 и 7, потеря там же, backward в частях 8–10, шаг в части 11. Ничего сверх этого в обучении не происходит: ни у линейной регрессии, ни у языковой модели.</p>
     </div>
   </div>
@@ -2959,8 +2553,8 @@ print(model.weight.detach().numpy().round(4),
   <tr><th>Блок</th><th>Линейная регрессия</th><th>Логистическая регрессия</th><th>Полносвязная сеть</th></tr>
   <tr><td>Прямой проход</td><td><span class="math-inline" data-tex="X\mathbf{w}+b"></span></td><td><span class="math-inline" data-tex="\sigma(X\mathbf{w}+b)"></span></td><td>несколько слоёв <span class="math-inline" data-tex="AW+\mathbf{b}"></span> с активациями</td></tr>
   <tr><td>Потеря</td><td>MSE</td><td>кросс-энтропия</td><td>кросс-энтропия или MSE</td></tr>
-  <tr><td>Сигнал ошибки</td><td><span class="math-inline" data-tex="\frac{2}{N}\mathbf{r}"></span></td><td><span class="math-inline" data-tex="\frac{1}{N}(\hat{\mathbf{y}}-\mathbf{y})"></span></td><td>то же, дальше через слои</td></tr>
-  <tr><td>Градиент весов</td><td><span class="math-inline" data-tex="X^\top\delta"></span></td><td><span class="math-inline" data-tex="X^\top\delta"></span></td><td><span class="math-inline" data-tex="A^\top\delta"></span> на каждом слое</td></tr>
+  <tr><td>Сигнал ошибки</td><td><span class="math-inline" data-tex="\frac{2}{N}(\hat{\mathbf{y}}-\mathbf{y})"></span></td><td><span class="math-inline" data-tex="\frac{1}{N}(\hat{\mathbf{y}}-\mathbf{y})"></span></td><td>то же, дальше через слои</td></tr>
+  <tr><td>Градиент весов</td><td><span class="math-inline" data-tex="X^\top\cdot\text{сигнал}"></span></td><td><span class="math-inline" data-tex="X^\top\cdot\text{сигнал}"></span></td><td><span class="math-inline" data-tex="A^\top\cdot\text{сигнал}"></span> на каждом слое</td></tr>
   <tr><td>Шаг</td><td colspan="3"><span class="math-inline" data-tex="\theta\leftarrow\theta-\eta\nabla_\theta L"></span>, одинаково везде</td></tr>
 </table>
 
@@ -2970,38 +2564,19 @@ print(model.weight.detach().numpy().round(4),
   регрессии, а общее правило для линейного слоя, откуда бы сигнал ни пришёл.
 </p>
 
-<p>Весь шаг обучения на numpy умещается в шесть строк, и каждая уже разобрана:</p>
+<p>Весь цикл обучения на numpy умещается в пять строк, и каждая уже разобрана:</p>
 
 <pre><code>for step in range(3000):
     yhat = X @ w + b          # forward, часть 5
-    r    = yhat - y           # остатки
-    g    = 2 / len(y) * r     # сигнал ошибки, часть 8
+    g    = 2 / len(y) * (yhat - y)   # сигнал ошибки, часть 9
     w   -= eta * (X.T @ g)    # градиент весов
     b   -= eta * g.sum()      # градиент сдвига
 </code></pre>
 
 <p>
-  В PyTorch первые четыре строки заменяются на <code>L.backward()</code>, но происходит там
-  ровно то же самое: библиотека строит тот же граф из части 7 и проходит по нему в обратном
+  В PyTorch строка с <code>g</code> заменяется на <code>loss.backward()</code>, а две последние
+  на <code>opt.step()</code>, но считается там то же самое: библиотека строит тот же граф из части 8 и проходит по нему в обратном
   порядке, перемножая те же локальные производные.
-</p>
-
-### Что ломается, если сдвинуть одно условие
-
-<table class="shape-table">
-  <tr><th>Эксперимент</th><th>Что получилось</th></tr>
-  <tr><td>Шаг длиннее порога</td><td>η = 0,01 → 0,1049; η = 0,02 → веса улетают на 214-м шаге. Порог 2/λ<sub>max</sub> = 0,0185</td></tr>
-  <tr><td>Признаки в исходных единицах</td><td>обусловленность 65 682 вместо 680, порог шага 0,00019; η = 0,001 разносит модель за 15 шагов</td></tr>
-  <tr><td>Размер батча</td><td>150 → 0,1049; 16 → 0,1110; 4 → 0,1146; 1 → 0,1553</td></tr>
-  <tr><td>Обучение на трёх домах</td><td>на них потеря ровно 0, на отложенных 0,1936 против 0,0967</td></tr>
-</table>
-
-<p>
-  Самая важная здесь последняя строка. Три дома и три параметра дают систему, которая решается
-  точно: потеря на обучении становится нулём, а веса выходят
-  <span class="math-inline" data-tex="(0{,}818;\ -0{,}438)"></span> при
-  <span class="math-inline" data-tex="b = 1{,}744"></span>, далеко от правила, породившего
-  данные. Нулевая потеря на обучении означает не успех, а то, что модель выучила шум.
 </p>
 
 ### Что важно уметь восстановить по памяти
@@ -3010,11 +2585,11 @@ print(model.weight.detach().numpy().round(4),
   <ol>
     <li>Данные задаются двумя матрицами одинаковой высоты: <span class="math-inline" data-tex="X\in\mathbb{R}^{N\times P}"></span> и <span class="math-inline" data-tex="\mathbf{y}\in\mathbb{R}^{N\times 1}"></span>. Строка соответствует объекту, столбец признаку.</li>
     <li>Модель состоит из <span class="math-inline" data-tex="P+1"></span> чисел: <span class="math-inline" data-tex="\hat{\mathbf{y}} = X\mathbf{w} + b"></span>. Матричная запись считает ту же сумму по индексам, но не удлиняется.</li>
-    <li>Потеря: <span class="math-inline" data-tex="L = \frac{1}{N}\mathbf{r}^\top\mathbf{r}"></span>, где <span class="math-inline" data-tex="\mathbf{r} = \hat{\mathbf{y}} - \mathbf{y}"></span>. Корень из неё возвращает единицы ответа.</li>
-    <li>Локальные производные: <span class="math-inline" data-tex="\partial\ell/\partial\hat y = 2r"></span>, <span class="math-inline" data-tex="\partial\hat y/\partial w_p = x_p"></span>, <span class="math-inline" data-tex="\partial\hat y/\partial b = 1"></span>.</li>
-    <li>Цепное правило перемножает их вдоль пути и суммирует по объектам, отсюда <span class="math-inline" data-tex="\nabla_{\mathbf{w}}L = \frac{2}{N}X^\top\mathbf{r}"></span>.</li>
+    <li>Потеря: <span class="math-inline" data-tex="L = \frac{1}{N}\sum_{n=1}^{N}(\hat y_n - y_n)^2"></span>. Корень из неё возвращает единицы ответа.</li>
+    <li>Локальные производные: <span class="math-inline" data-tex="\partial\ell/\partial\hat y = 2(\hat y - y)"></span>, <span class="math-inline" data-tex="\partial\hat y/\partial w_p = x_p"></span>, <span class="math-inline" data-tex="\partial\hat y/\partial b = 1"></span>.</li>
+    <li>Цепное правило перемножает их вдоль пути и суммирует по объектам, отсюда <span class="math-inline" data-tex="\nabla_{\mathbf{w}}L = \frac{2}{N}X^\top(\hat{\mathbf{y}} - \mathbf{y})"></span>.</li>
     <li><span class="math-inline" data-tex="X^\top"></span> появляется затем, чтобы свернуть ось объектов и оставить ось признаков.</li>
-    <li>Размножение сдвига вперёд оборачивается суммированием назад: <span class="math-inline" data-tex="\partial L/\partial b = \frac{2}{N}\sum_n r_n"></span>.</li>
+    <li>Размножение сдвига вперёд оборачивается суммированием назад: <span class="math-inline" data-tex="\partial L/\partial b = \frac{2}{N}\sum_n (\hat y_n - y_n)"></span>.</li>
     <li>Форма градиента всегда равна форме параметра. Это первая проверка любой выкладки.</li>
     <li>Аналитический градиент сверяется численно: <span class="math-inline" data-tex="(L(\theta+\varepsilon)-L(\theta-\varepsilon))/2\varepsilon"></span> при <span class="math-inline" data-tex="\varepsilon=10^{-6}"></span>.</li>
     <li>Шаг: <span class="math-inline" data-tex="\theta \leftarrow \theta - \eta\nabla_\theta L"></span>. Направление даёт градиент, длину выбирают; порог устойчивости <span class="math-inline" data-tex="2/\lambda_{\max}"></span>.</li>
@@ -3025,14 +2600,5 @@ print(model.weight.detach().numpy().round(4),
   Если вы поняли линейную регрессию, каркас современных моделей у вас в кармане. Дальше идут
   вариации: другие архитектуры, другие функции потерь, другие оптимизаторы. Цикл обучения
   остаётся тем же: forward, потеря, backward, шаг, миллионы раз.
-</p>
-
-<p class="tiny">
-  Данные синтетические: 200 домов порождены правилом
-  <span class="math-inline" data-tex="y = 0{,}9x_1 - 0{,}35x_2 + 1{,}2 + \varepsilon"></span> с
-  <span class="math-inline" data-tex="\varepsilon \sim \mathcal{N}(0;\ 0{,}35^2)"></span>, цены округлены до второго знака,
-  выборка разбита на 150 обучающих и 50 отложенных. Все прочие числа посчитаны скриптом
-  на этих данных; величины прямого прохода на батче из четырёх домов точны без округления.
-  Градиенты сверены с центральными разностями, расхождение 7,4 · 10⁻¹⁰.
 </p>
 
