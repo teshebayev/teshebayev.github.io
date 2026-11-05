@@ -664,7 +664,7 @@
     "ru": "Полносвязная сеть как логистическая регрессия, повторённая несколько раз подряд с нелинейностью между слоями: полный forward, softmax и cross-entropy, backpropagation через все слои, батч и gradient descent на сквозном примере с формами на каждом шаге, три версии кода: NumPy, слои и PyTorch."
   },
   "date": "2026-09-21",
-  "reading_time": 25,
+  "reading_time": 28,
   "tags": ["ml-basics", "deep-learning"],
   "draft": false,
   "content": {
