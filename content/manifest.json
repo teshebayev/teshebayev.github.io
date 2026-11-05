@@ -197,7 +197,7 @@
             "en": "Multilayer perceptron",
             "kk": "Көпқабатты перцептрон"
           },
-          "articles": ["mlp-full-cycle", "mlp-by-shapes"]
+          "articles": ["mlp-full-cycle"]
         },
         {
           "group": "cnn",
@@ -661,10 +661,10 @@
     "ru": "Полносвязная нейросеть с нуля: forward и backpropagation по тем же правилам"
   },
   "description": {
-    "ru": "Полносвязная сеть как логистическая регрессия, повторённая несколько раз подряд с нелинейностью между слоями: полный forward, softmax и cross-entropy, backpropagation через все слои, батч и gradient descent на сквозном примере, карта размерностей от x до dW и db, три версии кода — numpy, слои и PyTorch."
+    "ru": "Полносвязная сеть как логистическая регрессия, повторённая несколько раз подряд с нелинейностью между слоями: полный forward, softmax и cross-entropy, backpropagation через все слои, батч и gradient descent на сквозном примере с формами на каждом шаге, три версии кода: NumPy, слои и PyTorch."
   },
   "date": "2026-09-21",
-  "reading_time": 30,
+  "reading_time": 25,
   "tags": ["ml-basics", "deep-learning"],
   "draft": false,
   "content": {
@@ -683,7 +683,7 @@
   "date": "2026-09-21",
   "reading_time": 16,
   "tags": ["ml-basics", "deep-learning"],
-  "draft": false,
+  "draft": true,
   "content": {
     "ru": "content/articles/deep-learning/mlp-by-shapes.ru.md"
   }
