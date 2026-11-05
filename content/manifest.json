@@ -169,7 +169,7 @@
             "en": "Logistic regression",
             "kk": "Логистикалық регрессия"
           },
-          "articles": ["logistic-regression-full-cycle", "logistic-regression-by-shapes"]
+          "articles": ["logistic-regression-full-cycle"]
         }
       ]
     },
@@ -547,7 +547,7 @@
   "date": "2026-09-21",
   "reading_time": 16,
   "tags": ["ml-basics"],
-  "draft": false,
+  "draft": true,
   "content": {
     "ru": "content/articles/machine-learning/logistic-regression-by-shapes.ru.md"
   }
