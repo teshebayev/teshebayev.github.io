@@ -5,6 +5,60 @@
   .mg .cap { font-size: 13px; fill: #5E5850; }
   .mg .mm { font-size: 12px; fill: #5E5850; }
   .mg .legend { font-size: 13px; fill: #5E5850; }
+  .mx .mx-c { cursor: pointer; outline: none; }
+  .mx .mx-c:hover rect { stroke-width: 2.2; }
+  .mx .mx-c:focus-visible rect { stroke: #D83BB9; stroke-width: 2.6; }
+  .mx .is-focus .mx-c rect { stroke-width: 2.2; }
+  .mx .is-src rect { stroke: #D83BB9; stroke-width: 2.6; }
+  .mx .is-pick rect { fill: #FBE6F7; stroke: #D83BB9; stroke-width: 3; }
+  .mx .mx-a { animation: mxPop .35s ease-out both; animation-delay: var(--d, 0s); transform-box: fill-box; transform-origin: center; }
+  .mx .mx-flash { animation: mxFlash var(--t, 1.8s) linear var(--d, 0s) both; pointer-events: none; }
+  .mx .mx-fly { animation: mxFly var(--t, 1s) ease-in-out var(--d, 0s) both; }
+  .mx .mx-merge { animation: mxMerge var(--t, .8s) ease-in var(--d, 0s) both; pointer-events: none; }
+  @keyframes mxPop { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: none; } }
+  @keyframes mxFlash { 0% { opacity: 0; } 8%, 92% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes mxFly { from { transform: translate(var(--dx), var(--dy)); } to { transform: none; } }
+  @keyframes mxMerge { from { transform: none; opacity: 1; } to { transform: translate(var(--dx), var(--dy)); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .mx .mx-a, .mx .mx-fly { animation: none; }
+    .mx .mx-flash, .mx .mx-merge { display: none; }
+  }
+  .prose .mx-why { min-height: 76px; padding: 8px 14px; border-top: 1px solid #E5E1D8; color: #111111; background: #FFFFFF; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 15px; overflow-x: auto; }
+  .prose .mx-why-hint { font-size: 14px; color: #5E5850; }
+  .prose .bp-live { border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; margin: 26px 0; background: var(--bg-elev); }
+  .prose .bp-live-figure { margin-top: 14px; background: #FFFFFF; border: 1px solid #E0DDD3; border-radius: 10px; color: #111111; }
+  .prose .bp-live-figure svg { display: block; width: 100%; height: auto; font-family: Helvetica, Arial, sans-serif; touch-action: pan-y; }
+  .prose .bp-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .prose .bp-chip { font: inherit; font-size: 13px; color: var(--text); background: transparent; border: 1px solid var(--border); border-radius: 999px; padding: 3px 11px; cursor: pointer; }
+  .prose .bp-chip:hover { border-color: #C29E08; }
+  .prose .bp-chip.is-on { border-color: #C29E08; background: rgba(194, 158, 8, .16); font-weight: 700; }
+  .prose .bp-controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px 22px; margin-top: 16px; }
+  .prose .bp-control { flex: 1 1 240px; }
+  .prose .bp-control label { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; color: var(--text-muted); margin-bottom: 6px; }
+  .prose .bp-control output { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--text); }
+  .prose .bp-control input[type=range] { width: 100%; accent-color: #C29E08; }
+  .prose .bp-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .prose .bp-btn { font: inherit; font-size: 14px; font-weight: 700; color: var(--text); background: var(--bg-elev); border: 1px solid var(--accent); border-radius: 9px; padding: 6px 14px; cursor: pointer; }
+  .prose .bp-btn:hover { background: var(--accent); color: var(--bg-elev); }
+  .prose .bp-routes { margin-top: 12px; border: 1px solid var(--border); border-radius: 10px; }
+  .prose .bp-route { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: center; gap: 8px; padding: 7px 10px; border-top: 1px solid var(--border-soft); font-size: 13.5px; }
+  .prose .bp-route:first-child { border-top: none; }
+  .prose .bp-route-name { font-size: 13px; color: var(--text-muted); }
+  .prose .bp-route-math { overflow-x: auto; text-align: center; }
+  .prose .bp-route.is-total { background: rgba(195, 11, 10, .06); }
+  .prose .bp-route.is-total .bp-route-name { color: var(--text); font-weight: 700; }
+  .prose .bp-two { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 14px; align-items: stretch; }
+  .prose .bp-two .bp-metrics { margin-top: 14px; grid-template-columns: 1fr; align-content: stretch; }
+  .prose .bp-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 14px; }
+  .prose .bp-metric { border: 1px solid var(--border); border-radius: 10px; padding: 7px 10px; }
+  .prose .bp-metric span { display: block; font-size: 12px; color: var(--text-muted); line-height: 1.3; }
+  .prose .bp-metric strong { font-size: 15.5px; font-variant-numeric: tabular-nums; }
+  .prose .bp-metrics-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .prose .bp-status { margin: 10px 0 0; font-size: 14px; color: var(--text-muted); min-height: 21px; }
+  @media (max-width: 620px) {
+    .prose .bp-two { grid-template-columns: minmax(0, 1fr); }
+    .prose .bp-route { grid-template-columns: minmax(0, 1fr); }
+  }
 </style>
 
 <p class="lead">
@@ -36,9 +90,8 @@
 
 <div class="callout-yellow">
   <strong>Каждый вывод показан дважды.</strong> Сначала идёт сцена в переменных,
-  сразу под ней сцена в числах с теми же шагами и той же подсветкой. Третья
-  сцена части сворачивает всё в компактную матричную запись, которая стоит
-  в коде фреймворков.
+  сразу под ней сцена в числах с теми же шагами и той же подсветкой. Матричная запись, которая стоит в коде фреймворков, идёт в конце части и в двух
+  матричных сценах: там каждую клетку с числом можно нажать и увидеть её расчёт.
 </div>
 
 <div class="semantic-key" aria-label="Цветовые обозначения статьи">
@@ -872,8 +925,7 @@
       <div class="step-kicker">Шаг 4 · активация</div>
       <h4>Почти ноль на входе даёт почти 0.5 на выходе</h4>
       <p>Сигмоида в нуле проходит через середину, поэтому <span class="math-inline" data-tex="h^{(1)}_{1}"></span>
-      получилось 0.5037. В этой точке производная сигмоиды максимальна и равна 0.25: это понадобится в
-      части 9.</p>
+      получилось 0.5037. В этой точке производная сигмоиды максимальна и равна 0.25: это понадобится в части 7.</p>
     </div>
     <div class="step-panel" data-on="D1 D2 A1 A2 B1 na1 ew2 nz2 mm3 vin vz1 va1 vz2" data-focus="ew2 nz2">
       <div class="step-kicker">Шаг 5 · второй слой</div>
@@ -921,180 +973,20 @@
 
 <p>
   Схема с кружками показывает, кто на кого влияет, но не показывает <em>формы</em>.
-  В коде частая ошибка начинающих как раз несовпадение размерностей. Поэтому нарисуем
+  В коде частая ошибка начинающих как раз несовпадение размерностей. Поэтому пройдём
   те же формулы ещё раз, но теперь каждая матрица будет набором клеток.
 </p>
 
 <p>
-  Слева стоит всё известное: вход, цель и параметры обоих слоёв. Справа формулы и
-  пустые клетки, которые заполняются шаг за шагом. Под каждой матрицей подписана
-  её форма.
+  Сверху собраны все матрицы двух слоёв, клетки заполняются шаг за шагом. Ниже идёт операция
+  текущего шага: розовая рамка показывает, какая строка на какой столбец сейчас умножается и какие
+  рёбра сети это задействует. Любую клетку с числом можно нажать, и появится её расчёт.
 </p>
 
 <div class="stage" id="stageMfw" tabindex="0">
   <div class="stage-figure">
-<svg id="mfw" viewBox="0 0 1240 590" role="img" aria-label="Прямой проход в матричной форме">
-  <style>
-    #mfw { font-family: Helvetica, Arial, sans-serif; }
-    #mfw .title { font-size: 15px; font-weight: 700; fill: #5E5850; }
-    #mfw .colhd { font-size: 13px; fill: #8A8378; letter-spacing: 0.06em; }
-    #mfw .lab { font-size: 13px; font-weight: 600; }
-    #mfw .ct { font-size: 12px; font-weight: 600; }
-    #mfw .shape { font-size: 12px; fill: #968F85; }
-    #mfw .cell { stroke-width: 1.2; }
-    #mfw .empty { fill: #FAFAF8; stroke: #C9C2B8; stroke-width: 1; stroke-dasharray: 3 2; }
-    #mfw .qt { font-size: 12px; fill: #C9C2B8; }
-    #mfw .div { stroke: #E5E1D8; stroke-width: 1.4; }
-    #mfw .note { font-size: 14px; }
-    #mfw .legend { font-size: 13px; fill: #8A8378; }
-  </style>
-  <text x="40" y="34" class="title">Прямой проход: то же самое, но матрицами</text>
-  <text x="250" y="72" class="colhd" text-anchor="middle">ДАННЫЕ И ПАРАМЕТРЫ</text>
-  <text x="870" y="72" class="colhd" text-anchor="middle">ПРЯМОЙ ПРОХОД</text>
-  <line x1="520" y1="56" x2="520" y2="520" class="div"/>
-  <g data-key="dat" data-only="1">
-    <foreignObject x="8" y="109.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf x^{(0)} ="></div></foreignObject>
-    <rect x="140" y="100" width="54" height="26" rx="2" class="cell" fill="#F3F1EE" stroke="#5E5850"/>
-    <text x="167" y="117" class="ct" text-anchor="middle" fill="#5E5850">0.5</text>
-    <rect x="140" y="126" width="54" height="26" rx="2" class="cell" fill="#F3F1EE" stroke="#5E5850"/>
-    <text x="167" y="143" class="ct" text-anchor="middle" fill="#5E5850">0.8</text>
-    <text x="167" y="170" class="shape" text-anchor="middle">(2×1)</text>
-    <foreignObject x="188" y="109.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf y ="></div></foreignObject>
-    <rect x="320" y="100" width="54" height="26" rx="2" class="cell" fill="#F3F1EE" stroke="#5E5850"/>
-    <text x="347" y="117" class="ct" text-anchor="middle" fill="#5E5850">1</text>
-    <rect x="320" y="126" width="54" height="26" rx="2" class="cell" fill="#F3F1EE" stroke="#5E5850"/>
-    <text x="347" y="143" class="ct" text-anchor="middle" fill="#5E5850">0</text>
-    <text x="347" y="170" class="shape" text-anchor="middle">(2×1)</text>
-    <foreignObject x="8" y="205.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#2A5E9B;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf W^{(1)} ="></div></foreignObject>
-    <rect x="140" y="196" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="167" y="213" class="ct" text-anchor="middle" fill="#2A5E9B">0.15</text>
-    <rect x="194" y="196" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="221" y="213" class="ct" text-anchor="middle" fill="#2A5E9B">−0.20</text>
-    <rect x="140" y="222" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="167" y="239" class="ct" text-anchor="middle" fill="#2A5E9B">0.40</text>
-    <rect x="194" y="222" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="221" y="239" class="ct" text-anchor="middle" fill="#2A5E9B">0.30</text>
-    <text x="194" y="266" class="shape" text-anchor="middle">(2×2)</text>
-    <foreignObject x="208" y="205.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#2A5E9B;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf b^{(1)} ="></div></foreignObject>
-    <rect x="340" y="196" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="367" y="213" class="ct" text-anchor="middle" fill="#2A5E9B">0.10</text>
-    <rect x="340" y="222" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="367" y="239" class="ct" text-anchor="middle" fill="#2A5E9B">−0.10</text>
-    <text x="367" y="266" class="shape" text-anchor="middle">(2×1)</text>
-    <foreignObject x="8" y="301.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#2A5E9B;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf W^{(2)} ="></div></foreignObject>
-    <rect x="140" y="292" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="167" y="309" class="ct" text-anchor="middle" fill="#2A5E9B">0.50</text>
-    <rect x="194" y="292" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="221" y="309" class="ct" text-anchor="middle" fill="#2A5E9B">−0.30</text>
-    <rect x="140" y="318" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="167" y="335" class="ct" text-anchor="middle" fill="#2A5E9B">0.20</text>
-    <rect x="194" y="318" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="221" y="335" class="ct" text-anchor="middle" fill="#2A5E9B">0.60</text>
-    <text x="194" y="362" class="shape" text-anchor="middle">(2×2)</text>
-    <foreignObject x="208" y="301.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#2A5E9B;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf b^{(2)} ="></div></foreignObject>
-    <rect x="340" y="292" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="367" y="309" class="ct" text-anchor="middle" fill="#2A5E9B">0.05</text>
-    <rect x="340" y="318" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="367" y="335" class="ct" text-anchor="middle" fill="#2A5E9B">0.15</text>
-    <text x="367" y="362" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <foreignObject x="560" y="96" width="380" height="52">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\mathbf z^{(1)} = \mathbf W^{(1)} \mathbf x^{(0)} + \mathbf b^{(1)}"></div>
-    </foreignObject>
-  <g data-key="f1e" data-only="1">
-    <foreignObject x="848" y="105.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf z^{(1)} ="></div></foreignObject>
-    <rect x="980" y="96" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="113" class="qt" text-anchor="middle">?</text>
-    <rect x="980" y="122" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="139" class="qt" text-anchor="middle">?</text>
-    <text x="1007" y="166" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <g data-key="f1" data-only="1">
-    <foreignObject x="848" y="105.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#4C8316;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf z^{(1)} ="></div></foreignObject>
-    <rect x="980" y="96" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1007" y="113" class="ct" text-anchor="middle" fill="#4C8316">0.0150</text>
-    <rect x="980" y="122" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1007" y="139" class="ct" text-anchor="middle" fill="#4C8316">0.3400</text>
-    <text x="1007" y="166" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <foreignObject x="560" y="184" width="380" height="52">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\mathbf h^{(1)} = \sigma\!\left(\mathbf z^{(1)}\right)"></div>
-    </foreignObject>
-  <g data-key="f2e" data-only="1">
-    <foreignObject x="848" y="193.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf h^{(1)} ="></div></foreignObject>
-    <rect x="980" y="184" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="201" class="qt" text-anchor="middle">?</text>
-    <rect x="980" y="210" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="227" class="qt" text-anchor="middle">?</text>
-    <text x="1007" y="254" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <g data-key="f2" data-only="1">
-    <foreignObject x="848" y="193.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#4C8316;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf h^{(1)} ="></div></foreignObject>
-    <rect x="980" y="184" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1007" y="201" class="ct" text-anchor="middle" fill="#4C8316">0.5037</text>
-    <rect x="980" y="210" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1007" y="227" class="ct" text-anchor="middle" fill="#4C8316">0.5842</text>
-    <text x="1007" y="254" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <foreignObject x="560" y="272" width="380" height="52">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\mathbf z^{(2)} = \mathbf W^{(2)} \mathbf h^{(1)} + \mathbf b^{(2)}"></div>
-    </foreignObject>
-  <g data-key="f3e" data-only="1">
-    <foreignObject x="848" y="281.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf z^{(2)} ="></div></foreignObject>
-    <rect x="980" y="272" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="289" class="qt" text-anchor="middle">?</text>
-    <rect x="980" y="298" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="315" class="qt" text-anchor="middle">?</text>
-    <text x="1007" y="342" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <g data-key="f3" data-only="1">
-    <foreignObject x="848" y="281.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#4C8316;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf z^{(2)} ="></div></foreignObject>
-    <rect x="980" y="272" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1007" y="289" class="ct" text-anchor="middle" fill="#4C8316">0.1266</text>
-    <rect x="980" y="298" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1007" y="315" class="ct" text-anchor="middle" fill="#4C8316">0.6013</text>
-    <text x="1007" y="342" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <foreignObject x="560" y="360" width="380" height="52">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\mathbf h^{(2)} = \sigma\!\left(\mathbf z^{(2)}\right)"></div>
-    </foreignObject>
-  <g data-key="f4e" data-only="1">
-    <foreignObject x="848" y="369.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf h^{(2)} ="></div></foreignObject>
-    <rect x="980" y="360" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="377" class="qt" text-anchor="middle">?</text>
-    <rect x="980" y="386" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="403" class="qt" text-anchor="middle">?</text>
-    <text x="1007" y="430" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <g data-key="f4" data-only="1">
-    <foreignObject x="848" y="369.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#4C8316;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf h^{(2)} ="></div></foreignObject>
-    <rect x="980" y="360" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1007" y="377" class="ct" text-anchor="middle" fill="#4C8316">0.5316</text>
-    <rect x="980" y="386" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1007" y="403" class="ct" text-anchor="middle" fill="#4C8316">0.6459</text>
-    <text x="1007" y="430" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <foreignObject x="560" y="448" width="380" height="52">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="E = \tfrac{1}{2}\left\|\mathbf h^{(2)} - \mathbf y\right\|^{2}"></div>
-    </foreignObject>
-  <g data-key="f5e" data-only="1">
-    <foreignObject x="848" y="457.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;text-align:right;justify-content:flex-end" data-tex="E ="></div></foreignObject>
-    <rect x="980" y="461" width="80" height="26" rx="2" class="empty"/>
-    <text x="1020" y="478" class="qt" text-anchor="middle">?</text>
-    <text x="1020" y="505" class="shape" text-anchor="middle">(скаляр)</text>
-  </g>
-  <g data-key="f5" data-only="1">
-    <foreignObject x="848" y="457.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#4C8316;font-weight:600;text-align:right;justify-content:flex-end" data-tex="E ="></div></foreignObject>
-    <rect x="980" y="461" width="80" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1020" y="478" class="ct" text-anchor="middle" fill="#4C8316">0.3183</text>
-    <text x="1020" y="505" class="shape" text-anchor="middle">(скаляр)</text>
-  </g>
-  <g data-key="nb" data-only="1">
-    <rect x="40" y="520" width="1160" height="34" rx="9" fill="#EDF7DD" stroke="#73B222" stroke-width="1.6"/>
-    <text x="620" y="543" class="note" text-anchor="middle" fill="#4C8316">Внутренние размеры схлопываются: (2×2)·(2×1) = (2×1). Активация форму не меняет вообще</text>
-  </g>
-  <text x="40" y="572" class="legend">серое: данные примера · синее: обучаемые параметры · зелёное: то, что вычислил прямой проход · в скобках форма матрицы</text>
-</svg>
+<svg class="mg mx" id="mfw" viewBox="0 0 760 416" role="img" aria-label="Прямой проход в матричной форме: сверху все матрицы двух слоёв, снизу операция текущего шага"><defs><marker id="mxarw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5E5850"/></marker></defs><text x="14" y="62" font-size="12" fill="#8A8378" text-anchor="start" font-weight="400">слой 1</text><text x="14" y="140" font-size="12" fill="#8A8378" text-anchor="start" font-weight="400">слой 2</text><text x="127" y="62.1" font-size="15" fill="#5E5850" text-anchor="middle" font-weight="400">·</text><text x="255" y="62.1" font-size="15" fill="#5E5850" text-anchor="middle" font-weight="400">+</text><line x1="323" y1="58" x2="341" y2="58" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/><line x1="407" y1="58" x2="425" y2="58" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/><text x="127" y="140.1" font-size="15" fill="#5E5850" text-anchor="middle" font-weight="400">·</text><text x="255" y="140.1" font-size="15" fill="#5E5850" text-anchor="middle" font-weight="400">+</text><line x1="323" y1="136" x2="341" y2="136" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/><line x1="407" y1="136" x2="425" y2="136" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/><path d="M 458.0 82 V 86 H 90.0 V 94" fill="none" stroke="#BDB6A9" stroke-width="1.3" stroke-dasharray="4 3"/><line x1="491" y1="136" x2="511" y2="136" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/><line x1="577" y1="136" x2="607" y2="136" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/><foreignObject x="50" y="14" width="80" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf x^{(0)}"></div></foreignObject><foreignObject x="124" y="14" width="136" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf W^{(1)}"></div></foreignObject><foreignObject x="250" y="14" width="80" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf b^{(1)}"></div></foreignObject><foreignObject x="334" y="14" width="80" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf z^{(1)}"></div></foreignObject><foreignObject x="418" y="14" width="80" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf h^{(1)}"></div></foreignObject><foreignObject x="50" y="92" width="80" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf h^{(1)}"></div></foreignObject><foreignObject x="124" y="92" width="136" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf W^{(2)}"></div></foreignObject><foreignObject x="250" y="92" width="80" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf b^{(2)}"></div></foreignObject><foreignObject x="334" y="92" width="80" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf z^{(2)}"></div></foreignObject><foreignObject x="418" y="92" width="80" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf h^{(2)}"></div></foreignObject><foreignObject x="504" y="92" width="80" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf y"></div></foreignObject><foreignObject x="600" y="92" width="80" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="E"></div></foreignObject><g data-key="dat"><g class="mx-c" data-c="x.0" role="button" tabindex="0" aria-label="x.0"><rect x="62" y="36" width="56" height="22" rx="3" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.2"/><text x="90" y="51.68" font-size="13" font-weight="600" text-anchor="middle" fill="#2A5E9B">0.5</text></g><g class="mx-c" data-c="x.1" role="button" tabindex="0" aria-label="x.1"><rect x="62" y="58" width="56" height="22" rx="3" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.2"/><text x="90" y="73.68" font-size="13" font-weight="600" text-anchor="middle" fill="#2A5E9B">0.8</text></g><g class="mx-c" data-c="W1.0.0" role="button" tabindex="0" aria-label="W1.0.0"><rect x="136" y="36" width="56" height="22" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="164" y="51.68" font-size="13" font-weight="600" text-anchor="middle" fill="#7A6305">0.15</text></g><g class="mx-c" data-c="W1.0.1" role="button" tabindex="0" aria-label="W1.0.1"><rect x="192" y="36" width="56" height="22" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="220" y="51.68" font-size="13" font-weight="600" text-anchor="middle" fill="#7A6305">−0.20</text></g><g class="mx-c" data-c="W1.1.0" role="button" tabindex="0" aria-label="W1.1.0"><rect x="136" y="58" width="56" height="22" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="164" y="73.68" font-size="13" font-weight="600" text-anchor="middle" fill="#7A6305">0.40</text></g><g class="mx-c" data-c="W1.1.1" role="button" tabindex="0" aria-label="W1.1.1"><rect x="192" y="58" width="56" height="22" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="220" y="73.68" font-size="13" font-weight="600" text-anchor="middle" fill="#7A6305">0.30</text></g><g class="mx-c" data-c="b1.0" role="button" tabindex="0" aria-label="b1.0"><rect x="262" y="36" width="56" height="22" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="290" y="51.68" font-size="13" font-weight="600" text-anchor="middle" fill="#7A6305">0.10</text></g><g class="mx-c" data-c="b1.1" role="button" tabindex="0" aria-label="b1.1"><rect x="262" y="58" width="56" height="22" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="290" y="73.68" font-size="13" font-weight="600" text-anchor="middle" fill="#7A6305">−0.10</text></g><g class="mx-c" data-c="W2.0.0" role="button" tabindex="0" aria-label="W2.0.0"><rect x="136" y="114" width="56" height="22" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="164" y="129.68" font-size="13" font-weight="600" text-anchor="middle" fill="#7A6305">0.50</text></g><g class="mx-c" data-c="W2.0.1" role="button" tabindex="0" aria-label="W2.0.1"><rect x="192" y="114" width="56" height="22" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="220" y="129.68" font-size="13" font-weight="600" text-anchor="middle" fill="#7A6305">−0.30</text></g><g class="mx-c" data-c="W2.1.0" role="button" tabindex="0" aria-label="W2.1.0"><rect x="136" y="136" width="56" height="22" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="164" y="151.68" font-size="13" font-weight="600" text-anchor="middle" fill="#7A6305">0.20</text></g><g class="mx-c" data-c="W2.1.1" role="button" tabindex="0" aria-label="W2.1.1"><rect x="192" y="136" width="56" height="22" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="220" y="151.68" font-size="13" font-weight="600" text-anchor="middle" fill="#7A6305">0.60</text></g><g class="mx-c" data-c="b2.0" role="button" tabindex="0" aria-label="b2.0"><rect x="262" y="114" width="56" height="22" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="290" y="129.68" font-size="13" font-weight="600" text-anchor="middle" fill="#7A6305">0.05</text></g><g class="mx-c" data-c="b2.1" role="button" tabindex="0" aria-label="b2.1"><rect x="262" y="136" width="56" height="22" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="290" y="151.68" font-size="13" font-weight="600" text-anchor="middle" fill="#7A6305">0.15</text></g><g class="mx-c" data-c="y.0" role="button" tabindex="0" aria-label="y.0"><rect x="516" y="114" width="56" height="22" rx="3" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.2"/><text x="544" y="129.68" font-size="13" font-weight="600" text-anchor="middle" fill="#2A5E9B">1</text></g><g class="mx-c" data-c="y.1" role="button" tabindex="0" aria-label="y.1"><rect x="516" y="136" width="56" height="22" rx="3" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.2"/><text x="544" y="151.68" font-size="13" font-weight="600" text-anchor="middle" fill="#2A5E9B">0</text></g></g><g data-key="e1" data-only="1"><rect x="346" y="36" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="346" y="58" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/></g><g data-key="f1" data-only="1"><g class="mx-c" data-c="z1.0" role="button" tabindex="0" aria-label="z1.0"><rect x="346" y="36" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="374" y="51.68" font-size="13" font-weight="600" text-anchor="middle" fill="#4C8316">0.0150</text></g><g class="mx-c" data-c="z1.1" role="button" tabindex="0" aria-label="z1.1"><rect x="346" y="58" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="374" y="73.68" font-size="13" font-weight="600" text-anchor="middle" fill="#4C8316">0.3400</text></g></g><g data-key="e2" data-only="1"><rect x="430" y="36" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="430" y="58" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="62" y="114" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="62" y="136" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/></g><g data-key="f2" data-only="1"><g class="mx-c" data-c="h1.0" role="button" tabindex="0" aria-label="h1.0"><rect x="430" y="36" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="458" y="51.68" font-size="13" font-weight="600" text-anchor="middle" fill="#4C8316">0.5037</text></g><g class="mx-c" data-c="h1.1" role="button" tabindex="0" aria-label="h1.1"><rect x="430" y="58" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="458" y="73.68" font-size="13" font-weight="600" text-anchor="middle" fill="#4C8316">0.5842</text></g><g class="mx-c" data-c="h1.0" role="button" tabindex="0" aria-label="h1.0"><rect x="62" y="114" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="90" y="129.68" font-size="13" font-weight="600" text-anchor="middle" fill="#4C8316">0.5037</text></g><g class="mx-c" data-c="h1.1" role="button" tabindex="0" aria-label="h1.1"><rect x="62" y="136" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="90" y="151.68" font-size="13" font-weight="600" text-anchor="middle" fill="#4C8316">0.5842</text></g></g><g data-key="e3" data-only="1"><rect x="346" y="114" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="346" y="136" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/></g><g data-key="f3" data-only="1"><g class="mx-c" data-c="z2.0" role="button" tabindex="0" aria-label="z2.0"><rect x="346" y="114" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="374" y="129.68" font-size="13" font-weight="600" text-anchor="middle" fill="#4C8316">0.1266</text></g><g class="mx-c" data-c="z2.1" role="button" tabindex="0" aria-label="z2.1"><rect x="346" y="136" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="374" y="151.68" font-size="13" font-weight="600" text-anchor="middle" fill="#4C8316">0.6013</text></g></g><g data-key="e4" data-only="1"><rect x="430" y="114" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="430" y="136" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/></g><g data-key="f4" data-only="1"><g class="mx-c" data-c="h2.0" role="button" tabindex="0" aria-label="h2.0"><rect x="430" y="114" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="458" y="129.68" font-size="13" font-weight="600" text-anchor="middle" fill="#4C8316">0.5316</text></g><g class="mx-c" data-c="h2.1" role="button" tabindex="0" aria-label="h2.1"><rect x="430" y="136" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="458" y="151.68" font-size="13" font-weight="600" text-anchor="middle" fill="#4C8316">0.6459</text></g></g><g data-key="e5" data-only="1"><rect x="612" y="125" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/></g><g data-key="f5" data-only="1"><g class="mx-c" data-c="E" role="button" tabindex="0" aria-label="E"><rect x="612" y="125" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="640" y="140.32" font-size="12" font-weight="600" text-anchor="middle" fill="#4C8316">0.3183</text></g></g><line x1="14" y1="176" x2="746" y2="176" stroke="#E5E1D8" stroke-width="1.2"/><g data-key="b1" data-only="1"><text x="30" y="200" font-size="13" fill="#5E5850" text-anchor="start" font-weight="700">Как читать матрицу весов</text><g class="mx-c" data-c="W1.0.0" role="button" tabindex="0" aria-label="W1.0.0"><rect x="150" y="234" width="66" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="183" y="257.4" font-size="15" font-weight="600" text-anchor="middle" fill="#7A6305">0.15</text></g><g class="mx-c" data-c="W1.0.1" role="button" tabindex="0" aria-label="W1.0.1"><rect x="216" y="234" width="66" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="249" y="257.4" font-size="15" font-weight="600" text-anchor="middle" fill="#7A6305">−0.20</text></g><g class="mx-c" data-c="W1.1.0" role="button" tabindex="0" aria-label="W1.1.0"><rect x="150" y="270" width="66" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="183" y="293.4" font-size="15" font-weight="600" text-anchor="middle" fill="#7A6305">0.40</text></g><g class="mx-c" data-c="W1.1.1" role="button" tabindex="0" aria-label="W1.1.1"><rect x="216" y="270" width="66" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="249" y="293.4" font-size="15" font-weight="600" text-anchor="middle" fill="#7A6305">0.30</text></g><foreignObject x="150" y="209" width="66" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\text{из } x_{1}"></div></foreignObject><foreignObject x="216" y="209" width="66" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\text{из } x_{2}"></div></foreignObject><foreignObject x="82" y="240" width="60" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400;justify-content:flex-end;text-align:right" data-tex="\text{в } z_{1}"></div></foreignObject><foreignObject x="82" y="276" width="60" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400;justify-content:flex-end;text-align:right" data-tex="\text{в } z_{2}"></div></foreignObject><rect class="mx-flash" style="--d:0.3s;--t:1.9s" x="148" y="232" width="136" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:2.3s;--t:1.9s" x="148" y="268" width="136" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:4.3s;--t:1.9s" x="148" y="232" width="70" height="76" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:6.3s;--t:1.9s" x="214" y="232" width="70" height="76" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><line x1="485" y1="236" x2="635" y2="236" stroke="#BDB6A9" stroke-width="1.5"/><line x1="485" y1="304" x2="635" y2="236" stroke="#BDB6A9" stroke-width="1.5"/><line x1="485" y1="236" x2="635" y2="304" stroke="#BDB6A9" stroke-width="1.5"/><line x1="485" y1="304" x2="635" y2="304" stroke="#BDB6A9" stroke-width="1.5"/><line class="mx-flash" style="--d:0.3s;--t:1.9s" x1="485" y1="236" x2="635" y2="236" stroke="#D83BB9" stroke-width="3.2"/><line class="mx-flash" style="--d:0.3s;--t:1.9s" x1="485" y1="304" x2="635" y2="236" stroke="#D83BB9" stroke-width="3.2"/><line class="mx-flash" style="--d:2.3s;--t:1.9s" x1="485" y1="236" x2="635" y2="304" stroke="#D83BB9" stroke-width="3.2"/><line class="mx-flash" style="--d:2.3s;--t:1.9s" x1="485" y1="304" x2="635" y2="304" stroke="#D83BB9" stroke-width="3.2"/><line class="mx-flash" style="--d:4.3s;--t:1.9s" x1="485" y1="236" x2="635" y2="236" stroke="#D83BB9" stroke-width="3.2"/><line class="mx-flash" style="--d:4.3s;--t:1.9s" x1="485" y1="236" x2="635" y2="304" stroke="#D83BB9" stroke-width="3.2"/><line class="mx-flash" style="--d:6.3s;--t:1.9s" x1="485" y1="304" x2="635" y2="236" stroke="#D83BB9" stroke-width="3.2"/><line class="mx-flash" style="--d:6.3s;--t:1.9s" x1="485" y1="304" x2="635" y2="304" stroke="#D83BB9" stroke-width="3.2"/><text x="530" y="240" font-size="11.5" font-weight="600" fill="#7A6305" text-anchor="middle" paint-order="stroke" stroke="#FFFFFF" stroke-width="3.5">0.15</text><text x="530" y="287.6" font-size="11.5" font-weight="600" fill="#7A6305" text-anchor="middle" paint-order="stroke" stroke="#FFFFFF" stroke-width="3.5">−0.20</text><text x="530" y="260.4" font-size="11.5" font-weight="600" fill="#7A6305" text-anchor="middle" paint-order="stroke" stroke="#FFFFFF" stroke-width="3.5">0.40</text><text x="530" y="308" font-size="11.5" font-weight="600" fill="#7A6305" text-anchor="middle" paint-order="stroke" stroke="#FFFFFF" stroke-width="3.5">0.30</text><circle cx="470" cy="236" r="15" fill="#FFFFFF" stroke="#3576C0" stroke-width="2"/><foreignObject x="455" y="223" width="30" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="x_1"></div></foreignObject><circle cx="470" cy="304" r="15" fill="#FFFFFF" stroke="#3576C0" stroke-width="2"/><foreignObject x="455" y="291" width="30" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="x_2"></div></foreignObject><circle cx="650" cy="236" r="15" fill="#F4F7EE" stroke="#C29E08" stroke-width="2"/><foreignObject x="635" y="223" width="30" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="z_1"></div></foreignObject><circle cx="650" cy="304" r="15" fill="#F4F7EE" stroke="#C29E08" stroke-width="2"/><foreignObject x="635" y="291" width="30" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="z_2"></div></foreignObject><text x="380" y="352" font-size="12.5" fill="#5E5850" text-anchor="middle" font-weight="400">Строка матрицы это все рёбра, входящие в один узел. Столбец это все рёбра, выходящие из одного входа.</text></g><g data-key="b2" data-only="1"><foreignObject x="66" y="179" width="152" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf W^{(1)}"></div></foreignObject><foreignObject x="216" y="179" width="86" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf x^{(0)}"></div></foreignObject><foreignObject x="324" y="179" width="86" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf b^{(1)}"></div></foreignObject><foreignObject x="434" y="179" width="86" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf z^{(1)}"></div></foreignObject><g class="mx-c" data-c="W1.0.0" role="button" tabindex="0" aria-label="W1.0.0"><rect x="76" y="208" width="66" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="109" y="231.4" font-size="15" font-weight="600" text-anchor="middle" fill="#7A6305">0.15</text></g><g class="mx-c" data-c="W1.0.1" role="button" tabindex="0" aria-label="W1.0.1"><rect x="142" y="208" width="66" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="175" y="231.4" font-size="15" font-weight="600" text-anchor="middle" fill="#7A6305">−0.20</text></g><g class="mx-c" data-c="W1.1.0" role="button" tabindex="0" aria-label="W1.1.0"><rect x="76" y="244" width="66" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="109" y="267.4" font-size="15" font-weight="600" text-anchor="middle" fill="#7A6305">0.40</text></g><g class="mx-c" data-c="W1.1.1" role="button" tabindex="0" aria-label="W1.1.1"><rect x="142" y="244" width="66" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="175" y="267.4" font-size="15" font-weight="600" text-anchor="middle" fill="#7A6305">0.30</text></g><g class="mx-c" data-c="x.0" role="button" tabindex="0" aria-label="x.0"><rect x="226" y="208" width="66" height="36" rx="3" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.2"/><text x="259" y="231.4" font-size="15" font-weight="600" text-anchor="middle" fill="#2A5E9B">0.5</text></g><g class="mx-c" data-c="x.1" role="button" tabindex="0" aria-label="x.1"><rect x="226" y="244" width="66" height="36" rx="3" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.2"/><text x="259" y="267.4" font-size="15" font-weight="600" text-anchor="middle" fill="#2A5E9B">0.8</text></g><g class="mx-c" data-c="b1.0" role="button" tabindex="0" aria-label="b1.0"><rect x="334" y="208" width="66" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="367" y="231.4" font-size="15" font-weight="600" text-anchor="middle" fill="#7A6305">0.10</text></g><g class="mx-c" data-c="b1.1" role="button" tabindex="0" aria-label="b1.1"><rect x="334" y="244" width="66" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="367" y="267.4" font-size="15" font-weight="600" text-anchor="middle" fill="#7A6305">−0.10</text></g><text x="313" y="250.8" font-size="20" fill="#5E5850" text-anchor="middle" font-weight="400">+</text><text x="422" y="250.8" font-size="20" fill="#5E5850" text-anchor="middle" font-weight="400">=</text><g class="mx-a" style="--d:1.7s"><g class="mx-c" data-c="z1.0" role="button" tabindex="0" aria-label="z1.0"><rect x="444" y="208" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="477" y="231.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.0150</text></g></g><rect class="mx-flash" style="--d:0.2s;--t:2.2s" x="74" y="206" width="136" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:0.2s;--t:2.2s" x="224" y="206" width="70" height="76" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:0.2s;--t:2.2s" x="332" y="206" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:0.2s;--t:2.2s" x="442" y="206" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><g class="mx-a" style="--d:4.1s"><g class="mx-c" data-c="z1.1" role="button" tabindex="0" aria-label="z1.1"><rect x="444" y="244" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="477" y="267.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.3400</text></g></g><rect class="mx-flash" style="--d:2.6s;--t:2.2s" x="74" y="242" width="136" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:2.6s;--t:2.2s" x="224" y="206" width="70" height="76" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:2.6s;--t:2.2s" x="332" y="242" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:2.6s;--t:2.2s" x="442" y="242" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><text x="142" y="297" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×2)</text><text x="259" y="297" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="367" y="297" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="477" y="297" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="14" y="322" font-size="12" fill="#8A8378" text-anchor="start" font-weight="400">строка 1</text><g class="mx-a" style="--d:0.5s"><text x="109" y="322" font-size="14" fill="#5E5850" text-anchor="middle" font-weight="400">0.075</text></g><g class="mx-a" style="--d:0.9s"><text x="175" y="322" font-size="14" fill="#5E5850" text-anchor="middle" font-weight="400">−0.160</text></g><g class="mx-a" style="--d:1.3s"><text x="367" y="322" font-size="14" fill="#5E5850" text-anchor="middle" font-weight="400">+0.100</text></g><g class="mx-a" style="--d:1.7s"><text x="477" y="322" font-size="14" fill="#4C8316" text-anchor="middle" font-weight="700">= 0.0150</text></g><text x="14" y="347" font-size="12" fill="#8A8378" text-anchor="start" font-weight="400">строка 2</text><g class="mx-a" style="--d:2.9s"><text x="109" y="347" font-size="14" fill="#5E5850" text-anchor="middle" font-weight="400">0.200</text></g><g class="mx-a" style="--d:3.3s"><text x="175" y="347" font-size="14" fill="#5E5850" text-anchor="middle" font-weight="400">+0.240</text></g><g class="mx-a" style="--d:3.7s"><text x="367" y="347" font-size="14" fill="#5E5850" text-anchor="middle" font-weight="400">−0.100</text></g><g class="mx-a" style="--d:4.1s"><text x="477" y="347" font-size="14" fill="#4C8316" text-anchor="middle" font-weight="700">= 0.3400</text></g><line x1="601" y1="226" x2="707" y2="226" stroke="#BDB6A9" stroke-width="1.5"/><line x1="601" y1="278" x2="707" y2="226" stroke="#BDB6A9" stroke-width="1.5"/><line x1="601" y1="226" x2="707" y2="278" stroke="#BDB6A9" stroke-width="1.5"/><line x1="601" y1="278" x2="707" y2="278" stroke="#BDB6A9" stroke-width="1.5"/><line class="mx-flash" style="--d:0.2s;--t:2.2s" x1="601" y1="226" x2="707" y2="226" stroke="#D83BB9" stroke-width="3.2"/><line class="mx-flash" style="--d:0.2s;--t:2.2s" x1="601" y1="278" x2="707" y2="226" stroke="#D83BB9" stroke-width="3.2"/><line class="mx-flash" style="--d:2.6s;--t:2.2s" x1="601" y1="226" x2="707" y2="278" stroke="#D83BB9" stroke-width="3.2"/><line class="mx-flash" style="--d:2.6s;--t:2.2s" x1="601" y1="278" x2="707" y2="278" stroke="#D83BB9" stroke-width="3.2"/><circle cx="586" cy="226" r="15" fill="#FFFFFF" stroke="#3576C0" stroke-width="2"/><foreignObject x="571" y="213" width="30" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="x_1"></div></foreignObject><circle cx="586" cy="278" r="15" fill="#FFFFFF" stroke="#3576C0" stroke-width="2"/><foreignObject x="571" y="265" width="30" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="x_2"></div></foreignObject><circle cx="722" cy="226" r="15" fill="#F4F7EE" stroke="#C29E08" stroke-width="2"/><foreignObject x="707" y="213" width="30" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="z_1"></div></foreignObject><circle cx="722" cy="278" r="15" fill="#F4F7EE" stroke="#C29E08" stroke-width="2"/><foreignObject x="707" y="265" width="30" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="z_2"></div></foreignObject></g><g data-key="b3" data-only="1"><foreignObject x="28" y="197" width="90" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf z^{(1)}"></div></foreignObject><foreignObject x="624" y="197" width="90" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf h^{(1)}"></div></foreignObject><g class="mx-c" data-c="z1.0" role="button" tabindex="0" aria-label="z1.0"><rect x="40" y="226" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="73" y="249.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.0150</text></g><g class="mx-c" data-c="z1.1" role="button" tabindex="0" aria-label="z1.1"><rect x="40" y="262" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="73" y="285.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.3400</text></g><line x1="176" y1="344" x2="556" y2="344" stroke="#5E5850" stroke-width="1.3"/><line x1="366" y1="190" x2="366" y2="344" stroke="#D8D4C8" stroke-width="1.2"/><line x1="176" y1="267" x2="556" y2="267" stroke="#EDEAE2" stroke-width="1.1"/><text x="170" y="271" font-size="11" fill="#8A8378" text-anchor="end" font-weight="400">0.5</text><text x="170" y="198" font-size="11" fill="#8A8378" text-anchor="end" font-weight="400">1</text><text x="170" y="347" font-size="11" fill="#8A8378" text-anchor="end" font-weight="400">0</text><polyline points="176.0,336.7 179.8,336.3 183.6,335.8 187.4,335.3 191.2,334.8 195.0,334.3 198.8,333.7 202.6,333.2 206.4,332.5 210.2,331.9 214.0,331.2 217.8,330.5 221.6,329.7 225.4,328.9 229.2,328.1 233.0,327.2 236.8,326.3 240.6,325.3 244.4,324.3 248.2,323.3 252.0,322.2 255.8,321.0 259.6,319.8 263.4,318.6 267.2,317.3 271.0,315.9 274.8,314.5 278.6,313.0 282.4,311.5 286.2,310.0 290.0,308.4 293.8,306.7 297.6,305.0 301.4,303.2 305.2,301.4 309.0,299.5 312.8,297.6 316.6,295.6 320.4,293.6 324.2,291.5 328.0,289.4 331.8,287.3 335.6,285.1 339.4,282.9 343.2,280.7 347.0,278.5 350.8,276.2 354.6,273.9 358.4,271.6 362.2,269.3 366.0,267.0 369.8,264.7 373.6,262.4 377.4,260.1 381.2,257.8 385.0,255.5 388.8,253.3 392.6,251.1 396.4,248.9 400.2,246.7 404.0,244.6 407.8,242.5 411.6,240.4 415.4,238.4 419.2,236.4 423.0,234.5 426.8,232.6 430.6,230.8 434.4,229.0 438.2,227.3 442.0,225.6 445.8,224.0 449.6,222.5 453.4,221.0 457.2,219.5 461.0,218.1 464.8,216.7 468.6,215.4 472.4,214.2 476.2,213.0 480.0,211.8 483.8,210.7 487.6,209.7 491.4,208.7 495.2,207.7 499.0,206.8 502.8,205.9 506.6,205.1 510.4,204.3 514.2,203.5 518.0,202.8 521.8,202.1 525.6,201.5 529.4,200.8 533.2,200.3 537.0,199.7 540.8,199.2 544.6,198.7 548.4,198.2 552.2,197.7 556.0,197.3" fill="none" stroke="#73B222" stroke-width="2.2"/><line x1="112" y1="262" x2="144" y2="262" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/><line x1="562" y1="262" x2="630" y2="262" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/><foreignObject x="111" y="235" width="30" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\sigma"></div></foreignObject><rect class="mx-flash" style="--d:0.3s;--t:2s" x="38" y="224" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><g class="mx-a" style="--d:0.6s"><line x1="366.95" y1="344" x2="366.95" y2="266.423" stroke="#73B222" stroke-width="1.3" stroke-dasharray="4 3"/><line x1="366.95" y1="266.423" x2="556" y2="266.423" stroke="#73B222" stroke-width="1.3" stroke-dasharray="4 3"/><circle cx="367.0" cy="266.4" r="5.5" fill="#73B222" stroke="#FFFFFF" stroke-width="2"/></g><g class="mx-a" style="--d:0.6s"><foreignObject x="353.95" y="347" width="26" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="z_{1}"></div></foreignObject></g><g class="mx-a" style="--d:1.3s"><g class="mx-c" data-c="h1.0" role="button" tabindex="0" aria-label="h1.0"><rect x="636" y="226" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="669" y="249.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.5037</text></g></g><rect class="mx-flash" style="--d:1.2s;--t:1.1s" x="634" y="224" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:2.4s;--t:2s" x="38" y="260" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><g class="mx-a" style="--d:2.7s"><line x1="387.533" y1="344" x2="387.533" y2="254.035" stroke="#73B222" stroke-width="1.3" stroke-dasharray="4 3"/><line x1="387.533" y1="254.035" x2="556" y2="254.035" stroke="#73B222" stroke-width="1.3" stroke-dasharray="4 3"/><circle cx="387.5" cy="254.0" r="5.5" fill="#73B222" stroke="#FFFFFF" stroke-width="2"/></g><g class="mx-a" style="--d:2.7s"><foreignObject x="374.533" y="347" width="26" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="z_{2}"></div></foreignObject></g><g class="mx-a" style="--d:3.4s"><g class="mx-c" data-c="h1.1" role="button" tabindex="0" aria-label="h1.1"><rect x="636" y="262" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="669" y="285.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.5842</text></g></g><rect class="mx-flash" style="--d:3.3s;--t:1.1s" x="634" y="260" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><text x="73" y="315" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="669" y="315" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="370" y="384" font-size="12.5" fill="#5E5850" text-anchor="middle" font-weight="400">Каждая клетка идёт через сигмоиду сама по себе, поэтому форма не меняется.</text></g><g data-key="b4" data-only="1"><foreignObject x="66" y="179" width="152" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf W^{(2)}"></div></foreignObject><foreignObject x="216" y="179" width="86" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf h^{(1)}"></div></foreignObject><foreignObject x="324" y="179" width="86" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf b^{(2)}"></div></foreignObject><foreignObject x="434" y="179" width="86" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf z^{(2)}"></div></foreignObject><g class="mx-c" data-c="W2.0.0" role="button" tabindex="0" aria-label="W2.0.0"><rect x="76" y="208" width="66" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="109" y="231.4" font-size="15" font-weight="600" text-anchor="middle" fill="#7A6305">0.50</text></g><g class="mx-c" data-c="W2.0.1" role="button" tabindex="0" aria-label="W2.0.1"><rect x="142" y="208" width="66" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="175" y="231.4" font-size="15" font-weight="600" text-anchor="middle" fill="#7A6305">−0.30</text></g><g class="mx-c" data-c="W2.1.0" role="button" tabindex="0" aria-label="W2.1.0"><rect x="76" y="244" width="66" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="109" y="267.4" font-size="15" font-weight="600" text-anchor="middle" fill="#7A6305">0.20</text></g><g class="mx-c" data-c="W2.1.1" role="button" tabindex="0" aria-label="W2.1.1"><rect x="142" y="244" width="66" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="175" y="267.4" font-size="15" font-weight="600" text-anchor="middle" fill="#7A6305">0.60</text></g><g class="mx-c" data-c="h1.0" role="button" tabindex="0" aria-label="h1.0"><rect x="226" y="208" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="259" y="231.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.5037</text></g><g class="mx-c" data-c="h1.1" role="button" tabindex="0" aria-label="h1.1"><rect x="226" y="244" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="259" y="267.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.5842</text></g><g class="mx-c" data-c="b2.0" role="button" tabindex="0" aria-label="b2.0"><rect x="334" y="208" width="66" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="367" y="231.4" font-size="15" font-weight="600" text-anchor="middle" fill="#7A6305">0.05</text></g><g class="mx-c" data-c="b2.1" role="button" tabindex="0" aria-label="b2.1"><rect x="334" y="244" width="66" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="367" y="267.4" font-size="15" font-weight="600" text-anchor="middle" fill="#7A6305">0.15</text></g><text x="313" y="250.8" font-size="20" fill="#5E5850" text-anchor="middle" font-weight="400">+</text><text x="422" y="250.8" font-size="20" fill="#5E5850" text-anchor="middle" font-weight="400">=</text><g class="mx-a" style="--d:1.7s"><g class="mx-c" data-c="z2.0" role="button" tabindex="0" aria-label="z2.0"><rect x="444" y="208" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="477" y="231.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.1266</text></g></g><rect class="mx-flash" style="--d:0.2s;--t:2.2s" x="74" y="206" width="136" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:0.2s;--t:2.2s" x="224" y="206" width="70" height="76" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:0.2s;--t:2.2s" x="332" y="206" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:0.2s;--t:2.2s" x="442" y="206" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><g class="mx-a" style="--d:4.1s"><g class="mx-c" data-c="z2.1" role="button" tabindex="0" aria-label="z2.1"><rect x="444" y="244" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="477" y="267.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.6013</text></g></g><rect class="mx-flash" style="--d:2.6s;--t:2.2s" x="74" y="242" width="136" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:2.6s;--t:2.2s" x="224" y="206" width="70" height="76" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:2.6s;--t:2.2s" x="332" y="242" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:2.6s;--t:2.2s" x="442" y="242" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><text x="142" y="297" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×2)</text><text x="259" y="297" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="367" y="297" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="477" y="297" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="14" y="322" font-size="12" fill="#8A8378" text-anchor="start" font-weight="400">строка 1</text><g class="mx-a" style="--d:0.5s"><text x="109" y="322" font-size="14" fill="#5E5850" text-anchor="middle" font-weight="400">0.2519</text></g><g class="mx-a" style="--d:0.9s"><text x="175" y="322" font-size="14" fill="#5E5850" text-anchor="middle" font-weight="400">−0.1753</text></g><g class="mx-a" style="--d:1.3s"><text x="367" y="322" font-size="14" fill="#5E5850" text-anchor="middle" font-weight="400">+0.0500</text></g><g class="mx-a" style="--d:1.7s"><text x="477" y="322" font-size="14" fill="#4C8316" text-anchor="middle" font-weight="700">= 0.1266</text></g><text x="14" y="347" font-size="12" fill="#8A8378" text-anchor="start" font-weight="400">строка 2</text><g class="mx-a" style="--d:2.9s"><text x="109" y="347" font-size="14" fill="#5E5850" text-anchor="middle" font-weight="400">0.1007</text></g><g class="mx-a" style="--d:3.3s"><text x="175" y="347" font-size="14" fill="#5E5850" text-anchor="middle" font-weight="400">+0.3505</text></g><g class="mx-a" style="--d:3.7s"><text x="367" y="347" font-size="14" fill="#5E5850" text-anchor="middle" font-weight="400">+0.1500</text></g><g class="mx-a" style="--d:4.1s"><text x="477" y="347" font-size="14" fill="#4C8316" text-anchor="middle" font-weight="700">= 0.6013</text></g><line x1="601" y1="226" x2="707" y2="226" stroke="#BDB6A9" stroke-width="1.5"/><line x1="601" y1="278" x2="707" y2="226" stroke="#BDB6A9" stroke-width="1.5"/><line x1="601" y1="226" x2="707" y2="278" stroke="#BDB6A9" stroke-width="1.5"/><line x1="601" y1="278" x2="707" y2="278" stroke="#BDB6A9" stroke-width="1.5"/><line class="mx-flash" style="--d:0.2s;--t:2.2s" x1="601" y1="226" x2="707" y2="226" stroke="#D83BB9" stroke-width="3.2"/><line class="mx-flash" style="--d:0.2s;--t:2.2s" x1="601" y1="278" x2="707" y2="226" stroke="#D83BB9" stroke-width="3.2"/><line class="mx-flash" style="--d:2.6s;--t:2.2s" x1="601" y1="226" x2="707" y2="278" stroke="#D83BB9" stroke-width="3.2"/><line class="mx-flash" style="--d:2.6s;--t:2.2s" x1="601" y1="278" x2="707" y2="278" stroke="#D83BB9" stroke-width="3.2"/><circle cx="586" cy="226" r="15" fill="#FFFFFF" stroke="#73B222" stroke-width="2"/><foreignObject x="571" y="213" width="30" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="h_1"></div></foreignObject><circle cx="586" cy="278" r="15" fill="#FFFFFF" stroke="#73B222" stroke-width="2"/><foreignObject x="571" y="265" width="30" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="h_2"></div></foreignObject><circle cx="722" cy="226" r="15" fill="#F4F7EE" stroke="#C29E08" stroke-width="2"/><foreignObject x="707" y="213" width="30" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="z_1"></div></foreignObject><circle cx="722" cy="278" r="15" fill="#F4F7EE" stroke="#C29E08" stroke-width="2"/><foreignObject x="707" y="265" width="30" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="z_2"></div></foreignObject></g><g data-key="b5" data-only="1"><foreignObject x="28" y="197" width="90" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf z^{(2)}"></div></foreignObject><foreignObject x="624" y="197" width="90" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf h^{(2)}"></div></foreignObject><g class="mx-c" data-c="z2.0" role="button" tabindex="0" aria-label="z2.0"><rect x="40" y="226" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="73" y="249.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.1266</text></g><g class="mx-c" data-c="z2.1" role="button" tabindex="0" aria-label="z2.1"><rect x="40" y="262" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="73" y="285.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.6013</text></g><line x1="176" y1="344" x2="556" y2="344" stroke="#5E5850" stroke-width="1.3"/><line x1="366" y1="190" x2="366" y2="344" stroke="#D8D4C8" stroke-width="1.2"/><line x1="176" y1="267" x2="556" y2="267" stroke="#EDEAE2" stroke-width="1.1"/><text x="170" y="271" font-size="11" fill="#8A8378" text-anchor="end" font-weight="400">0.5</text><text x="170" y="198" font-size="11" fill="#8A8378" text-anchor="end" font-weight="400">1</text><text x="170" y="347" font-size="11" fill="#8A8378" text-anchor="end" font-weight="400">0</text><polyline points="176.0,336.7 179.8,336.3 183.6,335.8 187.4,335.3 191.2,334.8 195.0,334.3 198.8,333.7 202.6,333.2 206.4,332.5 210.2,331.9 214.0,331.2 217.8,330.5 221.6,329.7 225.4,328.9 229.2,328.1 233.0,327.2 236.8,326.3 240.6,325.3 244.4,324.3 248.2,323.3 252.0,322.2 255.8,321.0 259.6,319.8 263.4,318.6 267.2,317.3 271.0,315.9 274.8,314.5 278.6,313.0 282.4,311.5 286.2,310.0 290.0,308.4 293.8,306.7 297.6,305.0 301.4,303.2 305.2,301.4 309.0,299.5 312.8,297.6 316.6,295.6 320.4,293.6 324.2,291.5 328.0,289.4 331.8,287.3 335.6,285.1 339.4,282.9 343.2,280.7 347.0,278.5 350.8,276.2 354.6,273.9 358.4,271.6 362.2,269.3 366.0,267.0 369.8,264.7 373.6,262.4 377.4,260.1 381.2,257.8 385.0,255.5 388.8,253.3 392.6,251.1 396.4,248.9 400.2,246.7 404.0,244.6 407.8,242.5 411.6,240.4 415.4,238.4 419.2,236.4 423.0,234.5 426.8,232.6 430.6,230.8 434.4,229.0 438.2,227.3 442.0,225.6 445.8,224.0 449.6,222.5 453.4,221.0 457.2,219.5 461.0,218.1 464.8,216.7 468.6,215.4 472.4,214.2 476.2,213.0 480.0,211.8 483.8,210.7 487.6,209.7 491.4,208.7 495.2,207.7 499.0,206.8 502.8,205.9 506.6,205.1 510.4,204.3 514.2,203.5 518.0,202.8 521.8,202.1 525.6,201.5 529.4,200.8 533.2,200.3 537.0,199.7 540.8,199.2 544.6,198.7 548.4,198.2 552.2,197.7 556.0,197.3" fill="none" stroke="#73B222" stroke-width="2.2"/><line x1="112" y1="262" x2="144" y2="262" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/><line x1="562" y1="262" x2="630" y2="262" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/><foreignObject x="111" y="235" width="30" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\sigma"></div></foreignObject><rect class="mx-flash" style="--d:0.3s;--t:2s" x="38" y="224" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><g class="mx-a" style="--d:0.6s"><line x1="374.019" y1="344" x2="374.019" y2="262.132" stroke="#73B222" stroke-width="1.3" stroke-dasharray="4 3"/><line x1="374.019" y1="262.132" x2="556" y2="262.132" stroke="#73B222" stroke-width="1.3" stroke-dasharray="4 3"/><circle cx="374.0" cy="262.1" r="5.5" fill="#73B222" stroke="#FFFFFF" stroke-width="2"/></g><g class="mx-a" style="--d:0.6s"><foreignObject x="361.019" y="347" width="26" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="z_{1}"></div></foreignObject></g><g class="mx-a" style="--d:1.3s"><g class="mx-c" data-c="h2.0" role="button" tabindex="0" aria-label="h2.0"><rect x="636" y="226" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="669" y="249.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.5316</text></g></g><rect class="mx-flash" style="--d:1.2s;--t:1.1s" x="634" y="224" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:2.4s;--t:2s" x="38" y="260" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><g class="mx-a" style="--d:2.7s"><line x1="404.08" y1="344" x2="404.08" y2="244.524" stroke="#73B222" stroke-width="1.3" stroke-dasharray="4 3"/><line x1="404.08" y1="244.524" x2="556" y2="244.524" stroke="#73B222" stroke-width="1.3" stroke-dasharray="4 3"/><circle cx="404.1" cy="244.5" r="5.5" fill="#73B222" stroke="#FFFFFF" stroke-width="2"/></g><g class="mx-a" style="--d:2.7s"><foreignObject x="391.08" y="347" width="26" height="22"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="z_{2}"></div></foreignObject></g><g class="mx-a" style="--d:3.4s"><g class="mx-c" data-c="h2.1" role="button" tabindex="0" aria-label="h2.1"><rect x="636" y="262" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="669" y="285.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.6459</text></g></g><rect class="mx-flash" style="--d:3.3s;--t:1.1s" x="634" y="260" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><text x="73" y="315" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="669" y="315" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="370" y="384" font-size="12.5" fill="#5E5850" text-anchor="middle" font-weight="400">Каждая клетка идёт через сигмоиду сама по себе, поэтому форма не меняется.</text></g><g data-key="b6" data-only="1"><foreignObject x="4" y="193" width="110" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf h^{(2)}"></div></foreignObject><foreignObject x="104" y="193" width="110" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf y"></div></foreignObject><foreignObject x="204" y="193" width="110" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf h^{(2)} - \mathbf y"></div></foreignObject><foreignObject x="342" y="193" width="110" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\tfrac12(\cdot)^2"></div></foreignObject><g class="mx-c" data-c="h2.0" role="button" tabindex="0" aria-label="h2.0"><rect x="26" y="226" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="59" y="249.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.5316</text></g><g class="mx-c" data-c="h2.1" role="button" tabindex="0" aria-label="h2.1"><rect x="26" y="262" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="59" y="285.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.6459</text></g><g class="mx-c" data-c="y.0" role="button" tabindex="0" aria-label="y.0"><rect x="126" y="226" width="66" height="36" rx="3" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.2"/><text x="159" y="249.4" font-size="15" font-weight="600" text-anchor="middle" fill="#2A5E9B">1</text></g><g class="mx-c" data-c="y.1" role="button" tabindex="0" aria-label="y.1"><rect x="126" y="262" width="66" height="36" rx="3" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.2"/><text x="159" y="285.4" font-size="15" font-weight="600" text-anchor="middle" fill="#2A5E9B">0</text></g><text x="109" y="268.8" font-size="20" fill="#5E5850" text-anchor="middle" font-weight="400">−</text><text x="209" y="268.8" font-size="20" fill="#5E5850" text-anchor="middle" font-weight="400">=</text><g class="mx-a" style="--d:0.4s"><g class="mx-c" data-c="d.0" role="button" tabindex="0" aria-label="d.0"><rect x="226" y="226" width="66" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="259" y="249.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">−0.4684</text></g><g class="mx-c" data-c="d.1" role="button" tabindex="0" aria-label="d.1"><rect x="226" y="262" width="66" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="259" y="285.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">0.6459</text></g></g><g class="mx-a" style="--d:1.1s"><line x1="300" y1="262" x2="356" y2="262" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/></g><g class="mx-a" style="--d:1.3s"><g class="mx-c" data-c="e.0" role="button" tabindex="0" aria-label="e.0"><rect x="364" y="226" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="397" y="249.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.1097</text></g><g class="mx-c" data-c="e.1" role="button" tabindex="0" aria-label="e.1"><rect x="364" y="262" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="397" y="285.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.2086</text></g></g><g class="mx-a" style="--d:2.1s"><line x1="438" y1="262" x2="492" y2="262" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/></g><g class="mx-merge" style="--dx:143px;--dy:18px;--d:2.1s;--t:0.8s"><rect x="364" y="226" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="397" y="249.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.1097</text></g><g class="mx-merge" style="--dx:143px;--dy:-18px;--d:2.1s;--t:0.8s"><rect x="364" y="262" width="66" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="397" y="285.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.2086</text></g><g class="mx-a" style="--d:2.8s"><g class="mx-c" data-c="E" role="button" tabindex="0" aria-label="E"><rect x="500" y="238" width="80" height="48" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="540" y="268.12" font-size="17" font-weight="600" text-anchor="middle" fill="#4C8316">0.3183</text></g></g><foreignObject x="510" y="195" width="60" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:16px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="E"></div></foreignObject><text x="59" y="315" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="159" y="315" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="259" y="315" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="397" y="315" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><g class="mx-a" style="--d:3s"><text x="540" y="315" font-size="12.5" fill="#4C8316" text-anchor="middle" font-weight="700">одно число</text></g></g><g data-key="b7" data-only="1"><text x="30" y="202" font-size="13" fill="#5E5850" text-anchor="start" font-weight="700">Те же правила для слоя из 4 входов в 3 выхода</text><rect x="90" y="240" width="22" height="22" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.1"/><rect x="112" y="240" width="22" height="22" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.1"/><rect x="134" y="240" width="22" height="22" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.1"/><rect x="156" y="240" width="22" height="22" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.1"/><rect x="90" y="262" width="22" height="22" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.1"/><rect x="112" y="262" width="22" height="22" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.1"/><rect x="134" y="262" width="22" height="22" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.1"/><rect x="156" y="262" width="22" height="22" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.1"/><rect x="90" y="284" width="22" height="22" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.1"/><rect x="112" y="284" width="22" height="22" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.1"/><rect x="134" y="284" width="22" height="22" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.1"/><rect x="156" y="284" width="22" height="22" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.1"/><rect x="240" y="240" width="22" height="22" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.1"/><rect x="240" y="262" width="22" height="22" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.1"/><rect x="240" y="284" width="22" height="22" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.1"/><rect x="240" y="306" width="22" height="22" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.1"/><rect x="340" y="240" width="22" height="22" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.1"/><rect x="340" y="262" width="22" height="22" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.1"/><rect x="340" y="284" width="22" height="22" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.1"/><g class="mx-a" style="--d:0.6s"><rect x="440" y="240" width="22" height="22" fill="#EDF7DD" stroke="#73B222" stroke-width="1.1"/><rect x="440" y="262" width="22" height="22" fill="#EDF7DD" stroke="#73B222" stroke-width="1.1"/><rect x="440" y="284" width="22" height="22" fill="#EDF7DD" stroke="#73B222" stroke-width="1.1"/></g><g class="mx-a" style="--d:1s"><rect x="560" y="240" width="22" height="22" fill="#EDF7DD" stroke="#73B222" stroke-width="1.1"/><rect x="560" y="262" width="22" height="22" fill="#EDF7DD" stroke="#73B222" stroke-width="1.1"/><rect x="560" y="284" width="22" height="22" fill="#EDF7DD" stroke="#73B222" stroke-width="1.1"/></g><text x="204" y="280.8" font-size="20" fill="#5E5850" text-anchor="middle" font-weight="400">·</text><text x="299" y="280.8" font-size="20" fill="#5E5850" text-anchor="middle" font-weight="400">+</text><text x="399" y="280.8" font-size="20" fill="#5E5850" text-anchor="middle" font-weight="400">=</text><g class="mx-a" style="--d:0.9s"><line x1="474" y1="273" x2="548" y2="273" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/></g><g class="mx-a" style="--d:0.9s"><foreignObject x="495" y="246" width="30" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\sigma"></div></foreignObject></g><foreignObject x="84" y="210" width="100" height="28"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="[3 \times 4]"></div></foreignObject><foreignObject x="216" y="210" width="70" height="28"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="[4 \times 1]"></div></foreignObject><foreignObject x="316" y="210" width="70" height="28"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="[3 \times 1]"></div></foreignObject><foreignObject x="416" y="210" width="70" height="28"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="[3 \times 1]"></div></foreignObject><foreignObject x="536" y="210" width="70" height="28"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="[3 \times 1]"></div></foreignObject><rect class="mx-flash" style="--d:0.2s;--t:1.1s" x="88" y="238" width="92" height="70" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:0.2s;--t:1.1s" x="238" y="238" width="26" height="92" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><line x1="90" y1="318" x2="178" y2="318" stroke="#D83BB9" stroke-width="2.2"/><text x="134" y="334" font-size="12.5" fill="#A02A88" text-anchor="middle" font-weight="700">ширина 4</text><line x1="270" y1="240" x2="270" y2="328" stroke="#D83BB9" stroke-width="2.2"/><text x="276" y="342" font-size="12.5" fill="#A02A88" text-anchor="middle" font-weight="700">высота 4</text></g><text x="14" y="408" font-size="12" fill="#8A8378" text-anchor="start" font-weight="400">синее: вход и цель · жёлтое: параметры · зелёное: посчитала модель · розовая рамка: что участвует сейчас</text></svg>
+<div class="mx-why" aria-live="polite"><span class="mx-why-hint">Нажмите на клетку с числом: здесь появится её расчёт.</span></div>
 
   </div>
 
@@ -1106,18 +998,17 @@
   </div>
 
   <div class="stage-notes">
-    <div class="step-panel" data-on="dat f1e f2e f3e f4e f5e" data-focus="dat">
+    <div class="step-panel" data-on="dat e1 e2 e3 e4 e5 b1" data-focus="dat">
       <div class="step-kicker">Шаг 1 · что лежит на столе</div>
       <h4>Шесть матриц: вход, цель и параметры двух слоёв</h4>
       <p>Строка <span class="math-inline" data-tex="i"></span> матрицы <span class="math-inline" data-tex="\mathbf W^{(1)}"></span> собирает веса, ведущие в узел
       <span class="math-inline" data-tex="i"></span> следующего слоя, столбец <span class="math-inline" data-tex="j"></span> собирает веса, выходящие из
-      входа <span class="math-inline" data-tex="j"></span>. Справа пока пунктир со знаками вопроса: эти клетки мы будем
-      заполнять.</p>
+      входа <span class="math-inline" data-tex="j"></span>. Клетки сумматоров и активаций пока пусты, мы заполним их по одной.</p>
       <p>Матричное умножение сводится к скалярным произведениям. Клетка <span class="math-inline" data-tex="i"></span>
       результата равна произведению строки <span class="math-inline" data-tex="i"></span> на весь вектор:</p>
       <div class="math-display" data-tex="\left(\mathbf W^{(1)} \mathbf x^{(0)}\right)_i = \sum_{j} W^{(1)}_{ij}\, x^{(0)}_j"></div>
     </div>
-    <div class="step-panel" data-on="dat f1 f2e f3e f4e f5e" data-focus="f1">
+    <div class="step-panel" data-on="dat f1 e2 e3 e4 e5 b2" data-focus="f1">
       <div class="step-kicker">Шаг 2 · сумматор первого слоя</div>
       <h4>Две строки, два скалярных произведения</h4>
       <p>Формы сходятся так: <span class="math-inline" data-tex="(2\times 2) \cdot  (2\times 1)"></span> даёт <span class="math-inline" data-tex="(2\times 1)"></span>, двойка в
@@ -1142,7 +1033,7 @@
         0.5: сигмоида в нуле проходит через середину.</p>
       </div>
     </div>
-    <div class="step-panel" data-on="dat f1 f2 f3e f4e f5e" data-focus="f2">
+    <div class="step-panel" data-on="dat f1 f2 e3 e4 e5 b3" data-focus="f2">
       <div class="step-kicker">Шаг 3 · активация</div>
       <h4>Сигмоида: одно число на клетку</h4>
       <p>Функция применяется к каждой клетке отдельно, поэтому форма не меняется.</p>
@@ -1150,7 +1041,7 @@
       <p>Вокруг нуля сигмоида почти линейна с наклоном ¼: вход 0.0150 сдвинул
       выход от середины примерно на 0.0037, то есть на четверть входа.</p>
     </div>
-    <div class="step-panel" data-on="dat f1 f2 f3 f4e f5e" data-focus="f3">
+    <div class="step-panel" data-on="dat f1 f2 f3 e4 e5 b4" data-focus="f3">
       <div class="step-kicker">Шаг 4 · сумматор второго слоя</div>
       <h4>Тот же блок, только вход другой</h4>
       <p>Вместо <span class="math-inline" data-tex="\mathbf x^{(0)}"></span> в скалярные произведения идёт <span class="math-inline" data-tex="\mathbf h^{(1)}"></span>. Строки
@@ -1174,14 +1065,14 @@
         вклады сложились, поэтому он дальше от нуля.</p>
       </div>
     </div>
-    <div class="step-panel" data-on="dat f1 f2 f3 f4 f5e" data-focus="f4">
+    <div class="step-panel" data-on="dat f1 f2 f3 f4 e5 b5" data-focus="f4">
       <div class="step-kicker">Шаг 5 · выход сети</div>
       <h4>0.5316 и 0.6459</h4>
       <div class="math-display" data-tex="h^{(2)}_1 = \frac{1}{1 + e^{-0.1266}} = 0.5316, \qquad h^{(2)}_2 = \frac{1}{1 + e^{-0.6013}} = 0.6459"></div>
       <p>Первый выход должен был стать единицей, второй нулём. Промахи в разные стороны:
       −0.4684 и +0.6459. С этих двух разностей начнётся обратный проход.</p>
     </div>
-    <div class="step-panel" data-on="dat f1 f2 f3 f4 f5" data-focus="f5">
+    <div class="step-panel" data-on="dat f1 f2 f3 f4 f5 b6" data-focus="f5">
       <div class="step-kicker">Шаг 6 · ошибка</div>
       <h4>Единственное место, где размерность падает до скаляра</h4>
       <p>Разность <span class="math-inline" data-tex="\mathbf h^{(2)} - \mathbf y"></span> ещё столбец <span class="math-inline" data-tex="(2\times 1)"></span>, но
@@ -1190,7 +1081,7 @@
       <div class="math-display" data-tex="E = 0.1097 + 0.2086 = 0.3183"></div>
       <p>Вклад второго выхода почти вдвое больше, и градиенты от него окажутся крупнее.</p>
     </div>
-    <div class="step-panel" data-on="dat f1 f2 f3 f4 f5 nb" data-focus="nb">
+    <div class="step-panel" data-on="dat f1 f2 f3 f4 f5 b7" data-focus="">
       <div class="step-kicker">Шаг 7 · правило форм</div>
       <h4>Что запомнить про размерности</h4>
       <div class="worked-example">
@@ -1396,7 +1287,7 @@
       <p>В каждой только дельта и активация: производные и функция потерь уже вошли в
       <span class="math-inline" data-tex="\boldsymbol\delta^{(2)}"></span>. Соберём четыре весовые формулы в таблицу:</p>
       <div class="math-display" data-tex="\frac{\partial E}{\partial \mathbf W^{(2)}} = \begin{pmatrix} \delta^{(2)}_1 h^{(1)}_1 &amp; \delta^{(2)}_1 h^{(1)}_2 \\ \delta^{(2)}_2 h^{(1)}_1 &amp; \delta^{(2)}_2 h^{(1)}_2 \end{pmatrix}"></div>
-      <p>Такая одинаковость позволяет перейти к матрицам: это часть 4.</p>
+      <p>Такая одинаковость позволяет перейти к матрицам: это в конце части.</p>
     </div>
   </div>
 </div>
@@ -1546,31 +1437,18 @@
           </div>
         </div>
         <p class="worked-reading">Матрица градиентов равна произведению двух векторов, поэтому её четыре числа не
-        независимы. Это мы оформим в следующей части.</p>
+        независимы. Это мы запишем матрицей в конце части.</p>
       </div>
     </div>
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
 
-<div class="callout">
-  <strong>Главная мысль части:</strong> все шесть градиентов слоя строятся из двух дельт. Градиент веса равен дельте его
-  выходного узла, умноженной на вход ребра. Градиент смещения равен самой дельте.
-</div>
-
----
-
-## Часть 4. Компактная запись последнего слоя
+### Шесть формул одной записью
 
 <p>
-  В части 3 мы шли по узлам: так формулы выводятся, но так их не хранят. Тот же результат
-  даёт работа сразу с векторами и матрицами как с целыми объектами графа вычислений.
-  Переведём шесть скалярных формул на этот язык.
-</p>
-
-<p>
-  Первые два множителя каждой цепочки зависят только от номера <em>выхода</em>, а не
-  от того, из какого узла выходит вес. Это дельта, записанная вектором целиком.
+  В четырёх цепочках для весов первые два множителя зависят только от номера выхода и не зависят
+  от того, из какого узла выходит вес. Поэтому дельту можно записать вектором целиком:
 </p>
 
 <div class="math-display" data-tex="\boldsymbol\delta^{(2)} = \frac{\partial E}{\partial \mathbf h^{(2)}} \odot \sigma'\!\left(\mathbf z^{(2)}\right)"></div>
@@ -1583,185 +1461,28 @@
 </div>
 
 <p>
-  В правом верхнем углу сцены стоит уменьшенная схема сети: она показывает, какой
-  кусок мы сейчас разбираем.
+  Дельта это единственная величина, которую слой передаёт соседнему слою. Четыре формулы
+  <span class="math-inline" data-tex="\delta_i h_j"></span> это клетки таблицы умножения: строка показывает, куда ребро ведёт,
+  столбец откуда выходит. Ради этого совпадения в нотации весов сначала стоит «куда», потом «откуда».
+  Вектор дельт по вертикали и вектор активаций по горизонтали дают ту же таблицу:
 </p>
 
-### Интерактив 8 · от четырёх формул к одной матрице
+<div class="math-display" data-tex="\begin{gathered} \frac{\partial E}{\partial \mathbf W^{(2)}} = \boldsymbol\delta^{(2)}\left(\mathbf h^{(1)}\right)^{\!\top}, \qquad \frac{\partial E}{\partial \mathbf b^{(2)}} = \boldsymbol\delta^{(2)} \\[6pt] \begin{pmatrix} -0.1166 \\ 0.1477 \end{pmatrix}\begin{pmatrix} 0.5037 &amp; 0.5842 \end{pmatrix} = \begin{pmatrix} -0.0588 &amp; -0.0681 \\ 0.0744 &amp; 0.0863 \end{pmatrix} \end{gathered}"></div>
 
-<div class="stage" id="stageMx" tabindex="0">
-  <div class="stage-figure">
-<svg id="mx" viewBox="0 0 960 646" role="img" aria-label="Сборка четырёх скалярных формул последнего слоя в одну матричную запись">
-  <style>
-    #mx { font-family: Helvetica, Arial, sans-serif; }
-    #mx .cap { font-size: 14px; fill: #5E5850; }
-    #mx .note { font-size: 14px; }
-    #mx .mini { font-size: 12px; fill: #8A8378; }
-    #mx .mmn { fill: #FFFFFF; stroke: #B9B4A9; stroke-width: 1.4; }
-    #mx .mme { stroke: #D3CFC5; stroke-width: 1.3; fill: none; }
-    #mx .mmy { stroke: #C29E08; stroke-width: 3; fill: none; stroke-linecap: round; }
-    #mx .mmr { stroke: #C30B0A; stroke-width: 3; fill: none; stroke-linecap: round; }
-    #mx .by { fill: #FFFBEB; stroke: #C29E08; stroke-width: 1.6; }
-    #mx .br { fill: #FFF2F2; stroke: #C30B0A; stroke-width: 1.6; }
-    #mx .bb { fill: #F0F6FC; stroke: #3576C0; stroke-width: 1.6; }
-    #mx .legend { font-size: 13px; fill: #8A8378; }
-  </style>
-
-  <text x="33" y="32" class="cap">Четыре веса последнего слоя: четыре цепочки одинакового устройства</text>
-
-  <line x1="650" y1="62" x2="730" y2="62" class="mme"/>
-  <line x1="650" y1="62" x2="730" y2="112" class="mme"/>
-  <line x1="650" y1="112" x2="730" y2="62" class="mme"/>
-  <line x1="650" y1="112" x2="730" y2="112" class="mme"/>
-  <line x1="730" y1="62" x2="810" y2="62" class="mmy"/>
-  <line x1="730" y1="62" x2="810" y2="112" class="mmy"/>
-  <line x1="730" y1="112" x2="810" y2="62" class="mmy"/>
-  <line x1="730" y1="112" x2="810" y2="112" class="mmy"/>
-  <line x1="810" y1="62" x2="890" y2="87" class="mmr"/>
-  <line x1="810" y1="112" x2="890" y2="87" class="mmr"/>
-  <circle cx="650" cy="62" r="11" class="mmn"/>
-  <circle cx="650" cy="112" r="11" class="mmn"/>
-  <circle cx="730" cy="62" r="11" class="mmn"/>
-  <circle cx="730" cy="112" r="11" class="mmn"/>
-  <circle cx="810" cy="62" r="11" class="mmn"/>
-  <circle cx="810" cy="112" r="11" class="mmn"/>
-  <circle cx="890" cy="87" r="11" class="mmn"/>
-  <foreignObject x="590" y="21.68" width="120" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#8A8378;font-weight:400;text-align:center;justify-content:center" data-tex="\mathbf x^{(0)}"></div></foreignObject>
-  <foreignObject x="670" y="21.68" width="120" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#8A8378;font-weight:400;text-align:center;justify-content:center" data-tex="\mathbf h^{(1)}"></div></foreignObject>
-  <foreignObject x="750" y="21.68" width="120" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#8A8378;font-weight:400;text-align:center;justify-content:center" data-tex="\mathbf h^{(2)}"></div></foreignObject>
-  <foreignObject x="830" y="21.68" width="120" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#8A8378;font-weight:400;text-align:center;justify-content:center" data-tex="E"></div></foreignObject>
-  <foreignObject x="330" y="121.68" width="880" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#8A8378;font-weight:400;text-align:center;justify-content:center"><span>разбираем жёлтый слой: <span data-tex="\mathbf W^{(2)}"></span> и <span data-tex="\mathbf b^{(2)}"></span></span></div></foreignObject>
-
-  <g data-key="eqs" data-only="1">
-    <foreignObject x="33" y="44" width="560" height="40">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\frac{\partial E}{\partial W^{(2)}_{11}} = \textcolor{#C29E08}{\left(h^{(2)}_1 - y_1\right)\,\sigma'\!\left(z^{(2)}_1\right)}\;h^{(1)}_1"></div>
-    </foreignObject>
-    <foreignObject x="33" y="86" width="560" height="40">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\frac{\partial E}{\partial W^{(2)}_{12}} = \textcolor{#C29E08}{\left(h^{(2)}_1 - y_1\right)\,\sigma'\!\left(z^{(2)}_1\right)}\;h^{(1)}_2"></div>
-    </foreignObject>
-    <foreignObject x="33" y="128" width="560" height="40">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\frac{\partial E}{\partial W^{(2)}_{21}} = \textcolor{#C29E08}{\left(h^{(2)}_2 - y_2\right)\,\sigma'\!\left(z^{(2)}_2\right)}\;h^{(1)}_1"></div>
-    </foreignObject>
-    <foreignObject x="33" y="170" width="560" height="40">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\frac{\partial E}{\partial W^{(2)}_{22}} = \textcolor{#C29E08}{\left(h^{(2)}_2 - y_2\right)\,\sigma'\!\left(z^{(2)}_2\right)}\;h^{(1)}_2"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="rep" data-only="1">
-    <text x="33" y="238" class="note" fill="#8C7106">Жёлтая часть зависит только от номера выхода: у пары 11 и 12 она общая, у 21 и 22 своя</text>
-  </g>
-
-  <g data-key="dlt" data-only="1">
-    <rect x="33" y="252" width="430" height="56" rx="10" class="br"/>
-    <rect x="493" y="252" width="430" height="56" rx="10" class="br"/>
-    <foreignObject x="45" y="264" width="406" height="34">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\delta^{(2)}_1 = \left(h^{(2)}_1 - y_1\right)\sigma'\!\left(z^{(2)}_1\right) = -0.1166"></div>
-    </foreignObject>
-    <foreignObject x="505" y="264" width="406" height="34">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\delta^{(2)}_2 = \left(h^{(2)}_2 - y_2\right)\sigma'\!\left(z^{(2)}_2\right) = 0.1477"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="rew" data-only="1">
-    <foreignObject x="33" y="324" width="890" height="44">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-md" data-tex="\frac{\partial E}{\partial W^{(2)}_{11}} = \delta^{(2)}_1 h^{(1)}_1, \qquad \frac{\partial E}{\partial W^{(2)}_{12}} = \delta^{(2)}_1 h^{(1)}_2"></div>
-    </foreignObject>
-    <foreignObject x="33" y="370" width="890" height="44">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-md" data-tex="\frac{\partial E}{\partial W^{(2)}_{21}} = \delta^{(2)}_2 h^{(1)}_1, \qquad \frac{\partial E}{\partial W^{(2)}_{22}} = \delta^{(2)}_2 h^{(1)}_2"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="mat" data-only="1">
-    <rect x="33" y="426" width="580" height="76" rx="12" class="by"/>
-    <foreignObject x="45" y="436" width="556" height="58">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm svg-math-center" data-tex="\frac{\partial E}{\partial \mathbf W^{(2)}} = \begin{pmatrix} \delta^{(2)}_1 \\[4pt] \delta^{(2)}_2 \end{pmatrix}\begin{pmatrix} h^{(1)}_1 &amp; h^{(1)}_2 \end{pmatrix} = \boldsymbol\delta^{(2)}\left(\mathbf h^{(1)}\right)^{\!\top}"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="bia" data-only="1">
-    <rect x="633" y="426" width="290" height="76" rx="12" class="by"/>
-    <foreignObject x="645" y="436" width="266" height="58">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm svg-math-center" data-tex="\frac{\partial E}{\partial \mathbf b^{(2)}} = \boldsymbol\delta^{(2)}"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="num" data-only="1">
-    <rect x="33" y="518" width="890" height="80" rx="12" class="bb"/>
-    <foreignObject x="45" y="526" width="866" height="64">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm svg-math-center" data-tex="\frac{\partial E}{\partial \mathbf W^{(2)}} = \begin{pmatrix} -0.1166 \\[4pt] 0.1477 \end{pmatrix}\begin{pmatrix} 0.5037 &amp; 0.5842 \end{pmatrix} = \begin{pmatrix} -0.0588 &amp; -0.0681 \\[4pt] 0.0744 &amp; 0.0863 \end{pmatrix}"></div>
-    </foreignObject>
-  </g>
-
-  <text x="33" y="628" class="legend">красное: сигнал ошибки, идущий назад · жёлтое: параметры и их градиенты · синее: числа сквозного примера</text>
-</svg>
-
-  </div>
-
-  <div class="stage-bar">
-    <button type="button" data-nav="prev">← Назад</button>
-    <button type="button" data-nav="next">Далее →</button>
-    <div class="stage-progress"></div>
-    <div class="stage-counter"></div>
-  </div>
-
-  <div class="stage-notes">
-    <div class="step-panel" data-on="eqs" data-focus="eqs">
-      <div class="step-kicker">Шаг 1 · что есть</div>
-      <h4>Четыре цепочки, выписанные подряд</h4>
-      <p>Это результат части 3 без сокращений: промах, производная активации, вход
-      ребра. На мини-схеме жёлтым отмечен слой, о котором идёт речь.</p>
-    </div>
-    <div class="step-panel" data-on="eqs rep" data-focus="rep">
-      <div class="step-kicker">Шаг 2 · находим повтор</div>
-      <h4>Жёлтая часть повторяется дважды</h4>
-      <p>Строки 1 и 2 начинаются одинаково: обе идут в первый выход. Строки 3 и 4 совпадают
-      между собой. Считать одно и то же дважды незачем.</p>
-    </div>
-    <div class="step-panel" data-on="eqs rep dlt" data-focus="dlt">
-      <div class="step-kicker">Шаг 3 · вводим дельту</div>
-      <h4>Повторяющийся кусок получает имя</h4>
-      <p>Дельта это единственная величина, которую слой передаёт соседнему слою, и на ней
-      держится экономия алгоритма.</p>
-    </div>
-    <div class="step-panel" data-on="eqs rep dlt rew" data-focus="rew">
-      <div class="step-kicker">Шаг 4 · переписываем</div>
-      <h4>Формулы стали двухбуквенными</h4>
-      <p>Индексы читаются так: строка показывает, куда ребро ведёт, столбец откуда выходит.
-      Ради этого совпадения в нотации весов сначала стоит «куда», потом «откуда».</p>
-    </div>
-    <div class="step-panel" data-on="eqs rep dlt rew mat" data-focus="mat">
-      <div class="step-kicker">Шаг 5 · матричная форма</div>
-      <h4>Столбец на строку даёт внешнее произведение</h4>
-      <p>Разложите четыре равенства по клеткам матрицы 2×2, и получится таблица умножения:
-      вектор дельт по вертикали, вектор активаций по горизонтали.</p>
-      <p>Проверка размерностей: столбец 2×1 на строку 1×2 даёт 2×2, форму <span class="math-inline" data-tex="\mathbf W^{(2)}"></span>.
-      Градиент всегда той же формы, что и параметр, иначе его нельзя было бы вычесть.</p>
-    </div>
-    <div class="step-panel" data-on="eqs rep dlt rew mat bia" data-focus="bia">
-      <div class="step-kicker">Шаг 6 · смещения</div>
-      <h4>Градиент смещений равен дельте</h4>
-      <p>Градиент вектора смещений равен вектору дельт. В коде эта строка обычно выглядит как
-      присваивание.</p>
-    </div>
-    <div class="step-panel" data-on="eqs rep dlt rew mat bia num" data-focus="num">
-      <div class="step-kicker">Шаг 7 · числа</div>
-      <h4>Вся матрица градиентов за одно умножение</h4>
-      <p>Значение −0.0588 в левом верхнем углу это градиент, который мы выводили руками.
-      Остальные три получились попутно, а строки и столбцы оказались пропорциональны.</p>
-    </div>
-  </div>
-</div>
-<p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
+<p>
+  Проверка размерностей: столбец 2×1 на строку 1×2 даёт 2×2, форму <span class="math-inline" data-tex="\mathbf W^{(2)}"></span>.
+  Градиент всегда той же формы, что и параметр, иначе его нельзя было бы вычесть.
+</p>
 
 <div class="callout">
-  <strong>Главная мысль части:</strong> градиент весов слоя равен внешнему произведению дельты на вход слоя,
-  <span class="math-inline" data-tex="\partial E/\partial W = \delta \cdot h^{\top}"></span>, а градиент смещений равен самой дельте. Результат тот же,
-  что в части 3, записанный целиком.
+  <strong>Главная мысль части:</strong> все шесть градиентов слоя строятся из двух дельт. Градиент веса равен дельте его
+  выходного узла, умноженной на вход ребра. Градиент смещения равен самой дельте. В матричной
+  записи это <span class="math-inline" data-tex="\partial E/\partial \mathbf W = \boldsymbol\delta\, \mathbf h^{\top}"></span> и <span class="math-inline" data-tex="\partial E/\partial \mathbf b = \boldsymbol\delta"></span>.
 </div>
 
 ---
 
-## Часть 5. Первый слой: развилка вперёд, сумма назад
+## Часть 4. Первый слой: развилка вперёд, сумма назад
 
 <p>
   С параметрами первого слоя появляется новое обстоятельство. Активация
@@ -1778,11 +1499,11 @@
 <div class="math-display" data-tex="\frac{\partial E}{\partial h^{(1)}_j} = \sum_{k} \frac{\partial E}{\partial z^{(2)}_k}\cdot\frac{\partial z^{(2)}_k}{\partial h^{(1)}_j} = \sum_{k} \delta^{(2)}_k\, W^{(2)}_{kj}"></div>
 
 <div class="callout-blue">
-  <strong>Откуда взялась дельта:</strong> выражение <span class="math-inline" data-tex="\partial E/\partial z^{(2)}_{k}"></span> мы уже посчитали в части 4. Предыдущий слой оставил
+  <strong>Откуда взялась дельта:</strong> выражение <span class="math-inline" data-tex="\partial E/\partial z^{(2)}_{k}"></span> мы уже посчитали в части 3. Предыдущий слой оставил
   готовый результат, и второй раз его не считают: поэтому бэкпроп быстрый.
 </div>
 
-### Интерактив 9 · шесть цепочек первого слоя в переменных
+### Интерактив 8 · шесть цепочек первого слоя в переменных
 
 <div class="stage" id="stageFb" tabindex="0">
   <div class="stage-figure">
@@ -1876,7 +1597,7 @@
       <h4>Складываем вклады обеих ветвей</h4>
       <div class="math-display" data-tex="\frac{\partial E}{\partial h^{(1)}_1} = \frac{\partial E}{\partial z^{(2)}_1}\frac{\partial z^{(2)}_1}{\partial h^{(1)}_1} + \frac{\partial E}{\partial z^{(2)}_2}\frac{\partial z^{(2)}_2}{\partial h^{(1)}_1} = \delta^{(2)}_1 W^{(2)}_{11} + \delta^{(2)}_2 W^{(2)}_{21}"></div>
       <p>В сумму вошли веса с разными первыми индексами и общим вторым. Это столбец матрицы
-      <span class="math-inline" data-tex="\mathbf W^{(2)}"></span>, и в части 6 отсюда появится транспонирование.</p>
+      <span class="math-inline" data-tex="\mathbf W^{(2)}"></span>, и в конце части отсюда появится транспонирование.</p>
     </div>
     <div class="step-panel" data-on="map D1 D2 C1 B1 A1 A2 out fk1 fk2 yk11 yk12 yk21 yk22 mm2" data-focus="fk2">
       <div class="step-kicker">Шаг 4 · сумма для второго узла</div>
@@ -1918,7 +1639,7 @@
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
 
-### Интерактив 10 · те же шесть цепочек в числах
+### Интерактив 9 · те же шесть цепочек в числах
 
 <div class="stage" id="stageFbn" tabindex="0">
   <div class="stage-figure">
@@ -2075,592 +1796,63 @@
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
 
-<div class="callout">
-  <strong>Главная мысль части:</strong> глубина добавляет только суммирование по ветвям. Когда сумма посчитана и превращена в
-  дельту, слой обрабатывается так же, как последний.
-</div>
-
----
-
-## Часть 6. Компактная запись первого слоя и транспонирование
+### Откуда берётся транспонирование
 
 <p>
-  Осталось перевести на матричный язык вторую половину вывода, где мы складывали ветви.
-  Как и в части 4, результат будет тем же, записанным целиком.
-</p>
-
-<p>
-  Посмотрите на индексы в двух суммах, полученных в части 5. Чтобы собрать вклад для узла <span class="math-inline" data-tex="j"></span> предыдущего слоя, нужны веса
-  <span class="math-inline" data-tex="W^{(2)}_{kj}"></span> при всех <span class="math-inline" data-tex="k"></span>, то есть <em>столбец</em> <span class="math-inline" data-tex="j"></span>
-  матрицы <span class="math-inline" data-tex="W"></span>. Матричное умножение читает строки, а не столбцы, поэтому матрицу
+  Посмотрите на индексы в двух суммах. Чтобы собрать вклад для узла <span class="math-inline" data-tex="j"></span> предыдущего слоя,
+  нужны веса <span class="math-inline" data-tex="W^{(2)}_{kj}"></span> при всех <span class="math-inline" data-tex="k"></span>, то есть столбец <span class="math-inline" data-tex="j"></span>
+  матрицы <span class="math-inline" data-tex="\mathbf W"></span>. Матричное умножение читает строки, поэтому матрицу
   приходится транспонировать.
 </p>
 
 <div class="math-display" data-tex="\frac{\partial E}{\partial \mathbf h^{(\ell-1)}} = \left(\mathbf W^{(\ell)}\right)^{\!\top} \boldsymbol\delta^{(\ell)}"></div>
 
 <div class="callout-blue">
-  <strong>Откуда транспонирование:</strong> вперёд матрица <span class="math-inline" data-tex="W"></span> раздаёт
+  <strong>Откуда транспонирование:</strong> вперёд матрица <span class="math-inline" data-tex="\mathbf W"></span> раздаёт
   активации по узлам следующего слоя, назад та же матрица собирает вклады обратно. Читать
-  её приходится в другую сторону, отсюда <span class="math-inline" data-tex="W^{\top}"></span>. В общем виде <span class="math-inline" data-tex="W"></span>
+  её приходится в другую сторону, отсюда <span class="math-inline" data-tex="\mathbf W^{\top}"></span>. В общем виде <span class="math-inline" data-tex="\mathbf W"></span>
   это якобиан линейного слоя.
 </div>
 
 <p>
-  Как и в предыдущей компактной сцене, справа вверху стоит уменьшенная схема
-  сети: жёлтым отмечен слой, градиенты которого мы выводим, красным рёбра, по которым к нему
-  приходит сигнал ошибки.
+  Дальше полученный вектор поэлементно умножается на производную активации, и получается дельта слоя.
+  Эта формула выражает дельту слоя через дельту следующего слоя: это рекурсия обратного прохода.
+  Градиенты считаются так же, как на последнем слое, только вместо активаций предыдущего слоя стоит сам вход сети.
 </p>
 
-### Интерактив 11 · суммы по ветвям превращаются в Wᵀ
+<div class="math-display" data-tex="\begin{gathered} \boldsymbol\delta^{(1)} = \left(\left(\mathbf W^{(2)}\right)^{\!\top} \boldsymbol\delta^{(2)}\right) \odot \sigma'\!\left(\mathbf z^{(1)}\right) \\[4pt] \frac{\partial E}{\partial \mathbf b^{(1)}} = \boldsymbol\delta^{(1)} \end{gathered}"></div>
 
-<div class="stage" id="stageMx2" tabindex="0">
-  <div class="stage-figure">
-<svg id="mx2" viewBox="0 0 960 670" role="img" aria-label="Суммы по ветвям превращаются в умножение на транспонированную матрицу весов">
-  <style>
-    #mx2 { font-family: Helvetica, Arial, sans-serif; }
-    #mx2 .cap { font-size: 14px; fill: #5E5850; }
-    #mx2 .note { font-size: 14px; }
-    #mx2 .mini { font-size: 12px; fill: #8A8378; }
-    #mx2 .mmn { fill: #FFFFFF; stroke: #B9B4A9; stroke-width: 1.4; }
-    #mx2 .mme { stroke: #D3CFC5; stroke-width: 1.3; fill: none; }
-    #mx2 .mmy { stroke: #C29E08; stroke-width: 3; fill: none; stroke-linecap: round; }
-    #mx2 .mmr { stroke: #C30B0A; stroke-width: 3; fill: none; stroke-linecap: round; }
-    #mx2 .by { fill: #FFFBEB; stroke: #C29E08; stroke-width: 1.6; }
-    #mx2 .br { fill: #FFF2F2; stroke: #C30B0A; stroke-width: 1.6; }
-    #mx2 .bb { fill: #F0F6FC; stroke: #3576C0; stroke-width: 1.6; }
-    #mx2 .legend { font-size: 13px; fill: #8A8378; }
-  </style>
-
-  <text x="33" y="32" class="cap">Две суммы по ветвям, по одной на каждый скрытый узел</text>
-
-  <line x1="650" y1="62" x2="730" y2="62" class="mmy"/>
-  <line x1="650" y1="62" x2="730" y2="112" class="mmy"/>
-  <line x1="650" y1="112" x2="730" y2="62" class="mmy"/>
-  <line x1="650" y1="112" x2="730" y2="112" class="mmy"/>
-  <line x1="730" y1="62" x2="810" y2="62" class="mmr"/>
-  <line x1="730" y1="62" x2="810" y2="112" class="mmr"/>
-  <line x1="730" y1="112" x2="810" y2="62" class="mmr"/>
-  <line x1="730" y1="112" x2="810" y2="112" class="mmr"/>
-  <line x1="810" y1="62" x2="890" y2="87" class="mmr"/>
-  <line x1="810" y1="112" x2="890" y2="87" class="mmr"/>
-  <circle cx="650" cy="62" r="11" class="mmn"/>
-  <circle cx="650" cy="112" r="11" class="mmn"/>
-  <circle cx="730" cy="62" r="11" class="mmn"/>
-  <circle cx="730" cy="112" r="11" class="mmn"/>
-  <circle cx="810" cy="62" r="11" class="mmn"/>
-  <circle cx="810" cy="112" r="11" class="mmn"/>
-  <circle cx="890" cy="87" r="11" class="mmn"/>
-  <foreignObject x="590" y="21.68" width="120" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#8A8378;font-weight:400;text-align:center;justify-content:center" data-tex="\mathbf x^{(0)}"></div></foreignObject>
-  <foreignObject x="670" y="21.68" width="120" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#8A8378;font-weight:400;text-align:center;justify-content:center" data-tex="\mathbf h^{(1)}"></div></foreignObject>
-  <foreignObject x="750" y="21.68" width="120" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#8A8378;font-weight:400;text-align:center;justify-content:center" data-tex="\mathbf h^{(2)}"></div></foreignObject>
-  <foreignObject x="830" y="21.68" width="120" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#8A8378;font-weight:400;text-align:center;justify-content:center" data-tex="E"></div></foreignObject>
-  <text x="770" y="142" class="mini" text-anchor="middle">ищем жёлтый слой, сигнал приходит по красным рёбрам</text>
-
-  <g data-key="eqs" data-only="1">
-    <foreignObject x="33" y="44" width="560" height="44">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\frac{\partial E}{\partial h^{(1)}_1} = \delta^{(2)}_1 \textcolor{#3576C0}{W^{(2)}_{11}} + \delta^{(2)}_2 \textcolor{#3576C0}{W^{(2)}_{21}}"></div>
-    </foreignObject>
-    <foreignObject x="33" y="90" width="560" height="44">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\frac{\partial E}{\partial h^{(1)}_2} = \delta^{(2)}_1 \textcolor{#3576C0}{W^{(2)}_{12}} + \delta^{(2)}_2 \textcolor{#3576C0}{W^{(2)}_{22}}"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="col" data-only="1">
-    <foreignObject x="33" y="148.96" width="880" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#2A5E9B;font-weight:400;text-align:left;justify-content:flex-start"><span>В строке собрались веса с общим вторым индексом: это столбец матрицы <span data-tex="\mathbf W^{(2)}"></span></span></div></foreignObject>
-  </g>
-
-  <g data-key="trn" data-only="1">
-    <rect x="33" y="186" width="890" height="86" rx="12" class="br"/>
-    <foreignObject x="45" y="198" width="866" height="64">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm svg-math-center" data-tex="\frac{\partial E}{\partial \mathbf h^{(1)}} = \begin{pmatrix} W^{(2)}_{11} &amp; W^{(2)}_{21} \\[4pt] W^{(2)}_{12} &amp; W^{(2)}_{22} \end{pmatrix}\begin{pmatrix} \delta^{(2)}_1 \\[4pt] \delta^{(2)}_2 \end{pmatrix} = \left(\mathbf W^{(2)}\right)^{\!\top} \boldsymbol\delta^{(2)}"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="dlt" data-only="1">
-    <rect x="33" y="288" width="890" height="70" rx="12" class="br"/>
-    <foreignObject x="45" y="298" width="866" height="50">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm svg-math-center" data-tex="\boldsymbol\delta^{(1)} = \left(\left(\mathbf W^{(2)}\right)^{\!\top} \boldsymbol\delta^{(2)}\right) \odot \sigma'\!\left(\mathbf z^{(1)}\right)"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="gw" data-only="1">
-    <rect x="33" y="374" width="890" height="86" rx="12" class="by"/>
-    <foreignObject x="45" y="386" width="866" height="64">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm svg-math-center" data-tex="\frac{\partial E}{\partial \mathbf W^{(1)}} = \boldsymbol\delta^{(1)}\left(\mathbf x^{(0)}\right)^{\!\top} = \begin{pmatrix} \delta^{(1)}_1 \\[4pt] \delta^{(1)}_2 \end{pmatrix}\begin{pmatrix} x^{(0)}_1 &amp; x^{(0)}_2 \end{pmatrix}"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="gb" data-only="1">
-    <rect x="33" y="476" width="890" height="60" rx="12" class="by"/>
-    <foreignObject x="45" y="486" width="866" height="40">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm svg-math-center" data-tex="\frac{\partial E}{\partial \mathbf b^{(1)}} = \boldsymbol\delta^{(1)}"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="num" data-only="1">
-    <rect x="33" y="552" width="890" height="80" rx="12" class="bb"/>
-    <foreignObject x="45" y="560" width="866" height="64">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm svg-math-center" data-tex="\frac{\partial E}{\partial \mathbf W^{(1)}} = \begin{pmatrix} -0.0072 \\[4pt] 0.0300 \end{pmatrix}\begin{pmatrix} 0.5 &amp; 0.8 \end{pmatrix} = \begin{pmatrix} -0.0036 &amp; -0.0058 \\[4pt] 0.0150 &amp; 0.0240 \end{pmatrix}"></div>
-    </foreignObject>
-  </g>
-
-  <text x="33" y="654" class="legend">красное: сигнал ошибки, идущий назад · жёлтое: параметры и их градиенты · синее: числа сквозного примера</text>
-</svg>
-
-  </div>
-
-  <div class="stage-bar">
-    <button type="button" data-nav="prev">← Назад</button>
-    <button type="button" data-nav="next">Далее →</button>
-    <div class="stage-progress"></div>
-    <div class="stage-counter"></div>
-  </div>
-
-  <div class="stage-notes">
-    <div class="step-panel" data-on="eqs" data-focus="eqs">
-      <div class="step-kicker">Шаг 1 · что есть</div>
-      <h4>Две суммы, по одной на скрытый узел</h4>
-      <p>Это результат части 5. В каждой сумме обе дельты следующего слоя, но веса разные.</p>
-    </div>
-    <div class="step-panel" data-on="eqs col" data-focus="col">
-      <div class="step-kicker">Шаг 2 · смотрим на индексы</div>
-      <h4>В строке собрались веса с общим вторым индексом</h4>
-      <p>В первой строке это <span class="math-inline" data-tex="W_{11}"></span> и <span class="math-inline" data-tex="W_{21}"></span>, во второй <span class="math-inline" data-tex="W_{12}"></span> и
-      <span class="math-inline" data-tex="W_{22}"></span>. По второму индексу веса группируются в столбцы
-      <span class="math-inline" data-tex="\mathbf W^{(2)}"></span>.</p>
-    </div>
-    <div class="step-panel" data-on="eqs col trn" data-focus="trn">
-      <div class="step-kicker">Шаг 3 · транспонирование</div>
-      <h4>Столбцы становятся строками</h4>
-      <p>Чтобы записать обе суммы одним умножением матрицы на вектор, матрицу нужно
-      транспонировать. Это те же четыре числа, прочитанные в другом порядке.</p>
-      <p>Проверка форм: <span class="math-inline" data-tex="2\times 2"></span> на <span class="math-inline" data-tex="2\times 1"></span> даёт <span class="math-inline" data-tex="2\times 1"></span>, вектор той
-      же длины, что и активации предыдущего слоя.</p>
-    </div>
-    <div class="step-panel" data-on="eqs col trn dlt" data-focus="dlt">
-      <div class="step-kicker">Шаг 4 · дельта слоя</div>
-      <h4>Рекурсия замкнулась</h4>
-      <p>Полученный вектор домножаем поэлементно на производную активации и получаем
-      <span class="math-inline" data-tex="\delta ^{(1)}"></span>. Формула выражает дельту слоя через дельту следующего слоя: это
-      рекурсия обратного прохода.</p>
-    </div>
-    <div class="step-panel" data-on="eqs col trn dlt gw" data-focus="gw">
-      <div class="step-kicker">Шаг 5 · градиент весов</div>
-      <h4>Дальше всё как в части 4</h4>
-      <p>Внешнее произведение дельты слоя на его вход. Отличие от последнего слоя: вместо
-      активаций предыдущего слоя здесь стоит сам вход сети.</p>
-    </div>
-    <div class="step-panel" data-on="eqs col trn dlt gw gb" data-focus="gb">
-      <div class="step-kicker">Шаг 6 · градиент смещений</div>
-      <h4>Снова дельта</h4>
-      <p>Формула та же, что для последнего слоя: отдельного случая для первого слоя в алгоритме
-      нет.</p>
-    </div>
-    <div class="step-panel" data-on="eqs col trn dlt gw gb num" data-focus="num">
-      <div class="step-kicker">Шаг 7 · числа</div>
-      <h4>Те же −0.0036, −0.0058, 0.0150, 0.0240</h4>
-      <p>Матричная запись дала те же четыре числа, которые в части 5 мы получили по одному.</p>
-    </div>
-  </div>
-</div>
-<p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
+<div class="math-display" data-tex="\begin{gathered} \frac{\partial E}{\partial \mathbf W^{(1)}} = \boldsymbol\delta^{(1)}\left(\mathbf x^{(0)}\right)^{\!\top} \\[6pt] \begin{pmatrix} -0.0072 \\ 0.0300 \end{pmatrix}\begin{pmatrix} 0.5 &amp; 0.8 \end{pmatrix} = \begin{pmatrix} -0.0036 &amp; -0.0058 \\ 0.0150 &amp; 0.0240 \end{pmatrix} \end{gathered}"></div>
 
 <div class="callout">
-  <strong>Главная мысль части:</strong> сумма по ветвям равна умножению на транспонированную матрицу весов. После него слой
-  считается как выходной: поэлементно на <span class="math-inline" data-tex="\sigma '"></span>, затем внешнее произведение.
+  <strong>Главная мысль части:</strong> глубина добавляет только суммирование по ветвям. Когда сумма посчитана и превращена в
+  дельту, слой обрабатывается так же, как последний. В матрицах сумма по ветвям это умножение на транспонированную матрицу весов.
 </div>
 
 ---
 
-## Часть 7. Обратный проход одним конвейером
+## Часть 5. Обратный проход матрицами
 
 <p>
-  Соберём обе части вместе. Обратный проход состоит из двух действий, которые повторяются
-  на каждом слое: пересчитать дельту, потом превратить её в градиенты параметров. Между
-  слоями передаётся один вектор.
+  Обратный проход состоит из двух действий, которые повторяются на каждом слое: пересчитать
+  дельту, потом превратить её в градиенты параметров. Между слоями передаётся один вектор.
 </p>
 
-### Интерактив 12 · весь обратный проход одним конвейером
-
-<div class="stage" id="stageBw" tabindex="0">
-  <div class="stage-figure">
-<svg id="bw" viewBox="0 0 960 560" role="img" aria-label="Конвейер обратного прохода: от ошибки к дельтам и градиентам обоих слоёв">
-  <style>
-    #bw { font-family: Helvetica, Arial, sans-serif; }
-    #bw .lab { font-size: 14px; fill: #5E5850; }
-    #bw .bb { fill: #F0F6FC; stroke: #3576C0; stroke-width: 1.6; }
-    #bw .br { fill: #FFF2F2; stroke: #C30B0A; stroke-width: 1.6; }
-    #bw .bg { fill: #FFFBEB; stroke: #C29E08; stroke-width: 1.6; }
-    #bw .by { fill: #F7F5F1; stroke: #5E5850; stroke-width: 1.6; }
-    #bw .bf { fill: #F0FAF0; stroke: #73B222; stroke-width: 1.6; }
-    #bw .ar { stroke: #5E5850; stroke-width: 1.6; fill: none; }
-    #bw .legend { font-size: 13px; fill: #8A8378; }
-  </style>
-  <defs>
-    <marker id="bw-arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5E5850"/>
-    </marker>
-  </defs>
-
-  <g data-key="ch" data-only="1">
-    <rect x="33" y="26" width="890" height="54" rx="12" class="bf"/>
-    <text x="47" y="58" class="lab" fill="#5A8C1C">После прямого прохода сохранены:</text>
-    <foreignObject x="380" y="36" width="530" height="36">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\mathbf x^{(0)},\; \mathbf z^{(1)},\; \mathbf h^{(1)},\; \mathbf z^{(2)},\; \mathbf h^{(2)},\; \mathbf W^{(1)},\; \mathbf W^{(2)}"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="r1" data-only="1">
-    <line x1="248" y1="82" x2="248" y2="98" class="ar" marker-end="url(#bw-arw)"/>
-    <rect x="33" y="100" width="430" height="64" rx="12" class="br"/>
-    <foreignObject x="45" y="112" width="406" height="40">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-md" data-tex="\frac{\partial E}{\partial \mathbf h^{(2)}} = \mathbf h^{(2)} - \mathbf y"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="r1n" data-only="1">
-    <line x1="465" y1="132" x2="488" y2="132" class="ar" marker-end="url(#bw-arw)"/>
-    <rect x="490" y="100" width="433" height="64" rx="12" class="bb"/>
-    <foreignObject x="502" y="112" width="409" height="40">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="= \left(-0.4684,\; 0.6459\right)"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="r2" data-only="1">
-    <line x1="248" y1="166" x2="248" y2="184" class="ar" marker-end="url(#bw-arw)"/>
-    <rect x="33" y="186" width="430" height="64" rx="12" class="br"/>
-    <foreignObject x="45" y="198" width="406" height="40">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\boldsymbol\delta^{(2)} = \frac{\partial E}{\partial \mathbf h^{(2)}} \odot \sigma'\!\left(\mathbf z^{(2)}\right) = \left(-0.1166,\; 0.1477\right)"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="r2g" data-only="1">
-    <line x1="465" y1="218" x2="488" y2="218" class="ar" marker-end="url(#bw-arw)"/>
-    <rect x="490" y="186" width="433" height="64" rx="12" class="bg"/>
-    <foreignObject x="502" y="198" width="409" height="40">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\frac{\partial E}{\partial \mathbf W^{(2)}} = \boldsymbol\delta^{(2)}\left(\mathbf h^{(1)}\right)^{\!\top}, \;\; \frac{\partial E}{\partial \mathbf b^{(2)}} = \boldsymbol\delta^{(2)}"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="r3" data-only="1">
-    <line x1="248" y1="252" x2="248" y2="270" class="ar" marker-end="url(#bw-arw)"/>
-    <rect x="33" y="272" width="430" height="64" rx="12" class="br"/>
-    <foreignObject x="45" y="284" width="406" height="40">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-md" data-tex="\frac{\partial E}{\partial \mathbf h^{(1)}} = \left(\mathbf W^{(2)}\right)^{\!\top} \boldsymbol\delta^{(2)}"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="r3n" data-only="1">
-    <line x1="465" y1="304" x2="488" y2="304" class="ar" marker-end="url(#bw-arw)"/>
-    <rect x="490" y="272" width="433" height="64" rx="12" class="bb"/>
-    <foreignObject x="502" y="284" width="409" height="40">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="= \left(-0.0288,\; 0.1236\right)"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="r4" data-only="1">
-    <line x1="248" y1="338" x2="248" y2="356" class="ar" marker-end="url(#bw-arw)"/>
-    <rect x="33" y="358" width="430" height="64" rx="12" class="br"/>
-    <foreignObject x="45" y="370" width="406" height="40">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\boldsymbol\delta^{(1)} = \frac{\partial E}{\partial \mathbf h^{(1)}} \odot \sigma'\!\left(\mathbf z^{(1)}\right) = \left(-0.0072,\; 0.0300\right)"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="r4g" data-only="1">
-    <line x1="465" y1="390" x2="488" y2="390" class="ar" marker-end="url(#bw-arw)"/>
-    <rect x="490" y="358" width="433" height="64" rx="12" class="bg"/>
-    <foreignObject x="502" y="370" width="409" height="40">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\frac{\partial E}{\partial \mathbf W^{(1)}} = \boldsymbol\delta^{(1)}\left(\mathbf x^{(0)}\right)^{\!\top}, \;\; \frac{\partial E}{\partial \mathbf b^{(1)}} = \boldsymbol\delta^{(1)}"></div>
-    </foreignObject>
-  </g>
-
-  <g data-key="lp" data-only="1">
-    <line x1="248" y1="424" x2="248" y2="442" class="ar" marker-end="url(#bw-arw)"/>
-    <rect x="33" y="444" width="890" height="64" rx="12" class="by"/>
-    <foreignObject x="45" y="456" width="866" height="40">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm svg-math-center" data-tex="\boldsymbol\delta^{(\ell)} = \left(\left(\mathbf W^{(\ell+1)}\right)^{\!\top}\boldsymbol\delta^{(\ell+1)}\right) \odot \sigma'\!\left(\mathbf z^{(\ell)}\right), \qquad \frac{\partial E}{\partial \mathbf W^{(\ell)}} = \boldsymbol\delta^{(\ell)}\left(\mathbf h^{(\ell-1)}\right)^{\!\top}, \qquad \frac{\partial E}{\partial \mathbf b^{(\ell)}} = \boldsymbol\delta^{(\ell)}"></div>
-    </foreignObject>
-  </g>
-
-  <text x="33" y="540" class="legend">зелёное: итог прямого прохода · красное: сигнал ошибки, текущий назад · жёлтое: готовые градиенты параметров · синее: числа</text>
-</svg>
-
-  </div>
-
-  <div class="stage-bar">
-    <button type="button" data-nav="prev">← Назад</button>
-    <button type="button" data-nav="next">Далее →</button>
-    <div class="stage-progress"></div>
-    <div class="stage-counter"></div>
-  </div>
-
-  <div class="stage-notes">
-    <div class="step-panel" data-on="ch" data-focus="ch">
-      <div class="step-kicker">Шаг 1 · что уже есть</div>
-      <h4>Обратному проходу уже есть с чем работать</h4>
-      <p>Всё нужное лежит в памяти после прямого прохода: входы, сумматоры, активации и сами
-      матрицы весов. Сеть заново не считается.</p>
-    </div>
-    <div class="step-panel" data-on="ch r1 r1n" data-focus="r1">
-      <div class="step-kicker">Шаг 2 · точка входа</div>
-      <h4>Единственное место, где важна функция потерь</h4>
-      <p>С производной потери по выходу начинается обратный проход. Если сменить квадратичную
-      ошибку на кросс-энтропию, изменится только эта строка.</p>
-    </div>
-    <div class="step-panel" data-on="ch r1 r1n r2" data-focus="r2">
-      <div class="step-kicker">Шаг 3 · дельта последнего слоя</div>
-      <h4>Проходим активацию поэлементно</h4>
-      <p>Те же −0.1166 и 0.1477, что мы считали по одному в части 3, получаются одной строкой.</p>
-    </div>
-    <div class="step-panel" data-on="ch r1 r1n r2 r2g" data-focus="r2g">
-      <div class="step-kicker">Шаг 4 · градиенты слоя</div>
-      <h4>Дельта сразу даёт и веса, и смещения</h4>
-      <p>Для весов это внешнее произведение на активации предыдущего слоя, для смещений сама
-      дельта. Шесть чисел за две операции.</p>
-    </div>
-    <div class="step-panel" data-on="ch r1 r1n r2 r2g r3 r3n" data-focus="r3">
-      <div class="step-kicker">Шаг 5 · передача назад</div>
-      <h4>Та же матрица, прочитанная в другую сторону</h4>
-      <p>Это матричная запись суммирования по ветвям. Результат показывает чувствительность
-      ошибки к активациям предыдущего слоя и идёт на вход следующего витка.</p>
-    </div>
-    <div class="step-panel" data-on="ch r1 r1n r2 r2g r3 r3n r4 r4g" data-focus="r4">
-      <div class="step-kicker">Шаг 6 · виток повторяется</div>
-      <h4>Первый слой обрабатывается теми же двумя строками</h4>
-      <div class="worked-example">
-        <div class="worked-label">Числовой пример · во сколько раз ослаб сигнал</div>
-        <div class="worked-grid">
-          <div class="worked-cell">
-            <span>Дельта второго слоя</span>
-            <div class="math-display worked-math" data-tex="\left\|\boldsymbol\delta^{(2)}\right\| = 0.1882"></div>
-          </div>
-          <div class="worked-cell worked-result">
-            <span>Дельта первого слоя</span>
-            <div class="math-display worked-math" data-tex="\left\|\boldsymbol\delta^{(1)}\right\| = 0.0309"></div>
-          </div>
-        </div>
-        <p class="worked-reading">Один слой уменьшил длину сигнала в шесть раз, хотя производная сигмоиды была близка к
-        своему максимуму 0.25. Десять множителей по 0.25 дают около 10⁻⁶.</p>
-      </div>
-    </div>
-    <div class="step-panel" data-on="r2 r2g r4 r4g lp" data-focus="lp">
-      <div class="step-kicker">Шаг 7 · общее правило</div>
-      <h4>Три строки на любую глубину</h4>
-      <p>Верхняя строка задаёт рекурсию: как получить дельту слоя из дельты следующего. Две
-      нижние превращают дельту в градиенты параметров.</p>
-      <p>Те же вычисления фреймворки выполняют в обратном режиме автоматического
-      дифференцирования.</p>
-    </div>
-  </div>
-</div>
-<p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
-
-
-### Интерактив 13 · обратный проход в матричной форме
+### Интерактив 10 · обратный проход в матричной форме
 
 <p>
-  Тот же экран, но теперь в клетках градиенты. Слева всё, что оставил прямой проход,
-  справа пять формул обратного прохода и пустые матрицы, которые заполняются по одной.
+  Сверху всё, что оставил прямой проход, а под ним градиенты, которые заполняются по очереди.
+  Ниже идёт операция текущего шага: каждая клетка внешнего произведения появляется на пересечении своей
+  строки и своего столбца, а столбцы <span class="math-inline" data-tex="\mathbf W^{(2)}"></span> переезжают в строки <span class="math-inline" data-tex="\left(\mathbf W^{(2)}\right)^{\!\top}"></span>.
+  Клетки можно нажимать, как в прямом проходе.
   <strong>Форма градиента всегда совпадает с формой параметра</strong>, иначе его нельзя
   было бы вычесть при шаге спуска.
 </p>
 
 <div class="stage" id="stageMbw" tabindex="0">
   <div class="stage-figure">
-<svg id="mbw" viewBox="0 0 1240 590" role="img" aria-label="Обратный проход в матричной форме">
-  <style>
-    #mbw { font-family: Helvetica, Arial, sans-serif; }
-    #mbw .title { font-size: 15px; font-weight: 700; fill: #5E5850; }
-    #mbw .colhd { font-size: 13px; fill: #8A8378; letter-spacing: 0.06em; }
-    #mbw .lab { font-size: 13px; font-weight: 600; }
-    #mbw .ct { font-size: 12px; font-weight: 600; }
-    #mbw .shape { font-size: 12px; fill: #968F85; }
-    #mbw .cell { stroke-width: 1.2; }
-    #mbw .empty { fill: #FAFAF8; stroke: #C9C2B8; stroke-width: 1; stroke-dasharray: 3 2; }
-    #mbw .qt { font-size: 12px; fill: #C9C2B8; }
-    #mbw .div { stroke: #E5E1D8; stroke-width: 1.4; }
-    #mbw .note { font-size: 14px; }
-    #mbw .legend { font-size: 13px; fill: #8A8378; }
-  </style>
-  <text x="40" y="34" class="title">Обратный проход: те же матрицы, но в них градиенты</text>
-  <text x="250" y="72" class="colhd" text-anchor="middle">ЧТО УЖЕ ИЗВЕСТНО</text>
-  <text x="870" y="72" class="colhd" text-anchor="middle">ОБРАТНЫЙ ПРОХОД</text>
-  <line x1="520" y1="56" x2="520" y2="520" class="div"/>
-  <g data-key="dat" data-only="1">
-    <foreignObject x="-2" y="109.32" width="150" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#A1090A;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf h^{(2)} - \mathbf y ="></div></foreignObject>
-    <rect x="160" y="100" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="187" y="117" class="ct" text-anchor="middle" fill="#A1090A">−0.4684</text>
-    <rect x="160" y="126" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="187" y="143" class="ct" text-anchor="middle" fill="#A1090A">0.6459</text>
-    <text x="187" y="170" class="shape" text-anchor="middle">(2×1)</text>
-    <foreignObject x="198" y="109.32" width="150" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#4C8316;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\sigma'(\mathbf z^{(2)}) ="></div></foreignObject>
-    <rect x="360" y="100" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="387" y="117" class="ct" text-anchor="middle" fill="#4C8316">0.2490</text>
-    <rect x="360" y="126" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="387" y="143" class="ct" text-anchor="middle" fill="#4C8316">0.2287</text>
-    <text x="387" y="170" class="shape" text-anchor="middle">(2×1)</text>
-    <foreignObject x="28" y="205.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#4C8316;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf h^{(1)} ="></div></foreignObject>
-    <rect x="160" y="196" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="187" y="213" class="ct" text-anchor="middle" fill="#4C8316">0.5037</text>
-    <rect x="160" y="222" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="187" y="239" class="ct" text-anchor="middle" fill="#4C8316">0.5842</text>
-    <text x="187" y="266" class="shape" text-anchor="middle">(2×1)</text>
-    <foreignObject x="198" y="205.32" width="150" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#4C8316;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\sigma'(\mathbf z^{(1)}) ="></div></foreignObject>
-    <rect x="360" y="196" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="387" y="213" class="ct" text-anchor="middle" fill="#4C8316">0.2500</text>
-    <rect x="360" y="222" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="387" y="239" class="ct" text-anchor="middle" fill="#4C8316">0.2429</text>
-    <text x="387" y="266" class="shape" text-anchor="middle">(2×1)</text>
-    <foreignObject x="28" y="301.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#2A5E9B;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf W^{(2)} ="></div></foreignObject>
-    <rect x="160" y="292" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="187" y="309" class="ct" text-anchor="middle" fill="#2A5E9B">0.50</text>
-    <rect x="214" y="292" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="241" y="309" class="ct" text-anchor="middle" fill="#2A5E9B">−0.30</text>
-    <rect x="160" y="318" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="187" y="335" class="ct" text-anchor="middle" fill="#2A5E9B">0.20</text>
-    <rect x="214" y="318" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="241" y="335" class="ct" text-anchor="middle" fill="#2A5E9B">0.60</text>
-    <text x="214" y="362" class="shape" text-anchor="middle">(2×2)</text>
-    <foreignObject x="248" y="301.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\mathbf x^{(0)} ="></div></foreignObject>
-    <rect x="380" y="292" width="54" height="26" rx="2" class="cell" fill="#F3F1EE" stroke="#5E5850"/>
-    <text x="407" y="309" class="ct" text-anchor="middle" fill="#5E5850">0.5</text>
-    <rect x="380" y="318" width="54" height="26" rx="2" class="cell" fill="#F3F1EE" stroke="#5E5850"/>
-    <text x="407" y="335" class="ct" text-anchor="middle" fill="#5E5850">0.8</text>
-    <text x="407" y="362" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <foreignObject x="560" y="96" width="380" height="52">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\boldsymbol\delta^{(2)} = \left(\mathbf h^{(2)} - \mathbf y\right) \odot \sigma'\!\left(\mathbf z^{(2)}\right)"></div>
-    </foreignObject>
-  <g data-key="b1e" data-only="1">
-    <foreignObject x="848" y="105.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\delta ^{(2)} ="></div></foreignObject>
-    <rect x="980" y="96" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="113" class="qt" text-anchor="middle">?</text>
-    <rect x="980" y="122" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="139" class="qt" text-anchor="middle">?</text>
-    <text x="1007" y="166" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <g data-key="b1" data-only="1">
-    <foreignObject x="848" y="105.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#A1090A;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\delta ^{(2)} ="></div></foreignObject>
-    <rect x="980" y="96" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1007" y="113" class="ct" text-anchor="middle" fill="#A1090A">−0.1166</text>
-    <rect x="980" y="122" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1007" y="139" class="ct" text-anchor="middle" fill="#A1090A">0.1477</text>
-    <text x="1007" y="166" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <foreignObject x="560" y="184" width="380" height="52">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\frac{\partial E}{\partial \mathbf W^{(2)}} = \boldsymbol\delta^{(2)}\!\left(\mathbf h^{(1)}\right)^{\!\top}\!\!, \;\; \frac{\partial E}{\partial \mathbf b^{(2)}} = \boldsymbol\delta^{(2)}"></div>
-    </foreignObject>
-  <g data-key="b2e" data-only="1">
-    <rect x="980" y="184" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="201" class="qt" text-anchor="middle">?</text>
-    <rect x="1034" y="184" width="54" height="26" rx="2" class="empty"/>
-    <text x="1061" y="201" class="qt" text-anchor="middle">?</text>
-    <rect x="980" y="210" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="227" class="qt" text-anchor="middle">?</text>
-    <rect x="1034" y="210" width="54" height="26" rx="2" class="empty"/>
-    <text x="1061" y="227" class="qt" text-anchor="middle">?</text>
-    <text x="1034" y="254" class="shape" text-anchor="middle">(2×2)</text>
-    <rect x="1150" y="184" width="54" height="26" rx="2" class="empty"/>
-    <text x="1177" y="201" class="qt" text-anchor="middle">?</text>
-    <rect x="1150" y="210" width="54" height="26" rx="2" class="empty"/>
-    <text x="1177" y="227" class="qt" text-anchor="middle">?</text>
-    <text x="1177" y="254" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <g data-key="b2" data-only="1">
-    <rect x="980" y="184" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1007" y="201" class="ct" text-anchor="middle" fill="#A1090A">−0.0588</text>
-    <rect x="1034" y="184" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1061" y="201" class="ct" text-anchor="middle" fill="#A1090A">−0.0681</text>
-    <rect x="980" y="210" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1007" y="227" class="ct" text-anchor="middle" fill="#A1090A">0.0744</text>
-    <rect x="1034" y="210" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1061" y="227" class="ct" text-anchor="middle" fill="#A1090A">0.0863</text>
-    <text x="1034" y="254" class="shape" text-anchor="middle">(2×2)</text>
-    <rect x="1150" y="184" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1177" y="201" class="ct" text-anchor="middle" fill="#A1090A">−0.1166</text>
-    <rect x="1150" y="210" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1177" y="227" class="ct" text-anchor="middle" fill="#A1090A">0.1477</text>
-    <text x="1177" y="254" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <foreignObject x="560" y="272" width="380" height="52">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\frac{\partial E}{\partial \mathbf h^{(1)}} = \left(\mathbf W^{(2)}\right)^{\!\top}\boldsymbol\delta^{(2)}"></div>
-    </foreignObject>
-  <g data-key="b3e" data-only="1">
-    <foreignObject x="818" y="281.32" width="150" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\partial E/\partial \mathbf h^{(1)} ="></div></foreignObject>
-    <rect x="980" y="272" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="289" class="qt" text-anchor="middle">?</text>
-    <rect x="980" y="298" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="315" class="qt" text-anchor="middle">?</text>
-    <text x="1007" y="342" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <g data-key="b3" data-only="1">
-    <foreignObject x="818" y="281.32" width="150" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#A1090A;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\partial E/\partial \mathbf h^{(1)} ="></div></foreignObject>
-    <rect x="980" y="272" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1007" y="289" class="ct" text-anchor="middle" fill="#A1090A">−0.0288</text>
-    <rect x="980" y="298" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1007" y="315" class="ct" text-anchor="middle" fill="#A1090A">0.1236</text>
-    <text x="1007" y="342" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <foreignObject x="560" y="360" width="380" height="52">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\boldsymbol\delta^{(1)} = \frac{\partial E}{\partial \mathbf h^{(1)}} \odot \sigma'\!\left(\mathbf z^{(1)}\right)"></div>
-    </foreignObject>
-  <g data-key="b4e" data-only="1">
-    <foreignObject x="848" y="369.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\delta ^{(1)} ="></div></foreignObject>
-    <rect x="980" y="360" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="377" class="qt" text-anchor="middle">?</text>
-    <rect x="980" y="386" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="403" class="qt" text-anchor="middle">?</text>
-    <text x="1007" y="430" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <g data-key="b4" data-only="1">
-    <foreignObject x="848" y="369.32" width="120" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#A1090A;font-weight:600;text-align:right;justify-content:flex-end" data-tex="\delta ^{(1)} ="></div></foreignObject>
-    <rect x="980" y="360" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1007" y="377" class="ct" text-anchor="middle" fill="#A1090A">−0.0072</text>
-    <rect x="980" y="386" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1007" y="403" class="ct" text-anchor="middle" fill="#A1090A">0.0300</text>
-    <text x="1007" y="430" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <foreignObject x="560" y="448" width="380" height="52">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\frac{\partial E}{\partial \mathbf W^{(1)}} = \boldsymbol\delta^{(1)}\!\left(\mathbf x^{(0)}\right)^{\!\top}\!\!, \;\; \frac{\partial E}{\partial \mathbf b^{(1)}} = \boldsymbol\delta^{(1)}"></div>
-    </foreignObject>
-  <g data-key="b5e" data-only="1">
-    <rect x="980" y="448" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="465" class="qt" text-anchor="middle">?</text>
-    <rect x="1034" y="448" width="54" height="26" rx="2" class="empty"/>
-    <text x="1061" y="465" class="qt" text-anchor="middle">?</text>
-    <rect x="980" y="474" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="491" class="qt" text-anchor="middle">?</text>
-    <rect x="1034" y="474" width="54" height="26" rx="2" class="empty"/>
-    <text x="1061" y="491" class="qt" text-anchor="middle">?</text>
-    <text x="1034" y="518" class="shape" text-anchor="middle">(2×2)</text>
-    <rect x="1150" y="448" width="54" height="26" rx="2" class="empty"/>
-    <text x="1177" y="465" class="qt" text-anchor="middle">?</text>
-    <rect x="1150" y="474" width="54" height="26" rx="2" class="empty"/>
-    <text x="1177" y="491" class="qt" text-anchor="middle">?</text>
-    <text x="1177" y="518" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <g data-key="b5" data-only="1">
-    <rect x="980" y="448" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1007" y="465" class="ct" text-anchor="middle" fill="#A1090A">−0.0036</text>
-    <rect x="1034" y="448" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1061" y="465" class="ct" text-anchor="middle" fill="#A1090A">−0.0058</text>
-    <rect x="980" y="474" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1007" y="491" class="ct" text-anchor="middle" fill="#A1090A">0.0150</text>
-    <rect x="1034" y="474" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1061" y="491" class="ct" text-anchor="middle" fill="#A1090A">0.0240</text>
-    <text x="1034" y="518" class="shape" text-anchor="middle">(2×2)</text>
-    <rect x="1150" y="448" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1177" y="465" class="ct" text-anchor="middle" fill="#A1090A">−0.0072</text>
-    <rect x="1150" y="474" width="54" height="26" rx="2" class="cell" fill="#FDE6E6" stroke="#C30B0A"/>
-    <text x="1177" y="491" class="ct" text-anchor="middle" fill="#A1090A">0.0300</text>
-    <text x="1177" y="518" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <g data-key="nb" data-only="1">
-    <rect x="40" y="520" width="1160" height="34" rx="9" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.6"/>
-    <text x="620" y="543" class="note" text-anchor="middle" fill="#A1090A">Форма градиента всегда совпадает с формой параметра, иначе его нельзя было бы вычесть</text>
-  </g>
-  <text x="40" y="572" class="legend">красное: градиенты · зелёное: значения с прямого прохода · синее: веса · пунктир с «?»: то, что ещё не посчитано</text>
-</svg>
+<svg class="mg mx" id="mbw" viewBox="0 0 760 416" role="img" aria-label="Обратный проход в матричной форме: сверху кэш и градиенты, снизу операция текущего шага"><defs><marker id="mxarw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5E5850"/></marker></defs><text x="14" y="62" font-size="12" fill="#8A8378" text-anchor="start" font-weight="400">кэш</text><text x="14" y="140" font-size="12" fill="#8A8378" text-anchor="start" font-weight="400">назад</text><foreignObject x="47" y="14" width="94" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf h^{(2)} - \mathbf y"></div></foreignObject><foreignObject x="141" y="14" width="94" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\sigma'(\mathbf z^{(2)})"></div></foreignObject><foreignObject x="235" y="14" width="94" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf h^{(1)}"></div></foreignObject><foreignObject x="329" y="14" width="94" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\sigma'(\mathbf z^{(1)})"></div></foreignObject><foreignObject x="423" y="14" width="150" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf W^{(2)}"></div></foreignObject><foreignObject x="573" y="14" width="94" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf x^{(0)}"></div></foreignObject><foreignObject x="56" y="92" width="76" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\boldsymbol\delta^{(2)}"></div></foreignObject><foreignObject x="126" y="92" width="132" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\partial E/\partial \mathbf W^{(2)}"></div></foreignObject><foreignObject x="252" y="92" width="76" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\partial E/\partial \mathbf b^{(2)}"></div></foreignObject><foreignObject x="328" y="92" width="76" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\partial E/\partial \mathbf h^{(1)}"></div></foreignObject><foreignObject x="404" y="92" width="76" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\boldsymbol\delta^{(1)}"></div></foreignObject><foreignObject x="474" y="92" width="132" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\partial E/\partial \mathbf W^{(1)}"></div></foreignObject><foreignObject x="600" y="92" width="76" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\partial E/\partial \mathbf b^{(1)}"></div></foreignObject><g data-key="dat"><g class="mx-c" data-c="d.0" role="button" tabindex="0" aria-label="d.0"><rect x="66" y="36" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="94" y="51.68" font-size="13" font-weight="600" text-anchor="middle" fill="#A1090A">−0.4684</text></g><g class="mx-c" data-c="d.1" role="button" tabindex="0" aria-label="d.1"><rect x="66" y="58" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="94" y="73.68" font-size="13" font-weight="600" text-anchor="middle" fill="#A1090A">0.6459</text></g><g class="mx-c" data-c="s2.0" role="button" tabindex="0" aria-label="s2.0"><rect x="160" y="36" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="188" y="51.68" font-size="13" font-weight="600" text-anchor="middle" fill="#4C8316">0.2490</text></g><g class="mx-c" data-c="s2.1" role="button" tabindex="0" aria-label="s2.1"><rect x="160" y="58" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="188" y="73.68" font-size="13" font-weight="600" text-anchor="middle" fill="#4C8316">0.2287</text></g><g class="mx-c" data-c="h1.0" role="button" tabindex="0" aria-label="h1.0"><rect x="254" y="36" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="282" y="51.68" font-size="13" font-weight="600" text-anchor="middle" fill="#4C8316">0.5037</text></g><g class="mx-c" data-c="h1.1" role="button" tabindex="0" aria-label="h1.1"><rect x="254" y="58" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="282" y="73.68" font-size="13" font-weight="600" text-anchor="middle" fill="#4C8316">0.5842</text></g><g class="mx-c" data-c="s1.0" role="button" tabindex="0" aria-label="s1.0"><rect x="348" y="36" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="376" y="51.68" font-size="13" font-weight="600" text-anchor="middle" fill="#4C8316">0.2500</text></g><g class="mx-c" data-c="s1.1" role="button" tabindex="0" aria-label="s1.1"><rect x="348" y="58" width="56" height="22" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="376" y="73.68" font-size="13" font-weight="600" text-anchor="middle" fill="#4C8316">0.2429</text></g><g class="mx-c" data-c="W2.0.0" role="button" tabindex="0" aria-label="W2.0.0"><rect x="442" y="36" width="56" height="22" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="470" y="51.68" font-size="13" font-weight="600" text-anchor="middle" fill="#7A6305">0.50</text></g><g class="mx-c" data-c="W2.0.1" role="button" tabindex="0" aria-label="W2.0.1"><rect x="498" y="36" width="56" height="22" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="526" y="51.68" font-size="13" font-weight="600" text-anchor="middle" fill="#7A6305">−0.30</text></g><g class="mx-c" data-c="W2.1.0" role="button" tabindex="0" aria-label="W2.1.0"><rect x="442" y="58" width="56" height="22" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="470" y="73.68" font-size="13" font-weight="600" text-anchor="middle" fill="#7A6305">0.20</text></g><g class="mx-c" data-c="W2.1.1" role="button" tabindex="0" aria-label="W2.1.1"><rect x="498" y="58" width="56" height="22" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="526" y="73.68" font-size="13" font-weight="600" text-anchor="middle" fill="#7A6305">0.60</text></g><g class="mx-c" data-c="x.0" role="button" tabindex="0" aria-label="x.0"><rect x="592" y="36" width="56" height="22" rx="3" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.2"/><text x="620" y="51.68" font-size="13" font-weight="600" text-anchor="middle" fill="#2A5E9B">0.5</text></g><g class="mx-c" data-c="x.1" role="button" tabindex="0" aria-label="x.1"><rect x="592" y="58" width="56" height="22" rx="3" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.2"/><text x="620" y="73.68" font-size="13" font-weight="600" text-anchor="middle" fill="#2A5E9B">0.8</text></g></g><g data-key="e1" data-only="1"><rect x="66" y="114" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="66" y="136" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/></g><g data-key="f1" data-only="1"><g class="mx-c" data-c="D2.0" role="button" tabindex="0" aria-label="D2.0"><rect x="66" y="114" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="94" y="129.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.1166</text></g><g class="mx-c" data-c="D2.1" role="button" tabindex="0" aria-label="D2.1"><rect x="66" y="136" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="94" y="151.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.1477</text></g></g><g data-key="e2" data-only="1"><rect x="136" y="114" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="192" y="114" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="136" y="136" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="192" y="136" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="262" y="114" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="262" y="136" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/></g><g data-key="f2" data-only="1"><g class="mx-c" data-c="gW2.0.0" role="button" tabindex="0" aria-label="gW2.0.0"><rect x="136" y="114" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="164" y="129.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0588</text></g><g class="mx-c" data-c="gW2.0.1" role="button" tabindex="0" aria-label="gW2.0.1"><rect x="192" y="114" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="220" y="129.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0681</text></g><g class="mx-c" data-c="gW2.1.0" role="button" tabindex="0" aria-label="gW2.1.0"><rect x="136" y="136" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="164" y="151.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.0744</text></g><g class="mx-c" data-c="gW2.1.1" role="button" tabindex="0" aria-label="gW2.1.1"><rect x="192" y="136" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="220" y="151.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.0863</text></g><g class="mx-c" data-c="gb2.0" role="button" tabindex="0" aria-label="gb2.0"><rect x="262" y="114" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="290" y="129.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.1166</text></g><g class="mx-c" data-c="gb2.1" role="button" tabindex="0" aria-label="gb2.1"><rect x="262" y="136" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="290" y="151.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.1477</text></g></g><g data-key="e3" data-only="1"><rect x="338" y="114" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="338" y="136" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/></g><g data-key="f3" data-only="1"><g class="mx-c" data-c="dh1.0" role="button" tabindex="0" aria-label="dh1.0"><rect x="338" y="114" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="366" y="129.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0288</text></g><g class="mx-c" data-c="dh1.1" role="button" tabindex="0" aria-label="dh1.1"><rect x="338" y="136" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="366" y="151.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.1236</text></g></g><g data-key="e4" data-only="1"><rect x="414" y="114" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="414" y="136" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/></g><g data-key="f4" data-only="1"><g class="mx-c" data-c="D1.0" role="button" tabindex="0" aria-label="D1.0"><rect x="414" y="114" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="442" y="129.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0072</text></g><g class="mx-c" data-c="D1.1" role="button" tabindex="0" aria-label="D1.1"><rect x="414" y="136" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="442" y="151.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.0300</text></g></g><g data-key="e5" data-only="1"><rect x="484" y="114" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="540" y="114" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="484" y="136" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="540" y="136" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="610" y="114" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><rect x="610" y="136" width="56" height="22" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/></g><g data-key="f5" data-only="1"><g class="mx-c" data-c="gW1.0.0" role="button" tabindex="0" aria-label="gW1.0.0"><rect x="484" y="114" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="512" y="129.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0036</text></g><g class="mx-c" data-c="gW1.0.1" role="button" tabindex="0" aria-label="gW1.0.1"><rect x="540" y="114" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="568" y="129.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0058</text></g><g class="mx-c" data-c="gW1.1.0" role="button" tabindex="0" aria-label="gW1.1.0"><rect x="484" y="136" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="512" y="151.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.0150</text></g><g class="mx-c" data-c="gW1.1.1" role="button" tabindex="0" aria-label="gW1.1.1"><rect x="540" y="136" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="568" y="151.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.0240</text></g><g class="mx-c" data-c="gb1.0" role="button" tabindex="0" aria-label="gb1.0"><rect x="610" y="114" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="638" y="129.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0072</text></g><g class="mx-c" data-c="gb1.1" role="button" tabindex="0" aria-label="gb1.1"><rect x="610" y="136" width="56" height="22" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="638" y="151.5" font-size="12.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.0300</text></g></g><line x1="14" y1="176" x2="746" y2="176" stroke="#E5E1D8" stroke-width="1.2"/><g data-key="b1" data-only="1"><line x1="76" y1="362" x2="660" y2="362" stroke="#5E5850" stroke-width="1.3"/><line x1="76" y1="196" x2="76" y2="362" stroke="#5E5850" stroke-width="1.3"/><line x1="76" y1="208.296" x2="660" y2="208.296" stroke="#8A8378" stroke-width="1.2" stroke-dasharray="4 3"/><text x="84" y="201.296" font-size="12" fill="#5E5850" text-anchor="start" font-weight="400">потолок 0.25</text><text x="69" y="212.296" font-size="11.5" fill="#8A8378" text-anchor="end" font-weight="400">0.25</text><text x="69" y="366" font-size="11.5" fill="#8A8378" text-anchor="end" font-weight="400">0</text><line x1="76" y1="362" x2="76" y2="366" stroke="#5E5850" stroke-width="1.1"/><text x="76" y="380" font-size="11.5" fill="#8A8378" text-anchor="middle" font-weight="400">−3</text><line x1="173.333" y1="362" x2="173.333" y2="366" stroke="#5E5850" stroke-width="1.1"/><text x="173.333" y="380" font-size="11.5" fill="#8A8378" text-anchor="middle" font-weight="400">−2</text><line x1="270.667" y1="362" x2="270.667" y2="366" stroke="#5E5850" stroke-width="1.1"/><text x="270.667" y="380" font-size="11.5" fill="#8A8378" text-anchor="middle" font-weight="400">−1</text><line x1="368" y1="362" x2="368" y2="366" stroke="#5E5850" stroke-width="1.1"/><text x="368" y="380" font-size="11.5" fill="#8A8378" text-anchor="middle" font-weight="400">0</text><line x1="465.333" y1="362" x2="465.333" y2="366" stroke="#5E5850" stroke-width="1.1"/><text x="465.333" y="380" font-size="11.5" fill="#8A8378" text-anchor="middle" font-weight="400">1</text><line x1="562.667" y1="362" x2="562.667" y2="366" stroke="#5E5850" stroke-width="1.1"/><text x="562.667" y="380" font-size="11.5" fill="#8A8378" text-anchor="middle" font-weight="400">2</text><line x1="660" y1="362" x2="660" y2="366" stroke="#5E5850" stroke-width="1.1"/><text x="660" y="380" font-size="11.5" fill="#8A8378" text-anchor="middle" font-weight="400">3</text><foreignObject x="664" y="350" width="24" height="24"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="z"></div></foreignObject><foreignObject x="495" y="225" width="170" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13.5px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\sigma'(z) = h(1-h)"></div></foreignObject><polyline points="76.0,334.2 81.8,332.7 87.7,331.1 93.5,329.4 99.4,327.6 105.2,325.7 111.0,323.8 116.9,321.7 122.7,319.6 128.6,317.4 134.4,315.1 140.2,312.7 146.1,310.2 151.9,307.7 157.8,305.0 163.6,302.2 169.4,299.4 175.3,296.5 181.1,293.4 187.0,290.3 192.8,287.2 198.6,283.9 204.5,280.6 210.3,277.2 216.2,273.8 222.0,270.3 227.8,266.8 233.7,263.3 239.5,259.7 245.4,256.2 251.2,252.6 257.0,249.1 262.9,245.7 268.7,242.2 274.6,238.9 280.4,235.7 286.2,232.5 292.1,229.5 297.9,226.6 303.8,223.9 309.6,221.3 315.4,219.0 321.3,216.8 327.1,214.9 333.0,213.2 338.8,211.7 344.6,210.5 350.5,209.5 356.3,208.8 362.2,208.4 368.0,208.3 373.8,208.4 379.7,208.8 385.5,209.5 391.4,210.5 397.2,211.7 403.0,213.2 408.9,214.9 414.7,216.8 420.6,219.0 426.4,221.3 432.2,223.9 438.1,226.6 443.9,229.5 449.8,232.5 455.6,235.7 461.4,238.9 467.3,242.2 473.1,245.7 479.0,249.1 484.8,252.6 490.6,256.2 496.5,259.7 502.3,263.3 508.2,266.8 514.0,270.3 519.8,273.8 525.7,277.2 531.5,280.6 537.4,283.9 543.2,287.2 549.0,290.3 554.9,293.4 560.7,296.5 566.6,299.4 572.4,302.2 578.2,305.0 584.1,307.7 589.9,310.2 595.8,312.7 601.6,315.1 607.4,317.4 613.3,319.6 619.1,321.7 625.0,323.8 630.8,325.7 636.6,327.6 642.5,329.4 648.3,331.1 654.2,332.7 660.0,334.2" fill="none" stroke="#C30B0A" stroke-width="2.2"/><g class="mx-a" style="--d:0.3s"><line x1="369.46" y1="213.305" x2="244" y2="296" stroke="#BDB6A9" stroke-width="1.1"/><foreignObject x="219" y="297" width="50" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="z^{(1)}_1"></div></foreignObject><text x="244" y="342" font-size="13.5" fill="#4C8316" text-anchor="middle" font-weight="700">0.2500</text><circle cx="369.5" cy="208.3" r="5.5" fill="#73B222" stroke="#FFFFFF" stroke-width="2"/></g><g class="mx-a" style="--d:0.75s"><line x1="380.324" y1="213.911" x2="340" y2="296" stroke="#BDB6A9" stroke-width="1.1"/><foreignObject x="315" y="297" width="50" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="z^{(2)}_1"></div></foreignObject><text x="340" y="342" font-size="13.5" fill="#4C8316" text-anchor="middle" font-weight="700">0.2490</text><circle cx="380.3" cy="208.9" r="5.5" fill="#73B222" stroke="#FFFFFF" stroke-width="2"/></g><g class="mx-a" style="--d:1.2s"><line x1="401.093" y1="217.654" x2="436" y2="296" stroke="#BDB6A9" stroke-width="1.1"/><foreignObject x="411" y="297" width="50" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="z^{(1)}_2"></div></foreignObject><text x="436" y="342" font-size="13.5" fill="#4C8316" text-anchor="middle" font-weight="700">0.2429</text><circle cx="401.1" cy="212.7" r="5.5" fill="#73B222" stroke="#FFFFFF" stroke-width="2"/></g><g class="mx-a" style="--d:1.65s"><line x1="426.523" y1="226.392" x2="532" y2="296" stroke="#BDB6A9" stroke-width="1.1"/><foreignObject x="507" y="297" width="50" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="z^{(2)}_2"></div></foreignObject><text x="532" y="342" font-size="13.5" fill="#4C8316" text-anchor="middle" font-weight="700">0.2287</text><circle cx="426.5" cy="221.4" r="5.5" fill="#73B222" stroke="#FFFFFF" stroke-width="2"/></g></g><g data-key="b2" data-only="1"><foreignObject x="121" y="198" width="170" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf h^{(2)} - \mathbf y"></div></foreignObject><foreignObject x="269" y="198" width="170" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\sigma'(\mathbf z^{(2)})"></div></foreignObject><foreignObject x="417" y="198" width="170" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\boldsymbol\delta^{(2)}"></div></foreignObject><g class="mx-c" data-c="d.0" role="button" tabindex="0" aria-label="d.0"><rect x="170" y="232" width="72" height="38" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="206" y="256.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">−0.4684</text></g><g class="mx-c" data-c="d.1" role="button" tabindex="0" aria-label="d.1"><rect x="170" y="270" width="72" height="38" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="206" y="294.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">0.6459</text></g><g class="mx-c" data-c="s2.0" role="button" tabindex="0" aria-label="s2.0"><rect x="318" y="232" width="72" height="38" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="354" y="256.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.2490</text></g><g class="mx-c" data-c="s2.1" role="button" tabindex="0" aria-label="s2.1"><rect x="318" y="270" width="72" height="38" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="354" y="294.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.2287</text></g><foreignObject x="260" y="250" width="40" height="40"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:20px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\odot"></div></foreignObject><text x="428" y="276.8" font-size="20" fill="#5E5850" text-anchor="middle" font-weight="400">=</text><g class="mx-a" style="--d:1.2s"><g class="mx-c" data-c="D2.0" role="button" tabindex="0" aria-label="D2.0"><rect x="466" y="232" width="72" height="38" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="502" y="256.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">−0.1166</text></g></g><rect class="mx-flash" style="--d:0.3s;--t:1.8s" x="168" y="230" width="76" height="42" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:0.3s;--t:1.8s" x="316" y="230" width="76" height="42" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:1.1s;--t:1s" x="464" y="230" width="76" height="42" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><g class="mx-a" style="--d:3.2s"><g class="mx-c" data-c="D2.1" role="button" tabindex="0" aria-label="D2.1"><rect x="466" y="270" width="72" height="38" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="502" y="294.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">0.1477</text></g></g><rect class="mx-flash" style="--d:2.3s;--t:1.8s" x="168" y="268" width="76" height="42" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:2.3s;--t:1.8s" x="316" y="268" width="76" height="42" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:3.1s;--t:1s" x="464" y="268" width="76" height="42" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><text x="206" y="326" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="354" y="326" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="502" y="326" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text></g><g data-key="b3" data-only="1"><foreignObject x="118" y="261" width="56" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:flex-end;text-align:right" data-tex="\boldsymbol\delta^{(2)}"></div></foreignObject><foreignObject x="428" y="197" width="90" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:flex-start;text-align:left" data-tex="\left(\mathbf h^{(1)}\right)^{\!\top}"></div></foreignObject><g class="mx-c" data-c="D2.0" role="button" tabindex="0" aria-label="D2.0"><rect x="182" y="240" width="74" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="219" y="263.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">−0.1166</text></g><g class="mx-c" data-c="D2.1" role="button" tabindex="0" aria-label="D2.1"><rect x="182" y="276" width="74" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="219" y="299.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">0.1477</text></g><g class="mx-c" data-c="h1.0" role="button" tabindex="0" aria-label="h1.0"><rect x="268" y="194" width="74" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="305" y="217.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.5037</text></g><g class="mx-c" data-c="h1.1" role="button" tabindex="0" aria-label="h1.1"><rect x="342" y="194" width="74" height="36" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="379" y="217.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.5842</text></g><rect x="268" y="240" width="74" height="36" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><g class="mx-a" style="--d:0.55s"><g class="mx-c" data-c="gW2.0.0" role="button" tabindex="0" aria-label="gW2.0.0"><rect x="268" y="240" width="74" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="305" y="262.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0588</text></g></g><rect class="mx-flash" style="--d:0.3s;--t:0.8s" x="180" y="238" width="78" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:0.3s;--t:0.8s" x="266" y="192" width="78" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect x="342" y="240" width="74" height="36" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><g class="mx-a" style="--d:1.3s"><g class="mx-c" data-c="gW2.0.1" role="button" tabindex="0" aria-label="gW2.0.1"><rect x="342" y="240" width="74" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="379" y="262.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0681</text></g></g><rect class="mx-flash" style="--d:1.05s;--t:0.8s" x="180" y="238" width="78" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:1.05s;--t:0.8s" x="340" y="192" width="78" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect x="268" y="276" width="74" height="36" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><g class="mx-a" style="--d:2.05s"><g class="mx-c" data-c="gW2.1.0" role="button" tabindex="0" aria-label="gW2.1.0"><rect x="268" y="276" width="74" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="305" y="298.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.0744</text></g></g><rect class="mx-flash" style="--d:1.8s;--t:0.8s" x="180" y="274" width="78" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:1.8s;--t:0.8s" x="266" y="192" width="78" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect x="342" y="276" width="74" height="36" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><g class="mx-a" style="--d:2.8s"><g class="mx-c" data-c="gW2.1.1" role="button" tabindex="0" aria-label="gW2.1.1"><rect x="342" y="276" width="74" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="379" y="298.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.0863</text></g></g><rect class="mx-flash" style="--d:2.55s;--t:0.8s" x="180" y="274" width="78" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:2.55s;--t:0.8s" x="340" y="192" width="78" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><foreignObject x="267" y="312" width="150" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\partial E/\partial \mathbf W^{(2)}"></div></foreignObject><text x="342" y="358" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1) · (1×2) = (2×2)</text><g class="mx-fly" style="--dx:-308px;--dy:0px;--d:3.4s;--t:0.9s"><g class="mx-c" data-c="gb2.0" role="button" tabindex="0" aria-label="gb2.0"><rect x="490" y="240" width="74" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="527" y="263.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">−0.1166</text></g></g><g class="mx-fly" style="--dx:-308px;--dy:0px;--d:3.65s;--t:0.9s"><g class="mx-c" data-c="gb2.1" role="button" tabindex="0" aria-label="gb2.1"><rect x="490" y="276" width="74" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="527" y="299.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">0.1477</text></g></g><g class="mx-a" style="--d:4.1s"><foreignObject x="467" y="312" width="120" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\partial E/\partial \mathbf b^{(2)}"></div></foreignObject></g><g class="mx-a" style="--d:4.1s"><text x="527" y="358" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">те же числа</text></g></g><g data-key="b4" data-only="1"><foreignObject x="33" y="195" width="110" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf W^{(2)}"></div></foreignObject><foreignObject x="193" y="193" width="130" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\left(\mathbf W^{(2)}\right)^{\!\top}"></div></foreignObject><foreignObject x="338" y="195" width="70" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\boldsymbol\delta^{(2)}"></div></foreignObject><foreignObject x="426" y="195" width="110" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\partial E/\partial \mathbf h^{(1)}"></div></foreignObject><g class="mx-c" data-c="W2.0.0" role="button" tabindex="0" aria-label="W2.0.0"><rect x="26" y="226" width="62" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="57" y="249.04" font-size="14" font-weight="600" text-anchor="middle" fill="#7A6305">0.50</text></g><g class="mx-c" data-c="W2.0.1" role="button" tabindex="0" aria-label="W2.0.1"><rect x="88" y="226" width="62" height="36" rx="3" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.2"/><text x="119" y="249.04" font-size="14" font-weight="600" text-anchor="middle" fill="#2A5E9B">−0.30</text></g><g class="mx-c" data-c="W2.1.0" role="button" tabindex="0" aria-label="W2.1.0"><rect x="26" y="262" width="62" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="57" y="285.04" font-size="14" font-weight="600" text-anchor="middle" fill="#7A6305">0.20</text></g><g class="mx-c" data-c="W2.1.1" role="button" tabindex="0" aria-label="W2.1.1"><rect x="88" y="262" width="62" height="36" rx="3" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.2"/><text x="119" y="285.04" font-size="14" font-weight="600" text-anchor="middle" fill="#2A5E9B">0.60</text></g><g class="mx-fly" style="--dx:-170px;--dy:0px;--d:0.3s;--t:1.2s"><g class="mx-c" data-c="W2.0.0" role="button" tabindex="0" aria-label="W2.0.0"><rect x="196" y="226" width="62" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="227" y="249.04" font-size="14" font-weight="600" text-anchor="middle" fill="#7A6305">0.50</text></g></g><g class="mx-fly" style="--dx:-108px;--dy:-36px;--d:0.3s;--t:1.2s"><g class="mx-c" data-c="W2.0.1" role="button" tabindex="0" aria-label="W2.0.1"><rect x="196" y="262" width="62" height="36" rx="3" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.2"/><text x="227" y="285.04" font-size="14" font-weight="600" text-anchor="middle" fill="#2A5E9B">−0.30</text></g></g><g class="mx-fly" style="--dx:-232px;--dy:36px;--d:0.3s;--t:1.2s"><g class="mx-c" data-c="W2.1.0" role="button" tabindex="0" aria-label="W2.1.0"><rect x="258" y="226" width="62" height="36" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="289" y="249.04" font-size="14" font-weight="600" text-anchor="middle" fill="#7A6305">0.20</text></g></g><g class="mx-fly" style="--dx:-170px;--dy:0px;--d:0.3s;--t:1.2s"><g class="mx-c" data-c="W2.1.1" role="button" tabindex="0" aria-label="W2.1.1"><rect x="258" y="262" width="62" height="36" rx="3" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.2"/><text x="289" y="285.04" font-size="14" font-weight="600" text-anchor="middle" fill="#2A5E9B">0.60</text></g></g><g class="mx-c" data-c="D2.0" role="button" tabindex="0" aria-label="D2.0"><rect x="342" y="226" width="62" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="373" y="248.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.1166</text></g><g class="mx-c" data-c="D2.1" role="button" tabindex="0" aria-label="D2.1"><rect x="342" y="262" width="62" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="373" y="284.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.1477</text></g><text x="335" y="268.8" font-size="20" fill="#5E5850" text-anchor="middle" font-weight="400">·</text><text x="426" y="268.8" font-size="20" fill="#5E5850" text-anchor="middle" font-weight="400">=</text><g class="mx-a" style="--d:3s"><g class="mx-c" data-c="dh1.0" role="button" tabindex="0" aria-label="dh1.0"><rect x="448" y="226" width="66" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="481" y="249.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0288</text></g></g><rect class="mx-flash" style="--d:1.7s;--t:2s" x="194" y="224" width="128" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:1.7s;--t:2s" x="340" y="224" width="66" height="76" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:2.9s;--t:0.8s" x="446" y="224" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><g class="mx-a" style="--d:5.1s"><g class="mx-c" data-c="dh1.1" role="button" tabindex="0" aria-label="dh1.1"><rect x="448" y="262" width="66" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="481" y="285.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">0.1236</text></g></g><rect class="mx-flash" style="--d:3.8s;--t:2s" x="194" y="260" width="128" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:3.8s;--t:2s" x="340" y="224" width="66" height="76" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:5s;--t:0.8s" x="446" y="260" width="70" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><text x="88" y="315" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×2)</text><text x="258" y="315" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×2)</text><text x="373" y="315" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="481" y="315" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="14" y="334" font-size="12" fill="#8A8378" text-anchor="start" font-weight="400">узел 1</text><g class="mx-a" style="--d:2s"><text x="227" y="334" font-size="14" fill="#5E5850" text-anchor="middle" font-weight="400">−0.0583</text></g><g class="mx-a" style="--d:2.4s"><text x="289" y="334" font-size="14" fill="#5E5850" text-anchor="middle" font-weight="400">+0.0295</text></g><g class="mx-a" style="--d:2.8s"><text x="481" y="334" font-size="14" fill="#A1090A" text-anchor="middle" font-weight="700">= −0.0288</text></g><text x="14" y="359" font-size="12" fill="#8A8378" text-anchor="start" font-weight="400">узел 2</text><g class="mx-a" style="--d:4.1s"><text x="227" y="359" font-size="14" fill="#5E5850" text-anchor="middle" font-weight="400">0.0350</text></g><g class="mx-a" style="--d:4.5s"><text x="289" y="359" font-size="14" fill="#5E5850" text-anchor="middle" font-weight="400">+0.0886</text></g><g class="mx-a" style="--d:4.9s"><text x="481" y="359" font-size="14" fill="#A1090A" text-anchor="middle" font-weight="700">= 0.1236</text></g><line x1="605" y1="234" x2="705" y2="234" stroke="#BDB6A9" stroke-width="1.5"/><line x1="605" y1="286" x2="705" y2="234" stroke="#BDB6A9" stroke-width="1.5"/><line x1="605" y1="234" x2="705" y2="286" stroke="#BDB6A9" stroke-width="1.5"/><line x1="605" y1="286" x2="705" y2="286" stroke="#BDB6A9" stroke-width="1.5"/><line class="mx-flash" style="--d:1.7s;--t:2s" x1="605" y1="234" x2="705" y2="234" stroke="#D83BB9" stroke-width="3.2"/><line class="mx-flash" style="--d:1.7s;--t:2s" x1="605" y1="234" x2="705" y2="286" stroke="#D83BB9" stroke-width="3.2"/><line class="mx-flash" style="--d:3.8s;--t:2s" x1="605" y1="286" x2="705" y2="234" stroke="#D83BB9" stroke-width="3.2"/><line class="mx-flash" style="--d:3.8s;--t:2s" x1="605" y1="286" x2="705" y2="286" stroke="#D83BB9" stroke-width="3.2"/><circle cx="590" cy="234" r="15" fill="#FFFFFF" stroke="#73B222" stroke-width="2"/><foreignObject x="575" y="221" width="30" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="h_1"></div></foreignObject><circle cx="590" cy="286" r="15" fill="#FFFFFF" stroke="#73B222" stroke-width="2"/><foreignObject x="575" y="273" width="30" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="h_2"></div></foreignObject><circle cx="720" cy="234" r="15" fill="#F4F7EE" stroke="#C29E08" stroke-width="2"/><foreignObject x="705" y="221" width="30" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="z_1"></div></foreignObject><circle cx="720" cy="286" r="15" fill="#F4F7EE" stroke="#C29E08" stroke-width="2"/><foreignObject x="705" y="273" width="30" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:12px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="z_2"></div></foreignObject><text x="655" y="332" font-size="12" fill="#8A8378" text-anchor="middle" font-weight="400">столбец: рёбра из одного узла</text></g><g data-key="b5" data-only="1"><foreignObject x="121" y="198" width="170" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\partial E/\partial \mathbf h^{(1)}"></div></foreignObject><foreignObject x="269" y="198" width="170" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\sigma'(\mathbf z^{(1)})"></div></foreignObject><foreignObject x="417" y="198" width="170" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\boldsymbol\delta^{(1)}"></div></foreignObject><g class="mx-c" data-c="dh1.0" role="button" tabindex="0" aria-label="dh1.0"><rect x="170" y="232" width="72" height="38" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="206" y="256.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0288</text></g><g class="mx-c" data-c="dh1.1" role="button" tabindex="0" aria-label="dh1.1"><rect x="170" y="270" width="72" height="38" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="206" y="294.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">0.1236</text></g><g class="mx-c" data-c="s1.0" role="button" tabindex="0" aria-label="s1.0"><rect x="318" y="232" width="72" height="38" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="354" y="256.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.2500</text></g><g class="mx-c" data-c="s1.1" role="button" tabindex="0" aria-label="s1.1"><rect x="318" y="270" width="72" height="38" rx="3" fill="#EDF7DD" stroke="#73B222" stroke-width="1.2"/><text x="354" y="294.04" font-size="14" font-weight="600" text-anchor="middle" fill="#4C8316">0.2429</text></g><foreignObject x="260" y="250" width="40" height="40"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:20px;color:#5E5850;font-weight:400;justify-content:center;text-align:center" data-tex="\odot"></div></foreignObject><text x="428" y="276.8" font-size="20" fill="#5E5850" text-anchor="middle" font-weight="400">=</text><g class="mx-a" style="--d:1.2s"><g class="mx-c" data-c="D1.0" role="button" tabindex="0" aria-label="D1.0"><rect x="466" y="232" width="72" height="38" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="502" y="256.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0072</text></g></g><rect class="mx-flash" style="--d:0.3s;--t:1.8s" x="168" y="230" width="76" height="42" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:0.3s;--t:1.8s" x="316" y="230" width="76" height="42" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:1.1s;--t:1s" x="464" y="230" width="76" height="42" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><g class="mx-a" style="--d:3.2s"><g class="mx-c" data-c="D1.1" role="button" tabindex="0" aria-label="D1.1"><rect x="466" y="270" width="72" height="38" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="502" y="294.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">0.0300</text></g></g><rect class="mx-flash" style="--d:2.3s;--t:1.8s" x="168" y="268" width="76" height="42" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:2.3s;--t:1.8s" x="316" y="268" width="76" height="42" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:3.1s;--t:1s" x="464" y="268" width="76" height="42" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><text x="206" y="326" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="354" y="326" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text><text x="502" y="326" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1)</text></g><g data-key="b6" data-only="1"><foreignObject x="118" y="261" width="56" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:flex-end;text-align:right" data-tex="\boldsymbol\delta^{(1)}"></div></foreignObject><foreignObject x="428" y="197" width="90" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:flex-start;text-align:left" data-tex="\left(\mathbf x^{(0)}\right)^{\!\top}"></div></foreignObject><g class="mx-c" data-c="D1.0" role="button" tabindex="0" aria-label="D1.0"><rect x="182" y="240" width="74" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="219" y="263.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0072</text></g><g class="mx-c" data-c="D1.1" role="button" tabindex="0" aria-label="D1.1"><rect x="182" y="276" width="74" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="219" y="299.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">0.0300</text></g><g class="mx-c" data-c="x.0" role="button" tabindex="0" aria-label="x.0"><rect x="268" y="194" width="74" height="36" rx="3" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.2"/><text x="305" y="217.04" font-size="14" font-weight="600" text-anchor="middle" fill="#2A5E9B">0.5</text></g><g class="mx-c" data-c="x.1" role="button" tabindex="0" aria-label="x.1"><rect x="342" y="194" width="74" height="36" rx="3" fill="#E8F0F7" stroke="#3576C0" stroke-width="1.2"/><text x="379" y="217.04" font-size="14" font-weight="600" text-anchor="middle" fill="#2A5E9B">0.8</text></g><rect x="268" y="240" width="74" height="36" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><g class="mx-a" style="--d:0.55s"><g class="mx-c" data-c="gW1.0.0" role="button" tabindex="0" aria-label="gW1.0.0"><rect x="268" y="240" width="74" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="305" y="262.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0036</text></g></g><rect class="mx-flash" style="--d:0.3s;--t:0.8s" x="180" y="238" width="78" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:0.3s;--t:0.8s" x="266" y="192" width="78" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect x="342" y="240" width="74" height="36" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><g class="mx-a" style="--d:1.3s"><g class="mx-c" data-c="gW1.0.1" role="button" tabindex="0" aria-label="gW1.0.1"><rect x="342" y="240" width="74" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="379" y="262.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0058</text></g></g><rect class="mx-flash" style="--d:1.05s;--t:0.8s" x="180" y="238" width="78" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:1.05s;--t:0.8s" x="340" y="192" width="78" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect x="268" y="276" width="74" height="36" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><g class="mx-a" style="--d:2.05s"><g class="mx-c" data-c="gW1.1.0" role="button" tabindex="0" aria-label="gW1.1.0"><rect x="268" y="276" width="74" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="305" y="298.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.0150</text></g></g><rect class="mx-flash" style="--d:1.8s;--t:0.8s" x="180" y="274" width="78" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:1.8s;--t:0.8s" x="266" y="192" width="78" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect x="342" y="276" width="74" height="36" rx="3" fill="#FAFAF8" stroke="#C9C2B8" stroke-width="1.2" stroke-dasharray="3 2"/><g class="mx-a" style="--d:2.8s"><g class="mx-c" data-c="gW1.1.1" role="button" tabindex="0" aria-label="gW1.1.1"><rect x="342" y="276" width="74" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="379" y="298.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.0240</text></g></g><rect class="mx-flash" style="--d:2.55s;--t:0.8s" x="180" y="274" width="78" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><rect class="mx-flash" style="--d:2.55s;--t:0.8s" x="340" y="192" width="78" height="40" rx="5" fill="none" stroke="#D83BB9" stroke-width="2.6"/><foreignObject x="267" y="312" width="150" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\partial E/\partial \mathbf W^{(1)}"></div></foreignObject><text x="342" y="358" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">(2×1) · (1×2) = (2×2)</text><g class="mx-fly" style="--dx:-308px;--dy:0px;--d:3.4s;--t:0.9s"><g class="mx-c" data-c="gb1.0" role="button" tabindex="0" aria-label="gb1.0"><rect x="490" y="240" width="74" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="527" y="263.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0072</text></g></g><g class="mx-fly" style="--dx:-308px;--dy:0px;--d:3.65s;--t:0.9s"><g class="mx-c" data-c="gb1.1" role="button" tabindex="0" aria-label="gb1.1"><rect x="490" y="276" width="74" height="36" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="527" y="299.04" font-size="14" font-weight="600" text-anchor="middle" fill="#A1090A">0.0300</text></g></g><g class="mx-a" style="--d:4.1s"><foreignObject x="467" y="312" width="120" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\partial E/\partial \mathbf b^{(1)}"></div></foreignObject></g><g class="mx-a" style="--d:4.1s"><text x="527" y="358" font-size="12" fill="#968F85" text-anchor="middle" font-weight="400">те же числа</text></g></g><g data-key="b7" data-only="1"><foreignObject x="50" y="185" width="100" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf W^{(1)}"></div></foreignObject><foreignObject x="235" y="185" width="130" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\partial E/\partial \mathbf W^{(1)}"></div></foreignObject><foreignObject x="465" y="185" width="70" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf b^{(1)}"></div></foreignObject><foreignObject x="575" y="185" width="110" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\partial E/\partial \mathbf b^{(1)}"></div></foreignObject><g class="mx-c" data-c="W1.0.0" role="button" tabindex="0" aria-label="W1.0.0"><rect x="40" y="212" width="60" height="30" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="70" y="231.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#7A6305">0.15</text></g><g class="mx-c" data-c="W1.0.1" role="button" tabindex="0" aria-label="W1.0.1"><rect x="100" y="212" width="60" height="30" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="130" y="231.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#7A6305">−0.20</text></g><g class="mx-c" data-c="W1.1.0" role="button" tabindex="0" aria-label="W1.1.0"><rect x="40" y="242" width="60" height="30" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="70" y="261.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#7A6305">0.40</text></g><g class="mx-c" data-c="W1.1.1" role="button" tabindex="0" aria-label="W1.1.1"><rect x="100" y="242" width="60" height="30" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="130" y="261.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#7A6305">0.30</text></g><g class="mx-c" data-c="b1.0" role="button" tabindex="0" aria-label="b1.0"><rect x="470" y="212" width="60" height="30" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="500" y="231.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#7A6305">0.10</text></g><g class="mx-c" data-c="b1.1" role="button" tabindex="0" aria-label="b1.1"><rect x="470" y="242" width="60" height="30" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="500" y="261.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#7A6305">−0.10</text></g><line x1="170" y1="242" x2="230" y2="242" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/><line x1="540" y1="242" x2="590" y2="242" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/><g class="mx-a" style="--d:0.2s"><g class="mx-c" data-c="gW1.0.0" role="button" tabindex="0" aria-label="gW1.0.0"><rect x="240" y="212" width="60" height="30" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="270" y="231.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0036</text></g><g class="mx-c" data-c="gW1.0.1" role="button" tabindex="0" aria-label="gW1.0.1"><rect x="300" y="212" width="60" height="30" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="330" y="231.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0058</text></g><g class="mx-c" data-c="gW1.1.0" role="button" tabindex="0" aria-label="gW1.1.0"><rect x="240" y="242" width="60" height="30" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="270" y="261.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.0150</text></g><g class="mx-c" data-c="gW1.1.1" role="button" tabindex="0" aria-label="gW1.1.1"><rect x="300" y="242" width="60" height="30" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="330" y="261.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.0240</text></g></g><g class="mx-a" style="--d:0.5s"><g class="mx-c" data-c="gb1.0" role="button" tabindex="0" aria-label="gb1.0"><rect x="600" y="212" width="60" height="30" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="630" y="231.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0072</text></g><g class="mx-c" data-c="gb1.1" role="button" tabindex="0" aria-label="gb1.1"><rect x="600" y="242" width="60" height="30" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="630" y="261.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.0300</text></g></g><foreignObject x="50" y="283" width="100" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf W^{(2)}"></div></foreignObject><foreignObject x="235" y="283" width="130" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\partial E/\partial \mathbf W^{(2)}"></div></foreignObject><foreignObject x="465" y="283" width="70" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\mathbf b^{(2)}"></div></foreignObject><foreignObject x="575" y="283" width="110" height="26"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400;justify-content:center;text-align:center" data-tex="\partial E/\partial \mathbf b^{(2)}"></div></foreignObject><g class="mx-c" data-c="W2.0.0" role="button" tabindex="0" aria-label="W2.0.0"><rect x="40" y="310" width="60" height="30" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="70" y="329.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#7A6305">0.50</text></g><g class="mx-c" data-c="W2.0.1" role="button" tabindex="0" aria-label="W2.0.1"><rect x="100" y="310" width="60" height="30" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="130" y="329.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#7A6305">−0.30</text></g><g class="mx-c" data-c="W2.1.0" role="button" tabindex="0" aria-label="W2.1.0"><rect x="40" y="340" width="60" height="30" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="70" y="359.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#7A6305">0.20</text></g><g class="mx-c" data-c="W2.1.1" role="button" tabindex="0" aria-label="W2.1.1"><rect x="100" y="340" width="60" height="30" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="130" y="359.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#7A6305">0.60</text></g><g class="mx-c" data-c="b2.0" role="button" tabindex="0" aria-label="b2.0"><rect x="470" y="310" width="60" height="30" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="500" y="329.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#7A6305">0.05</text></g><g class="mx-c" data-c="b2.1" role="button" tabindex="0" aria-label="b2.1"><rect x="470" y="340" width="60" height="30" rx="3" fill="#FBF6DF" stroke="#C29E08" stroke-width="1.2"/><text x="500" y="359.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#7A6305">0.15</text></g><line x1="170" y1="340" x2="230" y2="340" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/><line x1="540" y1="340" x2="590" y2="340" stroke="#5E5850" stroke-width="1.5" marker-end="url(#mxarw)"/><g class="mx-a" style="--d:1s"><g class="mx-c" data-c="gW2.0.0" role="button" tabindex="0" aria-label="gW2.0.0"><rect x="240" y="310" width="60" height="30" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="270" y="329.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0588</text></g><g class="mx-c" data-c="gW2.0.1" role="button" tabindex="0" aria-label="gW2.0.1"><rect x="300" y="310" width="60" height="30" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="330" y="329.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.0681</text></g><g class="mx-c" data-c="gW2.1.0" role="button" tabindex="0" aria-label="gW2.1.0"><rect x="240" y="340" width="60" height="30" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="270" y="359.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.0744</text></g><g class="mx-c" data-c="gW2.1.1" role="button" tabindex="0" aria-label="gW2.1.1"><rect x="300" y="340" width="60" height="30" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="330" y="359.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.0863</text></g></g><g class="mx-a" style="--d:1.3s"><g class="mx-c" data-c="gb2.0" role="button" tabindex="0" aria-label="gb2.0"><rect x="600" y="310" width="60" height="30" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="630" y="329.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">−0.1166</text></g><g class="mx-c" data-c="gb2.1" role="button" tabindex="0" aria-label="gb2.1"><rect x="600" y="340" width="60" height="30" rx="3" fill="#FDE6E6" stroke="#C30B0A" stroke-width="1.2"/><text x="630" y="359.86" font-size="13.5" font-weight="600" text-anchor="middle" fill="#A1090A">0.1477</text></g></g></g><text x="14" y="408" font-size="12" fill="#8A8378" text-anchor="start" font-weight="400">красное: градиенты · зелёное: значения с прямого прохода · жёлтое: параметры · розовая рамка: что участвует сейчас</text></svg>
+<div class="mx-why" aria-live="polite"><span class="mx-why-hint">Нажмите на клетку с числом: здесь появится её расчёт.</span></div>
 
   </div>
 
@@ -2672,10 +1864,10 @@
   </div>
 
   <div class="stage-notes">
-    <div class="step-panel" data-on="dat b1e b2e b3e b4e b5e" data-focus="dat">
+    <div class="step-panel" data-on="dat e1 e2 e3 e4 e5 b1" data-focus="dat">
       <div class="step-kicker">Шаг 1 · что уже посчитано</div>
       <h4>Обратный проход не считает сеть заново</h4>
-      <p>Слева всё, что оставил прямой проход: промах выхода, производные
+      <p>В верхней строке всё, что оставил прямой проход: промах выхода, производные
       активаций, активации первого слоя и сам вход. Плюс матрица <span class="math-inline" data-tex="\mathbf W^{(2)}"></span>: её мы прочитаем в обратную сторону.</p>
       <p>Экспоненту второй раз считать не нужно: у сигмоиды производная
       выражается через саму функцию, а её значение уже лежит в кэше.</p>
@@ -2709,7 +1901,7 @@
         слой уменьшает сигнал примерно вчетверо: отсюда затухание градиента.</p>
       </div>
     </div>
-    <div class="step-panel" data-on="dat b1 b2e b3e b4e b5e" data-focus="b1">
+    <div class="step-panel" data-on="dat f1 e2 e3 e4 e5 b2" data-focus="f1">
       <div class="step-kicker">Шаг 2 · дельта последнего слоя</div>
       <h4>Поэлементное произведение двух столбцов</h4>
       <p>Значок <span class="math-inline" data-tex="\odot"></span> требует одинаковых форм:
@@ -2719,7 +1911,7 @@
       <p>Минус в первой клетке означает «поднимай выход», плюс во второй «опускай». Этот вектор
       слой передаёт дальше.</p>
     </div>
-    <div class="step-panel" data-on="dat b1 b2 b3e b4e b5e" data-focus="b2">
+    <div class="step-panel" data-on="dat f1 f2 e3 e4 e5 b3" data-focus="f2">
       <div class="step-kicker">Шаг 3 · градиенты параметров слоя 2</div>
       <h4>Столбец на строку даёт таблицу умножения</h4>
       <p><span class="math-inline" data-tex="(2\times 1) \cdot  (1\times 2) = (2\times 2)"></span>: единица в середине схлопывается,
@@ -2757,7 +1949,7 @@
       <p>Градиент смещения равен той же дельте: <span class="math-inline" data-tex="\partial z/\partial b = 1"></span>, поэтому дополнительного
       умножения нет.</p>
     </div>
-    <div class="step-panel" data-on="dat b1 b2 b3 b4e b5e" data-focus="b3">
+    <div class="step-panel" data-on="dat f1 f2 f3 e4 e5 b4" data-focus="f3">
       <div class="step-kicker">Шаг 4 · сигнал переходит на слой ниже</div>
       <h4>Сумма идёт по столбцу</h4>
       <p>Клетка <span class="math-inline" data-tex="j"></span> результата собирает вклады всех выходных узлов, но
@@ -2783,7 +1975,7 @@
         почти равны по модулю. Всё решило сочетание знаков в столбцах.</p>
       </div>
     </div>
-    <div class="step-panel" data-on="dat b1 b2 b3 b4 b5e" data-focus="b4">
+    <div class="step-panel" data-on="dat f1 f2 f3 f4 e5 b5" data-focus="f4">
       <div class="step-kicker">Шаг 5 · дельта первого слоя</div>
       <h4>Строка в точности повторяет шаг 2</h4>
       <p>Вектор <span class="math-inline" data-tex="(2\times 1)"></span> поэлементно умножается на производную активации, получается
@@ -2792,7 +1984,7 @@
       <p>Длина этого вектора 0.0309 против 0.1882 у дельты второго слоя: сигнал уменьшился
       вшестеро за один слой, хотя оба множителя <span class="math-inline" data-tex="\sigma'"></span> были почти в максимуме.</p>
     </div>
-    <div class="step-panel" data-on="dat b1 b2 b3 b4 b5" data-focus="b5">
+    <div class="step-panel" data-on="dat f1 f2 f3 f4 f5 b6" data-focus="f5">
       <div class="step-kicker">Шаг 6 · градиенты параметров слоя 1</div>
       <h4>Та же строка, что и на шаге 3</h4>
       <p>Внешнее произведение дельты на вход слоя. Вход первого слоя это сам
@@ -2801,7 +1993,7 @@
       <p>Отношение чисел внутри каждой строки равно 1.6, отношению входов 0.8 к 0.5. Дельта у
       них общая, различает их только вход.</p>
     </div>
-    <div class="step-panel" data-on="dat b1 b2 b3 b4 b5 nb" data-focus="nb">
+    <div class="step-panel" data-on="dat f1 f2 f3 f4 f5 b7" data-focus="">
       <div class="step-kicker">Шаг 7 · все двенадцать чисел</div>
       <h4>Градиент всегда той же формы, что параметр</h4>
       <table class="shape-table">
@@ -2835,7 +2027,7 @@
 
 ---
 
-## Часть 8. Вычислительный граф: один путь вперёд и четыре пути назад
+## Часть 6. Вычислительный граф: один путь вперёд и четыре пути назад
 
 <p>
   До сих пор сеть была разобрана по узлам: восемь весов и четыре смещения, у
@@ -2846,7 +2038,7 @@
 </p>
 
 <p>
-  Разница с частями 2–7 в масштабе: там мы смотрели на отдельные числа
+  Разница с частями 2–5 в масштабе: там мы смотрели на отдельные числа
   <span class="math-inline" data-tex="W^{(2)}_{21}"></span>, здесь каждый узел сразу вектор или матрица. Формулы становятся
   короче, но смысл у них тот же.
 </p>
@@ -2857,7 +2049,7 @@
   нему четыре градиента восстанавливаются, даже если конкретные индексы забылись.
 </div>
 
-### Интерактив 14 · прямой проход по вычислительному графу
+### Интерактив 11 · прямой проход по вычислительному графу
 
 <p>
   Схема разворачивается слева направо. В каждом узле стоит его значение на нашем примере,
@@ -3025,7 +2217,7 @@
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
 
-### Интерактив 15 · четыре пути назад по тому же графу
+### Интерактив 12 · четыре пути назад по тому же графу
 
 <p>
   Те же шесть узлов на тех же местах. Меняется направление чтения: теперь мы идём от
@@ -3250,6 +2442,46 @@
   <tr><td><span class="math-inline" data-tex="\mathbf z^{(\ell)} \to  \mathbf b^{(\ell)}"></span></td><td><span class="math-inline" data-tex="1"></span></td><td>ничего не меняет, маршрут закончен</td></tr>
 </table>
 
+### Интерактив 13 · нажмите на любой параметр
+
+<p>
+  Всё, что выше, можно проверить руками. Выберите любой из двенадцати параметров: ребро на графе,
+  смещение или кнопку над схемой. Красным загорятся все пути от <span class="math-inline" data-tex="E"></span> к этому параметру, а ниже появится
+  их произведение. Затем сдвиньте параметр ползунком и сравните прогноз
+  <span class="math-inline" data-tex="\Delta E \approx \frac{\partial E}{\partial \theta}\,\Delta"></span> с тем, что сеть посчитает на самом деле.
+</p>
+
+<div class="bp-live" id="bpPick">
+  <div class="bp-chips" id="bpPickChips" aria-label="Выбор параметра"></div>
+  <div class="bp-live-figure"><svg id="bpPickSvg" viewBox="0 0 720 316" role="img" aria-label="Граф сети 2-2-2 с весами на рёбрах и смещениями. Красным подсвечены пути от ошибки к выбранному параметру"></svg></div>
+  <div class="bp-routes" id="bpPickRoutes" aria-live="polite"></div>
+  <div class="bp-controls">
+    <div class="bp-control"><label for="bpPickD"><span>Сдвиг <span id="bpPickName"></span> на Δ</span> <output id="bpPickDOut">+0.30</output></label>
+      <input id="bpPickD" type="range" min="-1.5" max="1.5" step="0.01" value="0.3"></div>
+    <button type="button" class="bp-btn" id="bpPickReset">Вернуть на место</button>
+  </div>
+  <div class="bp-two">
+    <div class="bp-live-figure"><svg id="bpPickPlot" viewBox="0 0 360 214" role="img" aria-label="Настоящая ошибка и прогноз по градиенту в зависимости от сдвига параметра"></svg></div>
+    <div class="bp-metrics">
+      <div class="bp-metric"><span>значение параметра</span><strong id="bpPickVal">…</strong></div>
+      <div class="bp-metric"><span>ошибка E</span><strong id="bpPickE">…</strong></div>
+      <div class="bp-metric"><span>прогноз изменения E</span><strong id="bpPickPred">…</strong></div>
+      <div class="bp-metric"><span>настоящее изменение E</span><strong id="bpPickReal">…</strong></div>
+    </div>
+  </div>
+</div>
+
+<p>Что стоит проверить:</p>
+
+<ul>
+  <li><strong>Один путь или два.</strong> У <span class="math-inline" data-tex="W^{(2)}_{22}"></span> путь один. У <span class="math-inline" data-tex="W^{(1)}_{22}"></span> их два, и оба
+  положительные: 0.0068 и 0.0172 дают 0.0240. У <span class="math-inline" data-tex="W^{(1)}_{11}"></span> знаки разные: −0.0073 и 0.0037 частично гасятся, и остаётся −0.0036.</li>
+  <li><strong>Прогноз верен рядом с точкой.</strong> Для <span class="math-inline" data-tex="b^{(2)}_{2}"></span> при сдвиге −0.1 прогноз −0.0148, настоящее
+  изменение −0.0147. При сдвиге −1.5 прогноз −0.2216, а настоящее изменение −0.1668: кривая уже ушла от касательной.</li>
+  <li><strong>Цепочка сразу реагирует.</strong> Розовым отмечены значения, которые изменил сдвиг. Сдвиг в первом слое меняет всё
+  правее него, сдвиг во втором слое первый слой не трогает.</li>
+</ul>
+
 ### Что происходит дальше: шаг обучения
 
 <p>
@@ -3299,7 +2531,7 @@
 
 ---
 
-## Часть 9. Общий алгоритм и почему градиент затухает
+## Часть 7. Общий алгоритм и почему градиент затухает
 
 <p>
   Сеть произвольной глубины описывается двумя строками прямого прохода, и любой слой
@@ -3310,7 +2542,8 @@
 
 <p>
   Обратный проход занимает три строки. Первая запускает процесс на последнем слое, вторая
-  двигает дельту на слой ниже, третья превращает дельту в градиенты.
+  двигает дельту на слой ниже, третья превращает дельту в градиенты. Те же вычисления фреймворки
+  выполняют в обратном режиме автоматического дифференцирования.
 </p>
 
 <div class="math-display" data-tex="\boldsymbol\delta^{(L)} = \frac{\partial E}{\partial \mathbf h^{(L)}} \odot \sigma'\!\left(\mathbf z^{(L)}\right)"></div>
@@ -3370,6 +2603,52 @@
   это не сказывается: вероятность попасть ровно в ноль нулевая.
 </div>
 
+### Интерактив 14 · как сигнал меняется с глубиной
+
+<p>
+  Здесь уже другая сеть: от двух до десяти слоёв по четыре нейрона, с одним примером на входе. Веса случайные, ползунок масштаба умножает их
+  все на одно число. Точки показывают длину дельты <span class="math-inline" data-tex="\left\|\boldsymbol\delta^{(\ell)}\right\|"></span> на каждом слое в логарифмической
+  шкале: равные расстояния по вертикали означают равные отношения. Считает настоящий обратный проход по формулам выше.
+</p>
+
+<div class="bp-live" id="bpVan">
+  <div class="bp-chips">
+    <button type="button" class="bp-chip" id="bpVanSig">сигмоида</button>
+    <button type="button" class="bp-chip" id="bpVanRelu">ReLU</button>
+  </div>
+  <div class="bp-controls bp-controls-2">
+    <div class="bp-control"><label for="bpVanL"><span>Слоёв</span> <output id="bpVanLOut">10</output></label>
+      <input id="bpVanL" type="range" min="2" max="10" step="1" value="10"></div>
+    <div class="bp-control"><label for="bpVanS"><span>Масштаб весов</span> <output id="bpVanSOut">1.00</output></label>
+      <input id="bpVanS" type="range" min="0.25" max="12" step="0.25" value="1"></div>
+  </div>
+  <div class="bp-live-figure"><svg id="bpVanSvg" viewBox="0 0 720 306" role="img" aria-label="Длина дельты на каждом слое в логарифмической шкале"></svg></div>
+  <p class="bp-status" id="bpVanStatus"></p>
+  <div class="bp-metrics bp-metrics-5">
+    <div class="bp-metric"><span>дельта последнего слоя</span><strong id="bpVanLast">…</strong></div>
+    <div class="bp-metric"><span>дельта первого слоя</span><strong id="bpVanFirst">…</strong></div>
+    <div class="bp-metric"><span>сигнал к первому слою</span><strong id="bpVanRatio">…</strong></div>
+    <div class="bp-metric"><span>средняя производная активации</span><strong id="bpVanMean">…</strong></div>
+    <div class="bp-metric"><span>нейронов с производной ≈ 0</span><strong id="bpVanOff">…</strong></div>
+  </div>
+  <div class="bp-buttons">
+    <button type="button" class="bp-btn" id="bpVanSeed">Другие веса</button>
+    <button type="button" class="bp-btn" id="bpVanReset">Сброс</button>
+  </div>
+</div>
+
+<p>Что стоит проверить на стартовых весах:</p>
+
+<ul>
+  <li><strong>Сигмоида, масштаб 1.</strong> Длина дельты падает с 0.28 на последнем слое до 3·10⁻⁶ на первом, примерно в 90 тысяч раз.</li>
+  <li><strong>Больше весы, меньше затухание, но до предела.</strong> При масштабе 4 падение всего в 48 раз: большие веса частично окупают малую производную.
+  При масштабе 12 дельта на первом слое снова 6·10⁻⁶, а у 12 нейронов из 40 производная почти нулевая: они в насыщении.</li>
+  <li><strong>ReLU, масштаб 2.</strong> Сигнал падает всего примерно в 6 раз, хотя слоёв те же десять. При масштабе 4 проблема меняется на обратную:
+  дельта растёт к первому слою примерно в 100 раз, это взрыв градиента.</li>
+  <li><strong>ReLU и кнопка «Другие веса».</strong> Нажмите её несколько раз: на некоторых весах все точки падают на ноль. На этом примере в каком-то слое не активен ни один нейрон:
+  дальше по сети идут одни нули, и градиент не проходит ни к одному слою.</li>
+</ul>
+
 <div class="callout">
   <strong>Главная мысль части:</strong> общие участки цепочки позволяют посчитать все градиенты за один проход, а длинная цепочка
   экспоненциально ослабляет сигнал, если множители по дороге меньше единицы.
@@ -3377,7 +2656,7 @@
 
 ---
 
-## Часть 10. Что важно уметь восстановить по памяти
+## Часть 8. Что важно уметь восстановить по памяти
 
 <ol class="end-list">
   <li><strong>Нейрон разрезается надвое.</strong> Сумматор <span class="math-inline" data-tex="z"></span> и активация <span class="math-inline" data-tex="h"></span> это разные узлы с разными
@@ -3419,3 +2698,459 @@
   всюду до четырёх знаков после запятой, поэтому произведения округлённых чисел
   могут расходиться с приведённым результатом в последнем знаке.
 </p>
+
+<script>
+(function () {
+  var NS = 'http://www.w3.org/2000/svg';
+  var BLUE = '#3576C0', YELLOW = '#C29E08', YELT = '#7A6305', GREEN = '#73B222', GREENT = '#4C8316', RED = '#C30B0A', REDT = '#9C0908', GRAY = '#5E5850', MUTED = '#8A8378', RULE = '#BDB6A9';
+
+  function $(id) { return document.getElementById(id); }
+  function el(n, a, p) {
+    var e = document.createElementNS(NS, n);
+    for (var k in a) e.setAttribute(k, a[k]);
+    if (p) p.appendChild(e);
+    return e;
+  }
+  function clear(n) { while (n.firstChild) n.removeChild(n.firstChild); }
+  function txt(p, x, y, t, o) {
+    o = o || {};
+    var e = el('text', {x: x, y: y, 'font-size': o.s || 12, fill: o.c || GRAY, 'text-anchor': o.a || 'middle', 'font-weight': o.w || 400}, p);
+    if (o.halo) { e.setAttribute('paint-order', 'stroke'); e.setAttribute('stroke', '#FFFFFF'); e.setAttribute('stroke-width', 3.5); }
+    e.textContent = t;
+    return e;
+  }
+  function tex(node, s, display) {
+    if (window.katex) {
+      try { window.katex.render(s, node, {throwOnError: false, strict: 'ignore', displayMode: !!display}); return; } catch (e) {}
+    }
+    node.textContent = s;
+  }
+  function texLabel(p, cx, cy, s, o) {
+    o = o || {};
+    var w = o.w || 44, h = o.h || 26;
+    var fo = el('foreignObject', {x: cx - w / 2, y: cy - h / 2, width: w, height: h}, p);
+    var d = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
+    d.setAttribute('class', 'svg-math svg-math-fit svg-math-center');
+    d.setAttribute('style', 'font-size:' + (o.s || 13) + 'px;color:' + (o.c || '#111111') + ';');
+    tex(d, s);
+    fo.appendChild(d);
+  }
+  function num(v, d) {
+    if (d === undefined) d = 4;
+    var s = Math.abs(v).toFixed(d);
+    return (v < 0 && +s !== 0 ? '−' : '') + s;
+  }
+  function tn(v, d) { return num(v, d).replace('−', '-'); }
+  function tp(v, d) { return v < 0 ? '(' + tn(v, d) + ')' : tn(v, d); }
+  function signed(v, d) { return (v >= 0 ? '+' : '') + num(v, d); }
+  function sig(z) { return 1 / (1 + Math.exp(-z)); }
+  function setText(id, t) { $(id).textContent = t; }
+  var SUP = {'0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '-': '⁻'};
+  function sci(v, d) {
+    if (v === 0) return '0';
+    if (v >= 0.01 && v < 1000) return v.toFixed(v >= 10 ? 1 : 3);
+    var p = v.toExponential(d).split('e'), n = String(+p[1]).split('').map(function (c) { return SUP[c]; }).join('');
+    return p[0] + '·10' + n;
+  }
+  function razWord(s) {
+    if (s.indexOf('.') >= 0 && s.indexOf('·') < 0) return 'раза';
+    if (s.indexOf('·') >= 0) return 'раз';
+    var n = parseInt(s.replace(/\s/g, ''), 10), a = n % 100, b = n % 10;
+    return a >= 11 && a <= 14 ? 'раз' : b >= 2 && b <= 4 ? 'раза' : 'раз';
+  }
+  function times(v) {
+    if (v >= 1e6) return sci(v, 1);
+    if (v >= 1000) return Math.round(v / 100) * 100 >= 10000 ? String(Math.round(v / 1000)) + ' 000' : String(Math.round(v / 100) * 100).replace(/(\d)(\d{3})$/, '$1 $2');
+    return v.toFixed(v >= 10 ? 0 : 1);
+  }
+
+  // ------------------------------------------------------------- matrix scenes: explain a cell on click
+  function initWhy(WHY) {
+    Object.keys(WHY).forEach(function (sid) {
+      var st = $(sid);
+      if (!st) return;
+      var svg = st.querySelector('.stage-figure svg'), box = st.querySelector('.mx-why'), hint = box.innerHTML, table = WHY[sid];
+      function reset() {
+        svg.querySelectorAll('.is-pick, .is-src').forEach(function (n) { n.classList.remove('is-pick', 'is-src'); });
+        box.innerHTML = hint;
+      }
+      function mark(id, cls) {
+        svg.querySelectorAll('[data-c="' + id + '"]').forEach(function (n) { n.classList.add(cls); });
+      }
+      function pick(id) {
+        var w = table[id];
+        if (!w) return;
+        reset();
+        w.src.forEach(function (s) { mark(s, 'is-src'); });
+        mark(id, 'is-pick');
+        box.innerHTML = '';
+        tex(box, w.tex);
+      }
+      svg.addEventListener('click', function (e) {
+        var g = e.target.closest ? e.target.closest('.mx-c') : null;
+        if (g) pick(g.getAttribute('data-c')); else reset();
+      });
+      svg.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        var g = e.target.closest ? e.target.closest('.mx-c') : null;
+        if (g) { pick(g.getAttribute('data-c')); e.preventDefault(); }
+      });
+      st.querySelectorAll('[data-nav]').forEach(function (b) { b.addEventListener('click', reset); });
+      st.addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') reset(); });
+    });
+  }
+
+  // ------------------------------------------------------------- the 2-2-2 network with its 12 parameters
+  var R = [0, 1];
+  var X = [0.5, 0.8], Y = [1, 0];
+  function start() { return {W1: [[0.15, -0.2], [0.4, 0.3]], b1: [0.1, -0.1], W2: [[0.5, -0.3], [0.2, 0.6]], b2: [0.05, 0.15]}; }
+  function forward(p) {
+    var z1 = R.map(function (i) { return p.W1[i][0] * X[0] + p.W1[i][1] * X[1] + p.b1[i]; });
+    var h1 = z1.map(sig);
+    var z2 = R.map(function (i) { return p.W2[i][0] * h1[0] + p.W2[i][1] * h1[1] + p.b2[i]; });
+    var h2 = z2.map(sig);
+    var e = R.map(function (i) { return 0.5 * (h2[i] - Y[i]) * (h2[i] - Y[i]); });
+    return {z1: z1, h1: h1, z2: z2, h2: h2, e: e, E: e[0] + e[1]};
+  }
+  function ds(h) { return h * (1 - h); }
+  function get(p, q) { return q.j === undefined ? p[q.k][q.i] : p[q.k][q.i][q.j]; }
+  function put(p, q, v) { if (q.j === undefined) p[q.k][q.i] = v; else p[q.k][q.i][q.j] = v; }
+  function routes(p, q) {
+    var f = forward(p), out = [];
+    if (q.k === 'W2' || q.k === 'b2') {
+      var i = q.i, a = f.h2[i] - Y[i], s = ds(f.h2[i]), last = q.k === 'W2' ? f.h1[q.j] : 1;
+      out.push({k: i, factors: [a, s, last], value: a * s * last});
+      return {f: f, list: out, total: out[0].value};
+    }
+    var u = q.i, tail = q.k === 'W1' ? X[q.j] : 1, s1 = ds(f.h1[u]), total = 0;
+    R.forEach(function (k) {
+      var a2 = f.h2[k] - Y[k], s2 = ds(f.h2[k]), w = p.W2[k][u], v = a2 * s2 * w * s1 * tail;
+      out.push({k: k, factors: [a2, s2, w, s1, tail], value: v});
+      total += v;
+    });
+    return {f: f, list: out, total: total};
+  }
+  function nameOf(q) {
+    var l = q.k.charAt(1);
+    return q.j === undefined ? 'b^{(' + l + ')}_{' + (q.i + 1) + '}' : 'W^{(' + l + ')}_{' + (q.i + 1) + (q.j + 1) + '}';
+  }
+
+  function pickWidget() {
+    var svg = $('bpPickSvg'), plot = $('bpPickPlot'), slider = $('bpPickD');
+    if (!svg) return;
+    var base = start(), sel = {k: 'W1', i: 0, j: 0};
+    var CX = {x: 44, z1: 160, h1: 262, z2: 384, h2: 486, e: 588, E: 680}, RY = [100, 216], B_Y = [34, 282], RN = 18;
+    var qs = [];
+    ['W1', 'W2'].forEach(function (k) { R.forEach(function (i) { R.forEach(function (j) { qs.push({k: k, i: i, j: j}); }); }); });
+    ['b1', 'b2'].forEach(function (k) { R.forEach(function (i) { qs.push({k: k, i: i}); }); });
+    function same(a, b) { return a.k === b.k && a.i === b.i && a.j === b.j; }
+
+    var chips = $('bpPickChips');
+    qs.forEach(function (q) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'bp-chip';
+      tex(b, nameOf(q));
+      b.addEventListener('click', function () { sel = q; draw(); });
+      q.chip = b;
+      chips.appendChild(b);
+    });
+
+    function moved() { var c = start(); put(c, sel, get(c, sel) + (+slider.value)); return c; }
+    function seg(p, x1, y1, x2, y2, r1, r2, c, w, arrow) {
+      var dx = x2 - x1, dy = y2 - y1, L = Math.sqrt(dx * dx + dy * dy), ux = dx / L, uy = dy / L;
+      var ax = x1 + ux * r1, ay = y1 + uy * r1, bx = x2 - ux * r2, by = y2 - uy * r2;
+      el('line', {x1: ax, y1: ay, x2: bx, y2: by, stroke: c, 'stroke-width': w}, p);
+      if (arrow) {
+        var s = 9;
+        el('polygon', {points: bx + ',' + by + ' ' + (bx - ux * s - uy * s * 0.55) + ',' + (by - uy * s + ux * s * 0.55) + ' ' + (bx - ux * s + uy * s * 0.55) + ',' + (by - uy * s - ux * s * 0.55), fill: c}, p);
+      }
+    }
+    function drawGraph(cur) {
+      clear(svg);
+      var f = forward(cur), f0 = forward(base), g = el('g', {}, svg), hot = el('g', {}, svg), top = el('g', {}, svg);
+      var r = routes(base, sel), lay1 = sel.k === 'W1' || sel.k === 'b1', rk = {};
+      r.list.forEach(function (rt) { rk[rt.k] = true; });
+      function pEdge(q, x1, y1, x2, y2, val) {
+        var on = same(q, sel);
+        var routed = q.k === 'W2' && lay1 && q.j === sel.i && !on;
+        if (!routed) seg(g, x1, y1, x2, y2, RN + 2, RN + 3, on ? YELLOW : RULE, on ? 4 : 1.5, true);
+        var flat = y1 === y2, t = flat ? 0.42 : 0.3, lx = x1 + (x2 - x1) * t, ly = y1 + (y2 - y1) * t;
+        txt(top, lx, flat ? ly - 8 : ly + 4, num(val, 2), {s: 11.5, c: YELT, w: on ? 700 : 600, halo: true});
+        var hit = el('line', {x1: x1, y1: y1, x2: x2, y2: y2, stroke: 'transparent', 'stroke-width': 20, 'data-hit': '1', style: 'cursor:pointer'}, top);
+        hit.addEventListener('click', function () { sel = q; draw(); });
+      }
+      R.forEach(function (i) {
+        R.forEach(function (j) {
+          pEdge({k: 'W1', i: i, j: j}, CX.x, RY[j], CX.z1, RY[i], cur.W1[i][j]);
+          pEdge({k: 'W2', i: i, j: j}, CX.h1, RY[j], CX.z2, RY[i], cur.W2[i][j]);
+        });
+        if (!(lay1 && sel.i === i)) seg(g, CX.z1, RY[i], CX.h1, RY[i], RN + 2, RN + 3, RULE, 1.5, true);
+        if (!rk[i]) {
+          seg(g, CX.z2, RY[i], CX.h2, RY[i], RN + 2, RN + 3, RULE, 1.5, true);
+          seg(g, CX.h2, RY[i], CX.e, RY[i], RN + 2, RN + 3, RULE, 1.5, true);
+          seg(g, CX.e, RY[i], CX.E, 158, RN + 2, RN + 7, RULE, 1.5, true);
+        }
+      });
+      // backward routes from E to the chosen parameter
+      r.list.forEach(function (rt) {
+        var k = rt.k;
+        seg(hot, CX.E, 158, CX.e, RY[k], RN + 6, RN + 2, RED, 2.6, true);
+        seg(hot, CX.e, RY[k], CX.h2, RY[k], RN + 1, RN + 2, RED, 2.6, true);
+        seg(hot, CX.h2, RY[k], CX.z2, RY[k], RN + 1, RN + 2, RED, 2.6, true);
+        if (sel.k === 'W1' || sel.k === 'b1') {
+          seg(hot, CX.z2, RY[k], CX.h1, RY[sel.i], RN + 1, RN + 2, RED, 2.6, true);
+          seg(hot, CX.h1, RY[sel.i], CX.z1, RY[sel.i], RN + 1, RN + 2, RED, 2.6, true);
+        }
+      });
+      function node(cx, cy, s, st, fill, val, vc, changed) {
+        el('circle', {cx: cx, cy: cy, r: RN, fill: fill, stroke: st, 'stroke-width': 2.1}, top);
+        texLabel(top, cx, cy, s, {s: 12.5, w: 36});
+        if (val !== null) txt(top, cx, cy + RN + 14, val, {s: 11.5, c: changed ? '#A02A88' : vc, w: changed ? 700 : 400, halo: true});
+      }
+      function ch(a, b) { return Math.abs(a - b) > 5e-5; }
+      R.forEach(function (i) {
+        var a = i + 1;
+        node(CX.x, RY[i], 'x_{' + a + '}', BLUE, '#FFFFFF', num(X[i], 1), BLUE, false);
+        node(CX.z1, RY[i], 'z^{(1)}_{' + a + '}', YELLOW, '#F4F7EE', num(f.z1[i]), GREENT, ch(f.z1[i], f0.z1[i]));
+        node(CX.h1, RY[i], 'h^{(1)}_{' + a + '}', GREEN, '#F4F7EE', num(f.h1[i]), GREENT, ch(f.h1[i], f0.h1[i]));
+        node(CX.z2, RY[i], 'z^{(2)}_{' + a + '}', YELLOW, '#F4F7EE', num(f.z2[i]), GREENT, ch(f.z2[i], f0.z2[i]));
+        node(CX.h2, RY[i], 'h^{(2)}_{' + a + '}', GREEN, '#F4F7EE', num(f.h2[i]), GREENT, ch(f.h2[i], f0.h2[i]));
+        node(CX.e, RY[i], 'e_{' + a + '}', RED, '#F4F7EE', num(f.e[i]), REDT, ch(f.e[i], f0.e[i]));
+        ['1', '2'].forEach(function (l) {
+          var cx = l === '1' ? CX.z1 : CX.z2, q = {k: 'b' + l, i: i}, on = same(q, sel);
+          seg(g, cx, B_Y[i], cx, RY[i], 13, RN + 3, on ? YELLOW : RULE, on ? 4 : 1.5, true);
+          var c = el('circle', {cx: cx, cy: B_Y[i], r: 13, fill: '#E9E1C2', stroke: YELLOW, 'stroke-width': on ? 3.4 : 1.8, style: 'cursor:pointer'}, top);
+          texLabel(top, cx, B_Y[i], nameOf(q), {s: 10.5, w: 30});
+          txt(top, cx + 18, B_Y[i] + 4, num(cur[q.k][i], 2), {s: 11.5, c: YELT, w: on ? 700 : 600, a: 'start', halo: true});
+          var hit = el('circle', {cx: cx, cy: B_Y[i], r: 17, fill: 'transparent', style: 'cursor:pointer'}, top);
+          hit.addEventListener('click', function () { sel = q; draw(); });
+          c.setAttribute('pointer-events', 'none');
+        });
+      });
+      el('circle', {cx: CX.E, cy: 158, r: 23, fill: '#F4F7EE', stroke: RED, 'stroke-width': 2.2}, top);
+      texLabel(top, CX.E, 158, 'E', {s: 14, w: 40});
+      txt(top, CX.E, 158 + 37, num(f.E), {s: 12, c: ch(f.E, f0.E) ? '#A02A88' : REDT, w: 700, halo: true});
+    }
+
+    function drawRoutes() {
+      var box = $('bpPickRoutes'), r = routes(base, sel), l1 = sel.k === 'W1' || sel.k === 'b1';
+      clear(box);
+      var tail = sel.k === 'W1' ? 'x_{' + (sel.j + 1) + '}' : sel.k === 'W2' ? 'h^{(1)}_{' + (sel.j + 1) + '}' : '1';
+      function line(cls, html, s, d) {
+        var row = document.createElement('div');
+        row.className = 'bp-route ' + cls;
+        var a = document.createElement('span'); a.className = 'bp-route-name'; a.innerHTML = html;
+        var b = document.createElement('span'); b.className = 'bp-route-math'; tex(b, s, d);
+        row.appendChild(a); row.appendChild(b); box.appendChild(row);
+        return a;
+      }
+      r.list.forEach(function (rt) {
+        var k = rt.k + 1, sym, n = rt.factors.length;
+        var nums = rt.factors.map(function (v, ix) {
+          if (ix === n - 1 && v === 1) return '1';
+          if (ix === n - 1 && sel.k === 'W1') return tn(v, 1);
+          if (ix === 2 && l1) return tp(v, 2);
+          return tp(v, 4);
+        }).join('\\cdot ');
+        if (l1) sym = '(h^{(2)}_{' + k + '} - y_{' + k + '})\\,\\sigma\'(z^{(2)}_{' + k + '})\\,W^{(2)}_{' + k + (sel.i + 1) + '}\\,\\sigma\'(z^{(1)}_{' + (sel.i + 1) + '})\\,' + tail;
+        else sym = '(h^{(2)}_{' + k + '} - y_{' + k + '})\\,\\sigma\'(z^{(2)}_{' + k + '})\\,' + tail;
+        var a = line('', '', '\\begin{gathered}' + sym + '\\\\ = ' + nums + ' = ' + tn(rt.value) + '\\end{gathered}');
+        a.textContent = r.list.length > 1 ? 'путь через ' : 'единственный путь';
+        if (r.list.length > 1) { var m = document.createElement('span'); tex(m, 'z^{(2)}_{' + k + '}'); a.appendChild(m); }
+      });
+      var sum = r.list.length > 1 ? tn(r.list[0].value) + ' + ' + tp(r.list[1].value) + ' = ' : '';
+      var a2 = line('is-total', '', '\\frac{\\partial E}{\\partial ' + nameOf(sel) + '} = ' + sum + tn(r.total));
+      a2.textContent = r.list.length > 1 ? 'пути складываются' : 'итог';
+    }
+
+    var drag = false;
+    function drawPlot() {
+      clear(plot);
+      var r = routes(base, sel), g = r.total, D = +slider.value, E0 = r.f.E;
+      var P = {l: 54, r: 348, t: 14, b: 176, x0: -1.5, x1: 1.5};
+      function realE(dv) { var q = start(); put(q, sel, get(q, sel) + dv); return forward(q).E; }
+      var lo = Infinity, hi = -Infinity, pts = [], i;
+      for (i = 0; i <= 120; i++) {
+        var dv = P.x0 + (P.x1 - P.x0) * i / 120, v = realE(dv), t = E0 + g * dv;
+        pts.push([dv, v]);
+        lo = Math.min(lo, v, t); hi = Math.max(hi, v, t);
+      }
+      var pad = (hi - lo) * 0.1 || 0.01;
+      lo -= pad; hi += pad;
+      function sx(v) { return P.l + (v - P.x0) / (P.x1 - P.x0) * (P.r - P.l); }
+      function sy(v) { return P.b - (v - lo) / (hi - lo) * (P.b - P.t); }
+      el('line', {x1: P.l, y1: P.b, x2: P.r, y2: P.b, stroke: GRAY, 'stroke-width': 1.2}, plot);
+      el('line', {x1: P.l, y1: P.t, x2: P.l, y2: P.b, stroke: GRAY, 'stroke-width': 1.2}, plot);
+      el('line', {x1: sx(0), y1: P.t, x2: sx(0), y2: P.b, stroke: '#E5E1D8', 'stroke-width': 1.2}, plot);
+      [-1, 0, 1].forEach(function (v) {
+        el('line', {x1: sx(v), y1: P.b, x2: sx(v), y2: P.b + 4, stroke: GRAY}, plot);
+        txt(plot, sx(v), P.b + 17, v === 0 ? '0' : num(v, 0), {s: 11.5, c: MUTED});
+      });
+      var dec = hi - lo < 0.02 ? 4 : 3;
+      [lo + pad, hi - pad].forEach(function (v) {
+        el('line', {x1: P.l - 4, y1: sy(v), x2: P.l, y2: sy(v), stroke: GRAY}, plot);
+        txt(plot, P.l - 7, sy(v) + 4, num(v, dec), {s: 11, c: MUTED, a: 'end'});
+      });
+      txt(plot, (P.l + P.r) / 2 + 6, P.b + 32, 'сдвиг Δ', {s: 12, c: MUTED});
+      el('polyline', {points: pts.map(function (p) { return sx(p[0]).toFixed(1) + ',' + sy(p[1]).toFixed(1); }).join(' '), fill: 'none', stroke: GRAY, 'stroke-width': 2.2}, plot);
+      el('line', {x1: sx(P.x0), y1: sy(E0 + g * P.x0), x2: sx(P.x1), y2: sy(E0 + g * P.x1), stroke: RED, 'stroke-width': 2, 'stroke-dasharray': '6 4'}, plot);
+      txt(plot, P.l + 6, P.t + 10, 'E', {s: 12, c: MUTED, a: 'start'});
+      var LY = P.b + 32;
+      el('line', {x1: P.l, y1: LY - 4, x2: P.l + 20, y2: LY - 4, stroke: GRAY, 'stroke-width': 2.2}, plot);
+      txt(plot, P.l + 25, LY, 'настоящая', {s: 12, c: GRAY, a: 'start'});
+      el('line', {x1: P.r - 74, y1: LY - 4, x2: P.r - 54, y2: LY - 4, stroke: RED, 'stroke-width': 2, 'stroke-dasharray': '5 3'}, plot);
+      txt(plot, P.r, LY, 'прогноз', {s: 12, c: GRAY, a: 'end'});
+      var yR = sy(realE(D)), yP = sy(E0 + g * D);
+      el('line', {x1: sx(D), y1: yR, x2: sx(D), y2: yP, stroke: '#D83BB9', 'stroke-width': 2.4}, plot);
+      el('circle', {cx: sx(D), cy: yP, r: 5, fill: RED, stroke: '#FFFFFF', 'stroke-width': 1.6}, plot);
+      el('circle', {cx: sx(D), cy: yR, r: 5.5, fill: GRAY, stroke: '#FFFFFF', 'stroke-width': 1.6}, plot);
+      el('circle', {cx: sx(0), cy: sy(E0), r: 4, fill: '#FFFFFF', stroke: GRAY, 'stroke-width': 1.8}, plot);
+      plot._sx = P;
+    }
+    function fromPointer(e) {
+      var rect = plot.getBoundingClientRect(), P = plot._sx;
+      var vx = (e.clientX - rect.left) / rect.width * 360;
+      var v = P.x0 + (vx - P.l) / (P.r - P.l) * (P.x1 - P.x0);
+      slider.value = Math.max(-1.5, Math.min(1.5, Math.round(v * 100) / 100));
+      draw(true);
+    }
+    plot.addEventListener('pointerdown', function (e) { drag = true; if (plot.setPointerCapture) plot.setPointerCapture(e.pointerId); fromPointer(e); });
+    plot.addEventListener('pointermove', function (e) { if (drag) fromPointer(e); });
+    plot.addEventListener('pointerup', function () { drag = false; });
+
+    function draw(light) {
+      var D = +slider.value, cur = moved(), f = forward(cur), f0 = forward(base), r = routes(base, sel);
+      qs.forEach(function (q) { q.chip.classList.toggle('is-on', same(q, sel)); q.chip.setAttribute('aria-pressed', same(q, sel) ? 'true' : 'false'); });
+      drawGraph(cur);
+      if (!light) drawRoutes();
+      drawPlot();
+      setText('bpPickDOut', signed(D, 2));
+      tex($('bpPickName'), nameOf(sel));
+      var pred = r.total * D, real = f.E - f0.E;
+      setText('bpPickVal', num(get(base, sel), 2) + ' → ' + num(get(cur, sel), 2));
+      setText('bpPickE', num(f0.E) + ' → ' + num(f.E));
+      setText('bpPickPred', signed(pred));
+      setText('bpPickReal', signed(real));
+    }
+    slider.addEventListener('input', function () { draw(true); });
+    $('bpPickReset').addEventListener('click', function () { slider.value = 0; draw(true); });
+    draw();
+  }
+
+  // ------------------------------------------------------------- how the signal changes with depth
+  function vanishWidget() {
+    var svg = $('bpVanSvg');
+    if (!svg) return;
+    var N = 4, MAXL = 10, INP = [0.5, 0.8, -0.3, 0.6], TGT = [1, 0, 1, 0];
+    var act = 'sig', seed = 7;
+    function rng(a) {
+      return function () {
+        a |= 0; a = a + 0x6D2B79F5 | 0;
+        var t = Math.imul(a ^ a >>> 15, 1 | a);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      };
+    }
+    function weights(sd) {
+      var r = rng(sd), out = [];
+      function gauss() { return Math.sqrt(-2 * Math.log(1 - r())) * Math.cos(2 * Math.PI * r()); }
+      for (var l = 0; l < MAXL; l++) {
+        var W = [];
+        for (var i = 0; i < N; i++) { W.push([]); for (var j = 0; j < N; j++) W[i].push(gauss() / Math.sqrt(N)); }
+        out.push(W);
+      }
+      return out;
+    }
+    function norm(v) { return Math.sqrt(v.reduce(function (s, a) { return s + a * a; }, 0)); }
+    function fw(z) { return act === 'sig' ? sig(z) : Math.max(0, z); }
+    function dfw(z, h) { return act === 'sig' ? h * (1 - h) : (z > 0 ? 1 : 0); }
+    function compute(L, scale, sd) {
+      var Ws = weights(sd), h = [INP], zs = [], l, i, j;
+      for (l = 0; l < L; l++) {
+        var z = [];
+        for (i = 0; i < N; i++) { var s = 0; for (j = 0; j < N; j++) s += scale * Ws[l][i][j] * h[l][j]; z.push(s); }
+        zs.push(z);
+        h.push(z.map(fw));
+      }
+      var delta = new Array(L), slope = new Array(L);
+      var last = h[L].map(function (v, k) { return v - TGT[k]; });
+      for (l = L - 1; l >= 0; l--) {
+        var d1 = dfwAll(zs[l], h[l + 1]);
+        slope[l] = d1;
+        delta[l] = last.map(function (v, k) { return v * d1[k]; });
+        if (l > 0) {
+          var nx = [];
+          for (j = 0; j < N; j++) { var acc = 0; for (i = 0; i < N; i++) acc += scale * Ws[l][i][j] * delta[l][i]; nx.push(acc); }
+          last = nx;
+        }
+      }
+      return {delta: delta, slope: slope, L: L};
+    }
+    function dfwAll(z, h) { return z.map(function (v, k) { return dfw(v, h[k]); }); }
+
+    var depth = $('bpVanL'), scale = $('bpVanS'), chips = {sig: $('bpVanSig'), relu: $('bpVanRelu')};
+    function draw() {
+      var L = +depth.value, s = +scale.value, r = compute(L, s, seed);
+      setText('bpVanLOut', L); setText('bpVanSOut', num(s, 2));
+      chips.sig.classList.toggle('is-on', act === 'sig'); chips.relu.classList.toggle('is-on', act === 'relu');
+      chips.sig.setAttribute('aria-pressed', act === 'sig'); chips.relu.setAttribute('aria-pressed', act === 'relu');
+      clear(svg);
+      var P = {l: 64, r: 700, t: 18, b: 226, zero: 256};
+      var vals = r.delta.map(norm), logs = vals.filter(function (v) { return v > 0; }).map(function (v) { return Math.log10(v); });
+      var top = Math.max(0, Math.ceil(Math.max.apply(null, logs.concat([0])))), bot = Math.min(-6, Math.floor(Math.min.apply(null, logs.concat([-6]))));
+      var step = (top - bot) > 18 ? 6 : (top - bot) > 9 ? 3 : 2;
+      function sy(lg) { return P.b - (lg - bot) / (top - bot) * (P.b - P.t); }
+      function sx(i) { return L === 1 ? (P.l + P.r) / 2 : P.l + 26 + i / (L - 1) * (P.r - P.l - 52); }
+      for (var t = top; t >= bot; t -= step) {
+        el('line', {x1: P.l, y1: sy(t), x2: P.r, y2: sy(t), stroke: '#EDEAE2', 'stroke-width': 1}, svg);
+        texLabel(svg, P.l - 26, sy(t), '10^{' + t + '}', {s: 11.5, w: 46, c: MUTED});
+      }
+      el('line', {x1: P.l, y1: P.zero, x2: P.r, y2: P.zero, stroke: '#EDEAE2', 'stroke-width': 1}, svg);
+      txt(svg, P.l - 12, P.zero + 4, '0', {s: 11.5, c: MUTED, a: 'end'});
+      vals.forEach(function (v, i) { txt(svg, sx(i), P.zero + 22, i + 1, {s: 11.5, c: MUTED}); });
+      txt(svg, (P.l + P.r) / 2, P.zero + 40, 'номер слоя (сигнал идёт справа налево)', {s: 12, c: MUTED});
+      var path = [];
+      vals.forEach(function (v, i) {
+        if (v > 0) path.push(sx(i).toFixed(1) + ',' + sy(Math.log10(v)).toFixed(1));
+        else { if (path.length > 1) el('polyline', {points: path.join(' '), fill: 'none', stroke: RED, 'stroke-width': 2}, svg); path = []; }
+      });
+      if (path.length > 1) el('polyline', {points: path.join(' '), fill: 'none', stroke: RED, 'stroke-width': 2}, svg);
+      vals.forEach(function (v, i) {
+        var cy = v > 0 ? sy(Math.log10(v)) : P.zero;
+        el('circle', {cx: sx(i), cy: cy, r: 6, fill: v > 0 ? RED : '#FFFFFF', stroke: v > 0 ? '#FFFFFF' : RED, 'stroke-width': 2}, svg);
+        if (i === 0 || i === L - 1) {
+          var nb = vals[i === 0 ? 1 : L - 2], below = nb > v, ly = below ? cy + 20 : cy - 12;
+          txt(svg, sx(i) + (i === 0 ? -10 : 10), Math.max(P.t + 2, ly), sci(v, 1), {s: 12.5, c: GRAY, w: 700, halo: true, a: i === 0 ? 'start' : 'end'});
+        }
+        var hit = el('rect', {x: sx(i) - 26, y: P.t, width: 52, height: P.zero - P.t + 26, fill: 'transparent'}, svg);
+        hit.addEventListener('pointerenter', function () { showLayer(r, i, vals); });
+        hit.addEventListener('click', function () { showLayer(r, i, vals); });
+      });
+      var a = vals[L - 1], b = vals[0];
+      setText('bpVanLast', sci(a, 2));
+      setText('bpVanFirst', sci(b, 2));
+      var ratio = a > 0 && b > 0 ? b / a : null;
+      setText('bpVanRatio', ratio === null ? 'сигнал обнулился' : ratio >= 1 ? 'вырос в ' + times(ratio) + ' ' + razWord(times(ratio)) : 'упал в ' + times(1 / ratio) + ' ' + razWord(times(1 / ratio)));
+      var all = [].concat.apply([], r.slope), mean = all.reduce(function (x, y) { return x + y; }, 0) / all.length, off = all.filter(function (v) { return v < 1e-3; }).length;
+      setText('bpVanMean', num(mean, 3));
+      setText('bpVanOff', off + ' из ' + all.length);
+      setText('bpVanStatus', 'Наведите на точку: покажем слой целиком.');
+    }
+    function showLayer(r, i, vals) {
+      var m = r.slope[i].reduce(function (a, b) { return a + b; }, 0) / r.slope[i].length;
+      setText('bpVanStatus', 'Слой ' + (i + 1) + ': длина дельты ' + sci(vals[i], 2) + ', средняя производная активации ' + num(m, 3) + '.');
+    }
+    depth.addEventListener('input', draw);
+    scale.addEventListener('input', draw);
+    chips.sig.addEventListener('click', function () { act = 'sig'; draw(); });
+    chips.relu.addEventListener('click', function () { act = 'relu'; draw(); });
+    $('bpVanSeed').addEventListener('click', function () { seed += 1; draw(); });
+    $('bpVanReset').addEventListener('click', function () { act = 'sig'; seed = 7; depth.value = 10; scale.value = 1; draw(); });
+    draw();
+  }
+
+  [function () { initWhy({"stageMfw": {"x.0": {"tex": "\\begin{gathered} x^{(0)}_{1} = 0.5 \\\\ \\text{вход сети, число дано} \\end{gathered}", "src": []}, "y.0": {"tex": "\\begin{gathered} y_{1} = 1 \\\\ \\text{цель, число дано} \\end{gathered}", "src": []}, "b1.0": {"tex": "\\begin{gathered} b^{(1)}_{1} = 0.10 \\\\ \\text{смещение узла } z^{(1)}_{1}\\text{, параметр} \\end{gathered}", "src": []}, "W1.0.0": {"tex": "\\begin{gathered} W^{(1)}_{11} = 0.15 \\\\ \\text{вес ребра из } x^{(0)}_{1} \\text{ в } z^{(1)}_{1} \\end{gathered}", "src": []}, "W1.0.1": {"tex": "\\begin{gathered} W^{(1)}_{12} = -0.20 \\\\ \\text{вес ребра из } x^{(0)}_{2} \\text{ в } z^{(1)}_{1} \\end{gathered}", "src": []}, "b2.0": {"tex": "\\begin{gathered} b^{(2)}_{1} = 0.05 \\\\ \\text{смещение узла } z^{(2)}_{1}\\text{, параметр} \\end{gathered}", "src": []}, "W2.0.0": {"tex": "\\begin{gathered} W^{(2)}_{11} = 0.50 \\\\ \\text{вес ребра из } h^{(1)}_{1} \\text{ в } z^{(2)}_{1} \\end{gathered}", "src": []}, "W2.0.1": {"tex": "\\begin{gathered} W^{(2)}_{12} = -0.30 \\\\ \\text{вес ребра из } h^{(1)}_{2} \\text{ в } z^{(2)}_{1} \\end{gathered}", "src": []}, "z1.0": {"tex": "\\begin{gathered} z^{(1)}_{1} = W^{(1)}_{11}x^{(0)}_{1} + W^{(1)}_{12}x^{(0)}_{2} + b^{(1)}_{1} \\\\ = 0.15\\cdot 0.5 + (-0.20)\\cdot 0.8 + 0.10 = 0.0150 \\end{gathered}", "src": ["W1.0.0", "W1.0.1", "x.0", "x.1", "b1.0"]}, "h1.0": {"tex": "\\begin{gathered} h^{(1)}_{1} = \\sigma(z^{(1)}_{1}) \\\\ = \\frac{1}{1 + e^{-0.0150}} = 0.5037 \\end{gathered}", "src": ["z1.0"]}, "z2.0": {"tex": "\\begin{gathered} z^{(2)}_{1} = W^{(2)}_{11}h^{(1)}_{1} + W^{(2)}_{12}h^{(1)}_{2} + b^{(2)}_{1} \\\\ = 0.50\\cdot 0.5037 + (-0.30)\\cdot 0.5842 + 0.05 = 0.1266 \\end{gathered}", "src": ["W2.0.0", "W2.0.1", "h1.0", "h1.1", "b2.0"]}, "h2.0": {"tex": "\\begin{gathered} h^{(2)}_{1} = \\sigma(z^{(2)}_{1}) \\\\ = \\frac{1}{1 + e^{-0.1266}} = 0.5316 \\end{gathered}", "src": ["z2.0"]}, "d.0": {"tex": "h^{(2)}_{1} - y_{1} = 0.5316 - 1 = -0.4684", "src": ["h2.0", "y.0"]}, "e.0": {"tex": "\\tfrac12\\left(h^{(2)}_{1} - y_{1}\\right)^2 = \\tfrac12 \\cdot (-0.4684)^2 = 0.1097", "src": ["d.0", "h2.0", "y.0"]}, "x.1": {"tex": "\\begin{gathered} x^{(0)}_{2} = 0.8 \\\\ \\text{вход сети, число дано} \\end{gathered}", "src": []}, "y.1": {"tex": "\\begin{gathered} y_{2} = 0 \\\\ \\text{цель, число дано} \\end{gathered}", "src": []}, "b1.1": {"tex": "\\begin{gathered} b^{(1)}_{2} = -0.10 \\\\ \\text{смещение узла } z^{(1)}_{2}\\text{, параметр} \\end{gathered}", "src": []}, "W1.1.0": {"tex": "\\begin{gathered} W^{(1)}_{21} = 0.40 \\\\ \\text{вес ребра из } x^{(0)}_{1} \\text{ в } z^{(1)}_{2} \\end{gathered}", "src": []}, "W1.1.1": {"tex": "\\begin{gathered} W^{(1)}_{22} = 0.30 \\\\ \\text{вес ребра из } x^{(0)}_{2} \\text{ в } z^{(1)}_{2} \\end{gathered}", "src": []}, "b2.1": {"tex": "\\begin{gathered} b^{(2)}_{2} = 0.15 \\\\ \\text{смещение узла } z^{(2)}_{2}\\text{, параметр} \\end{gathered}", "src": []}, "W2.1.0": {"tex": "\\begin{gathered} W^{(2)}_{21} = 0.20 \\\\ \\text{вес ребра из } h^{(1)}_{1} \\text{ в } z^{(2)}_{2} \\end{gathered}", "src": []}, "W2.1.1": {"tex": "\\begin{gathered} W^{(2)}_{22} = 0.60 \\\\ \\text{вес ребра из } h^{(1)}_{2} \\text{ в } z^{(2)}_{2} \\end{gathered}", "src": []}, "z1.1": {"tex": "\\begin{gathered} z^{(1)}_{2} = W^{(1)}_{21}x^{(0)}_{1} + W^{(1)}_{22}x^{(0)}_{2} + b^{(1)}_{2} \\\\ = 0.40\\cdot 0.5 + 0.30\\cdot 0.8 + (-0.10) = 0.3400 \\end{gathered}", "src": ["W1.1.0", "W1.1.1", "x.0", "x.1", "b1.1"]}, "h1.1": {"tex": "\\begin{gathered} h^{(1)}_{2} = \\sigma(z^{(1)}_{2}) \\\\ = \\frac{1}{1 + e^{-0.3400}} = 0.5842 \\end{gathered}", "src": ["z1.1"]}, "z2.1": {"tex": "\\begin{gathered} z^{(2)}_{2} = W^{(2)}_{21}h^{(1)}_{1} + W^{(2)}_{22}h^{(1)}_{2} + b^{(2)}_{2} \\\\ = 0.20\\cdot 0.5037 + 0.60\\cdot 0.5842 + 0.15 = 0.6013 \\end{gathered}", "src": ["W2.1.0", "W2.1.1", "h1.0", "h1.1", "b2.1"]}, "h2.1": {"tex": "\\begin{gathered} h^{(2)}_{2} = \\sigma(z^{(2)}_{2}) \\\\ = \\frac{1}{1 + e^{-0.6013}} = 0.6459 \\end{gathered}", "src": ["z2.1"]}, "d.1": {"tex": "h^{(2)}_{2} - y_{2} = 0.6459 - 0 = 0.6459", "src": ["h2.1", "y.1"]}, "e.1": {"tex": "\\tfrac12\\left(h^{(2)}_{2} - y_{2}\\right)^2 = \\tfrac12 \\cdot 0.6459^2 = 0.2086", "src": ["d.1", "h2.1", "y.1"]}, "E": {"tex": "E = \\tfrac12\\left\\|\\mathbf h^{(2)} - \\mathbf y\\right\\|^2 = 0.1097 + 0.2086 = 0.3183", "src": ["h2.0", "h2.1", "y.0", "y.1", "e.0", "e.1"]}}, "stageMbw": {"d.0": {"tex": "\\begin{gathered} h^{(2)}_{1} - y_{1} = -0.4684 \\\\ \\text{промах выхода, остался от прямого прохода} \\end{gathered}", "src": []}, "s2.0": {"tex": "\\sigma'(z^{(2)}_{1}) = h^{(2)}_{1}\\left(1 - h^{(2)}_{1}\\right) = 0.5316\\cdot 0.4684 = 0.2490", "src": []}, "s1.0": {"tex": "\\sigma'(z^{(1)}_{1}) = h^{(1)}_{1}\\left(1 - h^{(1)}_{1}\\right) = 0.5037\\cdot 0.4963 = 0.2500", "src": ["h1.0"]}, "h1.0": {"tex": "\\begin{gathered} h^{(1)}_{1} = 0.5037 \\\\ \\text{активация первого слоя из кэша} \\end{gathered}", "src": []}, "x.0": {"tex": "\\begin{gathered} x^{(0)}_{1} = 0.5 \\\\ \\text{вход сети} \\end{gathered}", "src": []}, "D2.0": {"tex": "\\delta^{(2)}_{1} = \\left(h^{(2)}_{1} - y_{1}\\right)\\sigma'(z^{(2)}_{1}) = (-0.4684)\\cdot 0.2490 = -0.1166", "src": ["d.0", "s2.0"]}, "gb2.0": {"tex": "\\frac{\\partial E}{\\partial b^{(2)}_{1}} = \\delta^{(2)}_{1} = -0.1166", "src": ["D2.0"]}, "gb1.0": {"tex": "\\frac{\\partial E}{\\partial b^{(1)}_{1}} = \\delta^{(1)}_{1} = -0.0072", "src": ["D1.0"]}, "dh1.0": {"tex": "\\begin{gathered} \\frac{\\partial E}{\\partial h^{(1)}_{1}} = W^{(2)}_{11}\\delta^{(2)}_{1} + W^{(2)}_{21}\\delta^{(2)}_{2} \\\\ = 0.50\\cdot (-0.1166) + 0.20\\cdot 0.1477 = -0.0288 \\end{gathered}", "src": ["W2.0.0", "W2.1.0", "D2.0", "D2.1"]}, "D1.0": {"tex": "\\delta^{(1)}_{1} = \\frac{\\partial E}{\\partial h^{(1)}_{1}}\\,\\sigma'(z^{(1)}_{1}) = (-0.0288)\\cdot 0.2500 = -0.0072", "src": ["dh1.0", "s1.0"]}, "W2.0.0": {"tex": "\\begin{gathered} W^{(2)}_{11} = 0.50 \\\\ \\text{вес ребра из } h^{(1)}_{1} \\text{ в } z^{(2)}_{1} \\end{gathered}", "src": []}, "W1.0.0": {"tex": "\\begin{gathered} W^{(1)}_{11} = 0.15 \\\\ \\text{вес ребра из } x^{(0)}_{1} \\text{ в } z^{(1)}_{1} \\end{gathered}", "src": []}, "gW2.0.0": {"tex": "\\frac{\\partial E}{\\partial W^{(2)}_{11}} = \\delta^{(2)}_{1}\\, h^{(1)}_{1} = (-0.1166)\\cdot 0.5037 = -0.0588", "src": ["D2.0", "h1.0"]}, "gW1.0.0": {"tex": "\\frac{\\partial E}{\\partial W^{(1)}_{11}} = \\delta^{(1)}_{1}\\, x^{(0)}_{1} = (-0.0072)\\cdot 0.5 = -0.0036", "src": ["D1.0", "x.0"]}, "W2.0.1": {"tex": "\\begin{gathered} W^{(2)}_{12} = -0.30 \\\\ \\text{вес ребра из } h^{(1)}_{2} \\text{ в } z^{(2)}_{1} \\end{gathered}", "src": []}, "W1.0.1": {"tex": "\\begin{gathered} W^{(1)}_{12} = -0.20 \\\\ \\text{вес ребра из } x^{(0)}_{2} \\text{ в } z^{(1)}_{1} \\end{gathered}", "src": []}, "gW2.0.1": {"tex": "\\frac{\\partial E}{\\partial W^{(2)}_{12}} = \\delta^{(2)}_{1}\\, h^{(1)}_{2} = (-0.1166)\\cdot 0.5842 = -0.0681", "src": ["D2.0", "h1.1"]}, "gW1.0.1": {"tex": "\\frac{\\partial E}{\\partial W^{(1)}_{12}} = \\delta^{(1)}_{1}\\, x^{(0)}_{2} = (-0.0072)\\cdot 0.8 = -0.0058", "src": ["D1.0", "x.1"]}, "b2.0": {"tex": "b^{(2)}_{1} = 0.05", "src": []}, "b1.0": {"tex": "b^{(1)}_{1} = 0.10", "src": []}, "d.1": {"tex": "\\begin{gathered} h^{(2)}_{2} - y_{2} = 0.6459 \\\\ \\text{промах выхода, остался от прямого прохода} \\end{gathered}", "src": []}, "s2.1": {"tex": "\\sigma'(z^{(2)}_{2}) = h^{(2)}_{2}\\left(1 - h^{(2)}_{2}\\right) = 0.6459\\cdot 0.3541 = 0.2287", "src": []}, "s1.1": {"tex": "\\sigma'(z^{(1)}_{2}) = h^{(1)}_{2}\\left(1 - h^{(1)}_{2}\\right) = 0.5842\\cdot 0.4158 = 0.2429", "src": ["h1.1"]}, "h1.1": {"tex": "\\begin{gathered} h^{(1)}_{2} = 0.5842 \\\\ \\text{активация первого слоя из кэша} \\end{gathered}", "src": []}, "x.1": {"tex": "\\begin{gathered} x^{(0)}_{2} = 0.8 \\\\ \\text{вход сети} \\end{gathered}", "src": []}, "D2.1": {"tex": "\\delta^{(2)}_{2} = \\left(h^{(2)}_{2} - y_{2}\\right)\\sigma'(z^{(2)}_{2}) = 0.6459\\cdot 0.2287 = 0.1477", "src": ["d.1", "s2.1"]}, "gb2.1": {"tex": "\\frac{\\partial E}{\\partial b^{(2)}_{2}} = \\delta^{(2)}_{2} = 0.1477", "src": ["D2.1"]}, "gb1.1": {"tex": "\\frac{\\partial E}{\\partial b^{(1)}_{2}} = \\delta^{(1)}_{2} = 0.0300", "src": ["D1.1"]}, "dh1.1": {"tex": "\\begin{gathered} \\frac{\\partial E}{\\partial h^{(1)}_{2}} = W^{(2)}_{12}\\delta^{(2)}_{1} + W^{(2)}_{22}\\delta^{(2)}_{2} \\\\ = (-0.30)\\cdot (-0.1166) + 0.60\\cdot 0.1477 = 0.1236 \\end{gathered}", "src": ["W2.0.1", "W2.1.1", "D2.0", "D2.1"]}, "D1.1": {"tex": "\\delta^{(1)}_{2} = \\frac{\\partial E}{\\partial h^{(1)}_{2}}\\,\\sigma'(z^{(1)}_{2}) = 0.1236\\cdot 0.2429 = 0.0300", "src": ["dh1.1", "s1.1"]}, "W2.1.0": {"tex": "\\begin{gathered} W^{(2)}_{21} = 0.20 \\\\ \\text{вес ребра из } h^{(1)}_{1} \\text{ в } z^{(2)}_{2} \\end{gathered}", "src": []}, "W1.1.0": {"tex": "\\begin{gathered} W^{(1)}_{21} = 0.40 \\\\ \\text{вес ребра из } x^{(0)}_{1} \\text{ в } z^{(1)}_{2} \\end{gathered}", "src": []}, "gW2.1.0": {"tex": "\\frac{\\partial E}{\\partial W^{(2)}_{21}} = \\delta^{(2)}_{2}\\, h^{(1)}_{1} = 0.1477\\cdot 0.5037 = 0.0744", "src": ["D2.1", "h1.0"]}, "gW1.1.0": {"tex": "\\frac{\\partial E}{\\partial W^{(1)}_{21}} = \\delta^{(1)}_{2}\\, x^{(0)}_{1} = 0.0300\\cdot 0.5 = 0.0150", "src": ["D1.1", "x.0"]}, "W2.1.1": {"tex": "\\begin{gathered} W^{(2)}_{22} = 0.60 \\\\ \\text{вес ребра из } h^{(1)}_{2} \\text{ в } z^{(2)}_{2} \\end{gathered}", "src": []}, "W1.1.1": {"tex": "\\begin{gathered} W^{(1)}_{22} = 0.30 \\\\ \\text{вес ребра из } x^{(0)}_{2} \\text{ в } z^{(1)}_{2} \\end{gathered}", "src": []}, "gW2.1.1": {"tex": "\\frac{\\partial E}{\\partial W^{(2)}_{22}} = \\delta^{(2)}_{2}\\, h^{(1)}_{2} = 0.1477\\cdot 0.5842 = 0.0863", "src": ["D2.1", "h1.1"]}, "gW1.1.1": {"tex": "\\frac{\\partial E}{\\partial W^{(1)}_{22}} = \\delta^{(1)}_{2}\\, x^{(0)}_{2} = 0.0300\\cdot 0.8 = 0.0240", "src": ["D1.1", "x.1"]}, "b2.1": {"tex": "b^{(2)}_{2} = 0.15", "src": []}, "b1.1": {"tex": "b^{(1)}_{2} = -0.10", "src": []}}}); }, pickWidget, vanishWidget].forEach(function (fn) {
+    try { fn(); } catch (e) { if (window.console) console.error('backprop widget', e); }
+  });
+})();
+</script>
