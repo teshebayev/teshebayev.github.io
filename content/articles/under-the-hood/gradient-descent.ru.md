@@ -781,6 +781,49 @@
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
 
+<p>
+  Теперь то же своими руками. Для нашей параболы наклон секущей считается точно:
+</p>
+
+<div class="math-display" data-tex="\frac{L(w + \Delta w) - L(w)}{\Delta w} = 5w - 8 + 2.5\,\Delta w"></div>
+
+<p>
+  Первые два слагаемых и есть производная, а хвост <span class="math-inline" data-tex="2.5\,\Delta w"></span>
+  показывает, насколько секущая отличается от касательной. Уменьшайте <span class="math-inline" data-tex="\Delta w"></span>
+  и смотрите, как хвост исчезает. Затем двигайте <span class="math-inline" data-tex="w"></span>: справа
+  видно, какой наклон у функции в каждой точке.
+</p>
+
+<div class="gd-live" id="gdTan">
+  <div class="gd-live-head"><strong>Секущая, касательная и наклон</strong>
+    <p>Серая прямая проходит через две точки графика, красная касается его в одной. Зелёная стрелка показывает, куда шагать, чтобы потери падали.</p></div>
+  <div class="gd-live-figure"><svg id="gdTanSvg" viewBox="0 0 720 320" role="img" aria-label="Парабола потерь с секущей и касательной слева, график производной справа"></svg></div>
+  <div class="gd-controls">
+    <div class="gd-control"><label for="gdTanW"><span>Точка <span class="math-inline" data-tex="w"></span></span> <output id="gdTanWOut">0.00</output></label>
+      <input id="gdTanW" type="range" min="-0.5" max="3.5" step="0.05" value="0"></div>
+    <div class="gd-control"><label for="gdTanD"><span>Приращение <span class="math-inline" data-tex="\Delta w"></span></span> <output id="gdTanDOut">1.00</output></label>
+      <input id="gdTanD" type="range" min="0.01" max="1.5" step="0.01" value="1"></div>
+  </div>
+  <div class="gd-radios">
+    <button type="button" class="gd-chip" data-w="0">w = 0</button>
+    <button type="button" class="gd-chip" data-w="1">w = 1</button>
+    <button type="button" class="gd-chip" data-w="1.6">w = 1.6</button>
+    <button type="button" class="gd-chip" data-w="2.5">w = 2.5</button>
+  </div>
+  <div class="gd-buttons">
+    <button type="button" class="gd-btn" id="gdTanShrink">Стянуть Δw к нулю</button>
+    <button type="button" class="gd-btn" id="gdTanReset">Сброс</button>
+  </div>
+  <div class="gd-metrics">
+    <div class="gd-metric"><span>потери L(w)</span><strong id="gdTanL">—</strong></div>
+    <div class="gd-metric"><span>наклон секущей</span><strong id="gdTanSec">—</strong></div>
+    <div class="gd-metric"><span>производная L′(w)</span><strong id="gdTanDer">—</strong></div>
+    <div class="gd-metric"><span>разница</span><strong id="gdTanGap">—</strong></div>
+  </div>
+  <div class="gd-calc" id="gdTanCalc"></div>
+  <p class="gd-status" id="gdTanStatus"></p>
+</div>
+
 ### Мини-таблица производных, которой хватает на всё обучение
 
 <p>
@@ -2250,6 +2293,69 @@ print(trace[-2:])  # [1.619, 1.524]</code></pre>
     update();
   }
 
+  /* ---------- Производная: секущая, касательная, наклон ---------- */
+  function tangent() {
+    var svg = $('gdTanSvg');
+    if (!svg) return;
+    var A = plot({l: 44, r: 420, t: 30, b: 296, x0: -0.7, x1: 4, y0: -2.5, y1: 15});
+    var B = plot({l: 500, r: 690, t: 30, b: 296, x0: -0.7, x1: 4, y0: -13, y1: 13});
+    txt(svg, 44, 20, 'Функция потерь', {c: '#111111', w: 700, s: 14});
+    txt(svg, 500, 20, 'Наклон в каждой точке', {c: '#111111', w: 700, s: 14});
+    axes(svg, A, {xt: [1, 2, 3], yt: [5, 10, 15], xl: 'w', yl: 'L'});
+    axes(svg, B, {xt: [1, 2, 3], yt: [-10, -5, 5, 10], yf: function (v) { return num(v, 0); }, xl: 'w', yl: "L'"});
+    layers(svg, A); layers(svg, B);
+    curve(A.base, A, L1d, {stroke: YELLOW, 'stroke-width': 2.4});
+    curve(B.base, B, function (w) { return 5 * w - 8; }, {stroke: RED, 'stroke-width': 2.2});
+    var sw = $('gdTanW'), sd = $('gdTanD'), run = timer();
+    function line(g, P, w, y, k, a, b, attrs) {
+      var o = {x1: P.sx(a), y1: P.sy(y + (a - w) * k), x2: P.sx(b), y2: P.sy(y + (b - w) * k)};
+      for (var n in attrs) o[n] = attrs[n];
+      el('line', o, g);
+    }
+    function draw() {
+      var w = +sw.value, d = +sd.value, L = L1d(w), w2 = w + d, L2v = L1d(w2), sec = (L2v - L) / d, der = 5 * w - 8;
+      var g = A.dyn, h = B.dyn, top = A.top; clear(g); clear(h); clear(top); clear(B.top);
+      line(g, A, w, L, sec, -0.7, 4, {stroke: MUTED, 'stroke-width': 2});
+      line(g, A, w, L, der, w - 1.1, w + 1.1, {stroke: RED, 'stroke-width': 2.8});
+      el('line', {x1: A.sx(w), y1: A.sy(L), x2: A.sx(w2), y2: A.sy(L), stroke: BLUE, 'stroke-width': 2, 'stroke-dasharray': '6 4'}, g);
+      el('line', {x1: A.sx(w2), y1: A.sy(L), x2: A.sx(w2), y2: A.sy(L2v), stroke: BLUE, 'stroke-width': 2, 'stroke-dasharray': '6 4'}, g);
+      dot(g, A.sx(w2), A.sy(L2v), 5, BLUE);
+      dot(g, A.sx(w), A.sy(L), 6.5, '#244F81');
+      var zero = Math.abs(der) < 1e-9;
+      if (zero) dot(g, A.sx(w), A.sy(-1.4), 5, GREEN);
+      else arrow(g, A.sx(w), A.sy(-1.4), A.sx(w) - (der > 0 ? 1 : -1) * Math.max(16, Math.min(70, Math.abs(der) * 9)), A.sy(-1.4), GREEN, 2.8);
+      if (A.sx(w2) - A.sx(w) > 44) texLabel(top, (A.sx(w) + A.sx(w2)) / 2 - 15, Math.max(A.t + 12, A.sy(L) - 7), '\\Delta w', {c: '#244F81', s: 13});
+      if (Math.abs(A.sy(L2v) - A.sy(L)) > 26 && L2v < 15) texLabel(top, A.sx(w2) + 5, Math.max(A.t + 12, (A.sy(L) + A.sy(L2v)) / 2 + 5), '\\Delta L', {c: '#244F81', s: 13});
+      el('line', {x1: B.sx(w), y1: B.t, x2: B.sx(w), y2: B.b, stroke: '#B9C9DA', 'stroke-width': 1.2, 'stroke-dasharray': '4 3'}, h);
+      dot(h, B.sx(w), B.sy(sec), 5, MUTED);
+      dot(h, B.sx(w), B.sy(der), 6, RED);
+      setText('gdTanWOut', num(w)); setText('gdTanDOut', num(d));
+      setText('gdTanL', num(L)); setText('gdTanSec', num(sec, 3)); setText('gdTanDer', num(der, 3)); setText('gdTanGap', num(sec - der, 3));
+      tex($('gdTanCalc'), '\\frac{L(' + tnum(w2) + ') - L(' + tnum(w) + ')}{' + tnum(d) + '} = \\frac{' + tnum(L2v, d < 0.1 ? 5 : 3) + ' - ' + paren(L, d < 0.1 ? 5 : 3) + '}{' + tnum(d) + '} = ' + tnum(sec, 3) + ", \\qquad L'(" + tnum(w) + ') = 5\\cdot ' + paren(w) + ' - 8 = ' + tnum(der));
+      setText('gdTanStatus', zero ? 'Дно параболы: касательная горизонтальна, производная равна нулю, шагать некуда.' : der < 0 ? 'Производная отрицательная: вправо функция убывает, поэтому шагать надо вправо.' : 'Производная положительная: вправо функция растёт, поэтому шагать надо влево.');
+      document.querySelectorAll('#gdTan .gd-chip').forEach(function (b) { b.classList.toggle('is-on', Math.abs(+b.dataset.w - w) < 1e-9); });
+    }
+    function stop() { run.stop(); $('gdTanShrink').textContent = 'Стянуть Δw к нулю'; }
+    sw.addEventListener('input', draw);
+    sd.addEventListener('input', function () { stop(); draw(); });
+    document.querySelectorAll('#gdTan .gd-chip').forEach(function (b) {
+      b.addEventListener('click', function () { sw.value = b.dataset.w; draw(); });
+    });
+    $('gdTanShrink').addEventListener('click', function () {
+      if (run.on()) { stop(); return; }
+      if (+sd.value <= 0.01) sd.value = 1;
+      this.textContent = 'Пауза';
+      run.start(function () {
+        var c = +sd.value, v = Math.max(0.01, c - Math.max(0.01, c * 0.07));
+        sd.value = v;
+        draw();
+        if (v <= 0.01) stop();
+      }, 60);
+    });
+    $('gdTanReset').addEventListener('click', function () { stop(); sw.value = 0; sd.value = 1; draw(); });
+    draw();
+  }
+
   /* ---------- 2. Скорость обучения на параболе ---------- */
   function rate() {
     var svg = $('gdRateSvg');
@@ -2759,7 +2865,7 @@ print(trace[-2:])  # [1.619, 1.524]</code></pre>
     reset();
   }
 
-  [fit, rate, map, loop, two, momentum, net].forEach(function (fn) {
+  [fit, tangent, rate, map, loop, two, momentum, net].forEach(function (fn) {
     try { fn(); } catch (e) { if (window.console) console.error('gd widget', fn.name, e); }
   });
 })();
