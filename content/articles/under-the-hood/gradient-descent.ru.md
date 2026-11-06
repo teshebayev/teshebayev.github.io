@@ -1,5 +1,44 @@
 <style>
   .prose .stage-figure .is-focus .svg-math > span:not(.katex) { font-weight: 700; }
+  .prose .stage-notes .katex-display { padding-bottom: .35em; }
+  .prose .step-math-label { display: block; margin-top: 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); }
+  .prose .step-math .math-display { margin: 4px 0 8px; }
+  .prose .gd-live { border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; margin: 26px 0; background: var(--bg-elev); }
+  .prose .gd-live-head strong { font-size: 17px; }
+  .prose .gd-live-head p { margin: 6px 0 0; font-size: 14px; color: var(--text-muted); }
+  .prose .gd-live-figure { margin-top: 14px; background: #FFFFFF; border: 1px solid #E0DDD3; border-radius: 10px; }
+  .prose .gd-live-figure svg { display: block; width: 100%; height: auto; font-family: Helvetica, Arial, sans-serif; }
+  .prose .gd-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px 22px; margin-top: 16px; }
+  .prose .gd-control label { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; color: var(--text-muted); margin-bottom: 6px; }
+  .prose .gd-control output { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--text); }
+  .prose .gd-control input[type=range] { width: 100%; accent-color: #3576C0; }
+  .prose .gd-buttons { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; }
+  .prose .gd-btn { font: inherit; font-size: 14px; font-weight: 700; color: var(--text); background: var(--bg-elev); border: 1px solid var(--accent); border-radius: 9px; padding: 6px 14px; cursor: pointer; }
+  .prose .gd-btn:hover { background: var(--accent); color: var(--bg-elev); }
+  .prose .gd-btn[disabled] { opacity: .35; cursor: default; }
+  .prose .gd-btn[disabled]:hover { background: var(--bg-elev); color: var(--text); }
+  .prose .gd-chip { font: inherit; font-size: 13px; color: var(--text); background: transparent; border: 1px solid var(--border); border-radius: 999px; padding: 4px 11px; cursor: pointer; }
+  .prose .gd-chip.is-on { border-color: #3576C0; background: rgba(53, 118, 192, .12); font-weight: 700; }
+  .prose .gd-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-top: 14px; }
+  .prose .gd-metric { border: 1px solid var(--border); border-radius: 10px; padding: 7px 10px; }
+  .prose .gd-metric span { display: block; font-size: 12px; color: var(--text-muted); }
+  .prose .gd-metric strong { font-size: 16px; font-variant-numeric: tabular-nums; }
+  .prose .gd-calc { margin-top: 12px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; text-align: center; font-size: 15px; overflow-x: auto; min-height: 42px; }
+  .prose .gd-status { margin: 10px 0 0; font-size: 14px; color: var(--text-muted); min-height: 21px; }
+  .prose .gd-code { margin-top: 14px; padding: 8px 0; border: 1px solid var(--border); border-radius: 10px; font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace); font-size: 13.5px; overflow-x: auto; }
+  .prose .gd-code div { padding: 2px 12px; white-space: pre; border-left: 3px solid transparent; }
+  .prose .gd-code .is-given { color: var(--text-muted); }
+  .prose .gd-code .is-on { background: rgba(194, 158, 8, .16); border-left-color: #C29E08; font-weight: 700; }
+  .prose .gd-note { margin-top: 12px; }
+  .prose .gd-note h4 { margin: 0 0 4px; font-size: 18px; font-weight: 700; }
+  .prose .gd-note p { margin: 6px 0; font-size: 15.5px; }
+  .prose .gd-note .math-display, .prose .gd-note-numbers { margin: 4px 0 8px; overflow-x: auto; text-align: center; }
+  .prose .gd-metric-wide { grid-column: span 2; }
+  .prose .step-math .katex-display, .prose .gd-note .katex-display { margin: .35em 0; }
+  .prose .gd-table-wrap { margin-top: 12px; max-height: 196px; overflow-y: auto; }
+  .prose .gd-table-wrap .shape-table { margin: 0; }
+  .prose .gd-radios { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .prose .gd-live pre { margin: 0; }
 </style>
 <p class="lead">
   Обучение модели похоже на спуск с горы в тумане. Видно только наклон под ногами;
@@ -9,10 +48,11 @@
 </p>
 
 <p>
+<p>
   Мы начнём с функции одной переменной и касательной к её графику, дойдём до
   градиента функции многих переменных, соберём из этого полный цикл обучения
-  линейной и логистической регрессии и в последней части сделаем настоящий шаг
-  спуска для нейросети с двенадцатью параметрами и живыми числами.
+  линейной регрессии и в конце сделаем настоящий шаг спуска для нейросети с
+  двенадцатью параметрами. Параметры можно двигать самим: в живых блоках статьи стоят ползунки.
 </p>
 
 <div class="semantic-key" aria-label="Цветовые обозначения статьи">
@@ -24,10 +64,10 @@
 
 
 <div class="callout-blue">
-  <strong>Как работать с интерактивами:</strong> нажимайте «Далее» и смотрите не
-  на всю схему сразу, а только на яркую часть. Схема нарисована один раз и целиком:
-  положение объектов не меняется, меняется только то, куда надо смотреть.
-  Клавиши со стрелками работают, когда сцена в фокусе.
+  <strong>Как работать с интерактивами:</strong> в пошаговых сценах нажимайте «Далее» и смотрите не
+  на всю схему сразу, а только на яркую часть. Положение объектов не меняется, меняется только то,
+  куда надо смотреть. Клавиши со стрелками работают, когда сцена в фокусе. Формула каждого
+  шага и расчёт на числах стоят под схемой. В живых блоках двигайте ползунки и нажимайте кнопки.
 </div>
 
 ## Часть 1. Что именно мы минимизируем
@@ -88,7 +128,7 @@
 
 <div class="stage" id="stageData" tabindex="0">
   <div class="stage-figure">
-<svg id="ds" viewBox="0 0 960 570" role="img" aria-label="Слева данные и прямые с разным наклоном, справа график функции потерь как параболы">
+<svg id="ds" viewBox="0 0 960 402" role="img" aria-label="Слева данные и прямые с разным наклоном, справа график функции потерь как параболы">
   <style>
     #ds { font-family: Helvetica, Arial, sans-serif; }
     #ds .ax   { stroke: #5E5850; stroke-width: 1.4; }
@@ -101,11 +141,10 @@
     #ds .cv   { stroke: #C29E08; stroke-width: 2.4; fill: none; }
     #ds .dot  { fill: #C29E08; }
     #ds .gdot { fill: #73B222; }
-    #ds .panel-label { font-size: 13px; fill: #8A8378; letter-spacing: 0.04em; }
     #ds .legend { font-size: 13px; fill: #8A8378; }
   </style>
 
-  <foreignObject x="70" y="16.6" width="293" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:700"><span>Данные и прямая <span data-tex="\hat y = w\cdot x"></span></span></div></foreignObject>
+  <foreignObject x="70" y="16.6" width="293" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:700"><span>Данные и прямая</span></div></foreignObject>
   <foreignObject x="560" y="16.6" width="455" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:700"><span>Та же ошибка как функция одного числа <span data-tex="w"></span></span></div></foreignObject>
 
   <line x1="70" y1="340" x2="382" y2="340" class="ax"/>
@@ -189,16 +228,7 @@
 
 
 
-  <text x="70" y="554" class="legend">синий: данные и модель · красный: промахи · жёлтый: значение потерь · зелёный: лучшее найденное</text>
-  <rect x="40" y="386" width="880" height="140" rx="14" fill="#FAFAF8" stroke="#E4E1D7" stroke-width="1.5"/>
-  <text x="62" y="412" class="panel-label">формула этого шага</text>
-  <g data-key="fx1" data-only="1"><foreignObject x="62" y="426" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="(x_1,\,y_1) = (1,\,2), \qquad (x_2,\,y_2) = (2,\,3), \qquad \hat{y}_i = w\,x_i"></div></foreignObject></g>
-  <g data-key="fx2" data-only="1"><foreignObject x="62" y="426" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L(0) = \tfrac{1}{2}\bigl[(y_1 - w x_1)^2 + (y_2 - w x_2)^2\bigr] = \tfrac{1}{2}\bigl[(2 - 0\cdot 1)^2 + (3 - 0\cdot 2)^2\bigr] = 6.5"></div></foreignObject></g>
-  <g data-key="fx3" data-only="1"><foreignObject x="62" y="426" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L(0.8) = \tfrac{1}{2}\bigl[(2 - 0.8\cdot 1)^2 + (3 - 0.8\cdot 2)^2\bigr] = \tfrac{1}{2}\bigl[1.44 + 1.96\bigr] = 1.7"></div></foreignObject></g>
-  <g data-key="fx4" data-only="1"><foreignObject x="62" y="426" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L(w) = \tfrac{1}{n}\sum_{i=1}^{n}\bigl(y_i - w x_i\bigr)^2 \quad \text{по одному числу на каждое } w"></div></foreignObject></g>
-  <g data-key="fx5" data-only="1"><foreignObject x="62" y="426" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L(w) = \tfrac{1}{2}\bigl[(2-w)^2 + (3-2w)^2\bigr] = \tfrac{1}{2}\bigl[5w^2 - 16w + 13\bigr] = 2.5\,w^2 - 8w + 6.5"></div></foreignObject></g>
-  <g data-key="fx6" data-only="1"><foreignObject x="62" y="426" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-md" data-tex="L'(w) = 5w - 8 = 0 \;\Longrightarrow\; w = 1.6"></div></foreignObject></g>
-  <g data-key="fx7" data-only="1"><foreignObject x="62" y="426" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L(1.6) = \tfrac{1}{2}\bigl[(2 - 1.6)^2 + (3 - 3.2)^2\bigr] = \tfrac{1}{2}\bigl[0.16 + 0.04\bigr] = 0.1"></div></foreignObject></g>
+  <text x="70" y="392" class="legend">синий: данные и модель · красный: промахи · жёлтый: значение потерь · зелёный: лучшее найденное</text>
 </svg>
   </div>
 
@@ -210,56 +240,95 @@
   </div>
 
   <div class="stage-notes">
-    <div class="step-panel" data-on="data fx1" data-focus="fx1">
+    <div class="step-panel" data-on="data" data-focus="data">
       <div class="step-kicker">Шаг 1 · что дано</div>
       <h4>Две точки: вся обучающая выборка</h4>
       <p>Наблюдения <span class="math-inline" data-tex="(1, 2)"></span> и <span class="math-inline" data-tex="(2, 3)"></span> зафиксированы: их
       нельзя двигать. Менять мы можем только наклон прямой, то есть одно
       число <span class="math-inline" data-tex="w"></span>.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="\hat{y}_i = w\,x_i"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="(x_1,\,y_1) = (1,\,2), \qquad (x_2,\,y_2) = (2,\,3)"></div></div>
     </div>
-    <div class="step-panel" data-on="data line0 err0 fx2" data-focus="err0">
+    <div class="step-panel" data-on="data line0 err0" data-focus="err0">
       <div class="step-kicker">Шаг 2 · плохой наклон</div>
       <h4>При <span class="math-inline" data-tex="w = 0"></span> модель предсказывает нули</h4>
       <p>Красные отрезки показывают промахи: 2 и 3. Возводим их в квадрат, усредняем и
       получаем одно число, которым можно измерить, насколько плоха эта прямая.</p>
-      </div>
-    <div class="step-panel" data-on="data line08 fx3" data-focus="line08">
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L(w) = \tfrac{1}{2}\bigl[(y_1 - w x_1)^2 + (y_2 - w x_2)^2\bigr]"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="L(0) = \tfrac{1}{2}\bigl[(2 - 0\cdot 1)^2 + (3 - 0\cdot 2)^2\bigr] = \tfrac{1}{2}\bigl[4 + 9\bigr] = 6.5"></div></div>
+    </div>
+    <div class="step-panel" data-on="data line08" data-focus="line08">
       <div class="step-kicker">Шаг 3 · наклон получше</div>
       <h4>При <span class="math-inline" data-tex="w = 0.8"></span> промахи заметно короче</h4>
       <p>Теперь предсказания 0.8 и 1.6, промахи 1.2 и 1.4. Квадраты: 1.44 и 1.96,
       среднее 1.7. Прямая стала лучше, и число это подтвердило.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L(w) = \tfrac{1}{2}\bigl[(y_1 - w x_1)^2 + (y_2 - w x_2)^2\bigr]"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="L(0.8) = \tfrac{1}{2}\bigl[(2 - 0.8\cdot 1)^2 + (3 - 0.8\cdot 2)^2\bigr] = \tfrac{1}{2}\bigl[1.44 + 1.96\bigr] = 1.7"></div></div>
     </div>
-    <div class="step-panel" data-on="data line08 curve pt0 pt08 fx4" data-focus="curve">
+    <div class="step-panel" data-on="data line08 curve pt0 pt08" data-focus="curve">
       <div class="step-kicker">Шаг 4 · перенос на правый график</div>
       <h4>Каждому наклону своя высота</h4>
       <p>Правый график не про данные. По горизонтали отложен параметр
       <span class="math-inline" data-tex="w"></span>, по вертикали значение <span class="math-inline" data-tex="L"></span> при этом
       <span class="math-inline" data-tex="w"></span>. Точки 6.5 и 1.7 взяты из тех же двух расчётов.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L(w) = \tfrac{1}{n}\sum_{i=1}^{n}\bigl(y_i - w x_i\bigr)^2"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="L(0) = 6.5, \qquad L(0.8) = 1.7"></div></div>
     </div>
-    <div class="step-panel" data-on="curve pt0 pt08 fx5" data-focus="fx5">
+    <div class="step-panel" data-on="curve pt0 pt08" data-focus="curve">
       <div class="step-kicker">Шаг 5 · раскрываем скобки</div>
       <h4>Данные превратились в коэффициенты</h4>
       <p>После раскрытия скобок от выборки остаются три числа: 2.5, −8 и 6.5.
       Дальше мы работаем не с точками, а с параболой, обычной функцией одной
       переменной.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L(w) = \tfrac{1}{2}\bigl[(2 - w)^2 + (3 - 2w)^2\bigr]"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="\tfrac{1}{2}\bigl[5w^2 - 16w + 13\bigr] = 2.5\,w^2 - 8w + 6.5"></div></div>
     </div>
-    <div class="step-panel" data-on="curve pt0 pt08 pt16 data line16 fx6" data-focus="pt16">
+    <div class="step-panel" data-on="curve pt0 pt08 pt16 data line16" data-focus="pt16">
       <div class="step-kicker">Шаг 6 · дно параболы</div>
       <h4>Минимум параболы даёт лучшую прямую</h4>
       <p>Дно достигается при <span class="math-inline" data-tex="w = 1.6"></span>, и это в точности лучший наклон
       для наших двух точек. Слева видно соответствующую прямую: она проходит
       между точками, промахнувшись на 0.4 и −0.2.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L'(w) = 5w - 8 = 0"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="w = \frac{8}{5} = 1.6"></div></div>
     </div>
-    <div class="step-panel" data-on="curve pt16 data line16 fx7" data-focus="line16">
+    <div class="step-panel" data-on="curve pt16 data line16" data-focus="line16">
       <div class="step-kicker">Шаг 7 · честный остаток</div>
       <h4>Минимум не равен нулю, и это нормально</h4>
       <p>Значение в минимуме <span class="math-inline" data-tex="L = 0.1"></span>, а не 0: прямая через начало
       координат физически не может пройти через обе точки. Функция потерь меряет не
       «правильно или нет», а «насколько близко из того, что модель вообще умеет».</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L_{\min} = L(1.6)"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="\tfrac{1}{2}\bigl[(2 - 1.6)^2 + (3 - 3.2)^2\bigr] = \tfrac{1}{2}\bigl[0.16 + 0.04\bigr] = 0.1"></div></div>
     </div>
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
+
+<p>
+  Теперь то же самое своими руками. Подвигайте <span class="math-inline" data-tex="w"></span>: слева
+  поворачивается прямая и меняются красные промахи, справа точка едет по параболе.
+  Попробуйте найти дно на глаз, не глядя на расчёты выше.
+</p>
+
+<div class="gd-live" id="gdFit">
+  <div class="gd-live-head"><strong>Подберите наклон сами</strong>
+    <p>Красные отрезки показывают промахи: подпись у отрезка равна <span class="math-inline" data-tex="y_i - \hat{y}_i"></span>.</p></div>
+  <div class="gd-live-figure"><svg id="gdFitSvg" viewBox="0 0 720 290" role="img" aria-label="Две точки данных и прямая слева, парабола потерь с текущей точкой справа"></svg></div>
+  <div class="gd-controls">
+    <div class="gd-control"><label for="gdFitW"><span>Наклон <span class="math-inline" data-tex="w"></span></span> <output id="gdFitWOut">0.00</output></label>
+      <input id="gdFitW" type="range" min="-0.5" max="3.5" step="0.05" value="0"></div>
+  </div>
+  <div class="gd-buttons"><button type="button" class="gd-btn" id="gdFitBest">Показать лучший наклон</button></div>
+  <div class="gd-metrics">
+    <div class="gd-metric"><span>предсказания</span><strong id="gdFitPred">—</strong></div>
+    <div class="gd-metric"><span>промахи</span><strong id="gdFitMiss">—</strong></div>
+    <div class="gd-metric"><span>потери L</span><strong id="gdFitLoss">—</strong></div>
+  </div>
+  <div class="gd-calc" id="gdFitCalc"></div>
+  <p class="gd-status" id="gdFitStatus"></p>
+</div>
+
 
 ### А если объектов не два, а много?
 
@@ -341,7 +410,7 @@
 
 <div class="stage" id="stageDiff" tabindex="0">
   <div class="stage-figure">
-<svg id="dv" viewBox="0 0 960 570" role="img" aria-label="Приращение аргумента, приращение функции, секущая и переход к касательной">
+<svg id="dv" viewBox="0 0 960 410" role="img" aria-label="Приращение аргумента, приращение функции, секущая и переход к касательной">
   <style>
     #dv { font-family: Helvetica, Arial, sans-serif; }
     #dv .ax   { stroke: #5E5850; stroke-width: 1.4; }
@@ -359,7 +428,6 @@
     #dv .rl   { font-size: 14px; fill: #C30B0A; }
     #dv .pan  { fill: #FFFFFF; stroke: #E0DDD3; stroke-width: 1.4; }
     #dv .td   { font-size: 14px; fill: #111111; }
-    #dv .panel-label { font-size: 13px; fill: #8A8378; letter-spacing: 0.04em; }
     #dv .legend { font-size: 13px; fill: #8A8378; }
   </style>
   <defs>
@@ -392,7 +460,7 @@
   <g data-key="dl">
     <line x1="294.2" y1="103" x2="294.2" y2="306" class="leg" marker-end="url(#dv-ab)"/>
     <circle cx="294.2" cy="312" r="6" class="dot"/>
-    <foreignObject x="302" y="189.82" width="231" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#244F81;font-weight:400" data-tex="\Delta L = 1.0 - 6.5 = -5.5"></div></foreignObject>
+    <foreignObject x="302" y="189.82" width="231" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#244F81;font-weight:400" data-tex="\Delta L = -5.5"></div></foreignObject>
     <foreignObject x="302" y="301.82" width="156" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#244F81;font-weight:400" data-tex="B = (1,\ 1.0)"></div></foreignObject>
   </g>
 
@@ -444,16 +512,7 @@
     <text x="916" y="298" class="rl" text-anchor="end">−8.00</text>
   </g>
 
-  <rect x="40" y="386" width="880" height="140" rx="14" fill="#FAFAF8" stroke="#E4E1D7" stroke-width="1.5"/>
-  <text x="62" y="412" class="panel-label">формула этого шага</text>
-  <g data-key="dv1" data-only="1"><foreignObject x="62" y="426" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-md" data-tex="\Delta w = 1: \quad w = 0 \;\longrightarrow\; w + \Delta w = 1"></div></foreignObject></g>
-  <g data-key="dv2" data-only="1"><foreignObject x="62" y="426" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\Delta L = L(w + \Delta w) - L(w) = L(1) - L(0) = 1.0 - 6.5 = -5.5"></div></foreignObject></g>
-  <g data-key="dv3" data-only="1"><foreignObject x="62" y="426" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\frac{\Delta L}{\Delta w} = \frac{L(w + \Delta w) - L(w)}{\Delta w} = \frac{-5.5}{1} = -5.5"></div></foreignObject></g>
-  <g data-key="dv4" data-only="1"><foreignObject x="62" y="426" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\frac{3.125 - 6.5}{0.5} = -6.75, \qquad \frac{5.0 - 6.5}{0.2} = -7.5, \qquad \frac{5.725 - 6.5}{0.1} = -7.75"></div></foreignObject></g>
-  <g data-key="dv5" data-only="1"><foreignObject x="62" y="420" width="836" height="96"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L'(0) = \lim_{\Delta w \to 0}\frac{L(0 + \Delta w) - L(0)}{\Delta w} = -8"></div></foreignObject></g>
-  <g data-key="dv6" data-only="1"><foreignObject x="62" y="426" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L(0 + \Delta w) \approx L(0) + L'(0)\,\Delta w = 6.5 - 8\,\Delta w"></div></foreignObject></g>
-
-  <text x="40" y="554" class="legend">жёлтый: функция · синий: приращения и пробные точки · серый: секущая · красный: касательная и производная</text>
+  <text x="40" y="400" class="legend">жёлтый: функция · синий: приращения и пробные точки · серый: секущая · красный: касательная и производная</text>
 </svg>
   </div>
 
@@ -465,51 +524,63 @@
   </div>
 
   <div class="stage-notes">
-    <div class="step-panel" data-on="pa dw dv1" data-focus="dw">
+    <div class="step-panel" data-on="pa dw" data-focus="dw">
       <div class="step-kicker">Шаг 1 · приращение аргумента</div>
       <h4><span class="math-inline" data-tex="\Delta w"></span>: насколько мы сдвинули параметр</h4>
       <p>Стоим в точке <span class="math-inline" data-tex="A"></span> при <span class="math-inline" data-tex="w = 0"></span>, где <span class="math-inline" data-tex="L = 6.5"></span>,
       и делаем пробный сдвиг вправо на <span class="math-inline" data-tex="\Delta w = 1"></span>. Это горизонтальный катет:
       сама функция здесь ещё не участвует, мы только выбрали, куда посмотреть.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="w \;\longrightarrow\; w + \Delta w"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="0 \;\longrightarrow\; 0 + 1 = 1"></div></div>
     </div>
-    <div class="step-panel" data-on="pa dw dl dv2" data-focus="dl">
+    <div class="step-panel" data-on="pa dw dl" data-focus="dl">
       <div class="step-kicker">Шаг 2 · приращение функции</div>
       <h4><span class="math-inline" data-tex="\Delta L"></span>: как на этот сдвиг ответила функция</h4>
       <p>В точке <span class="math-inline" data-tex="w = 1"></span> потери равны
       <span class="math-inline" data-tex="2.5\cdot 1 - 8\cdot 1 + 6.5 = 1.0"></span>, значит
       <span class="math-inline" data-tex="\Delta L = 1.0 - 6.5 = -5.5"></span>. Знак минус значит, что функция упала. Это
       вертикальный катет треугольника.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="\Delta L = L(w + \Delta w) - L(w)"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="\Delta L = L(1) - L(0) = 1.0 - 6.5 = -5.5"></div></div>
     </div>
-    <div class="step-panel" data-on="pa dw dl sec tbl row1 dv3" data-focus="sec">
+    <div class="step-panel" data-on="pa dw dl sec tbl row1" data-focus="sec">
       <div class="step-kicker">Шаг 3 · отношение</div>
       <h4><span class="math-inline" data-tex="\Delta L / \Delta w"></span>: наклон секущей</h4>
       <p><span class="math-inline" data-tex="-5.5 / 1 = -5.5"></span>: в среднем на этом отрезке функция падает на
       5.5 единицы за единицу <span class="math-inline" data-tex="w"></span>. Гипотенуза треугольника и есть секущая,
       прямая через точки <span class="math-inline" data-tex="A"></span> и <span class="math-inline" data-tex="B"></span>. Проблема в слове
       «в среднем»: у левого края склон круче, у правого положе.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="\frac{\Delta L}{\Delta w} = \frac{L(w + \Delta w) - L(w)}{\Delta w}"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="\frac{-5.5}{1} = -5.5"></div></div>
     </div>
-    <div class="step-panel" data-on="pa small sec tbl row1 rows dv4" data-focus="small">
+    <div class="step-panel" data-on="pa small sec tbl row1 rows" data-focus="small">
       <div class="step-kicker">Шаг 4 · стягиваем отрезок</div>
       <h4>Чем меньше <span class="math-inline" data-tex="\Delta w"></span>, тем честнее ответ</h4>
       <p>Берём <span class="math-inline" data-tex="\Delta w = 0.5"></span>: <span class="math-inline" data-tex="(3.125 - 6.5)/0.5 = -6.75"></span>. Затем
       <span class="math-inline" data-tex="0.2"></span> даёт <span class="math-inline" data-tex="-7.5"></span>, а <span class="math-inline" data-tex="0.1"></span> даёт <span class="math-inline" data-tex="-7.75"></span>.
       Секущие поворачиваются и всё плотнее прижимаются к одной прямой.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="\frac{\Delta L}{\Delta w} = \frac{L(w + \Delta w) - L(w)}{\Delta w}"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="\frac{3.125 - 6.5}{0.5} = -6.75, \quad \frac{5.0 - 6.5}{0.2} = -7.5, \quad \frac{5.725 - 6.5}{0.1} = -7.75"></div></div>
     </div>
-    <div class="step-panel" data-on="pa tan tbl row1 rows rowlim dv5" data-focus="tan">
+    <div class="step-panel" data-on="pa tan tbl row1 rows rowlim" data-focus="tan">
       <div class="step-kicker">Шаг 5 · предел</div>
       <h4>Число −8 и есть производная в точке</h4>
       <p>Последовательность −5.5, −6.75, −7.5, −7.75 упирается в −8. Это значение
       называют производной <span class="math-inline" data-tex="L'(0)"></span>, а
       предельное положение секущей называют касательной. Проверка по правилам:
       <span class="math-inline" data-tex="L'(w) = 5w - 8"></span>, при <span class="math-inline" data-tex="w = 0"></span> получаем −8.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L'(w) = \lim_{\Delta w \to 0}\frac{L(w + \Delta w) - L(w)}{\Delta w}"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="L'(0) = 5\cdot 0 - 8 = -8"></div></div>
     </div>
-    <div class="step-panel" data-on="pa tan dv6" data-focus="dv6">
+    <div class="step-panel" data-on="pa tan" data-focus="tan">
       <div class="step-kicker">Шаг 6 · зачем это нужно спуску</div>
       <h4>Касательная как локальный прогноз</h4>
       <p>Рядом с точкой функция почти совпадает со своей касательной:
       <span class="math-inline" data-tex="L(\Delta w) \approx 6.5 - 8\cdot \Delta w"></span>. Именно этим приближением пользуется
       градиентный спуск, когда решает, куда и насколько шагнуть, а слово «рядом»
       объясняет, почему шаг должен быть небольшим.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L(w + \Delta w) \approx L(w) + L'(w)\,\Delta w"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="L(0 + \Delta w) \approx 6.5 - 8\,\Delta w"></div></div>
     </div>
   </div>
 </div>
@@ -525,7 +596,7 @@
 
 <div class="stage" id="stageTangent" tabindex="0">
   <div class="stage-figure">
-<svg id="tg" viewBox="0 0 960 620" role="img" aria-label="Парабола потерь с секущей и касательными в точках w=0, w=1.6 и w=2.5">
+<svg id="tg" viewBox="0 0 960 452" role="img" aria-label="Парабола потерь с секущей и касательными в точках w=0, w=1.6 и w=2.5">
   <style>
     #tg { font-family: Helvetica, Arial, sans-serif; }
     #tg .ax   { stroke: #5E5850; stroke-width: 1.4; }
@@ -541,7 +612,6 @@
     #tg .pan  { fill: #FFFFFF; stroke: #E0DDD3; stroke-width: 1.4; }
     #tg .th   { font-size: 13px; fill: #244F81; font-weight: 700; }
     #tg .td   { font-size: 14px; fill: #111111; }
-    #tg .panel-label { font-size: 13px; fill: #8A8378; letter-spacing: 0.04em; }
     #tg .legend { font-size: 13px; fill: #8A8378; }
   </style>
   <defs>
@@ -550,7 +620,7 @@
     </marker>
   </defs>
 
-  <foreignObject x="70" y="14.6" width="704" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:700"><span>Парабола потерь <span data-tex="L(w) = 2.5w^2 - 8w + 6.5"></span> и наклон в трёх точках</span></div></foreignObject>
+  <foreignObject x="70" y="14.6" width="704" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:700"><span>Парабола потерь и наклон в трёх точках</span></div></foreignObject>
 
   <line x1="70" y1="360" x2="636" y2="360" class="ax"/>
   <line x1="113.4" y1="360" x2="113.4" y2="66" class="ax"/>
@@ -610,16 +680,6 @@
     <text x="345" y="336" class="lab" text-anchor="middle">наклон 0: дно</text>
   </g>
 
-
-
-
-
-  <g data-key="frm">
-    <foreignObject x="655" y="52" width="290" height="44">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-md svg-math-center" data-tex="L'(w) = 5w - 8"></div>
-    </foreignObject>
-  </g>
-
   <g data-key="tbl">
     <rect x="650" y="110" width="290" height="200" rx="10" class="pan"/>
     <foreignObject x="672" y="115.82" width="60" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#244F81;font-weight:700" data-tex="w"></div></foreignObject>
@@ -640,17 +700,7 @@
     <text x="790" y="284" class="td">влево</text>
   </g>
 
-  <text x="70" y="604" class="legend">жёлтый: функция потерь · красный: производная и касательная · зелёный: направление спуска</text>
-  <g data-key="panel" data-only="1">
-    <rect x="40" y="430" width="880" height="140" rx="14" fill="#FAFAF8" stroke="#E4E1D7" stroke-width="1.5"/>
-    <text x="62" y="456" class="panel-label">формула этого шага</text>
-  </g>
-  <g data-key="tf1" data-only="1"><foreignObject x="62" y="470" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L(w) = 2.5\,w^2 - 8w + 6.5, \qquad \text{стоим в } w = 0, \quad L(0) = 6.5"></div></foreignObject></g>
-  <g data-key="tf2" data-only="1"><foreignObject x="62" y="470" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\frac{L(1) - L(0)}{1 - 0} = \frac{1.0 - 6.5}{1} = -5.5 \quad \text{наклон секущей}"></div></foreignObject></g>
-  <g data-key="tf3" data-only="1"><foreignObject x="62" y="470" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L'(0) = \lim_{\Delta w \to 0}\frac{L(0 + \Delta w) - L(0)}{\Delta w} = 5\cdot 0 - 8 = -8"></div></foreignObject></g>
-  <g data-key="tf4" data-only="1"><foreignObject x="62" y="470" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L'(0) = -8 &lt; 0 \;\Longrightarrow\; \text{функция убывает вправо} \;\Longrightarrow\; w \text{ увеличиваем}"></div></foreignObject></g>
-  <g data-key="tf5" data-only="1"><foreignObject x="62" y="470" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L'(2.5) = 5\cdot 2.5 - 8 = +4.5 &gt; 0 \;\Longrightarrow\; w \text{ уменьшаем}"></div></foreignObject></g>
-  <g data-key="tf6" data-only="1"><foreignObject x="62" y="470" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L'(1.6) = 5\cdot 1.6 - 8 = 0 \quad \text{касательная горизонтальна, шагать некуда}"></div></foreignObject></g>
+  <text x="70" y="442" class="legend">жёлтый: функция потерь · красный: производная и касательная · зелёный: направление спуска</text>
 </svg>
   </div>
 
@@ -662,56 +712,70 @@
   </div>
 
   <div class="stage-notes">
-    <div class="step-panel" data-on="curve p0 tf1 panel" data-focus="p0">
+    <div class="step-panel" data-on="curve p0" data-focus="p0">
       <div class="step-kicker">Шаг 1 · вслепую</div>
       <h4>Мы стоим в точке <span class="math-inline" data-tex="w = 0"></span> и не видим графика</h4>
       <p>Вся картинка нарисована для нас, читателей. Алгоритм её не видит: он умеет
       только вычислять <span class="math-inline" data-tex="L"></span> в конкретной точке и брать производную. Вопрос
       на этом шаге ровно один: увеличивать <span class="math-inline" data-tex="w"></span> или уменьшать.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L(w) = 2.5\,w^2 - 8w + 6.5"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="L(0) = 6.5"></div></div>
     </div>
-    <div class="step-panel" data-on="curve p0 sec tf2 panel" data-focus="sec">
+    <div class="step-panel" data-on="curve p0 sec" data-focus="sec">
       <div class="step-kicker">Шаг 2 · секущая</div>
       <h4>Средний наклон между двумя точками</h4>
       <p>Возьмём вторую точку при <span class="math-inline" data-tex="w = 1"></span>: там <span class="math-inline" data-tex="L = 1.0"></span>.
       Наклон отрезка равен <span class="math-inline" data-tex="(1.0 - 6.5)/1 = -5.5"></span>.
       Число уже отвечает на вопрос «вниз или вверх», но описывает весь отрезок, а не
       нашу точку.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="\frac{L(w_2) - L(w_1)}{w_2 - w_1}"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="\frac{L(1) - L(0)}{1 - 0} = \frac{1.0 - 6.5}{1} = -5.5"></div></div>
     </div>
-    <div class="step-panel" data-on="curve p0 sec tan0 tf3 panel" data-focus="tan0">
+    <div class="step-panel" data-on="curve p0 sec tan0" data-focus="tan0">
       <div class="step-kicker">Шаг 3 · предел</div>
       <h4>Сдвигаем вторую точку вплотную и получаем касательную</h4>
       <p>Чем меньше <span class="math-inline" data-tex="\Delta w"></span>, тем ближе
       секущая к касательной. В пределе наклон равен −8: это и есть производная в
       точке <span class="math-inline" data-tex="w = 0"></span>. Проверка по формуле: <span class="math-inline" data-tex="5\cdot 0 - 8 = -8"></span>.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L'(w) = \lim_{\Delta w \to 0}\frac{L(w + \Delta w) - L(w)}{\Delta w}"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="L'(w) = 5w - 8, \qquad L'(0) = 5\cdot 0 - 8 = -8"></div></div>
     </div>
-    <div class="step-panel" data-on="curve p0 tan0 dir tf4 panel" data-focus="dir">
+    <div class="step-panel" data-on="curve p0 tan0 dir" data-focus="dir">
       <div class="step-kicker">Шаг 4 · знак</div>
       <h4>Минус означает «вниз направо»</h4>
       <p>Отрицательная производная значит, что функция убывает при увеличении аргумента.
       Значит, чтобы уменьшить потери, надо двигать <span class="math-inline" data-tex="w"></span> в
       <em>положительную</em> сторону. Направление спуска противоположно знаку
       производной.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L'(w) &lt; 0 \;\Longrightarrow\; w \text{ увеличиваем}"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="L'(0) = -8 &lt; 0"></div></div>
     </div>
-    <div class="step-panel" data-on="curve p25 tan25 dir2 tf5 panel" data-focus="tan25">
+    <div class="step-panel" data-on="curve p25 tan25 dir2" data-focus="tan25">
       <div class="step-kicker">Шаг 5 · симметричный случай</div>
       <h4>Справа от минимума наклон положительный</h4>
       <p>В точке <span class="math-inline" data-tex="w = 2.5"></span> производная равна <span class="math-inline" data-tex="5\cdot 2.5 - 8 = +4.5"></span>:
       функция растёт вправо. Правило то же: идём против знака, то есть влево. Одно
       правило покрывает оба случая.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L'(w) &gt; 0 \;\Longrightarrow\; w \text{ уменьшаем}"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="L'(2.5) = 5\cdot 2.5 - 8 = +4.5"></div></div>
     </div>
-    <div class="step-panel" data-on="curve p16 tf6 panel" data-focus="p16">
+    <div class="step-panel" data-on="curve p16" data-focus="p16">
       <div class="step-kicker">Шаг 6 · ноль</div>
       <h4>В минимуме касательная горизонтальна</h4>
       <p>Производная в дне равна нулю, и правило «иди против знака» само собой
       выключается: шагать некуда. Спуск не нужно останавливать вручную: он
       затухает, когда наклон исчезает.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L'(w) = 0 \;\Longrightarrow\; \text{шагать некуда}"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="L'(1.6) = 5\cdot 1.6 - 8 = 0"></div></div>
     </div>
-    <div class="step-panel" data-on="curve p0 p16 p25 frm tbl" data-focus="tbl">
+    <div class="step-panel" data-on="curve p0 p16 p25 tbl" data-focus="tbl">
       <div class="step-kicker">Шаг 7 · вся информация в одной формуле</div>
       <h4><span class="math-inline" data-tex="L'(w) = 5w - 8"></span> отвечает в любой точке</h4>
       <p>Производную считают не по определению каждый раз, а по правилам
       дифференцирования. Одна формула сразу даёт и направление (знак), и крутизну
       (модуль). Оба числа понадобятся в следующей части.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L'(w) = 5w - 8"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="L'(0) = -8, \quad L'(1) = -3, \quad L'(1.6) = 0, \quad L'(2.5) = +4.5"></div></div>
     </div>
   </div>
 </div>
@@ -781,7 +845,7 @@
 
 <div class="stage" id="stageRate" tabindex="0">
   <div class="stage-figure">
-<svg id="lr" viewBox="0 0 960 620" role="img" aria-label="Траектория градиентного спуска по параболе при разных значениях скорости обучения">
+<svg id="lr" viewBox="0 0 960 452" role="img" aria-label="Траектория градиентного спуска по параболе при разных значениях скорости обучения">
   <style>
     #lr { font-family: Helvetica, Arial, sans-serif; }
     #lr .ax   { stroke: #5E5850; stroke-width: 1.4; }
@@ -790,28 +854,18 @@
     #lr .cv   { stroke: #C29E08; stroke-width: 2.4; fill: none; }
     #lr .drop { stroke: #B9C9DA; stroke-width: 1.2; stroke-dasharray: 4 3; }
     #lr .gdot { fill: #73B222; }
-    #lr .ydot { fill: #C29E08; }
     #lr .bdot { fill: #3576C0; }
     #lr .mv   { stroke: #73B222; stroke-width: 2.6; fill: none; }
-    #lr .zg   { stroke: #C29E08; stroke-width: 2.4; fill: none; }
-    #lr .bad  { stroke: #C30B0A; stroke-width: 2.8; fill: none; }
     #lr .gl   { font-size: 14px; fill: #5A8C1C; }
-    #lr .panel-label { font-size: 13px; fill: #8A8378; letter-spacing: 0.04em; }
     #lr .legend { font-size: 13px; fill: #8A8378; }
   </style>
   <defs>
     <marker id="lr-ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="#73B222"/>
     </marker>
-    <marker id="lr-ay" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#C29E08"/>
-    </marker>
-    <marker id="lr-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#C30B0A"/>
-    </marker>
   </defs>
 
-  <text x="70" y="36" class="ttl">Спуск по параболе потерь: одна формула шага, четыре скорости обучения</text>
+  <foreignObject x="190" y="6" width="500" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:700"><span>Спуск по параболе потерь при <span data-tex="\eta = 0.1"></span></span></div></foreignObject>
 
   <line x1="80" y1="350" x2="846" y2="350" class="ax"/>
   <line x1="168.1" y1="350" x2="168.1" y2="56" class="ax"/>
@@ -825,16 +879,6 @@
 
   <polyline class="cv" points="80.0,42.9 88.8,57.3 97.6,71.2 106.4,84.9 115.2,98.1 124.0,111.1 132.9,123.7 141.7,135.9 150.5,147.8 159.3,159.4 168.1,170.6 176.9,181.5 185.7,192.0 194.5,202.2 203.3,212.0 212.1,221.5 221.0,230.6 229.8,239.4 238.6,247.9 247.4,256.0 256.2,263.7 265.0,271.2 273.8,278.2 282.6,285.0 291.4,291.3 300.2,297.4 309.1,303.1 317.9,308.4 326.7,313.4 335.5,318.1 344.3,322.4 353.1,326.4 361.9,330.0 370.7,333.3 379.5,336.2 388.3,338.8 397.2,341.0 406.0,342.9 414.8,344.5 423.6,345.7 432.4,346.5 441.2,347.1 450.0,347.2 458.8,347.1 467.6,346.6 476.4,345.7 485.3,344.5 494.1,342.9 502.9,341.0 511.7,338.8 520.5,336.2 529.3,333.3 538.1,330.0 546.9,326.4 555.7,322.4 564.5,318.1 573.4,313.4 582.2,308.4 591.0,303.1 599.8,297.4 608.6,291.4 617.4,285.0 626.2,278.2 635.0,271.2 643.8,263.8 652.6,256.0 661.5,247.9 670.3,239.4 679.1,230.6 687.9,221.5 696.7,212.0 705.5,202.2 714.3,192.0 723.1,181.5 731.9,170.6 740.7,159.4 749.6,147.8 758.4,135.9 767.2,123.7 776.0,111.1 784.8,98.2 793.6,84.9 802.4,71.2 811.2,57.3 820.0,43.0"/>
 
-
-
-
-
-  <g data-key="rule">
-    <foreignObject x="230" y="60" width="420" height="46">
-      <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-md" data-tex="w_{\text{new}} = w_{\text{old}} - \eta\,L'(w_{\text{old}}),\qquad \eta = 0.1"></div>
-    </foreignObject>
-  </g>
-
   <g data-key="t0">
     <circle cx="168.1" cy="170.6" r="6" class="bdot"/>
     <line x1="168.1" y1="170.6" x2="168.1" y2="350" class="drop"/>
@@ -846,7 +890,7 @@
     <circle cx="309.1" cy="303.1" r="6" class="gdot"/>
     <line x1="309.1" y1="303.1" x2="309.1" y2="350" class="drop"/>
     <text x="309.1" y="388" class="tick" text-anchor="middle">0.8</text>
-    <foreignObject x="240" y="202.96" width="185" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#5A8C1C;font-weight:400" data-tex="-0.1\cdot(-8) = +0.8"></div></foreignObject>
+    <foreignObject x="240" y="202.96" width="185" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#5A8C1C;font-weight:400" data-tex="+0.8"></div></foreignObject>
   </g>
 
   <g data-key="s2">
@@ -864,37 +908,7 @@
     <text x="400" y="215" class="gl">шаги гаснут сами: +0.2, затем +0.1</text>
   </g>
 
-  <g data-key="slow" data-only="1">
-    <circle cx="196.3" cy="204.2" r="5" class="ydot"/>
-    <circle cx="221.7" cy="231.3" r="5" class="ydot"/>
-    <circle cx="244.5" cy="253.4" r="5" class="ydot"/>
-    <foreignObject x="215" y="127.96" width="407" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#8C7106;font-weight:400"><span><span data-tex="\eta = 0.02"></span>: <span data-tex="0 \to 0.16 \to 0.30 \to 0.43"></span>: ползём</span></div></foreignObject>
-  </g>
-
-  <g data-key="zig" data-only="1">
-    <line x1="176" y1="177" x2="584" y2="299" class="zg" marker-end="url(#lr-ay)"/>
-    <line x1="584" y1="307" x2="386" y2="335" class="zg" marker-end="url(#lr-ay)"/>
-    <line x1="386" y1="339" x2="479" y2="344" class="zg" marker-end="url(#lr-ay)"/>
-    <circle cx="591" cy="303.1" r="6" class="ydot"/>
-    <circle cx="485.3" cy="344.5" r="6" class="ydot"/>
-    <foreignObject x="215" y="147.96" width="578" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#8C7106;font-weight:400"><span><span data-tex="\eta = 0.3"></span>: <span data-tex="0 \to 2.4 \to 1.2 \to 1.8"></span>: перелетаем дно, но сходимся</span></div></foreignObject>
-  </g>
-
-  <g data-key="boom" data-only="1">
-    <line x1="176" y1="166" x2="880" y2="90" class="bad" marker-end="url(#lr-ar)"/>
-    <foreignObject x="236" y="212.96" width="558" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#C30B0A;font-weight:400"><span><span data-tex="\eta = 0.55"></span>: <span data-tex="0 \to 4.4 \to -3.3 \to 10.2 \to -13.4"></span>: улетаем за край</span></div></foreignObject>
-  </g>
-
-  <text x="80" y="604" class="legend">жёлтый: функция потерь и слишком робкий или слишком резвый шаг · зелёный: рабочая траектория · красный: расходимость</text>
-  <rect x="40" y="430" width="880" height="140" rx="14" fill="#FAFAF8" stroke="#E4E1D7" stroke-width="1.5"/>
-  <text x="62" y="456" class="panel-label">формула этого шага</text>
-  <g data-key="sf1" data-only="1"><foreignObject x="62" y="470" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="w_{\text{new}} = w_{\text{old}} - \eta\,L'(w_{\text{old}}), \qquad L'(w) = 5w - 8, \qquad \eta = 0.1"></div></foreignObject></g>
-  <g data-key="sf2" data-only="1"><foreignObject x="62" y="470" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="w_1 = 0 - 0.1\cdot L'(0) = 0 - 0.1\cdot(-8) = 0.8 \qquad L: 6.5 \rightarrow 1.7"></div></foreignObject></g>
-  <g data-key="sf3" data-only="1"><foreignObject x="62" y="470" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="w_2 = 0.8 - 0.1\cdot L'(0.8) = 0.8 - 0.1\cdot(-4) = 1.2 \qquad L: 1.7 \rightarrow 0.5"></div></foreignObject></g>
-  <g data-key="sf4" data-only="1"><foreignObject x="62" y="470" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="w_3 = 1.2 - 0.1\cdot(-2) = 1.4, \qquad w_4 = 1.4 - 0.1\cdot(-1) = 1.5"></div></foreignObject></g>
-  <g data-key="sf5" data-only="1"><foreignObject x="62" y="470" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\eta = 0.02: \quad w_1 = 0 - 0.02\cdot(-8) = 0.16, \quad w_2 = 0.16 - 0.02\cdot(-7.2) = 0.304"></div></foreignObject></g>
-  <g data-key="sf6" data-only="1"><foreignObject x="62" y="470" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\eta = 0.3: \quad w_1 = 0 - 0.3\cdot(-8) = 2.4, \quad w_2 = 2.4 - 0.3\cdot(+4) = 1.2"></div></foreignObject></g>
-  <g data-key="sf7" data-only="1"><foreignObject x="62" y="470" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\eta = 0.55: \quad w_1 = 4.4, \quad w_2 = -3.3, \quad \dots \qquad \text{порог: } \eta = \tfrac{2}{L^{\prime\prime}} = \tfrac{2}{5} = 0.4"></div></foreignObject></g>
+  <text x="80" y="442" class="legend">жёлтый: функция потерь · зелёный: шаги спуска</text>
 </svg>
   </div>
 
@@ -906,59 +920,108 @@
   </div>
 
   <div class="stage-notes">
-    <div class="step-panel" data-on="rule t0 sf1" data-focus="rule">
+    <div class="step-panel" data-on="t0" data-focus="t0">
       <div class="step-kicker">Шаг 1 · правило</div>
       <h4>Вычесть производную, умноженную на <span class="math-inline" data-tex="\eta"></span></h4>
       <p>Формула целиком описывает алгоритм: направление берём из знака
       производной, длину из её модуля, а <span class="math-inline" data-tex="\eta"></span>
       задаёт общий масштаб. Стартуем из <span class="math-inline" data-tex="w = 0"></span>, где
       <span class="math-inline" data-tex="L = 6.5"></span>.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="w_{\text{new}} = w_{\text{old}} - \eta\,L'(w_{\text{old}})"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="L'(w) = 5w - 8, \qquad \eta = 0.1, \qquad w_0 = 0, \qquad L(0) = 6.5"></div></div>
     </div>
-    <div class="step-panel" data-on="rule t0 s1 sf2" data-focus="s1">
+    <div class="step-panel" data-on="t0 s1" data-focus="s1">
       <div class="step-kicker">Шаг 2 · первый шаг</div>
       <h4>Крутой склон, длинный шаг</h4>
       <p>Производная в нуле равна −8, значит сдвиг равен
       <span class="math-inline" data-tex="-0.1 \cdot (-8) = +0.8"></span>. Потери падают с 6.5 до 1.7 за один шаг:
       это была самая крутая часть склона.</p>
-      </div>
-    <div class="step-panel" data-on="rule t0 s1 s2 sf3" data-focus="s2">
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="w_1 = w_0 - \eta\,L'(w_0)"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="w_1 = 0 - 0.1\cdot(-8) = 0.8, \qquad L:\ 6.5 \to 1.7"></div></div>
+    </div>
+    <div class="step-panel" data-on="t0 s1 s2" data-focus="s2">
       <div class="step-kicker">Шаг 3 · второй шаг</div>
       <h4>Склон стал положе, шаг короче</h4>
       <p>В точке 0.8 производная равна <span class="math-inline" data-tex="5\cdot 0.8 - 8 = -4"></span>, сдвиг вдвое
       меньше первого. Мы не задавали это правило отдельно: оно возникло само из
       того, что длина шага пропорциональна производной.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="w_2 = w_1 - \eta\,L'(w_1)"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="w_2 = 0.8 - 0.1\cdot(-4) = 1.2, \qquad L:\ 1.7 \to 0.5"></div></div>
     </div>
-    <div class="step-panel" data-on="rule t0 s1 s2 s3 sf4" data-focus="s3">
+    <div class="step-panel" data-on="t0 s1 s2 s3" data-focus="s3">
       <div class="step-kicker">Шаг 4 · затухание</div>
       <h4>К минимуму подходим всё мельче</h4>
       <p>1.4, затем 1.5, затем 1.55. Точное значение 1.6 достигается лишь в
       пределе. Для обучения это нормально: нам нужна не точка минимума, а
       достаточно близкая к ней точка.</p>
-    </div>
-    <div class="step-panel" data-on="rule t0 slow sf5" data-focus="slow">
-      <div class="step-kicker">Шаг 5 · слишком осторожно</div>
-      <h4><span class="math-inline" data-tex="\eta = 0.02"></span>: правильное направление, черепаший темп</h4>
-      <p>За три шага мы добираемся только до 0.43. Такой спуск сойдётся, но
-      потратит в разы больше вычислений, а каждый шаг на реальных данных стоит
-      прохода по всей выборке.</p>
-    </div>
-    <div class="step-panel" data-on="rule t0 zig sf6" data-focus="zig">
-      <div class="step-kicker">Шаг 6 · слишком смело</div>
-      <h4><span class="math-inline" data-tex="\eta = 0.3"></span>: перепрыгиваем дно и качаемся вокруг него</h4>
-      <p>Из нуля мы улетаем в 2.4, на другую сторону параболы, оттуда назад в 1.2.
-      Колебания затухают, спуск всё равно сходится, но траектория тратит шаги на
-      метания поперёк долины.</p>
-    </div>
-    <div class="step-panel" data-on="rule t0 boom sf7" data-focus="boom">
-      <div class="step-kicker">Шаг 7 · граница устойчивости</div>
-      <h4><span class="math-inline" data-tex="\eta = 0.55"></span>: каждый следующий промах больше предыдущего</h4>
-      <p>0 → 4.4 → −3.3 → 10.2 → −13.4: потери растут, обучение развалилось. Для
-      параболы порог считается точно: <span class="math-inline" data-tex="\eta &gt; 2/L'' = 2/5 = 0.4"></span>, и
-      спуск расходится при любом старте.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="\bigl|w_{t+1} - w_t\bigr| = \eta\,\bigl|L'(w_t)\bigr|"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="w_3 = 1.2 - 0.1\cdot(-2) = 1.4, \qquad w_4 = 1.4 - 0.1\cdot(-1) = 1.5"></div></div>
     </div>
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
+
+<p>
+  Всё решает <span class="math-inline" data-tex="\eta"></span>. Подставим производную
+  <span class="math-inline" data-tex="L'(w) = 5w - 8"></span> в формулу шага и вычтем 1.6 из обеих
+  частей. Промах относительно минимума на каждом шаге умножается на одно и то же число:
+</p>
+
+<div class="math-display" data-tex="w_{t+1} - 1.6 = (1 - 5\eta)\,(w_t - 1.6)"></div>
+
+<p>
+  Отсюда четыре режима. При <span class="math-inline" data-tex="\eta &lt; 0.2"></span> множитель
+  положительный, и спуск подходит к дну с одной стороны. При
+  <span class="math-inline" data-tex="0.2 &lt; \eta &lt; 0.4"></span> множитель отрицательный, и спуск
+  перелетает дно, но промахи затухают. При <span class="math-inline" data-tex="\eta = 0.4"></span>
+  множитель равен −1, и спуск бесконечно прыгает между двумя точками. При
+  <span class="math-inline" data-tex="\eta &gt; 0.4"></span> промах растёт с каждым шагом. Порог совпадает
+  с общей формулой для параболы: <span class="math-inline" data-tex="\eta = 2/L'' = 2/5 = 0.4"></span>.
+  Проверьте каждый режим сами.
+</p>
+
+<div class="gd-live" id="gdRate">
+  <div class="gd-live-head"><strong>Меняйте скорость обучения и старт</strong>
+    <p>Слева путь по параболе, справа потери на каждой итерации.</p></div>
+  <div class="gd-live-figure"><svg id="gdRateSvg" viewBox="0 0 720 290" role="img" aria-label="Траектория спуска по параболе слева и график потерь по итерациям справа"></svg></div>
+  <div class="gd-controls">
+    <div class="gd-control"><label for="gdRateEta"><span>Скорость обучения <span class="math-inline" data-tex="\eta"></span></span> <output id="gdRateEtaOut">0.10</output></label>
+      <input id="gdRateEta" type="range" min="0.01" max="0.6" step="0.01" value="0.1"></div>
+    <div class="gd-control"><label for="gdRateStart"><span>Старт <span class="math-inline" data-tex="w_0"></span></span> <output id="gdRateStartOut">0.0</output></label>
+      <input id="gdRateStart" type="range" min="-2" max="4" step="0.1" value="0"></div>
+  </div>
+  <div class="gd-radios">
+    <button type="button" class="gd-chip" data-eta="0.02">η = 0.02</button>
+    <button type="button" class="gd-chip" data-eta="0.1">η = 0.1</button>
+    <button type="button" class="gd-chip" data-eta="0.2">η = 0.2</button>
+    <button type="button" class="gd-chip" data-eta="0.3">η = 0.3</button>
+    <button type="button" class="gd-chip" data-eta="0.4">η = 0.4</button>
+    <button type="button" class="gd-chip" data-eta="0.55">η = 0.55</button>
+  </div>
+  <div class="gd-buttons">
+    <button type="button" class="gd-btn" id="gdRateStep">Шаг</button>
+    <button type="button" class="gd-btn" id="gdRateRun">Запуск</button>
+    <button type="button" class="gd-btn" id="gdRateReset">Сброс</button>
+  </div>
+  <div class="gd-metrics">
+    <div class="gd-metric"><span>итерация</span><strong id="gdRateT">0</strong></div>
+    <div class="gd-metric"><span>w</span><strong id="gdRateW">—</strong></div>
+    <div class="gd-metric"><span>L′(w)</span><strong id="gdRateD">—</strong></div>
+    <div class="gd-metric"><span>L(w)</span><strong id="gdRateL">—</strong></div>
+    <div class="gd-metric"><span>множитель 1 − 5η</span><strong id="gdRateK">—</strong></div>
+  </div>
+  <div class="gd-calc" id="gdRateCalc"></div>
+  <p class="gd-status" id="gdRateStatus"></p>
+</div>
+
+<table class="shape-table">
+  <tr><th><span class="math-inline" data-tex="\eta"></span></th><th>Первые значения <span class="math-inline" data-tex="w"></span> из нуля</th><th>Что происходит</th></tr>
+  <tr><td>0.02</td><td>0 → 0.16 → 0.30 → 0.43</td><td>направление верное, но спуск сойдётся в разы дольше, а каждый шаг на реальных данных стоит прохода по всей выборке</td></tr>
+  <tr><td>0.1</td><td>0 → 0.8 → 1.2 → 1.4</td><td>подходит к дну с одной стороны, шаги укорачиваются сами</td></tr>
+  <tr><td>0.3</td><td>0 → 2.4 → 1.2 → 1.8</td><td>перелетает дно, колебания затухают, но шаги тратятся на метания поперёк</td></tr>
+  <tr><td>0.4</td><td>0 → 3.2 → 0 → 3.2</td><td>прыгает между двумя точками, потери не меняются</td></tr>
+  <tr><td>0.55</td><td>0 → 4.4 → −3.3 → 10.2 → −13.4</td><td>потери растут при любом старте, обучение развалилось</td></tr>
+</table>
 
 <div class="callout-yellow">
   <strong>Практическая деталь:</strong> <span class="math-inline" data-tex="\eta"></span>
@@ -1019,7 +1082,7 @@
 
 <div class="stage" id="stageGrad" tabindex="0">
   <div class="stage-figure">
-<svg id="gd" viewBox="0 0 960 560" role="img" aria-label="Круг направлений в точке и столбики значений производной по направлению">
+<svg id="gd" viewBox="0 0 960 408" role="img" aria-label="Круг направлений в точке и столбики значений производной по направлению">
   <style>
     #gd { font-family: Helvetica, Arial, sans-serif; }
     #gd .ax   { stroke: #5E5850; stroke-width: 1.3; }
@@ -1038,7 +1101,6 @@
     #gd .barr { fill: #E39A99; }
     #gd .td   { font-size: 14px; fill: #111111; }
     #gd .tick { font-size: 13px; fill: #8A8378; }
-    #gd .panel-label { font-size: 13px; fill: #8A8378; letter-spacing: 0.04em; }
     #gd .legend { font-size: 13px; fill: #8A8378; }
   </style>
   <defs>
@@ -1112,16 +1174,7 @@
     <text x="834" y="336" class="tick" text-anchor="middle">+9.43</text>
   </g>
 
-  <text x="40" y="544" class="legend">синий: пробные направления · красный: градиент, рост · зелёный: антиградиент, спуск</text>
-  <rect x="40" y="372" width="880" height="140" rx="14" fill="#FAFAF8" stroke="#E4E1D7" stroke-width="1.5"/>
-  <text x="62" y="398" class="panel-label">формула этого шага</text>
-  <g data-key="af1" data-only="1"><foreignObject x="62" y="412" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\|u\| = 1: \quad \Delta w_0^2 + \Delta w_1^2 = 1 \qquad \text{все направления лежат на окружности}"></div></foreignObject></g>
-  <g data-key="af2" data-only="1"><foreignObject x="62" y="412" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\frac{\partial L}{\partial w_0} = \tfrac{1}{2}\sum_i -2\bigl(y_i - \hat{y}_i\bigr) = -5, \qquad \frac{\partial L}{\partial w_1} = \tfrac{1}{2}\sum_i -2x_i\bigl(y_i - \hat{y}_i\bigr) = -8"></div></foreignObject></g>
-  <g data-key="af3" data-only="1"><foreignObject x="62" y="412" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L'_u = \Delta w_0\cdot\frac{\partial L}{\partial w_0} + \Delta w_1\cdot\frac{\partial L}{\partial w_1} = \Delta w_0\,(-5) + \Delta w_1\,(-8)"></div></foreignObject></g>
-  <g data-key="af4" data-only="1"><foreignObject x="62" y="412" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\nabla L = (-5,\,-8), \qquad \|\nabla L\| = \sqrt{(-5)^2 + (-8)^2} = \sqrt{89} = 9.434, \qquad L'_u = u\cdot\nabla L"></div></foreignObject></g>
-  <g data-key="af5" data-only="1"><foreignObject x="62" y="412" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L'_u = \|u\|\cdot\|\nabla L\|\cdot\cos\alpha = 9.434\,\cos\alpha \quad \text{максимум при } \alpha = 0"></div></foreignObject></g>
-  <g data-key="af6" data-only="1"><foreignObject x="62" y="412" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="u = -\frac{\nabla L}{\|\nabla L\|} = \left(\frac{5}{9.434},\ \frac{8}{9.434}\right) = (0.530,\ 0.848), \qquad L'_u = -9.434"></div></foreignObject></g>
-  <g data-key="af7" data-only="1"><foreignObject x="62" y="412" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="-9.434 \;&lt;\; -8 \;&lt;\; -5 \qquad \text{движение вдоль любой оси проигрывает антиградиенту}"></div></foreignObject></g>
+  <text x="40" y="398" class="legend">синий: пробные направления · красный: градиент, рост · зелёный: антиградиент, спуск</text>
 </svg>
   </div>
 
@@ -1133,37 +1186,45 @@
   </div>
 
   <div class="stage-notes">
-    <div class="step-panel" data-on="comp af1" data-focus="comp">
+    <div class="step-panel" data-on="comp" data-focus="comp">
       <div class="step-kicker">Шаг 1 · выбор</div>
       <h4>Из точки на плоскости можно шагнуть куда угодно</h4>
       <p>В одномерном случае вариантов было два: влево или вправо. Теперь их
       бесконечно много, и все они лежат на окружности единичного радиуса. Сравнивать
       имеет смысл только векторы одинаковой длины, иначе выиграет просто самый
       длинный.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="\|u\| = 1: \quad \Delta w_0^2 + \Delta w_1^2 = 1"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="u = (1,\,0), \qquad u = (0,\,1), \qquad u = (0.6,\,0.8)"></div></div>
     </div>
-    <div class="step-panel" data-on="comp pd af2" data-focus="pd">
+    <div class="step-panel" data-on="comp pd" data-focus="pd">
       <div class="step-kicker">Шаг 2 · что мы уже умеем</div>
       <h4>Частные производные отвечают только про два направления</h4>
       <p>Вдоль <span class="math-inline" data-tex="w_0"></span> функция меняется со скоростью −5, вдоль
       <span class="math-inline" data-tex="w_1"></span> со скоростью −8. Оба направления ведут вниз, второе круче.
       Про остальную окружность мы пока ничего не знаем.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="\begin{gathered}\frac{\partial L}{\partial w_0} = \tfrac{1}{2}\sum_i -2\bigl(y_i - \hat{y}_i\bigr), \\ \frac{\partial L}{\partial w_1} = \tfrac{1}{2}\sum_i -2x_i\bigl(y_i - \hat{y}_i\bigr)\end{gathered}"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="\frac{\partial L}{\partial w_0} = -(2 + 3) = -5, \qquad \frac{\partial L}{\partial w_1} = -(1\cdot 2 + 2\cdot 3) = -8"></div></div>
     </div>
-    <div class="step-panel" data-on="comp pd af3" data-focus="af3">
+    <div class="step-panel" data-on="comp pd" data-focus="pd">
       <div class="step-kicker">Шаг 3 · произвольное направление</div>
       <h4>Смесь двух наклонов пропорционально смещению</h4>
       <p>Для любого <span class="math-inline" data-tex="u = (\Delta w_0, \Delta w_1)"></span> скорость равна
       <span class="math-inline" data-tex="\Delta w_0\cdot (-5) + \Delta w_1\cdot (-8)"></span>. Никаких новых вычислений: двух частных
       производных хватает, чтобы ответить сразу про все направления.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L'_u = \Delta w_0\cdot\frac{\partial L}{\partial w_0} + \Delta w_1\cdot\frac{\partial L}{\partial w_1}"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="u = (0.6,\,0.8): \quad L'_u = 0.6\cdot(-5) + 0.8\cdot(-8) = -9.4"></div></div>
     </div>
-    <div class="step-panel" data-on="comp pd grad af4" data-focus="grad">
+    <div class="step-panel" data-on="comp pd grad" data-focus="grad">
       <div class="step-kicker">Шаг 4 · вектор из производных</div>
       <h4>Градиент устроен просто: это список частных производных</h4>
       <p>Записав <span class="math-inline" data-tex="\nabla L = (-5, -8)"></span>,
       формулу можно прочитать как скалярное произведение
       <span class="math-inline" data-tex="L'_u = u\cdot\nabla L"></span>. Длина этого
       вектора здесь равна <span class="math-inline" data-tex="\sqrt{25+64} = 9.434"></span>.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="\nabla L = \Bigl(\frac{\partial L}{\partial w_0},\ \frac{\partial L}{\partial w_1}\Bigr), \qquad L'_u = u\cdot\nabla L"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="\nabla L = (-5,\,-8), \qquad \|\nabla L\| = \sqrt{25 + 64} = \sqrt{89} = 9.434"></div></div>
     </div>
-    <div class="step-panel" data-on="comp grad bars af5" data-focus="af5">
+    <div class="step-panel" data-on="comp grad bars" data-focus="bars">
       <div class="step-kicker">Шаг 5 · косинус решает всё</div>
       <h4>Управляем мы только углом</h4>
       <p>По определению скалярного произведения
@@ -1171,21 +1232,27 @@
       Длина <span class="math-inline" data-tex="u"></span> равна 1 по договорённости, длина градиента задана точкой
       и функцией. Остаётся угол: максимум при <span class="math-inline" data-tex="\alpha = 0^\circ"></span>: вдоль градиента
       функция растёт быстрее всего.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L'_u = \|u\|\cdot\|\nabla L\|\cdot\cos\alpha"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="L'_u = 9.434\,\cos\alpha, \qquad \alpha = 0^\circ: \ L'_u = +9.434"></div></div>
     </div>
-    <div class="step-panel" data-on="comp grad anti bars af6" data-focus="anti">
+    <div class="step-panel" data-on="comp grad anti bars" data-focus="anti">
       <div class="step-kicker">Шаг 6 · разворот</div>
       <h4>Минимум косинуса при 180°</h4>
       <p>Самое быстрое убывание достигается ровно в противоположную сторону:
       <span class="math-inline" data-tex="-\nabla L/\|\nabla L\| = (0.53,\ 0.848)"></span>,
       скорость −9.434. Этот вектор называют <strong>антиградиентом</strong>, и именно
       по нему делает шаг градиентный спуск.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="u = -\frac{\nabla L}{\|\nabla L\|}"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="u = \Bigl(\frac{5}{9.434},\ \frac{8}{9.434}\Bigr) = (0.530,\ 0.848), \qquad L'_u = -9.434"></div></div>
     </div>
-    <div class="step-panel" data-on="comp pd grad anti bars af7" data-focus="bars">
+    <div class="step-panel" data-on="comp pd grad anti bars" data-focus="bars">
       <div class="step-kicker">Шаг 7 · сравнение</div>
       <h4>По осям хуже, чем по антиградиенту</h4>
       <p>−5 и −8 против −9.43: движение вдоль любой оси проигрывает. Столбики
       показывают весь разброс: от +9.43 (вверх по градиенту) до −9.43 (вниз по
       антиградиенту), и ни одно направление не даёт больше по модулю.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="-\|\nabla L\| \;\le\; L'_u \;\le\; \|\nabla L\|"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="-9.434 \;&lt;\; -8 \;&lt;\; -5"></div></div>
     </div>
   </div>
 </div>
@@ -1232,7 +1299,7 @@
 
 <div class="stage" id="stageMap" tabindex="0">
   <div class="stage-figure">
-<svg id="mp" viewBox="0 0 960 700" role="img" aria-label="Карта линий уровня функции потерь и траектория градиентного спуска из нуля">
+<svg id="mp" viewBox="0 0 960 536" role="img" aria-label="Карта линий уровня функции потерь и траектория градиентного спуска из нуля">
   <style>
     #mp { font-family: Helvetica, Arial, sans-serif; }
     #mp .ax   { stroke: #5E5850; stroke-width: 1.3; }
@@ -1250,7 +1317,6 @@
     #mp .th   { font-size: 13px; fill: #244F81; font-weight: 700; }
     #mp .td   { font-size: 14px; fill: #111111; }
     #mp .dash { stroke: #C30B0A; stroke-width: 1.6; stroke-dasharray: 7 5; fill: none; }
-    #mp .panel-label { font-size: 13px; fill: #8A8378; letter-spacing: 0.04em; }
     #mp .legend { font-size: 13px; fill: #8A8378; }
   </style>
   <defs>
@@ -1359,16 +1425,7 @@
     <text x="440" y="494" class="rl">вдоль дна долины градиент почти нулевой.</text>
   </g>
 
-  <text x="40" y="684" class="legend">жёлтый: линии уровня потерь · красный: градиент и проблемное место · зелёный: шаги спуска</text>
-  <rect x="40" y="514" width="880" height="150" rx="14" fill="#FAFAF8" stroke="#E4E1D7" stroke-width="1.5"/>
-  <text x="62" y="540" class="panel-label">формула этого шага</text>
-  <g data-key="mf1" data-only="1"><foreignObject x="62" y="556" width="836" height="96"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L(w_0, w_1) = \tfrac{1}{2}\Bigl[(2 - w_0 - w_1)^2 + (3 - w_0 - 2w_1)^2\Bigr] \qquad \min \text{ в } (1,\,1)"></div></foreignObject></g>
-  <g data-key="mf2" data-only="1"><foreignObject x="62" y="556" width="836" height="96"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-md" data-tex="L(0,\,0) = \tfrac{1}{2}\bigl[2^2 + 3^2\bigr] = 6.5"></div></foreignObject></g>
-  <g data-key="mf3" data-only="1"><foreignObject x="62" y="556" width="836" height="96"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\nabla L = \left(\tfrac{1}{2}\sum_i -2\bigl(y_i - \hat{y}_i\bigr),\ \ \tfrac{1}{2}\sum_i -2x_i\bigl(y_i - \hat{y}_i\bigr)\right) = (-5,\ -8)"></div></foreignObject></g>
-  <g data-key="mf4" data-only="1"><foreignObject x="62" y="556" width="836" height="96"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\begin{pmatrix} w_0 \\ w_1 \end{pmatrix} = \begin{pmatrix} 0 \\ 0 \end{pmatrix} - 0.1\begin{pmatrix} -5 \\ -8 \end{pmatrix} = \begin{pmatrix} 0.5 \\ 0.8 \end{pmatrix}, \qquad L = 0.65"></div></foreignObject></g>
-  <g data-key="mf5" data-only="1"><foreignObject x="62" y="556" width="836" height="96"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\begin{pmatrix} 0.5 \\ 0.8 \end{pmatrix} - 0.1\begin{pmatrix} -1.60 \\ -2.50 \end{pmatrix} = \begin{pmatrix} 0.66 \\ 1.05 \end{pmatrix}, \qquad L = 0.0708"></div></foreignObject></g>
-  <g data-key="mf6" data-only="1"><foreignObject x="62" y="556" width="836" height="96"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\frac{\lambda_{\max}}{\lambda_{\min}} = \frac{6.854}{0.146} \approx 47 \qquad \text{во столько раз кривизна поперёк долины больше, чем вдоль}"></div></foreignObject></g>
-  <g data-key="mf7" data-only="1"><foreignObject x="62" y="556" width="836" height="96"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\bigl\|w_t - (1,\,1)\bigr\| &lt; 0.01 \quad \text{при } t \approx 237 \qquad (\text{с моментом } \alpha = 0.9: \ t \approx 48)"></div></foreignObject></g>
+  <text x="40" y="526" class="legend">жёлтый: линии уровня потерь · красный: градиент и проблемное место · зелёный: шаги спуска</text>
 </svg>
   </div>
 
@@ -1380,43 +1437,53 @@
   </div>
 
   <div class="stage-notes">
-    <div class="step-panel" data-on="map min mf1" data-focus="map">
+    <div class="step-panel" data-on="map min" data-focus="map">
       <div class="step-kicker">Шаг 1 · рельеф</div>
       <h4>Линии уровня: горизонтали карты потерь</h4>
       <p>Каждая кривая соединяет точки с одинаковым значением <span class="math-inline" data-tex="L"></span>. Здесь
       они оказались сильно вытянутыми эллипсами с общим центром в точке
       <span class="math-inline" data-tex="(1, 1)"></span>: там модель <span class="math-inline" data-tex="\hat{y} = 1 + x"></span>
       проходит ровно через оба наблюдения, и потери равны нулю.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="L(w_0, w_1) = \tfrac{1}{2}\Bigl[(y_1 - w_0 - w_1 x_1)^2 + (y_2 - w_0 - w_1 x_2)^2\Bigr]"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="L(1, 1) = \tfrac{1}{2}\bigl[(2 - 1 - 1)^2 + (3 - 1 - 2)^2\bigr] = 0"></div></div>
     </div>
-    <div class="step-panel" data-on="map min start mf2" data-focus="start">
+    <div class="step-panel" data-on="map min start" data-focus="start">
       <div class="step-kicker">Шаг 2 · старт</div>
       <h4>Начинаем из нуля, ничего не зная о рельефе</h4>
       <p>Алгоритм не видит ни центра, ни линий уровня. Ему известны только
       координаты текущей точки и значение потерь в ней: <span class="math-inline" data-tex="L(0, 0) = 6.5"></span>.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="\hat{y}_i = w_0 + w_1 x_i"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="L(0, 0) = \tfrac{1}{2}\bigl[2^2 + 3^2\bigr] = 6.5"></div></div>
     </div>
-    <div class="step-panel" data-on="map min start g1 mf3" data-focus="g1">
+    <div class="step-panel" data-on="map min start g1" data-focus="g1">
       <div class="step-kicker">Шаг 3 · щупаем склон</div>
       <h4>Градиент указывает вверх по склону</h4>
       <p>В стартовой точке <span class="math-inline" data-tex="\nabla L = (-5, -8)"></span>:
       красная стрелка ведёт от центра, туда, где потери растут. Полезное свойство:
       градиент всегда перпендикулярен линии уровня, ведь вдоль самой линии функция
       не меняется.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="\begin{gathered}\frac{\partial L}{\partial w_0} = \tfrac{1}{2}\sum_i -2\bigl(y_i - \hat{y}_i\bigr), \\ \frac{\partial L}{\partial w_1} = \tfrac{1}{2}\sum_i -2x_i\bigl(y_i - \hat{y}_i\bigr)\end{gathered}"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="\nabla L(0, 0) = (-5,\ -8)"></div></div>
     </div>
-    <div class="step-panel" data-on="map min start s1 mf4" data-focus="s1">
+    <div class="step-panel" data-on="map min start s1" data-focus="s1">
       <div class="step-kicker">Шаг 4 · первый шаг</div>
       <h4>Разворачиваемся и умножаем на <span class="math-inline" data-tex="\eta"></span></h4>
       <p>Сдвиг равен <span class="math-inline" data-tex="-0.1\cdot (-5, -8) = (0.5, 0.8)"></span>. Одним шагом потери
       падают с 6.5 до 0.65, в десять раз. Обе координаты обновляются одновременно
       и независимо: у каждого параметра своя частная производная.</p>
-      </div>
-    <div class="step-panel" data-on="map min start s1 s2 tbl mf5" data-focus="tbl">
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="\begin{pmatrix} w_0 \\ w_1 \end{pmatrix}_{\text{new}} = \begin{pmatrix} w_0 \\ w_1 \end{pmatrix}_{\text{old}} - \eta\,\nabla L"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="\begin{pmatrix} 0.5 \\ 0.8 \end{pmatrix} = \begin{pmatrix} 0 \\ 0 \end{pmatrix} - 0.1\begin{pmatrix} -5 \\ -8 \end{pmatrix}, \qquad L = 0.65"></div></div>
+    </div>
+    <div class="step-panel" data-on="map min start s1 s2 tbl" data-focus="tbl">
       <div class="step-kicker">Шаг 5 · дальше</div>
       <h4>Шаги укорачиваются быстрее, чем хотелось бы</h4>
       <p>Второй шаг переносит нас в <span class="math-inline" data-tex="(0.66, 1.05)"></span>, третий в
       <span class="math-inline" data-tex="(0.713, 1.127)"></span>. Потери уже 0.0133, но точка всё ещё далеко от
       центра карты: спуск явно замедлился, не дойдя до цели.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="\begin{pmatrix} w_0 \\ w_1 \end{pmatrix}_{\text{new}} = \begin{pmatrix} w_0 \\ w_1 \end{pmatrix}_{\text{old}} - \eta\,\nabla L"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="\begin{pmatrix} 0.66 \\ 1.05 \end{pmatrix} = \begin{pmatrix} 0.5 \\ 0.8 \end{pmatrix} - 0.1\begin{pmatrix} -1.60 \\ -2.50 \end{pmatrix}, \qquad L = 0.0708"></div></div>
     </div>
-    <div class="step-panel" data-on="map min s2 ravine mf6" data-focus="ravine">
+    <div class="step-panel" data-on="map min s2 ravine" data-focus="ravine">
       <div class="step-kicker">Шаг 6 · диагноз</div>
       <h4>Мы в узкой долине</h4>
       <p>Кривизна поперёк долины примерно в 47 раз больше, чем вдоль неё: это отношение
@@ -1424,18 +1491,56 @@
       <span class="math-inline" data-tex="\sqrt{47} \approx 6.9"></span> раза. Поперёк долины склон крутой,
       вдоль неё почти плоский. Спуск быстро сваливается на дно, а потом ползёт
       вдоль него микроскопическими шагами: градиент там почти ноль.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="\frac{\lambda_{\max}}{\lambda_{\min}}"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="\frac{6.854}{0.146} \approx 47, \qquad \sqrt{47} \approx 6.9"></div></div>
     </div>
-    <div class="step-panel" data-on="map min start s1 s2 slow mf7" data-focus="slow">
+    <div class="step-panel" data-on="map min start s1 s2 slow" data-focus="slow">
       <div class="step-kicker">Шаг 7 · цена</div>
       <h4>Ещё 230 шагов до точного попадания</h4>
       <p>С <span class="math-inline" data-tex="\eta = 0.1"></span> в окрестность
       <span class="math-inline" data-tex="(1, 1)"></span> спуск приходит примерно за 237 итераций, при том что
       первые 90% потерь ушли за один шаг. Именно из-за таких долин придумали
       инерцию и нормировку признаков; о них в следующей части.</p>
+      <div class="step-math"><span class="step-math-label">Формула</span><div class="math-display" data-tex="\bigl\|w_t - (1,\,1)\bigr\| &lt; 0.01"></div>
+      <span class="step-math-label">На числах</span><div class="math-display" data-tex="t \approx 237 \quad \text{при } \eta = 0.1"></div></div>
     </div>
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
+
+<p>
+  Та же карта вживую. Запустите спуск и смотрите одновременно на точку на карте и на
+  прямую справа: каждая точка карты задаёт одну прямую. Щелчок по карте выбирает другой старт.
+</p>
+
+<div class="gd-live" id="gdMap">
+  <div class="gd-live-head"><strong>Спуск по карте и прямая на данных</strong>
+    <p>Зелёная точка в центре карты: минимум <span class="math-inline" data-tex="(1, 1)"></span>, где прямая проходит через обе точки.</p></div>
+  <div class="gd-live-figure"><svg id="gdMapSvg" viewBox="0 0 720 330" role="img" aria-label="Карта линий уровня с траекторией спуска слева и соответствующая прямая на данных справа"></svg></div>
+  <div class="gd-controls">
+    <div class="gd-control"><label for="gdMapEta"><span>Скорость обучения <span class="math-inline" data-tex="\eta"></span></span> <output id="gdMapEtaOut">0.10</output></label>
+      <input id="gdMapEta" type="range" min="0.02" max="0.32" step="0.01" value="0.1"></div>
+  </div>
+  <div class="gd-buttons">
+    <button type="button" class="gd-btn" id="gdMapStep">Шаг</button>
+    <button type="button" class="gd-btn" id="gdMapRun">Запуск</button>
+    <button type="button" class="gd-btn" id="gdMapReset">Сброс</button>
+  </div>
+  <div class="gd-metrics">
+    <div class="gd-metric"><span>итерация</span><strong id="gdMapT">0</strong></div>
+    <div class="gd-metric"><span>точка на карте</span><strong id="gdMapP">—</strong></div>
+    <div class="gd-metric"><span>потери L</span><strong id="gdMapL">—</strong></div>
+    <div class="gd-metric"><span>длина градиента</span><strong id="gdMapG">—</strong></div>
+  </div>
+  <p class="gd-status" id="gdMapStatus"></p>
+</div>
+
+<p>
+  У этой карты свой порог скорости. Он задаётся самым крутым направлением:
+  <span class="math-inline" data-tex="\eta &lt; 2/\lambda_{\max} = 2/6.854 \approx 0.29"></span>.
+  Число итераций от <span class="math-inline" data-tex="\eta"></span> зависит сильно: 476 при 0.05,
+  237 при 0.1, 118 при 0.2 и 84 при 0.28. Уже при 0.3 спуск расходится.
+</p>
 
 <div class="callout-red">
   <strong>Чего спуск не гарантирует:</strong> он находит <em>локальный</em> минимум:
@@ -1460,244 +1565,78 @@
 <p>
   Соберём всё, что было, в один цикл. Он одинаков для линейной регрессии и для
   сети с миллиардом параметров, меняется только то, насколько сложно вычислить
-  предсказание и градиент. В сцене ниже слева лежат данные и параметр, справа
-  четыре формулы итерации и пустые клетки, которые заполняются шаг за шагом.
+  предсказание и градиент. В коде это четыре строки. Ниже они выполняются по одной:
+  нажимайте кнопку и смотрите, что каждая строка делает с графиками.
 </p>
 
-<div class="stage" id="stagePipe" tabindex="0">
-  <div class="stage-figure">
-<svg id="pl" viewBox="0 0 1240 730" role="img" aria-label="Одна итерация обучения в числах: предсказание, потери, градиент и новое значение веса">
-  <style>
-    #pl { font-family: Helvetica, Arial, sans-serif; }
-    #pl .title { font-size: 15px; font-weight: 700; fill: #5E5850; }
-    #pl .colhd { font-size: 13px; fill: #8A8378; letter-spacing: 0.06em; }
-    #pl .ct    { font-size: 12px; font-weight: 600; }
-    #pl .shape { font-size: 12px; fill: #968F85; }
-    #pl .cell  { stroke-width: 1.2; }
-    #pl .empty { fill: #FAFAF8; stroke: #C9C2B8; stroke-width: 1; stroke-dasharray: 3 2; }
-    #pl .qt    { font-size: 12px; fill: #C9C2B8; }
-    #pl .div   { stroke: #E5E1D8; stroke-width: 1.4; }
-    #pl .note  { font-size: 14px; fill: #5E5850; }
-    #pl .hl    { fill: none; stroke: #73B222; stroke-width: 2; stroke-dasharray: 5 4; }
-    #pl .arw   { font-size: 15px; fill: #8A8378; }
-    #pl .panel-label { font-size: 13px; fill: #8A8378; letter-spacing: 0.04em; }
-  </style>
-
-  <text x="40" y="34" class="title">Одна итерация обучения: четыре формулы и числа, которые через них проходят</text>
-  <text x="250" y="72" class="colhd" text-anchor="middle">ДАННЫЕ И ПАРАМЕТРЫ</text>
-  <text x="880" y="72" class="colhd" text-anchor="middle">ИТЕРАЦИЯ 1</text>
-  <line x1="520" y1="56" x2="520" y2="412" class="div"/>
-
-  <g data-key="dat">
-    <foreignObject x="66" y="110.82" width="62" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:600;justify-content:flex-end" data-tex="x ="></div></foreignObject>
-    <rect x="140" y="100" width="54" height="26" rx="2" class="cell" fill="#F3F1EE" stroke="#5E5850"/>
-    <text x="167" y="117" class="ct" text-anchor="middle" fill="#5E5850">1</text>
-    <rect x="140" y="126" width="54" height="26" rx="2" class="cell" fill="#F3F1EE" stroke="#5E5850"/>
-    <text x="167" y="143" class="ct" text-anchor="middle" fill="#5E5850">2</text>
-    <text x="167" y="170" class="shape" text-anchor="middle">(2×1)</text>
-    <foreignObject x="246" y="110.82" width="62" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:600;justify-content:flex-end" data-tex="y ="></div></foreignObject>
-    <rect x="320" y="100" width="54" height="26" rx="2" class="cell" fill="#F3F1EE" stroke="#5E5850"/>
-    <text x="347" y="117" class="ct" text-anchor="middle" fill="#5E5850">2</text>
-    <rect x="320" y="126" width="54" height="26" rx="2" class="cell" fill="#F3F1EE" stroke="#5E5850"/>
-    <text x="347" y="143" class="ct" text-anchor="middle" fill="#5E5850">3</text>
-    <text x="347" y="170" class="shape" text-anchor="middle">(2×1)</text>
-    <foreignObject x="66" y="206.82" width="62" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#2A5E9B;font-weight:600;justify-content:flex-end" data-tex="w ="></div></foreignObject>
-    <rect x="140" y="196" width="54" height="26" rx="2" class="cell" fill="#E8F0F7" stroke="#3576C0"/>
-    <text x="167" y="213" class="ct" text-anchor="middle" fill="#2A5E9B">0.0000</text>
-    <text x="167" y="240" class="shape" text-anchor="middle">параметр</text>
-    <foreignObject x="248" y="206.82" width="60" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#8C7106;font-weight:600;justify-content:flex-end" data-tex="\eta ="></div></foreignObject>
-    <rect x="320" y="196" width="54" height="26" rx="2" class="cell" fill="#FFF7DF" stroke="#C29E08"/>
-    <text x="347" y="213" class="ct" text-anchor="middle" fill="#8C7106">0.10</text>
-    <text x="347" y="240" class="shape" text-anchor="middle">гиперпараметр</text>
-    <foreignObject x="40" y="277.96" width="417" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#5E5850;font-weight:400"><span>Данные и <span data-tex="\eta"></span> в цикле не меняются никогда.</span></div></foreignObject>
-    <text x="40" y="324" class="note">Меняется ровно одна клетка, синяя.</text>
-  </g>
-
-  <foreignObject x="560" y="92" width="400" height="52">
-    <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\hat{y} = w\,x"></div>
-  </foreignObject>
-  <g data-key="pAe" data-only="1">
-    <foreignObject x="897" y="106.82" width="71" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;justify-content:flex-end" data-tex="\hat y ="></div></foreignObject>
-    <rect x="980" y="96" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="113" class="qt" text-anchor="middle">?</text>
-    <rect x="980" y="122" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="139" class="qt" text-anchor="middle">?</text>
-    <text x="1007" y="166" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <g data-key="pA" data-only="1">
-    <foreignObject x="897" y="106.82" width="71" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#4C8316;font-weight:600;justify-content:flex-end" data-tex="\hat y ="></div></foreignObject>
-    <rect x="980" y="96" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1007" y="113" class="ct" text-anchor="middle" fill="#4C8316">0.0000</text>
-    <rect x="980" y="122" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1007" y="139" class="ct" text-anchor="middle" fill="#4C8316">0.0000</text>
-    <text x="1007" y="166" class="shape" text-anchor="middle">(2×1)</text>
-    <foreignObject x="1060" y="104.96" width="226" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#5E5850;font-weight:400" data-tex="0\cdot 1 = 0,\ \ 0\cdot 2 = 0"></div></foreignObject>
-  </g>
-
-  <foreignObject x="560" y="180" width="400" height="52">
-    <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="L = \tfrac{1}{n}\sum_i \left(y_i - \hat{y}_i\right)^2"></div>
-  </foreignObject>
-  <g data-key="pBe" data-only="1">
-    <foreignObject x="906" y="180.82" width="62" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;justify-content:flex-end" data-tex="L ="></div></foreignObject>
-    <rect x="980" y="184" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="201" class="qt" text-anchor="middle">?</text>
-    <text x="1007" y="228" class="shape" text-anchor="middle">(скаляр)</text>
-  </g>
-  <g data-key="pB" data-only="1">
-    <foreignObject x="906" y="180.82" width="62" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#8C7106;font-weight:600;justify-content:flex-end" data-tex="L ="></div></foreignObject>
-    <rect x="980" y="184" width="54" height="26" rx="2" class="cell" fill="#FFF7DF" stroke="#C29E08"/>
-    <text x="1007" y="201" class="ct" text-anchor="middle" fill="#8C7106">6.5000</text>
-    <text x="1007" y="228" class="shape" text-anchor="middle">(скаляр)</text>
-    <foreignObject x="1060" y="178.96" width="145" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#5E5850;font-weight:400" data-tex="\tfrac{1}{2}(2^2 + 3^2)"></div></foreignObject>
-  </g>
-
-  <foreignObject x="560" y="268" width="400" height="52">
-    <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\nabla L = \tfrac{1}{n}\sum_i -2x_i\left(y_i - \hat{y}_i\right)"></div>
-  </foreignObject>
-  <g data-key="pCe" data-only="1">
-    <foreignObject x="897" y="268.82" width="71" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;justify-content:flex-end" data-tex="\nabla L ="></div></foreignObject>
-    <rect x="980" y="272" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="289" class="qt" text-anchor="middle">?</text>
-    <text x="1007" y="316" class="shape" text-anchor="middle">по числу на параметр</text>
-  </g>
-  <g data-key="pC" data-only="1">
-    <foreignObject x="897" y="268.82" width="71" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#A30908;font-weight:600;justify-content:flex-end" data-tex="\nabla L ="></div></foreignObject>
-    <rect x="980" y="272" width="54" height="26" rx="2" class="cell" fill="#FDECEC" stroke="#C30B0A"/>
-    <text x="1007" y="289" class="ct" text-anchor="middle" fill="#A30908">−8.0000</text>
-    <text x="1007" y="316" class="shape" text-anchor="middle">по числу на параметр</text>
-    <foreignObject x="1060" y="266.96" width="145" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#5E5850;font-weight:400" data-tex="\tfrac{1}{2}(-4 - 12)"></div></foreignObject>
-  </g>
-
-  <foreignObject x="560" y="356" width="400" height="52">
-    <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="w \leftarrow w - \eta\,\nabla L"></div>
-  </foreignObject>
-  <g data-key="pDe" data-only="1">
-    <foreignObject x="906" y="356.82" width="62" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;justify-content:flex-end" data-tex="w ="></div></foreignObject>
-    <rect x="980" y="360" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="377" class="qt" text-anchor="middle">?</text>
-    <text x="1007" y="404" class="shape" text-anchor="middle">новое значение</text>
-  </g>
-  <g data-key="pD" data-only="1">
-    <foreignObject x="906" y="356.82" width="62" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#4C8316;font-weight:600;justify-content:flex-end" data-tex="w ="></div></foreignObject>
-    <rect x="980" y="360" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1007" y="377" class="ct" text-anchor="middle" fill="#4C8316">0.8000</text>
-    <text x="1007" y="404" class="shape" text-anchor="middle">новое значение</text>
-    <foreignObject x="1060" y="354.96" width="145" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#5E5850;font-weight:400" data-tex="0 - 0.1\cdot(-8)"></div></foreignObject>
-  </g>
-
-  <g data-key="loop" data-only="1">
-    <foreignObject x="68" y="591.82" width="60" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#4C8316;font-weight:600;justify-content:flex-end"><span><span data-tex="w"></span>:</span></div></foreignObject>
-    <rect x="140" y="594" width="90" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="185" y="611" class="ct" text-anchor="middle" fill="#4C8316">0.0000</text>
-    <text x="235" y="612" class="arw" text-anchor="middle">→</text>
-    <rect x="240" y="594" width="90" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="285" y="611" class="ct" text-anchor="middle" fill="#4C8316">0.8000</text>
-    <text x="335" y="612" class="arw" text-anchor="middle">→</text>
-    <rect x="340" y="594" width="90" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="385" y="611" class="ct" text-anchor="middle" fill="#4C8316">1.2000</text>
-    <text x="435" y="612" class="arw" text-anchor="middle">→</text>
-    <rect x="440" y="594" width="90" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="485" y="611" class="ct" text-anchor="middle" fill="#4C8316">1.4000</text>
-    <text x="535" y="612" class="arw" text-anchor="middle">→</text>
-    <rect x="540" y="594" width="90" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="585" y="611" class="ct" text-anchor="middle" fill="#4C8316">1.5000</text>
-    <foreignObject x="68" y="623.82" width="60" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#8C7106;font-weight:600;justify-content:flex-end"><span><span data-tex="L"></span>:</span></div></foreignObject>
-    <rect x="140" y="626" width="90" height="26" rx="2" class="cell" fill="#FFF7DF" stroke="#C29E08"/>
-    <text x="185" y="643" class="ct" text-anchor="middle" fill="#8C7106">6.5000</text>
-    <rect x="240" y="626" width="90" height="26" rx="2" class="cell" fill="#FFF7DF" stroke="#C29E08"/>
-    <text x="285" y="643" class="ct" text-anchor="middle" fill="#8C7106">1.7000</text>
-    <rect x="340" y="626" width="90" height="26" rx="2" class="cell" fill="#FFF7DF" stroke="#C29E08"/>
-    <text x="385" y="643" class="ct" text-anchor="middle" fill="#8C7106">0.5000</text>
-    <rect x="440" y="626" width="90" height="26" rx="2" class="cell" fill="#FFF7DF" stroke="#C29E08"/>
-    <text x="485" y="643" class="ct" text-anchor="middle" fill="#8C7106">0.2000</text>
-    <rect x="540" y="626" width="90" height="26" rx="2" class="cell" fill="#FFF7DF" stroke="#C29E08"/>
-    <text x="585" y="643" class="ct" text-anchor="middle" fill="#8C7106">0.1250</text>
-    <foreignObject x="140" y="659.96" width="649" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#5E5850;font-weight:400"><span>Те же четыре формулы, новое значение <span data-tex="w"></span>, и так до сходимости.</span></div></foreignObject>
-  </g>
-
-  <g data-key="batch" data-only="1">
-    <rect x="134" y="94" width="254" height="64" rx="4" class="hl"/>
-    <text x="700" y="594" class="note">Здесь в сумме два слагаемых. Если объектов миллионы,</text>
-    <text x="700" y="618" class="note">сумму считают по случайной подвыборке, мини-батчу.</text>
-    <text x="700" y="642" class="note">Формулы те же, меняется только набор слагаемых.</text>
-  </g>
-
-  <foreignObject x="40" y="691.82" width="1213" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#8A8378;font-weight:400"><span>серый: данные · синий: обучаемый параметр · жёлтый: <span data-tex="\eta"></span> и потери · зелёный: вычисленное на этой итерации · красный: градиент</span></div></foreignObject>
-  <rect x="40" y="424" width="1160" height="140" rx="14" fill="#FAFAF8" stroke="#E4E1D7" stroke-width="1.5"/>
-  <text x="62" y="450" class="panel-label">подстановка чисел на этом шаге</text>
-  <g data-key="cf1" data-only="1"><foreignObject x="62" y="466" width="1116" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\hat{y}_i = w\,x_i, \qquad L = \tfrac{1}{n}\sum_{i=1}^{n}\bigl(y_i - \hat{y}_i\bigr)^2, \qquad \nabla L = \tfrac{1}{n}\sum_{i=1}^{n} -2x_i\bigl(y_i - \hat{y}_i\bigr)"></div></foreignObject></g>
-  <g data-key="cf2" data-only="1"><foreignObject x="62" y="466" width="1116" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\hat{y} = \bigl(w x_1,\ w x_2\bigr) = \bigl(0\cdot 1,\ 0\cdot 2\bigr) = (0,\ 0)"></div></foreignObject></g>
-  <g data-key="cf3" data-only="1"><foreignObject x="62" y="466" width="1116" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L = \tfrac{1}{2}\Bigl[(2 - 0)^2 + (3 - 0)^2\Bigr] = \tfrac{1}{2}\bigl[4 + 9\bigr] = 6.5"></div></foreignObject></g>
-  <g data-key="cf4" data-only="1"><foreignObject x="62" y="466" width="1116" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\nabla L = \tfrac{1}{2}\Bigl[-2\cdot 1\cdot(2 - 0) \;-\; 2\cdot 2\cdot(3 - 0)\Bigr] = \tfrac{1}{2}\bigl[-4 - 12\bigr] = -8"></div></foreignObject></g>
-  <g data-key="cf5" data-only="1"><foreignObject x="62" y="466" width="1116" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-md" data-tex="w \leftarrow w - \eta\,\nabla L = 0 - 0.1\cdot(-8) = 0.8"></div></foreignObject></g>
-  <g data-key="cf6" data-only="1"><foreignObject x="62" y="466" width="1116" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="w_2 = 1.2, \quad w_3 = 1.4, \quad w_4 = 1.5 \qquad L:\ 6.5 \rightarrow 1.7 \rightarrow 0.5 \rightarrow 0.2 \rightarrow 0.125"></div></foreignObject></g>
-  <g data-key="cf7" data-only="1"><foreignObject x="62" y="466" width="1116" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\nabla L \approx \frac{1}{|B|}\sum_{i \in B} -2x_i\bigl(y_i - \hat{y}_i\bigr), \qquad B \subset \{1, \dots, n\} \quad \text{случайный мини-батч}"></div></foreignObject></g>
-</svg>
+<div class="gd-live" id="gdLoop">
+  <div class="gd-live-head"><strong>Четыре строки цикла на графиках</strong>
+    <p>Серые строки: данные и настройка, их цикл не трогает. Жёлтая подсветка: строка, которая выполняется сейчас.</p></div>
+  <div class="gd-code" aria-label="Код цикла обучения">
+    <div class="is-given">x, y = np.array([1., 2.]), np.array([2., 3.])</div>
+    <div class="is-given">w, eta = 0.0, 0.1</div>
+    <div data-line="0">y_hat = w * x                            # предсказать</div>
+    <div data-line="1">loss  = np.mean((y - y_hat) ** 2)        # оценить</div>
+    <div data-line="2">grad  = np.mean(-2 * x * (y - y_hat))    # продифференцировать</div>
+    <div data-line="3">w     = w - eta * grad                   # шагнуть</div>
   </div>
-
-  <div class="stage-bar">
-    <button type="button" data-nav="prev">← Назад</button>
-    <button type="button" data-nav="next">Далее →</button>
-    <div class="stage-progress"></div>
-    <div class="stage-counter"></div>
+  <div class="gd-buttons">
+    <button type="button" class="gd-btn" id="gdLoopNext">Следующая строка →</button>
+    <button type="button" class="gd-btn" id="gdLoopReset">Сброс</button>
   </div>
-
-  <div class="stage-notes">
-    <div class="step-panel" data-on="dat pAe pBe pCe pDe cf1" data-focus="dat">
-      <div class="step-kicker">Шаг 1 · что лежит на столе</div>
-      <h4>Два вектора данных, один параметр и одна настройка</h4>
-      <p>Серые клетки: выборка, её трогать нельзя. Синяя клетка: единственное,
-      что меняется в ходе обучения. Жёлтая <span class="math-inline" data-tex="\eta"></span>:
-      настройка, которую выбирает человек. Справа четыре пустых блока: их и предстоит
-      заполнить.</p>
-    </div>
-    <div class="step-panel" data-on="dat pA pBe pCe pDe cf2" data-focus="pA">
-      <div class="step-kicker">Шаг 2 · прямой проход</div>
-      <h4>Первая формула превращает данные в предсказания</h4>
-      <p>При <span class="math-inline" data-tex="w = 0"></span> модель умножает каждый вход на ноль:
-      <span class="math-inline" data-tex="0\cdot 1 = 0"></span> и <span class="math-inline" data-tex="0\cdot 2 = 0"></span>. Форма сохраняется: сколько
-      объектов на входе, столько предсказаний на выходе.</p>
-    </div>
-    <div class="step-panel" data-on="dat pA pB pCe pDe cf3" data-focus="pB">
-      <div class="step-kicker">Шаг 3 · оценка</div>
-      <h4>Вторая формула сворачивает вектор в одно число</h4>
-      <p>Разности <span class="math-inline" data-tex="2 - 0"></span> и <span class="math-inline" data-tex="3 - 0"></span> возводятся в квадрат и
-      усредняются: <span class="math-inline" data-tex="\tfrac{1}{2}(4 + 9) = 6.5"></span>. Это единственное место в цикле, где
-      размерность падает до скаляра.</p>
-      </div>
-    <div class="step-panel" data-on="dat pA pB pC pDe cf4" data-focus="pC">
-      <div class="step-kicker">Шаг 4 · градиент</div>
-      <h4>Третья формула: производная той же суммы</h4>
-      <p>Каждое слагаемое даёт <span class="math-inline" data-tex="-2x(y - \hat y )"></span>:
-      <span class="math-inline" data-tex="-2\cdot 1\cdot 2 = -4"></span> и <span class="math-inline" data-tex="-2\cdot 2\cdot 3 = -12"></span>, среднее равно −8.
-      Признак <span class="math-inline" data-tex="x"></span> входит множителем: параметр при большем признаке
-      получает и больший градиент.</p>
-      </div>
-    <div class="step-panel" data-on="dat pA pB pC pD cf5" data-focus="pD">
-      <div class="step-kicker">Шаг 5 · обновление</div>
-      <h4>Четвёртая формула единственная меняет модель</h4>
-      <p><span class="math-inline" data-tex="w = 0 - 0.1\cdot (-8) = 0.8"></span>. Всё остальное в цикле было
-      вычислениями: данные не изменились, потери и градиент это промежуточные
-      величины. После этой строки синяя клетка слева становится равной 0.8.</p>
-    </div>
-    <div class="step-panel" data-on="dat pA pB pC pD loop cf6" data-focus="loop">
-      <div class="step-kicker">Шаг 6 · повтор</div>
-      <h4>Цикл прокручивается заново с новым <span class="math-inline" data-tex="w"></span></h4>
-      <p>0.8 → 1.2 → 1.4 → 1.5, а потери 6.5 → 1.7 → 0.5 → 0.2 → 0.125. Один полный
-      проход по всей выборке называют <strong>эпохой</strong>; здесь каждая итерация
-      считает сумму по всей выборке, поэтому итерация и эпоха совпадают.</p>
-    </div>
-    <div class="step-panel" data-on="dat pA pB pC pD loop batch cf7" data-focus="batch">
-      <div class="step-kicker">Шаг 7 · где появляется случайность</div>
-      <h4>Сумма по всей выборке: самая дорогая часть</h4>
-      <p>Во второй и третьей формулах стоит сумма по всем объектам: каждая итерация
-      читает весь датасет. При миллионах объектов сумму считают по случайному
-      <strong>мини-батчу</strong>: формулы остаются теми же, меняется только
-      набор слагаемых.</p>
-    </div>
+  <div class="gd-live-figure"><svg id="gdLoopSvg" viewBox="0 0 720 280" role="img" aria-label="Данные и прямая модели слева, парабола потерь с текущей точкой, касательной и шагом справа"></svg></div>
+  <div class="gd-metrics">
+    <div class="gd-metric"><span>итерация</span><strong id="gdLoopIt">0</strong></div>
+    <div class="gd-metric"><span>текущий w</span><strong id="gdLoopW">0.000</strong></div>
+  </div>
+  <div class="gd-note" data-phase="-1">
+    <h4>Перед циклом</h4>
+    <p>Выборка фиксирована, её трогать нельзя. Единственное, что меняется в ходе обучения, это
+    <span class="math-inline" data-tex="w"></span>. Скорость <span class="math-inline" data-tex="\eta"></span> выбирает человек. Нажмите «Следующая строка».</p>
+  </div>
+  <div class="gd-note" data-phase="0" hidden>
+    <h4>Строка 1 · предсказать</h4>
+    <p>Данные превращаются в предсказания: кружки на прямой. Форма сохраняется: сколько объектов на входе, столько предсказаний на выходе.</p>
+    <span class="step-math-label">Формула</span><div class="math-display" data-tex="\hat y_i = w\,x_i"></div>
+    <span class="step-math-label">На числах</span><div class="gd-note-numbers" id="gdLoopNum0"></div>
+  </div>
+  <div class="gd-note" data-phase="1" hidden>
+    <h4>Строка 2 · оценить</h4>
+    <p>Промахи возводятся в квадрат и усредняются. Это единственное место в цикле, где размерность падает до одного числа. На параболе появляется точка с этой высотой.</p>
+    <span class="step-math-label">Формула</span><div class="math-display" data-tex="L = \frac{1}{n}\sum_{i=1}^{n}\bigl(y_i - \hat y_i\bigr)^2"></div>
+    <span class="step-math-label">На числах</span><div class="gd-note-numbers" id="gdLoopNum1"></div>
+  </div>
+  <div class="gd-note" data-phase="2" hidden>
+    <h4>Строка 3 · продифференцировать</h4>
+    <p>Производная той же суммы. Каждое слагаемое даёт <span class="math-inline" data-tex="-2x_i(y_i - \hat y_i)"></span>: признак входит множителем, поэтому параметр при большем признаке получает и больший градиент. На параболе это наклон касательной.</p>
+    <span class="step-math-label">Формула</span><div class="math-display" data-tex="L'(w) = \frac{1}{n}\sum_{i=1}^{n} -2x_i\bigl(y_i - \hat y_i\bigr)"></div>
+    <span class="step-math-label">На числах</span><div class="gd-note-numbers" id="gdLoopNum2"></div>
+  </div>
+  <div class="gd-note" data-phase="3" hidden>
+    <h4>Строка 4 · шагнуть</h4>
+    <p>Только эта строка меняет модель. Данные не изменились, а потери и градиент были промежуточными величинами. Прямая становится зелёной, точка на параболе съезжает вниз, и цикл начинается заново.</p>
+    <span class="step-math-label">Формула</span><div class="math-display" data-tex="w \leftarrow w - \eta\,L'(w)"></div>
+    <span class="step-math-label">На числах</span><div class="gd-note-numbers" id="gdLoopNum3"></div>
+  </div>
+  <div class="gd-table-wrap">
+    <table class="shape-table">
+      <thead><tr><th>Итерация</th><th>w</th><th>L</th><th>L′(w)</th><th>новый w</th></tr></thead>
+      <tbody id="gdLoopRows"></tbody>
+    </table>
   </div>
 </div>
-<p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
+
+<p>
+  После четырёх итераций получается 0 → 0.8 → 1.2 → 1.4 → 1.5, а потери идут
+  6.5 → 1.7 → 0.5 → 0.2 → 0.125. Один полный проход по всей выборке называют
+  <strong>эпохой</strong>; здесь каждая итерация считает сумму по всей выборке, поэтому итерация и эпоха совпадают.
+</p>
+
+<p>
+  Самая дорогая часть цикла стоит во второй и третьей строках: сумма по всем объектам.
+  Каждая итерация читает весь датасет. При миллионах объектов сумму считают по случайному
+  <strong>мини-батчу</strong>: формулы остаются теми же, меняется только набор слагаемых.
+</p>
 
 ### Стохастический спуск: дешевле шаг, шумнее путь
 
@@ -1705,8 +1644,50 @@
   <strong>Стохастический градиентный спуск</strong> (SGD) считает градиент не по всей
   выборке, а по одному объекту (или небольшому батчу) и сразу делает шаг. Цена
   итерации падает с <span class="math-inline" data-tex="O(n)"></span> до <span class="math-inline" data-tex="O(1)"></span>, а траектория становится
-  дёрганой: каждый объект тянет параметр в свою сторону. Возьмём наши два
-  наблюдения по очереди, <span class="math-inline" data-tex="\eta = 0.1"></span>:
+  дёрганой, потому что у каждого объекта своя функция потерь со своим минимумом.
+  Разложим нашу параболу на два слагаемых:
+</p>
+
+<div class="math-display" data-tex="\begin{gathered}L_1(w) = (2 - w)^2, \qquad L_2(w) = (3 - 2w)^2, \\ L(w) = \tfrac{1}{2}\bigl[L_1(w) + L_2(w)\bigr]\end{gathered}"></div>
+
+<p>
+  Минимум <span class="math-inline" data-tex="L_1"></span> лежит при <span class="math-inline" data-tex="w = 2"></span>,
+  минимум <span class="math-inline" data-tex="L_2"></span> при <span class="math-inline" data-tex="w = 1.5"></span>, минимум их среднего при
+  <span class="math-inline" data-tex="w = 1.6"></span>. Производная суммы равна сумме производных, поэтому полный
+  градиент получается усреднением: при <span class="math-inline" data-tex="w = 0"></span> объекты дают −4 и −12, в среднем −8.
+</p>
+
+<div class="gd-live" id="gdTwo">
+  <div class="gd-live-head"><strong>Каждый объект тянет к своему минимуму</strong>
+    <p>Стрелки сверху показывают, куда сдвинул бы <span class="math-inline" data-tex="w"></span> каждый градиент: синяя от объекта 1, тёмная от объекта 2, жёлтая от их среднего. Скорость обучения <span class="math-inline" data-tex="\eta = 0.1"></span>.</p></div>
+  <div class="gd-radios">
+    <button type="button" class="gd-chip" data-mode="both">Оба объекта</button>
+    <button type="button" class="gd-chip" data-mode="one">Только объект 1</button>
+    <button type="button" class="gd-chip" data-mode="two">Только объект 2</button>
+    <button type="button" class="gd-chip" data-mode="sgd">По очереди (SGD)</button>
+  </div>
+  <div class="gd-live-figure"><svg id="gdTwoSvg" viewBox="0 0 720 290" role="img" aria-label="Параболы потерь двух объектов и их среднего, текущая точка и стрелки сдвига"></svg></div>
+  <div class="gd-controls">
+    <div class="gd-control"><label for="gdTwoW"><span>Текущий <span class="math-inline" data-tex="w"></span></span> <output id="gdTwoWOut">0.000</output></label>
+      <input id="gdTwoW" type="range" min="0" max="3" step="0.01" value="0"></div>
+  </div>
+  <div class="gd-buttons">
+    <button type="button" class="gd-btn" id="gdTwoStep">Шаг</button>
+    <button type="button" class="gd-btn" id="gdTwoRun">Запуск</button>
+    <button type="button" class="gd-btn" id="gdTwoReset">Сброс</button>
+  </div>
+  <div class="gd-metrics">
+    <div class="gd-metric"><span>кто считает шаг</span><strong id="gdTwoNow">—</strong></div>
+    <div class="gd-metric"><span>градиент объекта 1</span><strong id="gdTwoG1">—</strong></div>
+    <div class="gd-metric"><span>градиент объекта 2</span><strong id="gdTwoG2">—</strong></div>
+    <div class="gd-metric"><span>их среднее</span><strong id="gdTwoGM">—</strong></div>
+  </div>
+  <div class="gd-calc" id="gdTwoCalc"></div>
+  <p class="gd-status" id="gdTwoStatus"></p>
+</div>
+
+<p>
+  Возьмём наши два наблюдения по очереди, <span class="math-inline" data-tex="\eta = 0.1"></span>:
 </p>
 
 <table class="shape-table">
@@ -1720,8 +1701,10 @@
 <p>
   За четыре дешёвых шага SGD подошёл к 1.485, примерно туда же, куда полный спуск
   добрался за четыре дорогих. Но у шума есть цена: продолжив, мы увидим не
-  сходимость в точку, а блуждание вокруг неё (1.52, 1.62, 1.52, 1.62 …). Ровно
-  поэтому скорость обучения со временем уменьшают: шум надо гасить руками.
+  сходимость в точку, а блуждание вокруг неё (1.52, 1.62, 1.52, 1.62 …). В режиме
+  «По очереди» это видно: дно среднего лежит между двумя минимумами, и объекты всё время
+  перетягивают <span class="math-inline" data-tex="w"></span> друг у друга.
+  Поэтому скорость обучения со временем уменьшают: шум надо гасить руками.
 </p>
 
 ### Инерция: лекарство от узких долин
@@ -1739,8 +1722,30 @@
   На нашей карте высот с <span class="math-inline" data-tex="\alpha = 0.9"></span>
   и той же <span class="math-inline" data-tex="\eta = 0.1"></span> спуск доходит до
   окрестности <span class="math-inline" data-tex="(1, 1)"></span> примерно за 48 итераций вместо 237, почти в пять
-  раз быстрее, хотя формула изменилась на одну строку.
+  раз быстрее, хотя формула изменилась на одну строку. Поменяйте <span class="math-inline" data-tex="\alpha"></span> и сравните.
 </p>
+
+<div class="gd-live" id="gdMom">
+  <div class="gd-live-head"><strong>Спуск с инерцией и без неё</strong>
+    <p>Серая линия без инерции, синяя с инерцией. Щелчок по карте выбирает другой старт.</p></div>
+  <div class="gd-live-figure"><svg id="gdMomSvg" viewBox="0 0 720 330" role="img" aria-label="Две траектории на карте линий уровня слева и потери по итерациям в логарифмической шкале справа"></svg></div>
+  <div class="gd-controls">
+    <div class="gd-control"><label for="gdMomA"><span>Инерция <span class="math-inline" data-tex="\alpha"></span></span> <output id="gdMomAOut">0.90</output></label>
+      <input id="gdMomA" type="range" min="0" max="0.98" step="0.01" value="0.9"></div>
+    <div class="gd-control"><label for="gdMomEta"><span>Скорость <span class="math-inline" data-tex="\eta"></span></span> <output id="gdMomEtaOut">0.10</output></label>
+      <input id="gdMomEta" type="range" min="0.02" max="0.28" step="0.01" value="0.1"></div>
+  </div>
+  <div class="gd-buttons">
+    <button type="button" class="gd-btn" id="gdMomRun">Показать движение</button>
+    <button type="button" class="gd-btn" id="gdMomReset">Сброс</button>
+  </div>
+  <div class="gd-metrics">
+    <div class="gd-metric"><span>итераций без инерции</span><strong id="gdMomN0">—</strong></div>
+    <div class="gd-metric"><span>итераций с инерцией</span><strong id="gdMomN1">—</strong></div>
+    <div class="gd-metric"><span>выигрыш</span><strong id="gdMomRatio">—</strong></div>
+  </div>
+  <p class="gd-status" id="gdMomStatus"></p>
+</div>
 
 <table class="shape-table">
   <tr><th>Метод</th><th>Чем считает градиент</th><th>Что добавляет</th><th>Где выигрывает</th></tr>
@@ -1767,260 +1772,23 @@
 
 ---
 
-## Часть 7. Логистическая регрессия: другая ошибка, тот же спуск
+## Часть 7. Нейросеть: та же формула шага, двенадцать параметров
 
 <p>
-  Поменяем задачу: теперь ответ не число, а класс: 0 или 1. Модель должна выдавать
-  вероятность, а вероятность обязана лежать между нулём и единицей. Линейная
-  комбинация <span class="math-inline" data-tex="z = w\cdot x"></span> этого не
-  обещает, поэтому её пропускают через <strong>сигмоиду</strong>:
-</p>
-
-<div class="math-display" data-tex="p = \mathbb{P}(y = 1 \mid x) = \sigma(z) = \frac{1}{1 + e^{-z}}"></div>
-
-<p>
-  Квадратичная ошибка здесь работает плохо, вместо неё берут
-  <strong>логистическую функцию потерь</strong>: она штрафует уверенную ошибку
-  бесконечно сильно:
-</p>
-
-<div class="math-display" data-tex="\text{log loss} = -\bigl[y\ln p + (1-y)\ln(1-p)\bigr]"></div>
-
-<p>
-  Аналитического решения у этой задачи нет: приравнять производную к нулю и решить
-  уравнение не получится. Градиентный спуск же не замечает разницы: ему нужна
-  только производная. Возьмём один объект: <span class="math-inline" data-tex="x = -5"></span>, правильный ответ
-  <span class="math-inline" data-tex="y = 1"></span>, текущий вес <span class="math-inline" data-tex="w = 1"></span> и скорость обучения
-  <span class="math-inline" data-tex="\eta = 0.01"></span>.
-</p>
-
-<div class="stage" id="stageLogit" tabindex="0">
-  <div class="stage-figure">
-<svg id="lg" viewBox="0 0 960 620" role="img" aria-label="Формулы логистической регрессии: прямой проход, цепочка производных и шаг спуска">
-  <style>
-    #lg { font-family: Helvetica, Arial, sans-serif; }
-    #lg .bx  { fill: #F0F6FC; stroke: #3576C0; stroke-width: 1.7; }
-    #lg .by  { fill: #FFFBEB; stroke: #C29E08; stroke-width: 1.7; }
-    #lg .br  { fill: #FFF2F2; stroke: #C30B0A; stroke-width: 1.7; }
-    #lg .bg  { fill: #F0FAF0; stroke: #73B222; stroke-width: 1.7; }
-    #lg .ttl { font-size: 15px; fill: #111111; font-weight: 700; }
-    #lg .cap { font-size: 13px; fill: #8A8378; }
-    #lg .edge{ stroke: #5E5850; stroke-width: 1.6; fill: none; }
-    #lg .bak { stroke: #C30B0A; stroke-width: 2; fill: none; }
-    #lg .ax  { stroke: #5E5850; stroke-width: 1.3; }
-    #lg .cv  { stroke: #3576C0; stroke-width: 2.4; fill: none; }
-    #lg .grid{ stroke: #E5E1D8; stroke-width: 1; }
-    #lg .tick{ font-size: 13px; fill: #8A8378; }
-    #lg .panel-label { font-size: 13px; fill: #8A8378; letter-spacing: 0.04em; }
-    #lg .legend { font-size: 13px; fill: #8A8378; }
-  </style>
-  <defs>
-    <marker id="lg-aw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5E5850"/>
-    </marker>
-    <marker id="lg-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#C30B0A"/>
-    </marker>
-  </defs>
-
-  <text x="40" y="34" class="ttl">Логистическая регрессия в формулах: вперёд предсказание, назад производные</text>
-
-  <g data-key="fx">
-    <rect x="40" y="70" width="150" height="66" rx="9" class="bx"/>
-    <text x="115" y="92" class="cap" text-anchor="middle">объект</text>
-    <foreignObject x="48" y="96" width="134" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="x,\ y \in \{0, 1\}"></div></foreignObject>
-  </g>
-
-  <g data-key="fz">
-    <line x1="190" y1="103" x2="234" y2="103" class="edge" marker-end="url(#lg-aw)"/>
-    <rect x="240" y="70" width="160" height="66" rx="9" class="bx"/>
-    <text x="320" y="92" class="cap" text-anchor="middle">логит</text>
-    <foreignObject x="248" y="96" width="144" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-md" data-tex="z = w\,x"></div></foreignObject>
-  </g>
-
-  <g data-key="fp">
-    <line x1="400" y1="103" x2="444" y2="103" class="edge" marker-end="url(#lg-aw)"/>
-    <rect x="450" y="70" width="170" height="66" rx="9" class="by"/>
-    <text x="535" y="92" class="cap" text-anchor="middle">вероятность</text>
-    <foreignObject x="458" y="96" width="154" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="p = \sigma(z) = \tfrac{1}{1 + e^{-z}}"></div></foreignObject>
-  </g>
-
-  <g data-key="fl">
-    <line x1="620" y1="103" x2="664" y2="103" class="edge" marker-end="url(#lg-aw)"/>
-    <rect x="670" y="70" width="250" height="66" rx="9" class="br"/>
-    <text x="795" y="92" class="cap" text-anchor="middle">log loss</text>
-    <foreignObject x="678" y="96" width="234" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L = -\bigl[y\ln p + (1-y)\ln(1-p)\bigr]"></div></foreignObject>
-  </g>
-
-  <g data-key="b1">
-    <line x1="880" y1="176" x2="630" y2="176" class="bak" marker-end="url(#lg-ar)"/>
-    <foreignObject x="640" y="150" width="250" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\partial L / \partial p"></div></foreignObject>
-  </g>
-
-  <g data-key="b2">
-    <line x1="610" y1="176" x2="410" y2="176" class="bak" marker-end="url(#lg-ar)"/>
-    <foreignObject x="420" y="150" width="200" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\partial p / \partial z"></div></foreignObject>
-  </g>
-
-  <g data-key="b3">
-    <line x1="390" y1="176" x2="190" y2="176" class="bak" marker-end="url(#lg-ar)"/>
-    <foreignObject x="200" y="150" width="200" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\partial z / \partial w = x"></div></foreignObject>
-  </g>
-
-  <g data-key="grd">
-    <rect x="500" y="230" width="420" height="70" rx="9" class="br"/>
-    <text x="710" y="254" class="cap" text-anchor="middle">градиент по весу</text>
-    <foreignObject x="510" y="258" width="400" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-md" data-tex="\partial L / \partial w = (p - y)\,x"></div></foreignObject>
-  </g>
-
-  <g data-key="upd">
-    <rect x="500" y="322" width="420" height="70" rx="9" class="bg"/>
-    <text x="710" y="346" class="cap" text-anchor="middle">шаг спуска</text>
-    <foreignObject x="510" y="350" width="400" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-md" data-tex="w \leftarrow w - \eta\,(p - y)\,x"></div></foreignObject>
-  </g>
-
-  <g data-key="sig">
-    <line x1="60" y1="410" x2="466" y2="410" class="ax"/>
-    <line x1="260" y1="418" x2="260" y2="230" class="ax"/>
-    <line x1="60" y1="300" x2="460" y2="300" class="grid"/>
-    <polyline class="cv" points="60.0,409.9 70.0,409.9 80.0,409.8 90.0,409.7 100.0,409.6 110.0,409.4 120.0,409.2 130.0,408.8 140.0,408.4 150.0,407.7 160.0,406.8 170.0,405.5 180.0,403.7 190.0,401.3 200.0,398.0 210.0,393.7 220.0,388.2 230.0,381.5 240.0,373.5 250.0,364.5 260.0,355.0 270.0,345.5 280.0,336.5 290.0,328.5 300.0,321.8 310.0,316.3 320.0,312.0 330.0,308.7 340.0,306.3 350.0,304.5 360.0,303.2 370.0,302.3 380.0,301.6 390.0,301.2 400.0,300.8 410.0,300.6 420.0,300.4 430.0,300.3 440.0,300.2 450.0,300.1 460.0,300.1"/>
-    <foreignObject x="472" y="394.82" width="60" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#8A8378;font-weight:400" data-tex="z"></div></foreignObject>
-    <text x="52" y="296" class="tick" text-anchor="end">1</text>
-    <text x="52" y="415" class="tick" text-anchor="end">0</text>
-    <text x="60" y="240" class="cap">сигмоида: любое число → (0, 1)</text>
-  </g>
-
-  <g data-key="sat" data-only="1">
-    <line x1="60" y1="404" x2="150" y2="404" class="bak"/>
-    <line x1="370" y1="306" x2="460" y2="306" class="bak"/>
-    <foreignObject x="70" y="413.82" width="811" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#8A8378;font-weight:400"><span>в хвостах наклон <span data-tex="p(1 - p)"></span> почти нулевой: вероятность почти не реагирует на сдвиг <span data-tex="z"></span></span></div></foreignObject>
-  </g>
-
-  <g data-key="panel" data-only="1">
-    <rect x="40" y="450" width="880" height="140" rx="14" fill="#FAFAF8" stroke="#E4E1D7" stroke-width="1.5"/>
-    <text x="62" y="476" class="panel-label">формула этого шага</text>
-  </g>
-  <g data-key="gf2" data-only="1"><foreignObject x="62" y="484" width="836" height="96"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-md" data-tex="p = \sigma(z) = \frac{1}{1 + e^{-z}} \in (0,\,1)"></div></foreignObject></g>
-  <g data-key="gf3" data-only="1"><foreignObject x="62" y="490" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="L = -\bigl[y\ln p + (1-y)\ln(1-p)\bigr] \qquad (y = 1 \Rightarrow L = -\ln p)"></div></foreignObject></g>
-  <g data-key="gf4" data-only="1"><foreignObject x="62" y="484" width="836" height="96"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\frac{\partial L}{\partial p} = -\frac{y}{p} + \frac{1-y}{1-p}, \qquad \frac{\partial p}{\partial z} = p\,(1-p)"></div></foreignObject></g>
-  <g data-key="gf5" data-only="1"><foreignObject x="62" y="484" width="836" height="96"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\frac{\partial L}{\partial z} = \frac{\partial L}{\partial p}\cdot\frac{\partial p}{\partial z} = \left(-\frac{y}{p} + \frac{1-y}{1-p}\right)p(1-p) = p - y"></div></foreignObject></g>
-  <g data-key="gf6" data-only="1"><foreignObject x="62" y="484" width="836" height="96"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\frac{\partial L}{\partial w} = \frac{\partial L}{\partial z}\cdot\frac{\partial z}{\partial w} = (p - y)\,x"></div></foreignObject></g>
-  <g data-key="gf7" data-only="1"><foreignObject x="62" y="490" width="836" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-md" data-tex="w \leftarrow w - \eta\,(p - y)\,x"></div></foreignObject></g>
-
-  <text x="40" y="604" class="legend">синий: данные и линейная часть · жёлтый: вероятность · красный: потери и производные · зелёный: обновление веса</text>
-</svg>
-  </div>
-
-  <div class="stage-bar">
-    <button type="button" data-nav="prev">← Назад</button>
-    <button type="button" data-nav="next">Далее →</button>
-    <div class="stage-progress"></div>
-    <div class="stage-counter"></div>
-  </div>
-
-  <div class="stage-notes">
-    <div class="step-panel" data-on="fx fz" data-focus="fz">
-      <div class="step-kicker">Шаг 1 · линейная часть</div>
-      <h4>Сначала всё как в регрессии</h4>
-      <p>Модель считает <span class="math-inline" data-tex="z = w\cdot x"></span>, произвольное число, ещё не вероятность.
-      Его называют логитом. На нашем объекте <span class="math-inline" data-tex="x = -5"></span> при <span class="math-inline" data-tex="w = 1"></span>
-      получается <span class="math-inline" data-tex="z = -5"></span>.</p>
-    </div>
-    <div class="step-panel" data-on="fx fz fp sig gf2 panel" data-focus="fp">
-      <div class="step-kicker">Шаг 2 · сжатие в вероятность</div>
-      <h4>Сигмоида переводит любое число в отрезок (0, 1)</h4>
-      <p>Большие отрицательные <span class="math-inline" data-tex="z"></span> дают вероятность около нуля, большие
-      положительные около единицы. Для <span class="math-inline" data-tex="z = -5"></span>:
-      <span class="math-inline" data-tex="p = 1/(1 + e^{5}) = 0.0067"></span>, то есть модель почти уверена, что класс
-      нулевой.</p>
-    </div>
-    <div class="step-panel" data-on="fx fz fp fl gf3 panel" data-focus="fl">
-      <div class="step-kicker">Шаг 3 · штраф</div>
-      <h4>Уверенная ошибка стоит дорого</h4>
-      <p>Верный ответ <span class="math-inline" data-tex="y = 1"></span>, поэтому от log loss остаётся только первое
-      слагаемое: <span class="math-inline" data-tex="-\ln(0.0067) = 5.01"></span>. Для сравнения: при
-      <span class="math-inline" data-tex="p = 0.5"></span> штраф был бы всего <span class="math-inline" data-tex="0.69"></span>, а при
-      <span class="math-inline" data-tex="p = 0.99"></span> всего <span class="math-inline" data-tex="0.01"></span>.</p>
-    </div>
-    <div class="step-panel" data-on="fl fp b1 b2 gf4 panel" data-focus="b1">
-      <div class="step-kicker">Шаг 4 · обратный проход</div>
-      <h4>Разбираем цепочку по звеньям</h4>
-      <p>Потери зависят от веса через <span class="math-inline" data-tex="p"></span>, а <span class="math-inline" data-tex="p"></span> через
-      <span class="math-inline" data-tex="z"></span>. Первое звено при <span class="math-inline" data-tex="y = 1"></span> равно <span class="math-inline" data-tex="-1/p"></span>,
-      на наших числах это <span class="math-inline" data-tex="-149.4"></span>. Второе, <span class="math-inline" data-tex="p(1 - p)"></span>,
-      наоборот крошечное: <span class="math-inline" data-tex="0.00665"></span>.</p>
-    </div>
-    <div class="step-panel" data-on="fp fz b2 b3 gf5 panel" data-focus="gf5">
-      <div class="step-kicker">Шаг 5 · красивое сокращение</div>
-      <h4>Произведение схлопывается в <span class="math-inline" data-tex="p - y"></span></h4>
-      <p>Гигантский множитель и микроскопический гасят друг друга: в общем виде
-      остаётся ровно <span class="math-inline" data-tex="p - y"></span>. Проверка на числах:
-      <span class="math-inline" data-tex="-149.4 \cdot 0.00665 \approx -0.993"></span>, и это в точности
-      <span class="math-inline" data-tex="0.0067 - 1"></span>. Именно поэтому log loss и сигмоиду используют в паре.</p>
-    </div>
-    <div class="step-panel" data-on="fx b3 grd gf6 panel" data-focus="grd">
-      <div class="step-kicker">Шаг 6 · градиент по весу</div>
-      <h4>Ошибка, умноженная на признак</h4>
-      <p>Та же структура, что и в линейной регрессии. На наших числах:
-      <span class="math-inline" data-tex="(0.0067 - 1)\cdot (-5) = +4.9665"></span>. Знак плюс означает, что вес нужно
-      уменьшать.</p>
-    </div>
-    <div class="step-panel" data-on="grd upd sig sat gf7 panel" data-focus="upd">
-      <div class="step-kicker">Шаг 7 · шаг и его размер</div>
-      <h4>В хвосте сигмоиды шаг по весу почти не двигает вероятность</h4>
-      <p>При <span class="math-inline" data-tex="\eta = 0.01"></span> получаем <span class="math-inline" data-tex="w = 1 - 0.01\cdot 4.9665 = 0.9503"></span>,
-      и вероятность подрастает только с 0.0067 до 0.0086. Сдвиг веса здесь самый большой
-      за весь спуск, потому что <span class="math-inline" data-tex="|p - y|"></span> близко к единице, но мы стоим в плоском хвосте
-      сигмоиды, где <span class="math-inline" data-tex="p"></span> почти не реагирует на изменение <span class="math-inline" data-tex="z"></span>. До
-      <span class="math-inline" data-tex="p &gt; 0.5"></span> понадобится около 24 шагов.</p>
-    </div>
-  </div>
-</div>
-<p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
-
-<div class="callout-yellow">
-  <strong>Подводный камень:</strong> насыщение сигмоиды. В плоских хвостах
-  <span class="math-inline" data-tex="p(1-p)\approx 0"></span>, и градиент по
-  <em>внутренним</em> параметрам почти исчезает. Для логистической регрессии это
-  лечится сокращением в <span class="math-inline" data-tex="p - y"></span>, но в
-  глубокой сети такие множители перемножаются слой за слоем, и получается
-  затухающий градиент.
-</div>
-
-<div class="callout">
-  <strong>Главная мысль части:</strong> при смене задачи меняются только формула
-  предсказания и формула потерь. Спуск остаётся прежним:
-  <span class="math-inline" data-tex="w \leftarrow w - \eta\,\partial L/\partial w"></span>,
-  где производная снова оказывается произведением «ошибка × вход».
-</div>
-
----
-
-## Часть 8. Нейросеть: градиент даёт бэкпроп, шаг делает спуск
-
-<p>
-  У регрессии параметр был один, у логистической тоже. У сети их сотни тысяч, и
-  единственная новая трудность в том, чтобы <em>получить</em> градиент. Сам спуск не меняется
+  У регрессии параметров было один или два. У сети их сотни тысяч, но сам спуск не меняется
   ни на символ: та же формула, только применённая к каждому из параметров.
 </p>
 
 <p>
-  Возьмём сеть 2-2-2 с сигмоидами, ту самую, что разбиралась в статье
-  <a href="article.html?slug=backprop">«Обратное распространение ошибки: как читать сеть справа
-  налево»</a>. Вход <span class="math-inline" data-tex="(0.5, 0.8)"></span>, цель <span class="math-inline" data-tex="(1, 0)"></span>, двенадцать
-  параметров: восемь весов и четыре смещения. Бэкпроп там довёл дело до градиентов
-  и остановился. Сейчас мы сделаем следующий шаг, буквально.
+  Возьмём сеть 2-2-2 с сигмоидами. Вход <span class="math-inline" data-tex="(0.5, 0.8)"></span>, цель <span class="math-inline" data-tex="(1, 0)"></span>, двенадцать
+  параметров: восемь весов и четыре смещения. Как получить все двенадцать производных за один
+  проход по сети, разобрано в статье
+  <a href="article.html?slug=backprop">«Обратное распространение ошибки: как читать сеть справа налево»</a>.
+  Здесь градиент считается внутри интерактива, а нас интересует, что спуск с ним делает.
 </p>
 
-<div class="callout-blue">
-  <strong>Разделение труда:</strong> бэкпроп даёт <em>способ вычислить</em>
-  <span class="math-inline" data-tex="\nabla E"></span> за один обратный проход
-  вместо миллиона отдельных дифференцирований. Градиентный спуск отвечает,
-  <em>что делать</em> с полученным вектором. Они независимы: тот же бэкпроп
-  кормит и SGD, и Adam.
-</div>
-
 ### Что именно здесь минимизируется
+
 
 <p>
   В части 1 мы выписали функцию потерь целиком, подставили в неё данные и увидели,
@@ -2085,7 +1853,7 @@
 </p>
 
 <table class="shape-table">
-  <tr><th></th><th>Часть 1: регрессия</th><th>Часть 8: сеть 2-2-2</th></tr>
+  <tr><th></th><th>Часть 1: регрессия</th><th>Часть 7: сеть 2-2-2</th></tr>
   <tr><td>Сколько аргументов</td><td>1 (<span class="math-inline" data-tex="w"></span>)</td><td>12</td></tr>
   <tr><td>Что осталось после подстановки данных</td><td><span class="math-inline" data-tex="2.5\,w^2 - 8w + 6.5"></span></td><td>сигмоида от сигмоиды, дважды</td></tr>
   <tr><td>Уравнение <span class="math-inline" data-tex="\nabla E = 0"></span></td><td>линейное, решается в строчку</td><td>12 нелинейных уравнений, общего решения нет</td></tr>
@@ -2097,238 +1865,62 @@
   Строку про форму графика можно проверить на срезе. Двенадцать
   измерений нарисовать нельзя, но можно зафиксировать одиннадцать параметров и
   посмотреть, как <span class="math-inline" data-tex="E"></span> зависит от
-  двенадцатого. Посмотрим пошагово.
+  двенадцатого. В интерактиве ниже срез строится по любому параметру, а заодно здесь же
+  можно сделать настоящий шаг спуска. При стартовых весах <span class="math-inline" data-tex="\hat{\mathbf y} = (0.5316, 0.6459)"></span>
+  и <span class="math-inline" data-tex="E(\theta) = 0.3183"></span>.
 </p>
 
-<div class="stage" id="stageFunc" tabindex="0">
-  <div class="stage-figure">
-<svg id="fn" viewBox="0 0 960 620" role="img" aria-label="Слева данные и двенадцать параметров, дающие одно число потерь, справа два среза функции потерь вдоль отдельных параметров">
-  <style>
-    #fn { font-family: Helvetica, Arial, sans-serif; }
-    #fn .ax   { stroke: #5E5850; stroke-width: 1.4; }
-    #fn .ttl  { font-size: 13px; fill: #8A8378; letter-spacing: 0.06em; }
-    #fn .cap  { font-size: 13px; fill: #5E5850; }
-    #fn .tick { font-size: 13px; fill: #8A8378; }
-    #fn .ct   { font-size: 13px; font-weight: 600; fill: #8C7106; }
-    #fn .cellp{ fill: #FFFBEB; stroke: #C29E08; stroke-width: 1.2; }
-    #fn .cv   { stroke: #C29E08; stroke-width: 2.4; fill: none; }
-    #fn .cv2  { stroke: #C29E08; stroke-width: 2.2; fill: none; stroke-dasharray: 6 4; }
-    #fn .dash { stroke: #B9B2A6; stroke-width: 1.3; fill: none; stroke-dasharray: 5 4; }
-    #fn .tan  { stroke: #C30B0A; stroke-width: 2.4; fill: none; }
-    #fn .rn   { font-size: 13px; fill: #A30908; }
-    #fn .dot  { fill: #C29E08; }
-    #fn .div  { stroke: #E5E1D8; stroke-width: 1.4; }
-    #fn .panel-label { font-size: 13px; fill: #8A8378; letter-spacing: 0.04em; }
-    #fn .legend { font-size: 13px; fill: #8A8378; }
-  </style>
-  <defs>
-    <marker id="fn-aw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5E5850"/>
-    </marker>
-  </defs>
-
-  <text x="250" y="72" class="ttl" text-anchor="middle">ИЗ ДВЕНАДЦАТИ ЧИСЕЛ ОДНО</text>
-  <text x="720" y="72" class="ttl" text-anchor="middle">СРЕЗ ВДОЛЬ ОДНОГО ПАРАМЕТРА</text>
-  <line x1="487" y1="56" x2="487" y2="440" class="div"/>
-
-  <g data-key="dat">
-    <rect x="40" y="88" width="420" height="62" rx="10" fill="#F0F6FC" stroke="#3576C0" stroke-width="1.6"/>
-    <text x="62" y="112" class="cap">данные зафиксированы, их менять нельзя</text>
-    <foreignObject x="62" y="113.24" width="380" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:16px;color:#111111;font-weight:400" data-tex="\mathbf x = (0.5,\ 0.8) \qquad \mathbf y = (1,\ 0)"></div></foreignObject>
-  </g>
-
-  <g data-key="par">
-    <rect x="40" y="168" width="420" height="182" rx="10" fill="#FFFBEB" stroke="#C29E08" stroke-width="1.6"/>
-    <text x="62" y="192" class="cap">двенадцать параметров: аргументы функции</text>
-    <foreignObject x="15" y="209.82" width="81" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#8C7106;font-weight:600;justify-content:flex-end" data-tex="\mathbf W^{(1)}"></div></foreignObject>
-    <rect x="104" y="206" width="52" height="26" rx="2" class="cellp"/>
-    <text x="130" y="224" class="ct" text-anchor="middle">0.15</text>
-    <rect x="156" y="206" width="52" height="26" rx="2" class="cellp"/>
-    <text x="182" y="224" class="ct" text-anchor="middle">−0.20</text>
-    <rect x="104" y="232" width="52" height="26" rx="2" class="cellp"/>
-    <text x="130" y="250" class="ct" text-anchor="middle">0.40</text>
-    <rect x="156" y="232" width="52" height="26" rx="2" class="cellp"/>
-    <text x="182" y="250" class="ct" text-anchor="middle">0.30</text>
-    <foreignObject x="171" y="209.82" width="81" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#8C7106;font-weight:600;justify-content:flex-end" data-tex="\mathbf b^{(1)}"></div></foreignObject>
-    <rect x="260" y="206" width="52" height="26" rx="2" class="cellp"/>
-    <text x="286" y="224" class="ct" text-anchor="middle">0.10</text>
-    <rect x="260" y="232" width="52" height="26" rx="2" class="cellp"/>
-    <text x="286" y="250" class="ct" text-anchor="middle">−0.10</text>
-    <foreignObject x="15" y="277.82" width="81" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#8C7106;font-weight:600;justify-content:flex-end" data-tex="\mathbf W^{(2)}"></div></foreignObject>
-    <rect x="104" y="274" width="52" height="26" rx="2" class="cellp"/>
-    <text x="130" y="292" class="ct" text-anchor="middle">0.50</text>
-    <rect x="156" y="274" width="52" height="26" rx="2" class="cellp"/>
-    <text x="182" y="292" class="ct" text-anchor="middle">−0.30</text>
-    <rect x="104" y="300" width="52" height="26" rx="2" class="cellp"/>
-    <text x="130" y="318" class="ct" text-anchor="middle">0.20</text>
-    <rect x="156" y="300" width="52" height="26" rx="2" class="cellp"/>
-    <text x="182" y="318" class="ct" text-anchor="middle">0.60</text>
-    <foreignObject x="171" y="277.82" width="81" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#8C7106;font-weight:600;justify-content:flex-end" data-tex="\mathbf b^{(2)}"></div></foreignObject>
-    <rect x="260" y="274" width="52" height="26" rx="2" class="cellp"/>
-    <text x="286" y="292" class="ct" text-anchor="middle">0.05</text>
-    <rect x="260" y="300" width="52" height="26" rx="2" class="cellp"/>
-    <text x="286" y="318" class="ct" text-anchor="middle">0.15</text>
-    <text x="332" y="224" class="cap">8 весов</text>
-    <text x="332" y="292" class="cap">4 смещения</text>
-  </g>
-
-  <g data-key="cell11" data-only="1">
-    <rect x="100" y="270" width="60" height="34" rx="4" fill="none" stroke="#C30B0A" stroke-width="2.4"/>
-    <text x="104" y="342" class="rn">двигаем только эту клетку</text>
-  </g>
-
-  <g data-key="arr">
-    <line x1="250" y1="352" x2="250" y2="374" class="ax" marker-end="url(#fn-aw)"/>
-    <text x="266" y="368" class="cap">подставляем данные в формулу</text>
-  </g>
-
-  <g data-key="eval">
-    <rect x="60" y="380" width="240" height="50" rx="10" fill="#F0FAF0" stroke="#73B222" stroke-width="1.7"/>
-    <foreignObject x="94" y="386.24" width="172" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="E(\theta) = 0.3183"></div></foreignObject>
-    <text x="312" y="411" class="cap">одно число</text>
-  </g>
-
-  <line x1="505" y1="96" x2="505" y2="394" class="ax"/>
-  <line x1="500" y1="390" x2="938" y2="390" class="ax"/>
-  <foreignObject x="475" y="67.82" width="60" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#8A8378;font-weight:400" data-tex="E"></div></foreignObject>
-  <text x="520" y="409" class="tick" text-anchor="middle">−8</text>
-  <text x="622" y="409" class="tick" text-anchor="middle">−4</text>
-  <text x="725" y="409" class="tick" text-anchor="middle">0</text>
-  <text x="827" y="409" class="tick" text-anchor="middle">+4</text>
-  <text x="930" y="409" class="tick" text-anchor="middle">+8</text>
-  <text x="498" y="389" class="tick" text-anchor="end">0.2</text>
-  <text x="498" y="334" class="tick" text-anchor="end">0.3</text>
-  <text x="498" y="279" class="tick" text-anchor="end">0.4</text>
-  <text x="498" y="225" class="tick" text-anchor="end">0.5</text>
-  <text x="498" y="170" class="tick" text-anchor="end">0.6</text>
-  <text x="498" y="115" class="tick" text-anchor="end">0.7</text>
-  <text x="725" y="432" class="tick" text-anchor="middle">на сколько сдвинули этот параметр от текущего значения</text>
-
-  <g data-key="cw2">
-    <polyline class="cv" points="520.0,116.9 525.1,118.0 530.2,119.2 535.4,120.6 540.5,122.0 545.6,123.6 550.8,125.4 555.9,127.3 561.0,129.4 566.1,131.6 571.2,134.1 576.4,136.8 581.5,139.8 586.6,143.0 591.8,146.4 596.9,150.1 602.0,154.2 607.1,158.5 612.2,163.1 617.4,168.1 622.5,173.4 627.6,179.0 632.8,185.0 637.9,191.3 643.0,197.9 648.1,204.8 653.2,212.0 658.4,219.5 663.5,227.2 668.6,235.0 673.8,243.1 678.9,251.2 684.0,259.3 689.1,267.5 694.2,275.6 699.4,283.5 704.5,291.3 709.6,298.9 714.8,306.2 719.9,313.2 725.0,319.8 730.1,326.0 735.2,331.8 740.4,337.3 745.5,342.2 750.6,346.8 755.8,350.9 760.9,354.7 766.0,358.0 771.1,361.0 776.2,363.6 781.4,365.9 786.5,367.9 791.6,369.7 796.8,371.2 801.9,372.6 807.0,373.7 812.1,374.7 817.2,375.5 822.4,376.2 827.5,376.8 832.6,377.3 837.8,377.7 842.9,378.1 848.0,378.4 853.1,378.6 858.2,378.8 863.4,379.0 868.5,379.1 873.6,379.2 878.8,379.3 883.9,379.4 889.0,379.5 894.1,379.6 899.2,379.6 904.4,379.6 909.5,379.7 914.6,379.7 919.8,379.7 924.9,379.7 930.0,379.7"/>
-    <foreignObject x="650" y="175.82" width="165" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#8C7106;font-weight:600"><span>срез по <span data-tex="w^{(2)}_{11}"></span></span></div></foreignObject>
-  </g>
-
-  <g data-key="plat" data-only="1">
-    <line x1="520" y1="106.2" x2="930" y2="106.2" class="dash"/>
-    <line x1="520" y1="379.8" x2="930" y2="379.8" class="dash"/>
-    <text x="925" y="100" class="cap" text-anchor="end">верхнее плато 0.7086</text>
-    <text x="925" y="358" class="cap" text-anchor="end">нижнее плато 0.2086</text>
-  </g>
-
-  <g data-key="pt0">
-    <circle cx="725" cy="319.8" r="6" class="dot"/>
-    <foreignObject x="736" y="281.82" width="128" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="E = 0.3183"></div></foreignObject>
-  </g>
-
-  <g data-key="tan" data-only="1">
-    <line x1="684" y1="268.4" x2="766" y2="371.2" class="tan"/>
-    <text x="676" y="262" class="rn" text-anchor="end">наклон среза −0.0588</text>
-  </g>
-
-  <g data-key="cw1">
-    <polyline class="cv2" points="520.0,311.1 525.1,311.1 530.2,311.1 535.4,311.2 540.5,311.2 545.6,311.3 550.8,311.4 555.9,311.4 561.0,311.5 566.1,311.6 571.2,311.7 576.4,311.8 581.5,311.9 586.6,312.0 591.8,312.1 596.9,312.2 602.0,312.4 607.1,312.5 612.2,312.7 617.4,312.9 622.5,313.1 627.6,313.3 632.8,313.5 637.9,313.8 643.0,314.0 648.1,314.3 653.2,314.6 658.4,314.9 663.5,315.2 668.6,315.5 673.8,315.9 678.9,316.2 684.0,316.6 689.1,317.0 694.2,317.4 699.4,317.8 704.5,318.2 709.6,318.6 714.8,319.0 719.9,319.4 725.0,319.8 730.1,320.2 735.2,320.6 740.4,320.9 745.5,321.3 750.6,321.6 755.8,322.0 760.9,322.3 766.0,322.6 771.1,322.9 776.2,323.2 781.4,323.4 786.5,323.6 791.6,323.9 796.8,324.1 801.9,324.3 807.0,324.4 812.1,324.6 817.2,324.8 822.4,324.9 827.5,325.0 832.6,325.2 837.8,325.3 842.9,325.4 848.0,325.5 853.1,325.5 858.2,325.6 863.4,325.7 868.5,325.7 873.6,325.8 878.8,325.9 883.9,325.9 889.0,325.9 894.1,326.0 899.2,326.0 904.4,326.1 909.5,326.1 914.6,326.1 919.8,326.1 924.9,326.2 930.0,326.2"/>
-    <foreignObject x="530" y="284.82" width="165" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#8C7106;font-weight:600"><span>срез по <span data-tex="w^{(1)}_{11}"></span></span></div></foreignObject>
-  </g>
-
-  <g data-key="corr" data-only="1">
-    <line x1="520" y1="310.7" x2="930" y2="310.7" class="dash"/>
-    <line x1="520" y1="326.4" x2="930" y2="326.4" class="dash"/>
-    <text x="530" y="345" class="cap">весь размах этого среза: 0.029</text>
-  </g>
-
-  <text x="40" y="604" class="legend">синий: данные · жёлтый: параметры и срезы функции · зелёный: итоговое число · красный: наклон и выбранный параметр</text>
-  <rect x="40" y="450" width="880" height="130" rx="14" fill="#FAFAF8" stroke="#E4E1D7" stroke-width="1.5"/>
-  <text x="62" y="476" class="panel-label">формула этого шага</text>
-  <g data-key="f1" data-only="1"><foreignObject x="62" y="490" width="836" height="84"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\mathbf x = (0.5,\ 0.8), \qquad \mathbf y = (1,\ 0) \qquad \text{это константы, а не аргументы}"></div></foreignObject></g>
-  <g data-key="f2" data-only="1"><foreignObject x="62" y="490" width="836" height="84"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\theta = \bigl(\mathbf W^{(1)},\, \mathbf b^{(1)},\, \mathbf W^{(2)},\, \mathbf b^{(2)}\bigr) \qquad \text{12 чисел, и только они аргументы } E"></div></foreignObject></g>
-  <g data-key="f3" data-only="1"><foreignObject x="62" y="490" width="836" height="84"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="h_1 = \sigma\bigl(0.5\,w^{(1)}_{11} + 0.8\,w^{(1)}_{12} + b^{(1)}_1\bigr), \qquad h_2 = \sigma\bigl(0.5\,w^{(1)}_{21} + 0.8\,w^{(1)}_{22} + b^{(1)}_2\bigr)"></div></foreignObject></g>
-  <g data-key="f4" data-only="1"><foreignObject x="62" y="490" width="836" height="84"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="E(\theta) = \tfrac{1}{2}\Bigl[\bigl(\sigma(w^{(2)}_{11}h_1 + w^{(2)}_{12}h_2 + b^{(2)}_1) - 1\bigr)^2 + \bigl(\sigma(w^{(2)}_{21}h_1 + w^{(2)}_{22}h_2 + b^{(2)}_2) - 0\bigr)^2\Bigr]"></div></foreignObject></g>
-  <g data-key="f5" data-only="1"><foreignObject x="62" y="490" width="836" height="84"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="E(0.15,\, -0.20,\, 0.40,\, 0.30,\, 0.10,\, -0.10,\, 0.50,\, -0.30,\, 0.20,\, 0.60,\, 0.05,\, 0.15) = 0.3183"></div></foreignObject></g>
-  <g data-key="f6" data-only="1"><foreignObject x="62" y="490" width="836" height="84"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="E \to 0.7086 \ \ \text{при } w^{(2)}_{11} \to -\infty, \qquad E \to 0.2086 \ \ \text{при } w^{(2)}_{11} \to +\infty"></div></foreignObject></g>
-  <g data-key="f7" data-only="1"><foreignObject x="62" y="490" width="836" height="84"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\frac{\partial E}{\partial w^{(2)}_{11}} = -0.0588 \qquad \text{наклон этого среза в текущей точке}"></div></foreignObject></g>
-  <g data-key="f8" data-only="1"><foreignObject x="62" y="490" width="836" height="84"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\frac{\partial E}{\partial w^{(1)}_{11}} = -0.0036, \qquad \text{размах среза } 0.3349 - 0.3063 = 0.0286"></div></foreignObject></g>
-</svg>
+<div class="gd-live" id="gdNet">
+  <div class="gd-live-head"><strong>Срез по любому параметру и настоящий шаг спуска</strong>
+    <p>Щёлкните по ребру или смещению: справа появится срез функции потерь по этому параметру, синяя точка покажет текущее значение, красная линия наклон. Кнопка «Шаг спуска» обновляет сразу все двенадцать чисел.</p></div>
+  <div class="gd-live-figure"><svg id="gdNetSvg" viewBox="0 0 720 440" role="img" aria-label="Граф сети 2-2-2 с весами на рёбрах слева, срез функции потерь по выбранному параметру справа, потери по шагам спуска снизу"></svg></div>
+  <div class="gd-controls">
+    <div class="gd-control"><label for="gdNetVal"><span>Параметр <span id="gdNetValName"></span></span> <output id="gdNetValOut">—</output></label>
+      <input id="gdNetVal" type="range" min="-10" max="10" step="0.05" value="0.5"></div>
+    <div class="gd-control"><label for="gdNetEta"><span>Скорость <span class="math-inline" data-tex="\eta"></span></span> <output id="gdNetEtaOut">0.5</output></label>
+      <input id="gdNetEta" type="range" min="0.1" max="3" step="0.1" value="0.5"></div>
   </div>
-
-  <div class="stage-bar">
-    <button type="button" data-nav="prev">← Назад</button>
-    <button type="button" data-nav="next">Далее →</button>
-    <div class="stage-progress"></div>
-    <div class="stage-counter"></div>
+  <div class="gd-buttons">
+    <button type="button" class="gd-btn" id="gdNetStep">Шаг спуска</button>
+    <button type="button" class="gd-btn" id="gdNetRun">50 шагов</button>
+    <button type="button" class="gd-btn" id="gdNetReset">Сброс</button>
   </div>
-
-  <div class="stage-notes">
-    <div class="step-panel" data-on="dat f1" data-focus="dat">
-      <div class="step-kicker">Шаг 1 · что дано</div>
-      <h4>Один объект, и он не двигается</h4>
-      <p>Вход <span class="math-inline" data-tex="(0.5, 0.8)"></span> и цель <span class="math-inline" data-tex="(1, 0)"></span> зафиксированы, как
-      две точки в части 1. В функции потерь они будут константами: 0.5, 0.8, 1 и 0
-      просто окажутся вписаны в формулу.</p>
-    </div>
-    <div class="step-panel" data-on="dat par f2" data-focus="par">
-      <div class="step-kicker">Шаг 2 · что можно крутить</div>
-      <h4>Двенадцать чисел: вот они целиком</h4>
-      <p>Восемь весов и четыре смещения. Именно они служат аргументами функции потерь:
-      подставили двенадцать значений, получили одно число. У регрессии из части 1
-      такой аргумент был ровно один.</p>
-    </div>
-    <div class="step-panel" data-on="dat par arr f3" data-focus="arr">
-      <div class="step-kicker">Шаг 3 · подстановка</div>
-      <h4>Данные исчезают внутрь формулы</h4>
-      <p>Сумматор первого слоя превращается в
-      <span class="math-inline" data-tex="\sigma (0.5\cdot w^{(1)}_{11} + 0.8\cdot w^{(1)}_{12} + b^{(1)}_1)"></span>: 0.5 и 0.8 больше нигде не
-      понадобятся, они стали коэффициентами. Так же цель <span class="math-inline" data-tex="(1, 0)"></span>
-      вписывается в скобки квадратов.</p>
-    </div>
-    <div class="step-panel" data-on="dat par arr eval f4" data-focus="eval">
-      <div class="step-kicker">Шаг 4 · функционал целиком</div>
-      <h4>На выходе одно число, и это судья</h4>
-      <p>Вся конструкция сворачивается в <span class="math-inline" data-tex="E(\theta ) = 0.3183"></span>. Это ровно те же
-      потери, что в основной сцене части 8, только теперь видно, что стоит за
-      числом: функция двенадцати переменных с двумя вложенными сигмоидами.</p>
-    </div>
-    <div class="step-panel" data-on="par cell11 eval cw2 pt0 f5" data-focus="cw2">
-      <div class="step-kicker">Шаг 5 · срез</div>
-      <h4>Держим одиннадцать, двигаем один</h4>
-      <p>Двенадцатимерный график не нарисовать, зато можно взять один вес
-      <span class="math-inline" data-tex="w^{(2)}_{11}"></span> и менять только его. По горизонтали отложено, на сколько
-      мы его сдвинули; жёлтая точка при нуле показывает те самые 0.3183.</p>
-    </div>
-    <div class="step-panel" data-on="par cell11 cw2 pt0 plat f6" data-focus="plat">
-      <div class="step-kicker">Шаг 6 · это не парабола</div>
-      <h4>Два плато и никакого дна</h4>
-      <p>Слева кривая упирается в 0.7086, справа в 0.2086, и нигде не
-      разворачивается вверх. Минимума в конечной точке просто нет, а до нуля этот
-      срез не доходит: 0.2086 это вклад второго выхода, на который этот вес не
-      влияет вообще.</p>
-    </div>
-    <div class="step-panel" data-on="par cell11 cw2 pt0 tan f7" data-focus="tan">
-      <div class="step-kicker">Шаг 7 · наклон</div>
-      <h4>Производная по весу равна наклону среза</h4>
-      <p>Касательная в текущей точке идёт вниз с наклоном <span class="math-inline" data-tex="-0.0588"></span>. Это
-      та же производная, что <span class="math-inline" data-tex="L'(w)"></span> из части 2, только взятая по одному из
-      двенадцати аргументов. Это же число выдаст бэкпроп в следующей
-      сцене.</p>
-    </div>
-    <div class="step-panel" data-on="cw2 pt0 cw1 corr f8" data-focus="cw1">
-      <div class="step-kicker">Шаг 8 · остальные одиннадцать</div>
-      <h4>У каждого параметра свой срез, и они очень разные</h4>
-      <p>Срез по весу первого слоя <span class="math-inline" data-tex="w^{(1)}_{11}"></span> почти горизонтален: сдвиньте
-      этот вес хоть на бесконечность, потери изменятся всего на 0.029, а наклон
-      здесь <span class="math-inline" data-tex="-0.0036"></span>, в 16 раз мельче. Двенадцать таких наклонов,
-      собранных в вектор, и есть <span class="math-inline" data-tex="\nabla E"></span>.</p>
-    </div>
+  <div class="gd-metrics">
+    <div class="gd-metric"><span>шаг</span><strong id="gdNetT">0</strong></div>
+    <div class="gd-metric"><span>потери E</span><strong id="gdNetE">—</strong></div>
+    <div class="gd-metric gd-metric-wide"><span>выход сети</span><strong id="gdNetY">—</strong></div>
+    <div class="gd-metric"><span>производная по параметру</span><strong id="gdNetD">—</strong></div>
   </div>
+  <div class="gd-calc" id="gdNetCalc"></div>
 </div>
-<p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
+
+<p>
+  Что здесь стоит проверить руками.
+</p>
+
+<ul>
+  <li><strong>Срез не парабола.</strong> Выберите <span class="math-inline" data-tex="w^{(2)}_{11}"></span>:
+  слева кривая упирается в 0.7086, справа в 0.2086, и нигде не разворачивается вверх.
+  Минимума в конечной точке нет, а 0.2086 это вклад второго выхода, на который этот вес вообще не влияет.</li>
+  <li><strong>Производная равна наклону среза.</strong> В стартовой точке у
+  <span class="math-inline" data-tex="w^{(2)}_{11}"></span> она равна −0.0588. Это та же производная, что
+  <span class="math-inline" data-tex="L'(w)"></span> из части 2, только взятая по одному из двенадцати аргументов.</li>
+  <li><strong>Срезы очень разные.</strong> Срез по <span class="math-inline" data-tex="w^{(1)}_{11}"></span>
+  почти горизонтален: сдвиньте этот вес хоть на бесконечность, потери изменятся всего на 0.029, а наклон
+  здесь −0.0036, в 16 раз мельче. Двенадцать таких наклонов, собранных в вектор, и есть
+  <span class="math-inline" data-tex="\nabla E"></span>.</li>
+  <li><strong>Шаг тот же, что в части 3.</strong> С <span class="math-inline" data-tex="\eta = 0.5"></span>
+  первый вес меняется так: <span class="math-inline" data-tex="0.50 - 0.5\cdot(-0.0588) = 0.5294"></span>,
+  и так по каждому параметру. После одного шага <span class="math-inline" data-tex="\hat{\mathbf y} = (0.5554, 0.6177)"></span>
+  и <span class="math-inline" data-tex="E = 0.2896"></span>, через 50 шагов <span class="math-inline" data-tex="E = 0.0186"></span>.</li>
+</ul>
 
 <div class="callout-red">
   <strong>Почему точный метод здесь не работает.</strong> В части 1 мы решили
   <span class="math-inline" data-tex="L'(w) = 5w - 8 = 0"></span> в одну строчку.
   Здесь <span class="math-inline" data-tex="\nabla E = 0"></span> означает систему из
   двенадцати уравнений, в каждом из которых сигмоида от сигмоиды. Общего способа
-  её решить нет, а у срезов, как видно на сцене, дно вообще уезжает на
+  её решить нет, а у срезов, как видно в интерактиве, дно вообще уезжает на
   бесконечность. Остаётся идти вниз по наклону, то есть спуск.
 </div>
 
@@ -2358,576 +1950,108 @@
 <div class="math-display" data-tex="\nabla E(\theta) = \frac{1}{n}\sum_{i=1}^{n} \nabla E_i(\theta)"></div>
 
 <p>
-  То есть бэкпроп из следующей сцены не нужно переизобретать под выборку: он
-  считает <span class="math-inline" data-tex="\nabla E_i"></span> для одного объекта,
-  а по батчу результаты просто усредняются. Возьмём второй объект и посмотрим, что
-  из этого получается.
-</p>
-
-<div class="stage" id="stageBatch" tabindex="0">
-  <div class="stage-figure">
-<svg id="bt" viewBox="0 0 960 620" role="img" aria-label="Слева два объекта и функционал батча, справа срезы потерь для каждого объекта и их среднее">
-  <style>
-    #bt { font-family: Helvetica, Arial, sans-serif; }
-    #bt .ax   { stroke: #5E5850; stroke-width: 1.4; }
-    #bt .ttl  { font-size: 13px; fill: #8A8378; letter-spacing: 0.06em; }
-    #bt .cap  { font-size: 13px; fill: #5E5850; }
-    #bt .tick { font-size: 13px; fill: #8A8378; }
-    #bt .lab  { font-size: 13px; font-weight: 600; fill: #8C7106; }
-    #bt .labb { font-size: 13px; font-weight: 700; fill: #4C8316; }
-    #bt .cv   { stroke: #C29E08; stroke-width: 2; fill: none; stroke-dasharray: 6 4; }
-    #bt .cvb  { stroke: #73B222; stroke-width: 3; fill: none; }
-    #bt .link { stroke: #B9B2A6; stroke-width: 1.3; }
-    #bt .dash { stroke: #73B222; stroke-width: 1.4; fill: none; stroke-dasharray: 5 4; }
-    #bt .dot  { fill: #C29E08; }
-    #bt .gdot { fill: #73B222; }
-    #bt .ring { fill: none; stroke: #73B222; stroke-width: 2.6; }
-    #bt .rn   { font-size: 13px; fill: #A30908; }
-    #bt .div  { stroke: #E5E1D8; stroke-width: 1.4; }
-    #bt .panel-label { font-size: 13px; fill: #8A8378; letter-spacing: 0.04em; }
-    #bt .legend { font-size: 13px; fill: #8A8378; }
-  </style>
-
-  <text x="250" y="72" class="ttl" text-anchor="middle">ДВА ОБЪЕКТА, ДВА СЛАГАЕМЫХ</text>
-  <foreignObject x="571.5" y="51.82" width="287" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#8A8378;font-weight:400"><span>СРЕЗ ПО ТОМУ ЖЕ ВЕСУ <span data-tex="w^{(2)}_{11}"></span></span></div></foreignObject>
-  <line x1="470" y1="56" x2="470" y2="440" class="div"/>
-
-  <g data-key="obj1">
-    <rect x="40" y="88" width="400" height="88" rx="10" fill="#F0F6FC" stroke="#3576C0" stroke-width="1.6"/>
-    <text x="62" y="112" class="cap">объект 1: тот же, что во всей части</text>
-    <foreignObject x="62" y="113.24" width="426" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:16px;color:#111111;font-weight:400" data-tex="\mathbf x = (0.5,\ 0.8) \;\to\; \mathbf y = (1,\ 0)"></div></foreignObject>
-    <foreignObject x="62" y="141.82" width="362" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#4C8316;font-weight:400" data-tex="\hat{\mathbf y} = (0.5316,\ 0.6459),\quad E_1 = 0.3183"></div></foreignObject>
-  </g>
-
-  <g data-key="obj2">
-    <rect x="40" y="192" width="400" height="88" rx="10" fill="#F0F6FC" stroke="#3576C0" stroke-width="1.6"/>
-    <text x="62" y="216" class="cap">объект 2: другая цель</text>
-    <foreignObject x="62" y="217.24" width="426" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:16px;color:#111111;font-weight:400" data-tex="\mathbf x = (0.9,\ 0.2) \;\to\; \mathbf y = (0,\ 1)"></div></foreignObject>
-    <foreignObject x="62" y="245.82" width="362" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#4C8316;font-weight:400" data-tex="\hat{\mathbf y} = (0.5376,\ 0.6473),\quad E_2 = 0.2067"></div></foreignObject>
-  </g>
-
-  <g data-key="bform">
-    <rect x="40" y="298" width="400" height="76" rx="10" fill="#F0FAF0" stroke="#73B222" stroke-width="1.7"/>
-    <text x="62" y="322" class="cap">функционал батча: среднее слагаемых</text>
-    <foreignObject x="62" y="327.24" width="403" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:16px;color:#111111;font-weight:400" data-tex="E = \tfrac{1}{2}(0.3183 + 0.2067) = 0.2625"></div></foreignObject>
-  </g>
-
-  <text x="40" y="400" class="cap">параметры те же самые двенадцать, общие для обоих слагаемых</text>
-
-  <line x1="490" y1="106" x2="490" y2="394" class="ax"/>
-  <line x1="485" y1="390" x2="938" y2="390" class="ax"/>
-  <foreignObject x="460" y="77.82" width="60" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#8A8378;font-weight:400" data-tex="E"></div></foreignObject>
-  <text x="505" y="409" class="tick" text-anchor="middle">−8</text>
-  <text x="610" y="409" class="tick" text-anchor="middle">−4</text>
-  <text x="715" y="409" class="tick" text-anchor="middle">0</text>
-  <text x="820" y="409" class="tick" text-anchor="middle">+4</text>
-  <text x="925" y="409" class="tick" text-anchor="middle">+8</text>
-  <text x="483" y="371" class="tick" text-anchor="end">0.1</text>
-  <text x="483" y="331" class="tick" text-anchor="end">0.2</text>
-  <text x="483" y="291" class="tick" text-anchor="end">0.3</text>
-  <text x="483" y="251" class="tick" text-anchor="end">0.4</text>
-  <text x="483" y="211" class="tick" text-anchor="end">0.5</text>
-  <text x="483" y="171" class="tick" text-anchor="end">0.6</text>
-  <text x="483" y="131" class="tick" text-anchor="end">0.7</text>
-  <foreignObject x="440.5" y="411.82" width="549" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#8A8378;font-weight:400"><span>на сколько сдвинули вес <span data-tex="w^{(2)}_{11}"></span> от текущего значения 0.5</span></div></foreignObject>
-
-  <g data-key="c1">
-    <polyline class="cv" points="505.0,130.4 510.2,131.2 515.5,132.1 520.8,133.0 526.0,134.1 531.2,135.3 536.5,136.5 541.8,137.9 547.0,139.5 552.2,141.1 557.5,142.9 562.8,144.9 568.0,147.1 573.2,149.4 578.5,151.9 583.8,154.7 589.0,157.6 594.2,160.8 599.5,164.2 604.8,167.8 610.0,171.7 615.2,175.8 620.5,180.1 625.8,184.7 631.0,189.6 636.2,194.6 641.5,199.9 646.8,205.3 652.0,211.0 657.2,216.7 662.5,222.6 667.8,228.5 673.0,234.5 678.2,240.4 683.5,246.4 688.8,252.2 694.0,257.9 699.2,263.4 704.5,268.7 709.8,273.8 715.0,278.7 720.2,283.2 725.5,287.5 730.8,291.4 736.0,295.1 741.2,298.4 746.5,301.4 751.8,304.2 757.0,306.6 762.2,308.8 767.5,310.7 772.8,312.4 778.0,313.9 783.2,315.2 788.5,316.3 793.8,317.3 799.0,318.1 804.2,318.8 809.5,319.4 814.8,319.9 820.0,320.3 825.2,320.7 830.5,321.0 835.8,321.3 841.0,321.5 846.2,321.7 851.5,321.8 856.8,321.9 862.0,322.1 867.2,322.1 872.5,322.2 877.8,322.3 883.0,322.3 888.2,322.4 893.5,322.4 898.8,322.4 904.0,322.4 909.2,322.5 914.5,322.5 919.8,322.5 925.0,322.5"/>
-    <text x="920" y="317" class="lab" text-anchor="end">объект 1</text>
-  </g>
-
-  <g data-key="c2">
-    <polyline class="cv" points="505.0,381.1 510.2,381.1 515.5,381.1 520.8,381.0 526.0,381.0 531.2,381.0 536.5,381.0 541.8,380.9 547.0,380.9 552.2,380.8 557.5,380.8 562.8,380.7 568.0,380.6 573.2,380.5 578.5,380.3 583.8,380.2 589.0,379.9 594.2,379.7 599.5,379.3 604.8,379.0 610.0,378.5 615.2,377.9 620.5,377.3 625.8,376.5 631.0,375.5 636.2,374.4 641.5,373.1 646.8,371.6 652.0,369.8 657.2,367.8 662.5,365.5 667.8,362.9 673.0,359.9 678.2,356.6 683.5,352.9 688.8,348.8 694.0,344.4 699.2,339.6 704.5,334.5 709.8,329.1 715.0,323.3 720.2,317.3 725.5,311.2 730.8,304.8 736.0,298.4 741.2,291.9 746.5,285.4 751.8,279.0 757.0,272.6 762.2,266.4 767.5,260.4 772.8,254.6 778.0,249.1 783.2,243.8 788.5,238.7 793.8,234.0 799.0,229.5 804.2,225.4 809.5,221.5 814.8,217.9 820.0,214.6 825.2,211.5 830.5,208.7 835.8,206.1 841.0,203.7 846.2,201.6 851.5,199.6 856.8,197.8 862.0,196.2 867.2,194.7 872.5,193.3 877.8,192.1 883.0,191.0 888.2,190.0 893.5,189.1 898.8,188.3 904.0,187.6 909.2,186.9 914.5,186.3 919.8,185.8 925.0,185.3"/>
-    <text x="920" y="180" class="lab" text-anchor="end">объект 2</text>
-  </g>
-
-  <g data-key="cb">
-    <polyline class="cvb" points="505.0,255.7 510.2,256.1 515.5,256.6 520.8,257.0 526.0,257.6 531.2,258.1 536.5,258.8 541.8,259.4 547.0,260.2 552.2,261.0 557.5,261.9 562.8,262.8 568.0,263.8 573.2,264.9 578.5,266.1 583.8,267.4 589.0,268.8 594.2,270.2 599.5,271.8 604.8,273.4 610.0,275.1 615.2,276.9 620.5,278.7 625.8,280.6 631.0,282.6 636.2,284.5 641.5,286.5 646.8,288.5 652.0,290.4 657.2,292.3 662.5,294.0 667.8,295.7 673.0,297.2 678.2,298.5 683.5,299.6 688.8,300.5 694.0,301.1 699.2,301.5 704.5,301.6 709.8,301.5 715.0,301.0 720.2,300.3 725.5,299.3 730.8,298.1 736.0,296.7 741.2,295.1 746.5,293.4 751.8,291.6 757.0,289.6 762.2,287.6 767.5,285.6 772.8,283.5 778.0,281.5 783.2,279.5 788.5,277.5 793.8,275.6 799.0,273.8 804.2,272.1 809.5,270.5 814.8,268.9 820.0,267.5 825.2,266.1 830.5,264.9 835.8,263.7 841.0,262.6 846.2,261.6 851.5,260.7 856.8,259.9 862.0,259.1 867.2,258.4 872.5,257.8 877.8,257.2 883.0,256.7 888.2,256.2 893.5,255.8 898.8,255.4 904.0,255.0 909.2,254.7 914.5,254.4 919.8,254.2 925.0,253.9"/>
-    <text x="925" y="244" class="labb" text-anchor="end">батч: среднее двух</text>
-  </g>
-
-  <g data-key="pts">
-    <line x1="715" y1="278.7" x2="715" y2="323.3" class="link"/>
-    <circle cx="715" cy="278.7" r="5" class="dot"/>
-    <circle cx="715" cy="323.3" r="5" class="dot"/>
-    <circle cx="715" cy="301.0" r="6" class="gdot"/>
-  </g>
-
-  <g data-key="ptsv" data-only="1">
-    <text x="730" y="344" class="cap">в текущей точке:</text>
-    <foreignObject x="730" y="341.82" width="287" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="E_1 = 0.3183,\ \ E_2 = 0.2067"></div></foreignObject>
-    <text x="730" y="380" class="cap">среднее: 0.2625</text>
-  </g>
-
-  <g data-key="mn" data-only="1">
-    <circle cx="703.8" cy="301.6" r="9" class="ring"/>
-    <line x1="703.8" y1="312" x2="703.8" y2="392" class="dash"/>
-    <text x="694" y="406" class="labb" text-anchor="end">дно</text>
-  </g>
-
-  <g data-key="gr" data-only="1">
-    <text x="730" y="344" class="rn">наклоны в текущей точке:</text>
-    <text x="730" y="362" class="rn">−0.0588  и  +0.0733</text>
-    <text x="730" y="380" class="rn">среднее: +0.0073, почти ноль</text>
-  </g>
-
-  <text x="40" y="604" class="legend">синий: данные · жёлтый: слагаемые по отдельным объектам · зелёный: функционал батча и его дно · красный: наклоны</text>
-  <rect x="40" y="450" width="880" height="130" rx="14" fill="#FAFAF8" stroke="#E4E1D7" stroke-width="1.5"/>
-  <text x="62" y="476" class="panel-label">формула этого шага</text>
-  <g data-key="g1" data-only="1"><foreignObject x="62" y="490" width="836" height="84"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="E_1(\theta) = \tfrac{1}{2}\bigl[(0.5316 - 1)^2 + (0.6459 - 0)^2\bigr] = 0.3183"></div></foreignObject></g>
-  <g data-key="g2" data-only="1"><foreignObject x="62" y="490" width="836" height="84"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="E_2(\theta) = \tfrac{1}{2}\bigl[(0.5376 - 0)^2 + (0.6473 - 1)^2\bigr] = 0.2067"></div></foreignObject></g>
-  <g data-key="g3" data-only="1"><foreignObject x="62" y="490" width="836" height="84"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="E(\theta) = \frac{1}{n}\sum_{i=1}^{n} \tfrac{1}{2}\bigl\|\hat{\mathbf y}(\mathbf x_i;\theta) - \mathbf y_i\bigr\|^2 \qquad \text{здесь } n = 2"></div></foreignObject></g>
-  <g data-key="g4" data-only="1"><foreignObject x="62" y="490" width="836" height="84"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="E(\theta) = \tfrac{1}{2}\bigl(0.3183 + 0.2067\bigr) = 0.2625"></div></foreignObject></g>
-  <g data-key="g5" data-only="1"><foreignObject x="62" y="490" width="836" height="84"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\min E = 0.2609 \ \ \text{при } w^{(2)}_{11} = 0.074, \qquad \text{сейчас } w^{(2)}_{11} = 0.5"></div></foreignObject></g>
-  <g data-key="g6" data-only="1"><foreignObject x="62" y="490" width="836" height="84"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\frac{\partial E}{\partial w^{(2)}_{11}} = \tfrac{1}{2}\bigl(-0.0588 + 0.0733\bigr) = +0.0073"></div></foreignObject></g>
-  <g data-key="g7" data-only="1"><foreignObject x="62" y="490" width="836" height="84"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\nabla E = \frac{1}{n}\sum_{i=1}^{n}\nabla E_i \qquad n \text{ слагаемых, форма функции та же}"></div></foreignObject></g>
-</svg>
-  </div>
-
-  <div class="stage-bar">
-    <button type="button" data-nav="prev">← Назад</button>
-    <button type="button" data-nav="next">Далее →</button>
-    <div class="stage-progress"></div>
-    <div class="stage-counter"></div>
-  </div>
-
-  <div class="stage-notes">
-    <div class="step-panel" data-on="obj1 c1 g1" data-focus="c1">
-      <div class="step-kicker">Шаг 1 · одно слагаемое</div>
-      <h4>У объекта 1 срез падает вправо</h4>
-      <p>Это та же кривая, что в предыдущей сцене: первый выход должен подрасти до
-      единицы, поэтому увеличение веса <span class="math-inline" data-tex="w^{(2)}_{11}"></span> уменьшает ошибку. Объект
-      как бы тянет этот вес вверх.</p>
-    </div>
-    <div class="step-panel" data-on="obj1 obj2 c1 c2 g2" data-focus="c2">
-      <div class="step-kicker">Шаг 2 · второе слагаемое</div>
-      <h4>У объекта 2 цель обратная, и срез растёт</h4>
-      <p>Здесь первый выход должен быть нулём, а не единицей. Тот же самый вес,
-      увеличиваясь, делает объекту 2 хуже: его кривая идёт в противоположную
-      сторону. Данные разные, параметры общие.</p>
-    </div>
-    <div class="step-panel" data-on="obj1 obj2 bform c1 c2 cb g3" data-focus="cb">
-      <div class="step-kicker">Шаг 3 · функционал батча</div>
-      <h4>Толстая кривая: среднее двух тонких</h4>
-      <p>Формула не изменилась ни на символ: те же двенадцать аргументов, просто
-      слагаемых теперь два и они делятся на <span class="math-inline" data-tex="n"></span>. Геометрически усреднение
-      означает «взять середину между кривыми в каждой точке».</p>
-    </div>
-    <div class="step-panel" data-on="bform c1 c2 cb pts ptsv g4" data-focus="pts">
-      <div class="step-kicker">Шаг 4 · проверка в точке</div>
-      <h4>0.3183 и 0.2067 дают 0.2625</h4>
-      <p>Зелёная точка лежит ровно посередине отрезка между жёлтыми: это и есть
-      среднее арифметическое, увиденное глазами. Переход от одного объекта к двум
-      здесь сводится к сложению двух значений и делению на два.</p>
-    </div>
-    <div class="step-panel" data-on="c1 c2 cb pts mn g5" data-focus="mn">
-      <div class="step-kicker">Шаг 5 · дно появилось</div>
-      <h4>У среднего есть минимум, которого не было у слагаемых</h4>
-      <p>Обе тонкие кривые монотонны и дна не имеют. А их среднее разворачивается:
-      минимум при <span class="math-inline" data-tex="w^{(2)}_{11} = 0.074"></span>. Причина простая: объекты тянут вес в
-      разные стороны, и где-то их требования уравновешиваются.</p>
-    </div>
-    <div class="step-panel" data-on="c1 c2 cb pts gr g6" data-focus="gr">
-      <div class="step-kicker">Шаг 6 · градиент батча</div>
-      <h4>Наклоны усредняются так же, как значения</h4>
-      <p><span class="math-inline" data-tex="-0.0588"></span> и <span class="math-inline" data-tex="+0.0733"></span> в среднем дают
-      <span class="math-inline" data-tex="+0.0073"></span>. По этому весу шаг почти не будет сделан, хотя каждый
-      объект по отдельности требовал заметного движения: мы уже стоим почти на дне
-      среза, и батч это видит, а одиночный объект нет.</p>
-    </div>
-    <div class="step-panel" data-on="obj1 obj2 bform cb pts g7" data-focus="cb">
-      <div class="step-kicker">Шаг 7 · миллион объектов</div>
-      <h4>Форма функции та же, дорожает только подсчёт</h4>
-      <p>При <span class="math-inline" data-tex="n"></span> объектах слагаемых <span class="math-inline" data-tex="n"></span>, аргументов
-      по-прежнему двенадцать. Один честный градиент стоит <span class="math-inline" data-tex="n"></span> прямых и
-      <span class="math-inline" data-tex="n"></span> обратных проходов, отсюда мини-батчи и SGD из части 6: берём
-      среднее не по всей выборке, а по случайной горстке.</p>
-    </div>
-  </div>
-</div>
-<p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
-
-<p>
-  Проверим утверждение про усреднение на числах: одиночный градиент объекта 1 по
-  весу <span class="math-inline" data-tex="w^{(2)}_{11}"></span> равен
-  <span class="math-inline" data-tex="\delta^{(2)}_1 h^{(1)}_1 = -0.1166 \cdot 0.5037 = -0.0588"></span>,
-  у объекта 2 та же формула даёт
-  <span class="math-inline" data-tex="+0.1337 \cdot 0.5486 = +0.0733"></span>.
-  Среднее: <span class="math-inline" data-tex="+0.0073"></span>. Никакой отдельной
-  «батчевой» формулы не понадобилось: бэкпроп отработал по объекту, а сумма
-  собралась снаружи.
+  Для каждого объекта производные считаются отдельно, а по батчу результаты просто усредняются:
+  отдельной «батчевой» формулы не нужно. Это та же картина, что с двумя параболами в части 6, только аргументов двенадцать
+  и у каждого своя кривая. При <span class="math-inline" data-tex="n"></span> объектах один честный градиент стоит
+  <span class="math-inline" data-tex="n"></span> проходов по сети, отсюда мини-батчи и SGD: берём среднее не по всей
+  выборке, а по случайной горстке.
 </p>
 
 <div class="callout-yellow">
-  <strong>Практическая деталь.</strong> В коде это одна строка: прямой проход делают
-  сразу для всей матрицы объектов <span class="math-inline" data-tex="\mathbf X"></span> формы <span class="math-inline" data-tex="[n, 2]"></span>, а
-  градиент получается как <span class="math-inline" data-tex="\boldsymbol\delta^{\top}\mathbf H^{(1)} / n"></span>: то же внешнее произведение, только
-  просуммированное по строкам батча. Делить на <span class="math-inline" data-tex="n"></span> не обязательно, но
+  <strong>Практическая деталь.</strong> В коде прямой проход делают сразу для всей матрицы объектов
+  <span class="math-inline" data-tex="\mathbf X"></span> формы <span class="math-inline" data-tex="[n, 2]"></span>, а градиент
+  усредняют по строкам батча. Делить на <span class="math-inline" data-tex="n"></span> не обязательно, но
   тогда подходящая скорость обучения будет зависеть от размера батча.
 </div>
 
 <p>
-  Итак, функционал выписан: одно число, двенадцать аргументов,
-  <span class="math-inline" data-tex="n"></span> слагаемых. Осталось понять, как
-  получить все двенадцать наклонов, не считая каждый срез отдельно. Этим и займётся
-  следующая сцена.
-</p>
-
-<div class="stage" id="stageNet" tabindex="0">
-  <div class="stage-figure">
-<svg id="nn" viewBox="0 0 1240 800" role="img" aria-label="Сеть 2-2-2, дельты обратного прохода, матрицы градиентов и обновлённые веса">
-  <style>
-    #nn { font-family: Helvetica, Arial, sans-serif; }
-    #nn .colhd { font-size: 13px; fill: #8A8378; letter-spacing: 0.06em; }
-    #nn .nd  { fill: #FFFFFF; stroke: #3576C0; stroke-width: 2; }
-    #nn .ed  { stroke: #9FBEE0; stroke-width: 2; fill: none; }
-    #nn .wl  { font-size: 13px; fill: #8C7106; }
-    #nn .vl  { font-size: 13px; fill: #4C8316; }
-    #nn .cap { font-size: 13px; fill: #8A8378; }
-    #nn .rn  { font-size: 14px; fill: #A30908; }
-    #nn .br  { fill: #FDECEC; stroke: #C30B0A; stroke-width: 1.7; }
-    #nn .bak { stroke: #C30B0A; stroke-width: 2.4; fill: none; }
-    #nn .ct  { font-size: 12px; font-weight: 600; }
-    #nn .shape { font-size: 12px; fill: #968F85; }
-    #nn .cell  { stroke-width: 1.2; }
-    #nn .empty { fill: #FAFAF8; stroke: #C9C2B8; stroke-width: 1; stroke-dasharray: 3 2; }
-    #nn .qt    { font-size: 12px; fill: #C9C2B8; }
-    #nn .div   { stroke: #E5E1D8; stroke-width: 1.4; }
-    #nn .panel-label { font-size: 13px; fill: #8A8378; letter-spacing: 0.04em; }
-    #nn .legend { font-size: 13px; fill: #8A8378; }
-  </style>
-  <defs>
-    <marker id="nn-aw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5E5850"/>
-    </marker>
-    <marker id="nn-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#C30B0A"/>
-    </marker>
-  </defs>
-
-  <foreignObject x="40" y="10.6" width="844" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#5E5850;font-weight:700"><span>Сеть 2-2-2: прямой проход, дельты обратного прохода и шаг спуска при <span data-tex="\eta = 0.5"></span></span></div></foreignObject>
-  <text x="270" y="72" class="colhd" text-anchor="middle">СЕТЬ И ЕЁ ПАРАМЕТРЫ</text>
-  <text x="900" y="72" class="colhd" text-anchor="middle">ГРАДИЕНТЫ И ОБНОВЛЕНИЕ</text>
-  <line x1="580" y1="56" x2="580" y2="600" class="div"/>
-
-  <g data-key="net">
-    <line x1="116" y1="160" x2="224" y2="160" class="ed"/>
-    <line x1="108" y1="182" x2="232" y2="278" class="ed"/>
-    <line x1="108" y1="278" x2="232" y2="182" class="ed"/>
-    <line x1="116" y1="300" x2="224" y2="300" class="ed"/>
-    <line x1="276" y1="160" x2="384" y2="160" class="ed"/>
-    <line x1="268" y1="182" x2="392" y2="278" class="ed"/>
-    <line x1="268" y1="278" x2="392" y2="182" class="ed"/>
-    <line x1="276" y1="300" x2="384" y2="300" class="ed"/>
-    <circle cx="90" cy="160" r="26" class="nd"/>
-    <circle cx="90" cy="300" r="26" class="nd"/>
-    <circle cx="250" cy="160" r="26" class="nd"/>
-    <circle cx="250" cy="300" r="26" class="nd"/>
-    <circle cx="410" cy="160" r="26" class="nd"/>
-    <circle cx="410" cy="300" r="26" class="nd"/>
-    <foreignObject x="60" y="141.24" width="60" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="x_1"></div></foreignObject>
-    <foreignObject x="60" y="281.24" width="60" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="x_2"></div></foreignObject>
-    <foreignObject x="220" y="141.24" width="60" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="h_1"></div></foreignObject>
-    <foreignObject x="220" y="281.24" width="60" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="h_2"></div></foreignObject>
-    <foreignObject x="375.5" y="141.24" width="69" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="\hat y_1"></div></foreignObject>
-    <foreignObject x="375.5" y="281.24" width="69" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="\hat y_2"></div></foreignObject>
-    <text x="170" y="150" class="wl" text-anchor="middle">0.15</text>
-    <text x="140" y="220" class="wl" text-anchor="middle">0.40</text>
-    <text x="140" y="266" class="wl" text-anchor="middle">−0.20</text>
-    <text x="170" y="318" class="wl" text-anchor="middle">0.30</text>
-    <text x="330" y="150" class="wl" text-anchor="middle">0.50</text>
-    <text x="300" y="220" class="wl" text-anchor="middle">0.20</text>
-    <text x="300" y="266" class="wl" text-anchor="middle">−0.30</text>
-    <text x="330" y="318" class="wl" text-anchor="middle">0.60</text>
-    <foreignObject x="40" y="339.82" width="577" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#8A8378;font-weight:400"><span>смещения: <span data-tex="\mathbf b^{(1)} = (0.10,\ -0.10),\ \ \mathbf b^{(2)} = (0.05,\ 0.15)"></span></span></div></foreignObject>
-    <text x="40" y="384" class="cap">2 входа → 2 скрытых нейрона → 2 выхода, после каждого сумматора сигмоида</text>
-  </g>
-
-  <g data-key="fwd">
-    <text x="90" y="122" class="vl" text-anchor="middle">0.5</text>
-    <text x="90" y="344" class="vl" text-anchor="middle">0.8</text>
-    <text x="250" y="122" class="vl" text-anchor="middle">0.5037</text>
-    <text x="250" y="344" class="vl" text-anchor="middle">0.5842</text>
-    <text x="410" y="122" class="vl" text-anchor="middle">0.5316 (цель 1)</text>
-    <text x="410" y="344" class="vl" text-anchor="middle">0.6459 (цель 0)</text>
-    <line x1="436" y1="176" x2="464" y2="204" class="ed" marker-end="url(#nn-aw)"/>
-    <line x1="436" y1="284" x2="464" y2="256" class="ed" marker-end="url(#nn-aw)"/>
-    <rect x="470" y="196" width="100" height="68" rx="9" class="br"/>
-    <text x="520" y="222" class="cap" text-anchor="middle">потери</text>
-    <foreignObject x="445.5" y="221.24" width="149" height="38"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="E = 0.3183"></div></foreignObject>
-  </g>
-
-  <g data-key="ask" data-only="1">
-    <foreignObject x="40" y="447.96" width="598" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#A30908;font-weight:400"><span>Формула шага требует <span data-tex="\partial E/\partial w"></span> для каждого из 12 параметров:</span></div></foreignObject>
-    <text x="40" y="494" class="rn">8 весов и 4 смещения. Считать их по отдельности: 12 проходов.</text>
-  </g>
-
-  <g data-key="bpath" data-only="1">
-    <path d="M 466 216 C 450 170, 440 140, 438 128" class="bak" marker-end="url(#nn-ar)"/>
-    <path d="M 384 176 C 340 130, 300 128, 264 140" class="bak" marker-end="url(#nn-ar)"/>
-    <text x="40" y="470" class="rn">Обратный проход идёт справа налево одной волной</text>
-    <text x="40" y="494" class="rn">и выдаёт все 12 производных за один заход.</text>
-  </g>
-
-  <g data-key="res" data-only="1">
-    <foreignObject x="40" y="447.96" width="528" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#5E5850;font-weight:400"><span>после шага: <span data-tex="\hat{\mathbf y} = (0.5554,\ 0.6177),\ \ E = 0.2896"></span></span></div></foreignObject>
-    <foreignObject x="40" y="471.96" width="629" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#5E5850;font-weight:400"><span>через 50 таких шагов: <span data-tex="E = 0.0186,\ \ \hat{\mathbf y} = (0.8708,\ 0.1435)"></span></span></div></foreignObject>
-    <text x="40" y="518" class="cap">оба выхода сдвинулись к своим целям, 1 и 0</text>
-  </g>
-
-  <foreignObject x="600" y="92" width="360" height="52">
-    <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\boldsymbol\delta^{(2)} = \left(\hat{\mathbf y} - \mathbf y\right)\odot\sigma'\!\left(\mathbf z^{(2)}\right)"></div>
-  </foreignObject>
-  <g data-key="d2e" data-only="1">
-    <foreignObject x="887" y="106.82" width="81" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;justify-content:flex-end" data-tex="\boldsymbol\delta^{(2)} ="></div></foreignObject>
-    <rect x="980" y="96" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="113" class="qt" text-anchor="middle">?</text>
-    <rect x="980" y="122" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="139" class="qt" text-anchor="middle">?</text>
-    <text x="1007" y="166" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <g data-key="d2" data-only="1">
-    <foreignObject x="887" y="106.82" width="81" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#A30908;font-weight:600;justify-content:flex-end" data-tex="\boldsymbol\delta^{(2)} ="></div></foreignObject>
-    <rect x="980" y="96" width="54" height="26" rx="2" class="cell" fill="#FDECEC" stroke="#C30B0A"/>
-    <text x="1007" y="113" class="ct" text-anchor="middle" fill="#A30908">−0.1166</text>
-    <rect x="980" y="122" width="54" height="26" rx="2" class="cell" fill="#FDECEC" stroke="#C30B0A"/>
-    <text x="1007" y="139" class="ct" text-anchor="middle" fill="#A30908">0.1477</text>
-    <text x="1007" y="166" class="shape" text-anchor="middle">(2×1)</text>
-    <foreignObject x="1060" y="106.82" width="156" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#8A8378;font-weight:400" data-tex="(0.5316 - 1)\cdot\sigma'"></div></foreignObject>
-  </g>
-
-  <foreignObject x="600" y="180" width="360" height="52">
-    <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\boldsymbol\delta^{(1)} = \left(\mathbf W^{(2)\top}\boldsymbol\delta^{(2)}\right)\odot\sigma'\!\left(\mathbf z^{(1)}\right)"></div>
-  </foreignObject>
-  <g data-key="d1e" data-only="1">
-    <foreignObject x="887" y="194.82" width="81" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;justify-content:flex-end" data-tex="\boldsymbol\delta^{(1)} ="></div></foreignObject>
-    <rect x="980" y="184" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="201" class="qt" text-anchor="middle">?</text>
-    <rect x="980" y="210" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="227" class="qt" text-anchor="middle">?</text>
-    <text x="1007" y="254" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <g data-key="d1" data-only="1">
-    <foreignObject x="887" y="194.82" width="81" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#A30908;font-weight:600;justify-content:flex-end" data-tex="\boldsymbol\delta^{(1)} ="></div></foreignObject>
-    <rect x="980" y="184" width="54" height="26" rx="2" class="cell" fill="#FDECEC" stroke="#C30B0A"/>
-    <text x="1007" y="201" class="ct" text-anchor="middle" fill="#A30908">−0.0072</text>
-    <rect x="980" y="210" width="54" height="26" rx="2" class="cell" fill="#FDECEC" stroke="#C30B0A"/>
-    <text x="1007" y="227" class="ct" text-anchor="middle" fill="#A30908">0.0300</text>
-    <text x="1007" y="254" class="shape" text-anchor="middle">(2×1)</text>
-    <text x="1060" y="215" class="cap">в 5–15 раз мельче</text>
-  </g>
-
-  <foreignObject x="600" y="268" width="360" height="52">
-    <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\nabla \mathbf W^{(2)} = \boldsymbol\delta^{(2)}\left(\mathbf h^{(1)}\right)^{\top}"></div>
-  </foreignObject>
-  <g data-key="gW2e" data-only="1">
-    <foreignObject x="868" y="282.82" width="100" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;justify-content:flex-end" data-tex="\nabla\mathbf W^{(2)} ="></div></foreignObject>
-    <rect x="980" y="272" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="289" class="qt" text-anchor="middle">?</text>
-    <rect x="1034" y="272" width="54" height="26" rx="2" class="empty"/>
-    <text x="1061" y="289" class="qt" text-anchor="middle">?</text>
-    <rect x="980" y="298" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="315" class="qt" text-anchor="middle">?</text>
-    <rect x="1034" y="298" width="54" height="26" rx="2" class="empty"/>
-    <text x="1061" y="315" class="qt" text-anchor="middle">?</text>
-    <text x="1034" y="342" class="shape" text-anchor="middle">(2×2)</text>
-  </g>
-  <g data-key="gW2" data-only="1">
-    <foreignObject x="868" y="282.82" width="100" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#A30908;font-weight:600;justify-content:flex-end" data-tex="\nabla\mathbf W^{(2)} ="></div></foreignObject>
-    <rect x="980" y="272" width="54" height="26" rx="2" class="cell" fill="#FDECEC" stroke="#C30B0A"/>
-    <text x="1007" y="289" class="ct" text-anchor="middle" fill="#A30908">−0.0588</text>
-    <rect x="1034" y="272" width="54" height="26" rx="2" class="cell" fill="#FDECEC" stroke="#C30B0A"/>
-    <text x="1061" y="289" class="ct" text-anchor="middle" fill="#A30908">−0.0681</text>
-    <rect x="980" y="298" width="54" height="26" rx="2" class="cell" fill="#FDECEC" stroke="#C30B0A"/>
-    <text x="1007" y="315" class="ct" text-anchor="middle" fill="#A30908">0.0744</text>
-    <rect x="1034" y="298" width="54" height="26" rx="2" class="cell" fill="#FDECEC" stroke="#C30B0A"/>
-    <text x="1061" y="315" class="ct" text-anchor="middle" fill="#A30908">0.0863</text>
-    <text x="1034" y="342" class="shape" text-anchor="middle">(2×2)</text>
-    <foreignObject x="1100" y="268.82" width="165" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#8A8378;font-weight:400" data-tex="-0.1166\cdot 0.5037"></div></foreignObject>
-  </g>
-
-  <foreignObject x="600" y="356" width="360" height="52">
-    <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\nabla \mathbf W^{(1)} = \boldsymbol\delta^{(1)}\left(\mathbf x\right)^{\top}"></div>
-  </foreignObject>
-  <g data-key="gW1e" data-only="1">
-    <foreignObject x="868" y="370.82" width="100" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;justify-content:flex-end" data-tex="\nabla\mathbf W^{(1)} ="></div></foreignObject>
-    <rect x="980" y="360" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="377" class="qt" text-anchor="middle">?</text>
-    <rect x="1034" y="360" width="54" height="26" rx="2" class="empty"/>
-    <text x="1061" y="377" class="qt" text-anchor="middle">?</text>
-    <rect x="980" y="386" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="403" class="qt" text-anchor="middle">?</text>
-    <rect x="1034" y="386" width="54" height="26" rx="2" class="empty"/>
-    <text x="1061" y="403" class="qt" text-anchor="middle">?</text>
-    <text x="1034" y="430" class="shape" text-anchor="middle">(2×2)</text>
-  </g>
-  <g data-key="gW1" data-only="1">
-    <foreignObject x="868" y="370.82" width="100" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#A30908;font-weight:600;justify-content:flex-end" data-tex="\nabla\mathbf W^{(1)} ="></div></foreignObject>
-    <rect x="980" y="360" width="54" height="26" rx="2" class="cell" fill="#FDECEC" stroke="#C30B0A"/>
-    <text x="1007" y="377" class="ct" text-anchor="middle" fill="#A30908">−0.0036</text>
-    <rect x="1034" y="360" width="54" height="26" rx="2" class="cell" fill="#FDECEC" stroke="#C30B0A"/>
-    <text x="1061" y="377" class="ct" text-anchor="middle" fill="#A30908">−0.0058</text>
-    <rect x="980" y="386" width="54" height="26" rx="2" class="cell" fill="#FDECEC" stroke="#C30B0A"/>
-    <text x="1007" y="403" class="ct" text-anchor="middle" fill="#A30908">0.0150</text>
-    <rect x="1034" y="386" width="54" height="26" rx="2" class="cell" fill="#FDECEC" stroke="#C30B0A"/>
-    <text x="1061" y="403" class="ct" text-anchor="middle" fill="#A30908">0.0240</text>
-    <text x="1034" y="430" class="shape" text-anchor="middle">(2×2)</text>
-    <text x="1100" y="377" class="cap">на порядок мельче,</text>
-    <text x="1100" y="397" class="cap">чем во втором слое</text>
-  </g>
-
-  <foreignObject x="600" y="444" width="360" height="52">
-    <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\mathbf W^{(2)} \leftarrow \mathbf W^{(2)} - \eta\,\nabla \mathbf W^{(2)}"></div>
-  </foreignObject>
-  <g data-key="uWe" data-only="1">
-    <foreignObject x="868" y="458.82" width="100" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;justify-content:flex-end" data-tex="\mathbf W^{(2)} ="></div></foreignObject>
-    <rect x="980" y="448" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="465" class="qt" text-anchor="middle">?</text>
-    <rect x="1034" y="448" width="54" height="26" rx="2" class="empty"/>
-    <text x="1061" y="465" class="qt" text-anchor="middle">?</text>
-    <rect x="980" y="474" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="491" class="qt" text-anchor="middle">?</text>
-    <rect x="1034" y="474" width="54" height="26" rx="2" class="empty"/>
-    <text x="1061" y="491" class="qt" text-anchor="middle">?</text>
-    <text x="1034" y="518" class="shape" text-anchor="middle">(2×2)</text>
-  </g>
-  <g data-key="uW" data-only="1">
-    <foreignObject x="868" y="458.82" width="100" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#4C8316;font-weight:600;justify-content:flex-end" data-tex="\mathbf W^{(2)} ="></div></foreignObject>
-    <rect x="980" y="448" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1007" y="465" class="ct" text-anchor="middle" fill="#4C8316">0.5294</text>
-    <rect x="1034" y="448" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1061" y="465" class="ct" text-anchor="middle" fill="#4C8316">−0.2659</text>
-    <rect x="980" y="474" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1007" y="491" class="ct" text-anchor="middle" fill="#4C8316">0.1628</text>
-    <rect x="1034" y="474" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1061" y="491" class="ct" text-anchor="middle" fill="#4C8316">0.5568</text>
-    <text x="1034" y="518" class="shape" text-anchor="middle">(2×2)</text>
-    <foreignObject x="1100" y="444.82" width="202" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#8A8378;font-weight:400" data-tex="0.50 - 0.5\cdot(-0.059)"></div></foreignObject>
-  </g>
-
-  <foreignObject x="600" y="532" width="360" height="52">
-    <div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-sm" data-tex="\mathbf b^{(2)} \leftarrow \mathbf b^{(2)} - \eta\,\boldsymbol\delta^{(2)}"></div>
-  </foreignObject>
-  <g data-key="ube" data-only="1">
-    <foreignObject x="868" y="546.82" width="100" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C9C2B8;font-weight:600;justify-content:flex-end" data-tex="\mathbf b^{(2)} ="></div></foreignObject>
-    <rect x="980" y="536" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="553" class="qt" text-anchor="middle">?</text>
-    <rect x="980" y="562" width="54" height="26" rx="2" class="empty"/>
-    <text x="1007" y="579" class="qt" text-anchor="middle">?</text>
-    <text x="1007" y="606" class="shape" text-anchor="middle">(2×1)</text>
-  </g>
-  <g data-key="ub" data-only="1">
-    <foreignObject x="868" y="546.82" width="100" height="31"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#4C8316;font-weight:600;justify-content:flex-end" data-tex="\mathbf b^{(2)} ="></div></foreignObject>
-    <rect x="980" y="536" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1007" y="553" class="ct" text-anchor="middle" fill="#4C8316">0.1083</text>
-    <rect x="980" y="562" width="54" height="26" rx="2" class="cell" fill="#EDF7DD" stroke="#73B222"/>
-    <text x="1007" y="579" class="ct" text-anchor="middle" fill="#4C8316">0.0761</text>
-    <text x="1007" y="606" class="shape" text-anchor="middle">(2×1)</text>
-    <text x="1060" y="559" class="cap">смещения той же</text>
-    <text x="1060" y="579" class="cap">формулой</text>
-  </g>
-
-  <text x="40" y="780" class="legend">синий: сеть и её структура · жёлтый: веса · зелёный: значения прямого прохода и результат шага · красный: потери и градиенты</text>
-  <g data-key="panel" data-only="1">
-    <rect x="40" y="616" width="1160" height="140" rx="14" fill="#FAFAF8" stroke="#E4E1D7" stroke-width="1.5"/>
-    <text x="62" y="642" class="panel-label">подстановка чисел на этом шаге</text>
-  </g>
-  <g data-key="nf1" data-only="1"><foreignObject x="62" y="658" width="1116" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\hat{\mathbf y} = \sigma\!\left(\mathbf W^{(2)}\sigma\!\left(\mathbf W^{(1)}\mathbf x + \mathbf b^{(1)}\right) + \mathbf b^{(2)}\right) \qquad \text{параметров: } 4 + 2 + 4 + 2 = 12"></div></foreignObject></g>
-  <g data-key="nf2" data-only="1"><foreignObject x="62" y="658" width="1116" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\mathbf h^{(1)} = (0.5037,\ 0.5842), \quad \hat{\mathbf y} = (0.5316,\ 0.6459), \quad E = \tfrac{1}{2}\bigl[(0.5316 - 1)^2 + (0.6459 - 0)^2\bigr] = 0.3183"></div></foreignObject></g>
-  <g data-key="nf3" data-only="1"><foreignObject x="62" y="658" width="1116" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="w \leftarrow w - \eta\,\frac{\partial E}{\partial w} \qquad \text{нужно } \frac{\partial E}{\partial w} \text{ для каждого из 12 параметров}"></div></foreignObject></g>
-  <g data-key="nf4" data-only="1"><foreignObject x="62" y="658" width="1116" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\delta^{(2)}_1 = \bigl(\hat{y}_1 - y_1\bigr)\,\hat{y}_1\bigl(1 - \hat{y}_1\bigr) = (0.5316 - 1)\cdot 0.5316\cdot 0.4684 = -0.1166"></div></foreignObject></g>
-  <g data-key="nf5" data-only="1"><foreignObject x="62" y="658" width="1116" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\delta^{(1)}_1 = \bigl(w^{(2)}_{11}\delta^{(2)}_1 + w^{(2)}_{21}\delta^{(2)}_2\bigr)\,h^{(1)}_1\bigl(1 - h^{(1)}_1\bigr) = \bigl(0.5\cdot(-0.1166) + 0.2\cdot 0.1477\bigr)\cdot 0.25 = -0.0072"></div></foreignObject></g>
-  <g data-key="nf7" data-only="1"><foreignObject x="62" y="658" width="1116" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="\frac{\partial E}{\partial w^{(1)}_{11}} = \delta^{(1)}_1\,x_1 = -0.0072\cdot 0.5 = -0.0036 \qquad \text{в 16 раз мельче}"></div></foreignObject></g>
-  <g data-key="nf8" data-only="1"><foreignObject x="62" y="658" width="1116" height="86"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-center svg-math-sm" data-tex="w^{(2)}_{11} = 0.50 - 0.5\cdot(-0.0588) = 0.5294, \qquad E:\ 0.3183 \;\rightarrow\; 0.2896"></div></foreignObject></g>
-</svg>
-  </div>
-
-  <div class="stage-bar">
-    <button type="button" data-nav="prev">← Назад</button>
-    <button type="button" data-nav="next">Далее →</button>
-    <div class="stage-progress"></div>
-    <div class="stage-counter"></div>
-  </div>
-
-  <div class="stage-notes">
-    <div class="step-panel" data-on="net d2e d1e gW2e gW1e uWe ube nf1 panel" data-focus="net">
-      <div class="step-kicker">Шаг 1 · что настраиваем</div>
-      <h4>Двенадцать чисел, и все они параметры</h4>
-      <p>Восемь весов на рёбрах и четыре смещения. Функция потерь зависит от всех
-      двенадцати сразу, то есть градиент здесь это вектор длины 12. Справа шесть
-      пустых блоков: это те матрицы, которые нам предстоит заполнить.</p>
-    </div>
-    <div class="step-panel" data-on="net fwd d2e d1e gW2e gW1e uWe ube nf2 panel" data-focus="fwd">
-      <div class="step-kicker">Шаг 2 · прямой проход</div>
-      <h4>Считаем предсказание и ошибку</h4>
-      <p>Числа текут слева направо: <span class="math-inline" data-tex="\mathbf h^{(1)} = (0.5037, 0.5842)"></span>, затем
-      <span class="math-inline" data-tex="\hat{\mathbf y} = (0.5316, 0.6459)"></span>. Цель: <span class="math-inline" data-tex="(1, 0)"></span>, промахи в разные
-      стороны, суммарные потери <span class="math-inline" data-tex="E = 0.3183"></span>.</p>
-    </div>
-    <div class="step-panel" data-on="net fwd ask d2e d1e gW2e gW1e uWe ube nf3 panel" data-focus="ask">
-      <div class="step-kicker">Шаг 3 · чего не хватает</div>
-      <h4>Формула шага требует производную по каждому весу</h4>
-      <p>Мы умеем шагать, если знаем <span class="math-inline" data-tex="\partial E/\partial w"></span>
-      для всех параметров. Считать каждую отдельно значит двенадцать проходов по сети
-      здесь и миллион проходов в реальной модели.</p>
-    </div>
-    <div class="step-panel" data-on="net fwd bpath d2 d1e gW2e gW1e uWe ube nf4 panel" data-focus="d2">
-      <div class="step-kicker">Шаг 4 · дельта последнего слоя</div>
-      <h4>Ошибка на выходе, умноженная на наклон сигмоиды</h4>
-      <p><span class="math-inline" data-tex="\boldsymbol\delta^{(2)} = (\hat{\mathbf y} - \mathbf y) \odot \sigma '(\mathbf z^{(2)})"></span>, где
-      <span class="math-inline" data-tex="\sigma'(z) = \sigma(z)\bigl(1-\sigma(z)\bigr)"></span>. Первый выход
-      промахнулся вниз, второй вверх, отсюда разные знаки: −0.1166 и 0.1477.</p>
-    </div>
-    <div class="step-panel" data-on="net bpath d2 d1 gW2e gW1e uWe ube nf5 panel" data-focus="d1">
-      <div class="step-kicker">Шаг 5 · дельта первого слоя</div>
-      <h4>Ту же величину протаскиваем назад через транспонированную матрицу</h4>
-      <p><span class="math-inline" data-tex="\boldsymbol\delta^{(1)} = ((\mathbf W^{(2)})^{\top} \boldsymbol\delta^{(2)}) \odot \sigma '(\mathbf z^{(1)})"></span>. Транспонирование появляется
-      потому, что назад сигнал идёт по тем же рёбрам, но в обратную сторону.
-      Результат уже в 5–15 раз мельче, чем на выходе.</p>
-    </div>
-    <div class="step-panel" data-on="net d2 d1 gW2 gW1e uWe ube" data-focus="gW2">
-      <div class="step-kicker">Шаг 6 · градиент второго слоя</div>
-      <h4>Каждый градиент: «дельта × вход этого ребра»</h4>
-      <p>Внешнее произведение <span class="math-inline" data-tex="\boldsymbol\delta^{(2)}\left(\mathbf h^{(1)}\right)^{\top}"></span>
-      даёт сразу всю матрицу: например,
-      <span class="math-inline" data-tex="\partial E/\partial w^{(2)}_{11} = -0.1166 \cdot 0.5037 = -0.0588"></span>. Знак минус читается
-      буквально: этот вес надо увеличить.</p>
-    </div>
-    <div class="step-panel" data-on="net d1 gW2 gW1 uWe ube nf7 panel" data-focus="gW1">
-      <div class="step-kicker">Шаг 7 · градиент первого слоя</div>
-      <h4>Та же формула, только на входе сами данные</h4>
-      <p><span class="math-inline" data-tex="\nabla \mathbf W^{(1)} = \boldsymbol\delta^{(1)} \mathbf x^{\top}"></span>.
-      Сравните масштабы: 0.06–0.09 во втором слое против 0.004–0.024 в первом.</p>
-      </div>
-    <div class="step-panel" data-on="net fwd res gW2 gW1 uW ub nf8 panel" data-focus="uW">
-      <div class="step-kicker">Шаг 8 · шаг спуска</div>
-      <h4>Та же строка, что и для одного веса, только двенадцать раз</h4>
-      <p>С <span class="math-inline" data-tex="\eta = 0.5"></span>:
-      <span class="math-inline" data-tex="0.50 - 0.5\cdot (-0.0588) = 0.5294"></span>, и так по каждой клетке, включая
-      смещения. Новый прямой проход даёт <span class="math-inline" data-tex="\hat{\mathbf y} = (0.5554, 0.6177)"></span> и
-      <span class="math-inline" data-tex="E = 0.2896"></span>; через 50 итераций <span class="math-inline" data-tex="E = 0.0186"></span>.</p>
-    </div>
-  </div>
-</div>
-<p class="stage-hint">Наведите фокус на сцену и используйте стрелки ← → для навигации.</p>
-
-<p>
-  Сравните три задачи, которые мы решили одной и той же формулой:
+  Сравните две задачи, которые мы решили одной и той же формулой:
 </p>
 
 <table class="shape-table">
   <tr><th>Модель</th><th>Предсказание</th><th>Потери</th><th>Градиент по весу</th><th>Шаг</th></tr>
-  <tr><td>Линейная регрессия</td><td><span class="math-inline" data-tex="\hat{y} = wx"></span></td><td>MSE</td><td><span class="math-inline" data-tex="-2x(y - \hat{y})"></span></td><td rowspan="3"><span class="math-inline" data-tex="w \leftarrow w - \eta\,\nabla L"></span></td></tr>
-  <tr><td>Логистическая регрессия</td><td><span class="math-inline" data-tex="\hat{y} = \sigma(wx)"></span></td><td>log loss</td><td><span class="math-inline" data-tex="(\hat{y} - y)\,x"></span></td></tr>
-  <tr><td>Сеть 2-2-2</td><td>два слоя с сигмоидами</td><td><span class="math-inline" data-tex="\tfrac{1}{2}\|\hat{\mathbf y} - \mathbf y\|^2"></span></td><td><span class="math-inline" data-tex="\boldsymbol\delta^{(l)} \bigl(\mathbf h^{(l-1)}\bigr)^{\top}"></span> из бэкпропа</td></tr>
+  <tr><td>Линейная регрессия</td><td><span class="math-inline" data-tex="\hat{y} = wx"></span></td><td>MSE</td><td><span class="math-inline" data-tex="-2x(y - \hat{y})"></span></td><td rowspan="2"><span class="math-inline" data-tex="w \leftarrow w - \eta\,\nabla L"></span></td></tr>
+  <tr><td>Сеть 2-2-2</td><td>два слоя с сигмоидами</td><td><span class="math-inline" data-tex="\tfrac{1}{2}\|\hat{\mathbf y} - \mathbf y\|^2"></span></td><td>считает бэкпроп</td></tr>
 </table>
 
 <div class="callout">
   <strong>Главная мысль части:</strong> нейросеть не требует нового метода
-  оптимизации, она требует эффективного способа посчитать градиент. Как только
-  бэкпроп его выдал, обучение сети становится той же арифметикой, что и первый шаг
-  из части 3.
+  оптимизации. Как только двенадцать производных посчитаны, обучение сети становится той же
+  арифметикой, что и первый шаг из части 3.
 </div>
+
+---
+
+## Часть 8. Всё то же на NumPy
+
+<p>
+  Весь код статьи умещается на одном экране. Он считает те же данные, поэтому числа
+  в комментариях совпадают с числами в сценах выше: четыре шага с <span class="math-inline" data-tex="\eta = 0.1"></span>
+  приводят к 1.5, расходимость при <span class="math-inline" data-tex="\eta = 0.55"></span> доходит до −13.4,
+  а по карте спуск идёт 237 итераций без инерции и 48 с ней.
+</p>
+
+<pre><code>import numpy as np
+
+# Данные из части 1
+x = np.array([1.0, 2.0])
+y = np.array([2.0, 3.0])
+
+# Один параметр: y_hat = w * x (части 1-3)
+def loss(w):
+    return np.mean((y - w * x) ** 2)
+
+def grad(w):
+    return np.mean(-2 * x * (y - w * x))
+
+w, eta = 0.0, 0.1
+for t in range(4):
+    w = w - eta * grad(w)
+print(round(w, 3), round(loss(w), 3))  # 1.5 0.125
+
+# Расходимость выше порога eta = 0.4
+w = 0.0
+for t in range(4):
+    w = w - 0.55 * grad(w)
+print(round(w, 1))  # -13.4
+
+# Два параметра: y_hat = w0 + w1 * x (части 4-5)
+X = np.column_stack([np.ones_like(x), x])  # столбец единиц и признак
+best = np.linalg.solve(X, y)               # минимум (1, 1), для проверки
+
+def grad2(theta):
+    return np.mean(-2 * X * (y - X @ theta)[:, None], axis=0)
+
+def descend(eta, alpha=0.0, tol=0.01, max_steps=10_000):
+    """Число итераций до окрестности минимума."""
+    theta, v = np.zeros(2), np.zeros(2)
+    for t in range(1, max_steps + 1):
+        v = alpha * v + eta * grad2(theta)
+        theta = theta - v
+        if np.linalg.norm(theta - best) &lt; tol:
+            return t
+    return None
+
+print(grad2(np.zeros(2)))       # [-5. -8.]
+print(descend(0.1))             # 237
+print(descend(0.1, alpha=0.9))  # 48
+print(descend(0.28))            # 84
+
+# SGD: один объект за шаг, объекты по очереди (часть 6)
+w, trace = 0.0, []
+for t in range(40):
+    i = t % 2
+    g = -2 * x[i] * (y[i] - w * x[i])
+    w = w - 0.1 * g
+    trace.append(round(float(w), 3))
+print(trace[:4])   # [0.4, 1.28, 1.424, 1.485]
+print(trace[-2:])  # [1.619, 1.524]</code></pre>
+
+<p>
+  Смена модели меняет только функцию <code>grad</code>. Цикл, скорость обучения и инерция
+  ничего не знают о том, какая модель стоит внутри. Для настоящих сетей <code>grad</code>
+  считает бэкпроп, а цикл остаётся этим же.
+</p>
 
 ---
 
@@ -2956,12 +2080,10 @@
   <li><strong>Стохастичность снижает цену шага:</strong> градиент
   по мини-батчу дешевле и шумнее; шум приходится гасить убыванием
   <span class="math-inline" data-tex="\eta"></span>.</li>
-  <li><strong>Смена задачи меняет только две формулы:</strong> предсказание и потери.
-  У линейной регрессии градиент равен <span class="math-inline" data-tex="-2x(y-\hat{y})"></span>,
-  у логистической <span class="math-inline" data-tex="(\hat{y}-y)x"></span>; правило
-  обновления одно и то же.</li>
-  <li><strong>Бэкпроп и спуск это разные вещи:</strong> первый вычисляет градиент,
-  второй решает, что с ним делать. Для сети шаг выглядит ровно так же, как для
+  <li><strong>Смена модели меняет только две формулы:</strong> предсказание и потери.
+  У линейной регрессии градиент равен <span class="math-inline" data-tex="-2x(y-\hat{y})"></span>;
+  правило обновления от модели не зависит.</li>
+  <li><strong>Для сети шаг выглядит ровно так же,</strong> как для
   одного веса, просто выполняется для всех параметров сразу.</li>
 </ol>
 
@@ -2976,11 +2098,669 @@
 <p class="tiny">
   Все числа в статье посчитаны на данных
   <span class="math-inline" data-tex="x = (1, 2)"></span>,
-  <span class="math-inline" data-tex="y = (2, 3)"></span> (регрессия), на одном
-  объекте <span class="math-inline" data-tex="x = -5,\ y = 1"></span> (логистическая
-  регрессия) и на сети 2-2-2 с входом <span class="math-inline" data-tex="(0.5, 0.8)"></span>
+  <span class="math-inline" data-tex="y = (2, 3)"></span> (регрессия) и на сети 2-2-2 с входом <span class="math-inline" data-tex="(0.5, 0.8)"></span>
   и целью <span class="math-inline" data-tex="(1, 0)"></span>, те же веса, что в
   статье про бэкпроп. Градиенты проверены сравнением с численными производными
   (конечные разности, расхождение порядка <span class="math-inline" data-tex="10^{-11}"></span>). Данные учебные и подобраны так, чтобы все промежуточные величины
   помещались на экран.
 </p>
+
+<script>
+(function () {
+  var NS = 'http://www.w3.org/2000/svg';
+  var BLUE = '#3576C0', YELLOW = '#C29E08', GREEN = '#73B222', RED = '#C30B0A', GRAY = '#5E5850', MUTED = '#8A8378', LEVEL = '#C9BE7A';
+  var X = [1, 2], Y = [2, 3], clipId = 0;
+
+  function $(id) { return document.getElementById(id); }
+  function el(n, a, p) {
+    var e = document.createElementNS(NS, n);
+    for (var k in a) e.setAttribute(k, a[k]);
+    if (p) p.appendChild(e);
+    return e;
+  }
+  function txt(p, x, y, t, o) {
+    o = o || {};
+    var e = el('text', {x: x, y: y, 'font-size': o.s || 13, fill: o.c || GRAY, 'text-anchor': o.a || 'start', 'font-weight': o.w || 400}, p);
+    if (o.halo) { e.setAttribute('paint-order', 'stroke'); e.setAttribute('stroke', '#FFFFFF'); e.setAttribute('stroke-width', 3); }
+    e.textContent = t;
+    return e;
+  }
+  function clear(n) { while (n.firstChild) n.removeChild(n.firstChild); }
+  function num(v, d) {
+    if (d === undefined) d = 2;
+    var s = Math.abs(v).toFixed(d);
+    return (v < 0 && +s !== 0 ? '−' : '') + s;
+  }
+  function tnum(v, d) { return num(v, d).replace('−', '-'); }
+  function paren(v, d) { return v < 0 ? '(' + tnum(v, d) + ')' : tnum(v, d); }
+  function tex(node, s, display) {
+    if (window.katex) {
+      try { window.katex.render(s, node, {throwOnError: false, strict: 'ignore', displayMode: !!display}); return; } catch (e) {}
+    }
+    node.textContent = s;
+  }
+  function texLabel(p, x, y, s, o) {
+    o = o || {};
+    var w = o.w || 60, h = 28;
+    var fo = el('foreignObject', {x: o.a === 'end' ? x - w : x, y: y - 19, width: w, height: h}, p);
+    var d = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
+    d.setAttribute('class', 'svg-math svg-math-fit');
+    d.setAttribute('style', 'font-size:' + (o.s || 13) + 'px;color:' + (o.c || MUTED) + ';' + (o.a === 'end' ? 'justify-content:flex-end;' : ''));
+    tex(d, s);
+    fo.appendChild(d);
+  }
+  function plot(P) {
+    P.sx = function (v) { return P.l + (v - P.x0) / (P.x1 - P.x0) * (P.r - P.l); };
+    P.sy = function (v) { return P.b - (v - P.y0) / (P.y1 - P.y0) * (P.b - P.t); };
+    return P;
+  }
+  function layers(svg, P) {
+    var id = 'gdclip' + (++clipId), defs = el('defs', {}, svg), c = el('clipPath', {id: id}, defs);
+    el('rect', {x: P.l, y: P.t - 2, width: P.r - P.l + 2, height: P.b - P.t + 4}, c);
+    P.base = el('g', {'clip-path': 'url(#' + id + ')'}, svg);
+    P.dyn = el('g', {'clip-path': 'url(#' + id + ')'}, svg);
+    P.top = el('g', {}, svg);
+    P.clip = id;
+    return P;
+  }
+  function axes(p, P, o) {
+    var ya = !o.bottom && P.y0 <= 0 && P.y1 >= 0 ? P.sy(0) : P.b;
+    var xa = P.x0 <= 0 && P.x1 >= 0 ? P.sx(0) : P.l;
+    el('line', {x1: P.l, y1: ya, x2: P.r, y2: ya, stroke: GRAY, 'stroke-width': 1.3}, p);
+    el('line', {x1: xa, y1: P.t, x2: xa, y2: P.b, stroke: GRAY, 'stroke-width': 1.3}, p);
+    (o.xt || []).forEach(function (v) {
+      el('line', {x1: P.sx(v), y1: ya, x2: P.sx(v), y2: ya + 4, stroke: GRAY}, p);
+      txt(p, P.sx(v), Math.min(ya + 17, P.b + 17), o.xf ? o.xf(v) : v, {c: MUTED, a: 'middle', s: 12});
+    });
+    (o.yt || []).forEach(function (v) {
+      el('line', {x1: xa - 4, y1: P.sy(v), x2: xa, y2: P.sy(v), stroke: GRAY}, p);
+      if (o.ytex) texLabel(p, xa - 6, P.sy(v) + 4, o.ytex(v), {a: 'end', s: 12, w: 44});
+      else txt(p, xa - 7, P.sy(v) + 4, o.yf ? o.yf(v) : v, {c: MUTED, a: 'end', s: 12});
+    });
+    if (o.xl) texLabel(p, P.r + 4, ya + 5, o.xl);
+    if (o.yl) texLabel(p, xa + 6, P.t + 8, o.yl);
+  }
+  function curve(p, P, fn, attrs, a, b) {
+    var pts = [], n = 160;
+    a = a === undefined ? P.x0 : a; b = b === undefined ? P.x1 : b;
+    for (var i = 0; i <= n; i++) { var v = a + (b - a) * i / n; pts.push(P.sx(v).toFixed(1) + ',' + Math.max(-2000, Math.min(4000, P.sy(fn(v)))).toFixed(1)); }
+    var A = {points: pts.join(' '), fill: 'none'};
+    for (var k in attrs) A[k] = attrs[k];
+    return el('polyline', A, p);
+  }
+  function arrow(p, x1, y1, x2, y2, c, w) {
+    var dx = x2 - x1, dy = y2 - y1, L = Math.sqrt(dx * dx + dy * dy);
+    if (L < 1) return;
+    var ux = dx / L, uy = dy / L, s = 8;
+    el('line', {x1: x1, y1: y1, x2: x2 - ux * (s - 1), y2: y2 - uy * (s - 1), stroke: c, 'stroke-width': w || 2.4}, p);
+    el('polygon', {points: x2 + ',' + y2 + ' ' + (x2 - ux * s - uy * s * .55) + ',' + (y2 - uy * s + ux * s * .55) + ' ' + (x2 - ux * s + uy * s * .55) + ',' + (y2 - uy * s - ux * s * .55), fill: c}, p);
+  }
+  function dot(p, x, y, r, c) { return el('circle', {cx: x, cy: y, r: r, fill: c, stroke: '#FFFFFF', 'stroke-width': 1.2}, p); }
+  function setText(id, s) { var n = $(id); if (n) n.textContent = s; }
+  function timer() {
+    var h = null;
+    return {
+      start: function (fn, ms) { this.stop(); h = setInterval(fn, ms); },
+      stop: function () { if (h) clearInterval(h); h = null; },
+      on: function () { return h !== null; }
+    };
+  }
+
+  var L1d = function (w) { return 2.5 * w * w - 8 * w + 6.5; };
+
+  /* ---------- 1. Подбираем w вручную ---------- */
+  function fit() {
+    var svg = $('gdFitSvg');
+    if (!svg) return;
+    var A = plot({l: 50, r: 330, t: 30, b: 262, x0: 0, x1: 2.6, y0: -1.5, y1: 4.5});
+    var B = plot({l: 410, r: 690, t: 30, b: 262, x0: -0.6, x1: 3.6, y0: 0, y1: 11.5});
+    txt(svg, 50, 20, 'Данные и прямая', {c: '#111111', w: 700, s: 14});
+    txt(svg, 410, 20, 'Ошибка этой прямой как точка на параболе', {c: '#111111', w: 700, s: 14});
+    axes(svg, A, {xt: [1, 2], yt: [1, 2, 3, 4], xl: 'x', yl: 'y'});
+    axes(svg, B, {xt: [1, 2, 3], yt: [2, 4, 6, 8, 10], xl: 'w', yl: 'L'});
+    layers(svg, A); layers(svg, B);
+    curve(B.base, B, L1d, {stroke: YELLOW, 'stroke-width': 2.4});
+    var s = $('gdFitW');
+    function update() {
+      var w = +s.value, g = A.dyn, h = B.dyn;
+      clear(g); clear(h); clear(A.top); clear(B.top);
+      el('line', {x1: A.sx(0), y1: A.sy(0), x2: A.sx(2.6), y2: A.sy(2.6 * w), stroke: BLUE, 'stroke-width': 2.4}, g);
+      var yh = X.map(function (x) { return w * x; });
+      X.forEach(function (x, i) {
+        el('line', {x1: A.sx(x), y1: A.sy(Y[i]), x2: A.sx(x), y2: A.sy(yh[i]), stroke: RED, 'stroke-width': 2.4}, g);
+        dot(g, A.sx(x), A.sy(Y[i]), 6, BLUE);
+        var my = Math.max(A.t + 12, Math.min(A.b - 4, A.sy((Y[i] + yh[i]) / 2) + 4));
+        txt(A.top, A.sx(x) + 8, my, num(Y[i] - yh[i]), {c: RED, halo: true});
+      });
+      var L = L1d(w), best = Math.abs(w - 1.6) < 0.026;
+      el('line', {x1: B.sx(w), y1: B.sy(L), x2: B.sx(w), y2: B.sy(0), stroke: '#B9C9DA', 'stroke-width': 1.2, 'stroke-dasharray': '4 3'}, h);
+      dot(h, B.sx(w), B.sy(L), best ? 7 : 6, best ? GREEN : YELLOW);
+      var lx = w > 2.2 ? B.sx(w) - 10 : B.sx(w) + 10;
+      txt(B.top, lx, Math.max(B.t + 14, B.sy(L) - 8), 'L = ' + num(L), {c: '#111111', a: w > 2.2 ? 'end' : 'start', halo: true});
+      setText('gdFitWOut', num(w));
+      setText('gdFitPred', '(' + num(yh[0]) + ', ' + num(yh[1]) + ')');
+      setText('gdFitMiss', '(' + num(Y[0] - yh[0]) + ', ' + num(Y[1] - yh[1]) + ')');
+      setText('gdFitLoss', num(L, best ? 2 : 2));
+      var a = Math.pow(Y[0] - yh[0], 2), b = Math.pow(Y[1] - yh[1], 2);
+      tex($('gdFitCalc'), 'L = \\tfrac{1}{2}\\bigl[(2 - ' + paren(w) + '\\cdot 1)^2 + (3 - ' + paren(w) + '\\cdot 2)^2\\bigr] = \\tfrac{1}{2}\\bigl[' + tnum(a) + ' + ' + tnum(b) + '\\bigr] = ' + tnum(L));
+      setText('gdFitStatus', best ? 'Это дно параболы: лучшая прямая через начало координат. Ноль здесь недостижим, потому что такая прямая не проходит через обе точки.' : (L1d(w + 0.05) < L ? 'Вправо потери падают: увеличивайте w.' : 'Вправо потери растут: уменьшайте w.'));
+    }
+    s.addEventListener('input', update);
+    $('gdFitBest').addEventListener('click', function () { s.value = 1.6; update(); });
+    update();
+  }
+
+  /* ---------- 2. Скорость обучения на параболе ---------- */
+  function rate() {
+    var svg = $('gdRateSvg');
+    if (!svg) return;
+    var A = plot({l: 40, r: 410, t: 30, b: 262, x0: -2.2, x1: 4.8, y0: 0, y1: 24});
+    txt(svg, 40, 20, 'Спуск по параболе', {c: '#111111', w: 700, s: 14});
+    txt(svg, 460, 20, 'Потери по итерациям', {c: '#111111', w: 700, s: 14});
+    axes(svg, A, {xt: [-2, -1, 1, 2, 3, 4], xf: function (v) { return num(v, 0); }, yt: [5, 10, 15, 20], xl: 'w', yl: 'L'});
+    layers(svg, A);
+    curve(A.base, A, L1d, {stroke: YELLOW, 'stroke-width': 2.4});
+    el('line', {x1: A.sx(1.6), y1: A.sy(0), x2: A.sx(1.6), y2: A.sy(3), stroke: GREEN, 'stroke-width': 1.5, 'stroke-dasharray': '4 3'}, A.base);
+    var right = el('g', {}, svg);
+    var eta = $('gdRateEta'), st = $('gdRateStart'), run = timer(), S;
+    function reset() {
+      run.stop(); $('gdRateRun').textContent = 'Запуск'; $('gdRateStep').disabled = false; $('gdRateRun').disabled = false;
+      S = {w: +st.value, h: [+st.value], calc: ''};
+      draw();
+    }
+    function regime(e) {
+      if (Math.abs(e - 0.2) < 1e-9) return 'one';
+      if (e < 0.2) return 'mono';
+      if (e < 0.4 - 1e-9) return 'zig';
+      if (Math.abs(e - 0.4) < 1e-9) return 'edge';
+      return 'boom';
+    }
+    function done() { return Math.abs(S.w - 1.6) < 5e-4 || Math.abs(S.w) > 1e4; }
+    function step() {
+      if (done()) { run.stop(); $('gdRateRun').textContent = 'Запуск'; return; }
+      var e = +eta.value, g = 5 * S.w - 8, n = S.w - e * g;
+      S.calc = 'w_{' + (S.h.length) + '} = ' + tnum(S.w) + ' - ' + tnum(e) + '\\cdot ' + paren(g) + ' = ' + tnum(n);
+      S.w = n; S.h.push(n);
+      if (S.h.length > 200) run.stop();
+      draw();
+      if (done()) { run.stop(); $('gdRateRun').textContent = 'Запуск'; if (Math.abs(S.w) > 1e4) { $('gdRateStep').disabled = true; $('gdRateRun').disabled = true; } }
+    }
+    function draw() {
+      var e = +eta.value, r = regime(e), c = {mono: GREEN, one: GREEN, zig: YELLOW, edge: RED, boom: RED}[r];
+      var g = A.dyn; clear(g); clear(right);
+      for (var i = 0; i + 1 < S.h.length && i < 40; i++) {
+        var a = S.h[i], b = S.h[i + 1];
+        if (Math.abs(a) > 200 || Math.abs(b) > 200) break;
+        arrow(g, A.sx(a), A.sy(L1d(a)), A.sx(b), A.sy(L1d(b)), c, 2);
+      }
+      S.h.slice(0, 41).forEach(function (w, i) { if (Math.abs(w) < 200) dot(g, A.sx(w), A.sy(L1d(w)), i === 0 ? 6 : 4, i === 0 ? BLUE : c); });
+      var L0 = L1d(S.h[0]), top = Math.max(1, L0 * 1.15);
+      var B = plot({l: 500, r: 690, t: 30, b: 262, x0: 0, x1: 30, y0: 0, y1: top});
+      var tick = top > 20 ? 10 : top > 10 ? 5 : top > 4 ? 2 : top > 2 ? 1 : 0.5, yt = [];
+      for (var v0 = tick; v0 < top; v0 += tick) yt.push(v0);
+      axes(right, B, {xt: [10, 20, 30], yt: yt, xl: 't', yl: 'L'});
+      var id = 'gdRateClip', defs = el('defs', {}, right), cp = el('clipPath', {id: id}, defs);
+      el('rect', {x: B.l, y: B.t - 2, width: B.r - B.l + 2, height: B.b - B.t + 4}, cp);
+      var q = el('g', {'clip-path': 'url(#' + id + ')'}, right), pts = [];
+      S.h.slice(0, 31).forEach(function (w, t) {
+        var v = Math.min(L1d(w), top * 6);
+        pts.push(B.sx(t).toFixed(1) + ',' + B.sy(v).toFixed(1));
+        dot(q, B.sx(t), B.sy(v), 3, c);
+      });
+      el('polyline', {points: pts.join(' '), fill: 'none', stroke: c, 'stroke-width': 1.8}, q);
+      var w = S.w;
+      setText('gdRateEtaOut', num(e)); setText('gdRateStartOut', num(+st.value, 1));
+      setText('gdRateT', S.h.length - 1);
+      setText('gdRateW', Math.abs(w) > 1e4 ? 'за графиком' : num(w, 3));
+      setText('gdRateD', Math.abs(w) > 1e4 ? 'огромная' : num(5 * w - 8, 3));
+      setText('gdRateL', Math.abs(w) > 1e4 ? 'огромные' : num(L1d(w), 3));
+      setText('gdRateK', num(1 - 5 * e, 2));
+      tex($('gdRateCalc'), S.calc || 'w_0 = ' + tnum(w));
+      setText('gdRateStatus', {
+        mono: 'Промах каждый раз умножается на ' + num(1 - 5 * e) + ': знак сохраняется, спуск подходит к дну с одной стороны.',
+        one: 'Множитель 1 − 5η равен нулю: первый же шаг попадает ровно в минимум. На реальных данных заранее такое η не узнать.',
+        zig: 'Множитель ' + num(1 - 5 * e) + ' отрицательный, по модулю меньше единицы: спуск перелетает дно, а качание затухает.',
+        edge: 'Множитель равен −1: спуск прыгает между двумя точками и никогда не приближается к дну.',
+        boom: 'Множитель ' + num(1 - 5 * e) + ' по модулю больше единицы: каждый промах больше предыдущего, потери растут.'
+      }[r]);
+      document.querySelectorAll('#gdRate .gd-chip').forEach(function (b) { b.classList.toggle('is-on', Math.abs(+b.dataset.eta - e) < 1e-9); });
+    }
+    eta.addEventListener('input', reset);
+    st.addEventListener('input', reset);
+    $('gdRateStep').addEventListener('click', function () { run.stop(); $('gdRateRun').textContent = 'Запуск'; step(); });
+    $('gdRateReset').addEventListener('click', reset);
+    $('gdRateRun').addEventListener('click', function () {
+      if (run.on()) { run.stop(); this.textContent = 'Запуск'; return; }
+      this.textContent = 'Пауза'; run.start(step, 450);
+    });
+    document.querySelectorAll('#gdRate .gd-chip').forEach(function (b) {
+      b.addEventListener('click', function () { eta.value = b.dataset.eta; reset(); });
+    });
+    reset();
+  }
+
+  /* ---------- Карта высот: общая для частей 5 и 6 ---------- */
+  var HL1 = 0.5 * (7 + Math.sqrt(45)), HL2 = 0.5 * (7 - Math.sqrt(45));
+  function L2(a, b) { return 0.5 * (Math.pow(2 - a - b, 2) + Math.pow(3 - a - 2 * b, 2)); }
+  function G2(a, b) { var r1 = 2 - a - b, r2 = 3 - a - 2 * b; return [-(r1 + r2), -(r1 + 2 * r2)]; }
+  function drawMap(svg, P) {
+    axes(svg, P, {xt: [1, 2], yt: [1, 2], xl: 'w_0', yl: 'w_1'});
+    layers(svg, P);
+    var n = Math.sqrt(9 + Math.pow(HL1 - 2, 2)), v1 = [3 / n, (HL1 - 2) / n], v2 = [-v1[1], v1[0]];
+    [0.05, 0.25, 0.75, 1.5, 3, 6.5, 12, 20, 32].forEach(function (c) {
+      var pts = [], r1 = Math.sqrt(2 * c / HL1), r2 = Math.sqrt(2 * c / HL2);
+      for (var i = 0; i <= 120; i++) {
+        var t = i / 120 * 2 * Math.PI, a = 1 + r1 * Math.cos(t) * v1[0] + r2 * Math.sin(t) * v2[0], b = 1 + r1 * Math.cos(t) * v1[1] + r2 * Math.sin(t) * v2[1];
+        pts.push(P.sx(a).toFixed(1) + ',' + P.sy(b).toFixed(1));
+      }
+      el('polyline', {points: pts.join(' '), fill: 'none', stroke: c === 6.5 ? YELLOW : LEVEL, 'stroke-width': c === 6.5 ? 2 : 1.4}, P.base);
+    });
+    dot(P.base, P.sx(1), P.sy(1), 6, GREEN);
+    el('rect', {x: P.l, y: P.t, width: P.r - P.l, height: P.b - P.t, fill: 'transparent', style: 'cursor:crosshair'}, svg).dataset.map = '1';
+  }
+  function mapClick(svg, P, fn) {
+    svg.addEventListener('click', function (e) {
+      var p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY;
+      var q = p.matrixTransform(svg.getScreenCTM().inverse());
+      if (q.x < P.l || q.x > P.r || q.y < P.t || q.y > P.b) return;
+      var a = P.x0 + (q.x - P.l) / (P.r - P.l) * (P.x1 - P.x0), b = P.y0 + (P.b - q.y) / (P.b - P.t) * (P.y1 - P.y0);
+      fn(Math.round(a * 20) / 20, Math.round(b * 20) / 20);
+    });
+  }
+  function pathOn(g, P, pts, c, w, maxDots) {
+    var s = [], lim = 40;
+    for (var i = 0; i < pts.length; i++) {
+      if (Math.abs(pts[i][0]) > lim || Math.abs(pts[i][1]) > lim) break;
+      s.push(P.sx(pts[i][0]).toFixed(1) + ',' + P.sy(pts[i][1]).toFixed(1));
+    }
+    el('polyline', {points: s.join(' '), fill: 'none', stroke: c, 'stroke-width': w}, g);
+    for (var j = 1; j < s.length && j <= maxDots; j++) dot(g, P.sx(pts[j][0]), P.sy(pts[j][1]), 3.4, c);
+  }
+
+  /* ---------- 3. Карта высот и прямая ---------- */
+  function map() {
+    var svg = $('gdMapSvg');
+    if (!svg) return;
+    var P = plot({l: 44, r: 314, t: 30, b: 300, x0: -1, x1: 3, y0: -1, y1: 3});
+    var D = plot({l: 420, r: 690, t: 30, b: 300, x0: 0, x1: 2.6, y0: -1, y1: 5});
+    txt(svg, 44, 20, 'Карта потерь', {c: '#111111', w: 700, s: 14});
+    txt(svg, 420, 20, 'Эта же точка как прямая на данных', {c: '#111111', w: 700, s: 14});
+    drawMap(svg, P);
+    axes(svg, D, {xt: [1, 2], yt: [1, 2, 3, 4], xl: 'x', yl: 'y'});
+    layers(svg, D);
+    var eta = $('gdMapEta'), run = timer(), S, start = [0, 0];
+    function reset() {
+      run.stop(); $('gdMapRun').textContent = 'Запуск'; $('gdMapStep').disabled = false; $('gdMapRun').disabled = false;
+      S = {p: start.slice(), h: [start.slice()], reached: start[0] === 1 && start[1] === 1 ? 0 : null};
+      draw();
+    }
+    function finished() { return S.reached !== null || Math.abs(S.p[0]) > 1e4 || S.h.length > 5000; }
+    function step() {
+      if (finished()) { stopRun(); return; }
+      var e = +eta.value, g = G2(S.p[0], S.p[1]);
+      S.p = [S.p[0] - e * g[0], S.p[1] - e * g[1]];
+      S.h.push(S.p.slice());
+      if (Math.hypot(S.p[0] - 1, S.p[1] - 1) < 0.01) S.reached = S.h.length - 1;
+    }
+    function stopRun() {
+      run.stop(); $('gdMapRun').textContent = 'Запуск';
+      if (finished()) { $('gdMapStep').disabled = true; $('gdMapRun').disabled = true; }
+    }
+    function draw() {
+      var g = P.dyn, d = D.dyn; clear(g); clear(d);
+      var div = Math.abs(S.p[0]) > 1e4 || Math.abs(S.p[1]) > 1e4;
+      pathOn(g, P, S.h, div ? RED : GREEN, 2.2, 12);
+      dot(g, P.sx(S.h[0][0]), P.sy(S.h[0][1]), 6, BLUE);
+      if (!div) dot(g, P.sx(S.p[0]), P.sy(S.p[1]), 5, GREEN);
+      var a = div ? start[0] : S.p[0], b = div ? start[1] : S.p[1];
+      el('line', {x1: D.sx(0), y1: D.sy(a), x2: D.sx(2.6), y2: D.sy(a + 2.6 * b), stroke: BLUE, 'stroke-width': 2.4}, d);
+      X.forEach(function (x, i) {
+        el('line', {x1: D.sx(x), y1: D.sy(Y[i]), x2: D.sx(x), y2: D.sy(a + b * x), stroke: RED, 'stroke-width': 2.2}, d);
+        dot(d, D.sx(x), D.sy(Y[i]), 6, BLUE);
+      });
+      setText('gdMapEtaOut', num(+eta.value));
+      setText('gdMapT', S.h.length - 1);
+      setText('gdMapP', div ? 'за картой' : '(' + num(S.p[0], 3) + ', ' + num(S.p[1], 3) + ')');
+      setText('gdMapL', div ? 'огромные' : num(L2(S.p[0], S.p[1]), 4));
+      var G = G2(S.p[0], S.p[1]);
+      setText('gdMapG', div ? 'огромный' : num(Math.hypot(G[0], G[1]), 4));
+      var msg;
+      if (div) msg = 'При этой скорости спуск расходится: порог для этой карты около 0.29.';
+      else if (S.reached !== null) msg = 'До окрестности минимума (1, 1) радиусом 0.01 спуск дошёл за ' + S.reached + ' итераций.';
+      else if (S.h.length > 5000) msg = 'За 5000 итераций до окрестности минимума спуск не дошёл.';
+      else if (+eta.value > 0.2918) msg = 'Скорость выше порога 0.29: посмотрите, что будет после нескольких шагов.';
+      else msg = 'Сначала спуск быстро падает поперёк долины, потом медленно идёт вдоль её дна. Щёлкните по карте, чтобы выбрать другой старт.';
+      setText('gdMapStatus', msg);
+    }
+    eta.addEventListener('input', reset);
+    mapClick(svg, P, function (a, b) { start = [a, b]; reset(); });
+    $('gdMapStep').addEventListener('click', function () { run.stop(); $('gdMapRun').textContent = 'Запуск'; step(); draw(); if (finished()) stopRun(); });
+    $('gdMapReset').addEventListener('click', function () { start = [0, 0]; reset(); });
+    $('gdMapRun').addEventListener('click', function () {
+      if (run.on()) { run.stop(); this.textContent = 'Запуск'; return; }
+      this.textContent = 'Пауза';
+      run.start(function () {
+        var k = S.h.length < 12 ? 1 : 4;
+        for (var i = 0; i < k; i++) step();
+        draw();
+        if (finished()) stopRun();
+      }, 70);
+    });
+    reset();
+  }
+
+  /* ---------- 4. Цикл обучения рядом с кодом ---------- */
+  function loop() {
+    var svg = $('gdLoopSvg');
+    if (!svg) return;
+    var A = plot({l: 44, r: 324, t: 30, b: 250, x0: 0, x1: 2.6, y0: -0.6, y1: 4.2});
+    var B = plot({l: 410, r: 690, t: 30, b: 250, x0: -0.3, x1: 2.6, y0: 0, y1: 8});
+    txt(svg, 44, 20, 'Данные и модель', {c: '#111111', w: 700, s: 14});
+    txt(svg, 410, 20, 'Парабола потерь', {c: '#111111', w: 700, s: 14});
+    axes(svg, A, {xt: [1, 2], yt: [1, 2, 3, 4], xl: 'x', yl: 'y'});
+    axes(svg, B, {xt: [1, 2], yt: [2, 4, 6, 8], xl: 'w', yl: 'L'});
+    layers(svg, A); layers(svg, B);
+    curve(B.base, B, L1d, {stroke: YELLOW, 'stroke-width': 2.4});
+    var ETA = 0.1, S;
+    var LINES = document.querySelectorAll('#gdLoop .gd-code [data-line]');
+    var NOTES = document.querySelectorAll('#gdLoop .gd-note');
+    function reset() { S = {w: 0, old: null, phase: -1, it: 0, rows: []}; $('gdLoopRows').innerHTML = ''; draw(); }
+    function vals(w) {
+      var yh = X.map(function (x) { return w * x; });
+      return {yh: yh, L: L1d(w), g: 5 * w - 8};
+    }
+    function next() {
+      S.phase++;
+      if (S.phase === 4) { S.phase = 0; S.it++; }
+      if (S.phase === 3) {
+        var v = vals(S.w), n = S.w - ETA * v.g;
+        S.rows.push([S.it, S.w, v.L, v.g, n]);
+        var tr = document.createElement('tr');
+        [S.it, num(S.w, 3), num(v.L, 3), num(v.g, 3), num(n, 3)].forEach(function (c) { var td = document.createElement('td'); td.textContent = c; tr.appendChild(td); });
+        $('gdLoopRows').appendChild(tr);
+        var wrap = $('gdLoopRows').closest('.gd-table-wrap'); wrap.scrollTop = wrap.scrollHeight;
+        S.old = S.w; S.w = n;
+      }
+      draw();
+    }
+    function draw() {
+      var g = A.dyn, h = B.dyn, ph = S.phase; clear(g); clear(h); clear(A.top); clear(B.top);
+      var w = ph === 3 ? S.old : S.w, v = vals(w);
+      el('line', {x1: A.sx(0), y1: A.sy(0), x2: A.sx(2.6), y2: A.sy(2.6 * w), stroke: BLUE, 'stroke-width': ph === 3 ? 1.4 : 2.4, opacity: ph === 3 ? 0.4 : 1}, g);
+      if (ph === 3) el('line', {x1: A.sx(0), y1: A.sy(0), x2: A.sx(2.6), y2: A.sy(2.6 * S.w), stroke: GREEN, 'stroke-width': 2.6}, g);
+      X.forEach(function (x, i) {
+        if (ph >= 1) el('line', {x1: A.sx(x), y1: A.sy(Y[i]), x2: A.sx(x), y2: A.sy(v.yh[i]), stroke: RED, 'stroke-width': 2.4, opacity: ph === 3 ? 0.35 : 1}, g);
+        dot(g, A.sx(x), A.sy(Y[i]), 6, BLUE);
+        if (ph >= 0) el('circle', {cx: A.sx(x), cy: A.sy(v.yh[i]), r: 5, fill: '#FFFFFF', stroke: BLUE, 'stroke-width': 2}, g);
+      });
+      var px = B.sx(w), py = B.sy(v.L);
+      if (ph >= 2) {
+        var d = 0.6;
+        el('line', {x1: B.sx(w - d), y1: B.sy(v.L - d * v.g), x2: B.sx(w + d), y2: B.sy(v.L + d * v.g), stroke: RED, 'stroke-width': 2.4, opacity: ph === 3 ? 0.4 : 1}, h);
+        txt(B.top, Math.min(px + 12, 600), Math.max(B.t + 14, py - 28), 'наклон ' + num(v.g), {c: RED, halo: true});
+      }
+      if (ph === 3) { arrow(h, px, py, B.sx(S.w), B.sy(L1d(S.w)), GREEN, 2.6); dot(h, B.sx(S.w), B.sy(L1d(S.w)), 6, GREEN); }
+      if (ph >= 1 || ph === -1) dot(h, px, py, 6, ph === 3 ? MUTED : YELLOW);
+      if (ph >= 1) txt(B.top, px + 12, py - 6, 'L = ' + num(v.L, 3), {c: '#111111', halo: true});
+      LINES.forEach(function (n) { n.classList.toggle('is-on', +n.dataset.line === ph); });
+      NOTES.forEach(function (n) { n.hidden = +n.dataset.phase !== ph; });
+      setText('gdLoopW', num(S.w, 3)); setText('gdLoopIt', S.it);
+      var tx = '';
+      if (ph === 0) tx = '\\hat y = (' + tnum(w) + '\\cdot 1,\\ ' + tnum(w) + '\\cdot 2) = (' + tnum(v.yh[0]) + ',\\ ' + tnum(v.yh[1]) + ')';
+      if (ph === 1) tx = 'L = \\tfrac{1}{2}\\bigl[(2 - ' + paren(v.yh[0]) + ')^2 + (3 - ' + paren(v.yh[1]) + ')^2\\bigr] = ' + tnum(v.L, 3);
+      if (ph === 2) tx = "L'(w) = \\tfrac{1}{2}\\bigl[-2\\cdot 1\\cdot " + paren(Y[0] - v.yh[0]) + ' - 2\\cdot 2\\cdot ' + paren(Y[1] - v.yh[1]) + '\\bigr] = ' + tnum(v.g, 3);
+      if (ph === 3) tx = 'w = ' + tnum(w, 3) + ' - 0.1\\cdot ' + paren(v.g, 3) + ' = ' + tnum(S.w, 3);
+      if (ph >= 0) tex($('gdLoopNum' + ph), tx, true);
+    }
+    $('gdLoopNext').addEventListener('click', next);
+    $('gdLoopReset').addEventListener('click', reset);
+    reset();
+  }
+
+  /* ---------- 5. Каждый объект тянет к своему минимуму ---------- */
+  function two() {
+    var svg = $('gdTwoSvg');
+    if (!svg) return;
+    var P = plot({l: 44, r: 690, t: 36, b: 262, x0: -0.15, x1: 3.05, y0: 0, y1: 10});
+    var ETA = 0.1, S, run = timer(), mode = 'both';
+    var f1 = function (w) { return Math.pow(2 - w, 2); }, f2 = function (w) { return Math.pow(3 - 2 * w, 2); };
+    var g1 = function (w) { return -2 * (2 - w); }, g2 = function (w) { return -4 * (3 - 2 * w); };
+    txt(svg, 44, 20, 'Потери каждого объекта и их среднее', {c: '#111111', w: 700, s: 14});
+    el('line', {x1: 372, y1: 16, x2: 396, y2: 16, stroke: BLUE, 'stroke-width': 2}, svg); txt(svg, 402, 20, 'объект 1', {s: 12});
+    el('line', {x1: 466, y1: 16, x2: 490, y2: 16, stroke: '#244F81', 'stroke-width': 2, 'stroke-dasharray': '6 4'}, svg); txt(svg, 496, 20, 'объект 2', {s: 12});
+    el('line', {x1: 560, y1: 16, x2: 584, y2: 16, stroke: YELLOW, 'stroke-width': 3.2}, svg); txt(svg, 590, 20, 'среднее', {s: 12});
+    axes(svg, P, {xt: [1, 2, 3], yt: [2, 4, 6, 8, 10], xl: 'w', yl: 'L'});
+    layers(svg, P);
+    var c1 = curve(P.base, P, f1, {stroke: BLUE, 'stroke-width': 2});
+    var c2 = curve(P.base, P, f2, {stroke: '#244F81', 'stroke-width': 2, 'stroke-dasharray': '6 4'});
+    var c3 = curve(P.base, P, L1d, {stroke: YELLOW, 'stroke-width': 3.2});
+    [[2, BLUE, 'минимум объекта 1'], [1.5, '#244F81', 'объекта 2'], [1.6, YELLOW, 'среднего']].forEach(function (m, i) {
+      el('line', {x1: P.sx(m[0]), y1: P.sy(0), x2: P.sx(m[0]), y2: P.sy(0) - 9, stroke: m[1], 'stroke-width': 2.4}, P.base);
+    });
+    var s = $('gdTwoW');
+    function reset(w) { run.stop(); $('gdTwoRun').textContent = 'Запуск'; S = {w: w === undefined ? 0 : w, turn: 0, h: [], calc: ''}; s.value = S.w; draw(); }
+    function current() { return mode === 'both' ? 'both' : mode === 'one' ? 0 : mode === 'two' ? 1 : S.turn % 2; }
+    function step() {
+      var c = current(), w = S.w, g = c === 'both' ? (g1(w) + g2(w)) / 2 : c === 0 ? g1(w) : g2(w), n = w - ETA * g;
+      S.calc = 'w = ' + tnum(w, 3) + ' - 0.1\\cdot ' + paren(g, 3) + ' = ' + tnum(n, 3);
+      S.h.push(w); if (S.h.length > 14) S.h.shift();
+      S.w = n; S.turn++; s.value = n;
+      draw();
+    }
+    function draw() {
+      var g = P.dyn, w = S.w, c = current(); clear(g); clear(P.top);
+      c1.setAttribute('opacity', c === 'both' || c === 0 ? 1 : 0.3);
+      c2.setAttribute('opacity', c === 'both' || c === 1 ? 1 : 0.3);
+      c3.setAttribute('opacity', c === 'both' ? 1 : 0.35);
+      S.h.forEach(function (v, i) { el('circle', {cx: P.sx(v), cy: P.sy(L1d(v)), r: 3, fill: MUTED, opacity: 0.25 + 0.05 * i}, g); });
+      el('line', {x1: P.sx(w), y1: P.t, x2: P.sx(w), y2: P.b, stroke: '#B9C9DA', 'stroke-width': 1.2, 'stroke-dasharray': '4 3'}, g);
+      dot(g, P.sx(w), P.sy(f1(w)), 5, BLUE); dot(g, P.sx(w), P.sy(f2(w)), 5, '#244F81'); dot(g, P.sx(w), P.sy(L1d(w)), 6, YELLOW);
+      var A = g1(w), B = g2(w), M = (A + B) / 2, sc = 24, cl = function (v) { return Math.max(-110, Math.min(110, -v * sc)); };
+      if (c === 'both' || c === 0) arrow(P.top, P.sx(w), 50, P.sx(w) + cl(A), 50, BLUE, 2.6);
+      if (c === 'both' || c === 1) arrow(P.top, P.sx(w), 64, P.sx(w) + cl(B), 64, '#244F81', 2.6);
+      if (c === 'both') arrow(P.top, P.sx(w), 78, P.sx(w) + cl(M), 78, YELLOW, 3);
+      setText('gdTwoWOut', num(w, 3));
+      setText('gdTwoG1', num(A)); setText('gdTwoG2', num(B)); setText('gdTwoGM', num(M));
+      setText('gdTwoNow', c === 'both' ? 'оба объекта' : c === 0 ? 'объект 1' : 'объект 2');
+      tex($('gdTwoCalc'), S.calc || '\\tfrac{1}{2}\\bigl[' + tnum(A) + ' + ' + paren(B) + '\\bigr] = ' + tnum(M));
+      var msg = '';
+      if (mode === 'both') msg = 'Полный градиент: шаги ведут к 1.6 и гаснут сами.';
+      if (mode === 'one') msg = 'Первый объект в одиночку ведёт к w = 2.';
+      if (mode === 'two') msg = 'Второй объект в одиночку ведёт к w = 1.5.';
+      if (mode === 'sgd') msg = S.turn > 30 ? 'Спуск уже качается между 1.524 и 1.619: при постоянной η шум не гаснет.' : 'Объекты по очереди тянут w каждый к своему минимуму. Жмите «Шаг» или «Запуск».';
+      setText('gdTwoStatus', msg);
+      document.querySelectorAll('#gdTwo .gd-chip').forEach(function (b) { b.classList.toggle('is-on', b.dataset.mode === mode); });
+    }
+    s.addEventListener('input', function () { run.stop(); $('gdTwoRun').textContent = 'Запуск'; S.w = +s.value; S.turn = 0; S.h = []; S.calc = ''; draw(); });
+    $('gdTwoStep').addEventListener('click', function () { run.stop(); $('gdTwoRun').textContent = 'Запуск'; step(); });
+    $('gdTwoReset').addEventListener('click', function () { reset(0); });
+    $('gdTwoRun').addEventListener('click', function () {
+      if (run.on()) { run.stop(); this.textContent = 'Запуск'; return; }
+      this.textContent = 'Пауза'; run.start(function () { step(); if (S.turn > 60) { run.stop(); $('gdTwoRun').textContent = 'Запуск'; } }, 350);
+    });
+    document.querySelectorAll('#gdTwo .gd-chip').forEach(function (b) {
+      b.addEventListener('click', function () { mode = b.dataset.mode; reset(0); });
+    });
+    reset(0);
+  }
+
+  /* ---------- 6. Инерция на той же карте ---------- */
+  function momentum() {
+    var svg = $('gdMomSvg');
+    if (!svg) return;
+    var P = plot({l: 44, r: 314, t: 30, b: 300, x0: -1, x1: 3, y0: -1, y1: 3});
+    txt(svg, 44, 20, 'Две траектории на одной карте', {c: '#111111', w: 700, s: 14});
+    txt(svg, 420, 20, 'Потери, логарифмическая шкала', {c: '#111111', w: 700, s: 14});
+    drawMap(svg, P);
+    var right = el('g', {}, svg), start = [0, 0], al = $('gdMomA'), et = $('gdMomEta'), run = timer(), T = null, K = null;
+    function traj(alpha, eta) {
+      var a = start[0], b = start[1], va = 0, vb = 0, pts = [[a, b]], reach = null;
+      for (var t = 1; t <= 3000; t++) {
+        var g = G2(a, b);
+        va = alpha * va + eta * g[0]; vb = alpha * vb + eta * g[1]; a -= va; b -= vb;
+        pts.push([a, b]);
+        if (Math.hypot(a - 1, b - 1) < 0.01) { reach = t; break; }
+        if (Math.abs(a) > 1e5) break;
+      }
+      return {pts: pts, reach: reach};
+    }
+    function compute() {
+      run.stop(); K = null; $('gdMomRun').textContent = 'Показать движение';
+      T = {plain: traj(0, +et.value), mom: traj(+al.value, +et.value)};
+      draw();
+    }
+    function draw() {
+      var g = P.dyn; clear(g); clear(right);
+      var n = K === null ? Infinity : K;
+      var a = T.plain.pts.slice(0, n), b = T.mom.pts.slice(0, n);
+      pathOn(g, P, a, MUTED, 2, 0); pathOn(g, P, b, BLUE, 2.4, 0);
+      dot(g, P.sx(start[0]), P.sy(start[1]), 6, BLUE);
+      var last = function (x) { return x[x.length - 1]; };
+      dot(g, P.sx(last(a)[0]), P.sy(last(a)[1]), 4.5, MUTED); dot(g, P.sx(last(b)[0]), P.sy(last(b)[1]), 4.5, BLUE);
+      var mx = Math.max(T.plain.pts.length, T.mom.pts.length, 20), C = plot({l: 460, r: 690, t: 30, b: 300, x0: 0, x1: mx, y0: -5, y1: 2});
+      var tk = mx > 400 ? [200, 400, 600, 800] : mx > 120 ? [50, 100, 150, 200, 250].filter(function (v) { return v < mx; }) : [20, 40, 60, 80, 100].filter(function (v) { return v < mx; });
+      axes(right, C, {bottom: true, xt: tk, yt: [-4, -2, 0, 2], ytex: function (v) { return '10^{' + v + '}'; }, xl: 't', yl: 'L'});
+      var id = 'gdMomClip', defs = el('defs', {}, right), cp = el('clipPath', {id: id}, defs);
+      el('rect', {x: C.l, y: C.t, width: C.r - C.l, height: C.b - C.t}, cp);
+      var q = el('g', {'clip-path': 'url(#' + id + ')'}, right);
+      [[a, MUTED, 2], [b, BLUE, 2.4]].forEach(function (o) {
+        var s = o[0].map(function (p, i) { return C.sx(i).toFixed(1) + ',' + C.sy(Math.log10(Math.max(L2(p[0], p[1]), 1e-6))).toFixed(1); });
+        el('polyline', {points: s.join(' '), fill: 'none', stroke: o[1], 'stroke-width': o[2]}, q);
+      });
+      setText('gdMomAOut', num(+al.value)); setText('gdMomEtaOut', num(+et.value));
+      var r0 = T.plain.reach, r1 = T.mom.reach;
+      setText('gdMomN0', r0 === null ? 'не дошёл' : r0); setText('gdMomN1', r1 === null ? 'не дошёл' : r1);
+      setText('gdMomRatio', r0 && r1 ? 'в ' + (r0 / r1).toFixed(1).replace(/\.0$/, '') + ' раза' : '—');
+      setText('gdMomStatus', +al.value === 0 ? 'При нулевой инерции обе траектории совпадают.' : r1 && r0 && r1 > r0 ? 'Инерция здесь слишком велика: траектория долго качается вокруг минимума и проигрывает обычному спуску.' : 'Серая линия ползёт вдоль дна долины, синяя разгоняется вдоль него: шаги в одну сторону складываются.');
+    }
+    al.addEventListener('input', compute); et.addEventListener('input', compute);
+    mapClick(svg, P, function (a, b) { start = [a, b]; compute(); });
+    $('gdMomReset').addEventListener('click', function () { start = [0, 0]; al.value = 0.9; et.value = 0.1; compute(); });
+    $('gdMomRun').addEventListener('click', function () {
+      if (run.on()) { run.stop(); K = null; this.textContent = 'Показать движение'; draw(); return; }
+      this.textContent = 'Показать целиком'; K = 1;
+      var me = this;
+      run.start(function () {
+        K += 2; draw();
+        if (K > Math.max(T.plain.pts.length, T.mom.pts.length)) { run.stop(); K = null; me.textContent = 'Показать движение'; draw(); }
+      }, 50);
+    });
+    compute();
+  }
+
+  /* ---------- 7. Сеть 2-2-2 ---------- */
+  function net() {
+    var svg = $('gdNetSvg');
+    if (!svg) return;
+    var x = [0.5, 0.8], y = [1, 0];
+    var sig = function (z) { return 1 / (1 + Math.exp(-z)); };
+    var INIT = {W1: [[0.15, -0.2], [0.4, 0.3]], b1: [0.1, -0.1], W2: [[0.5, -0.3], [0.2, 0.6]], b2: [0.05, 0.15]};
+    function copy(p) { return JSON.parse(JSON.stringify(p)); }
+    function forward(p) {
+      var h = [0, 1].map(function (i) { return sig(p.W1[i][0] * x[0] + p.W1[i][1] * x[1] + p.b1[i]); });
+      var o = [0, 1].map(function (i) { return sig(p.W2[i][0] * h[0] + p.W2[i][1] * h[1] + p.b2[i]); });
+      return {h: h, o: o, E: 0.5 * (Math.pow(o[0] - y[0], 2) + Math.pow(o[1] - y[1], 2))};
+    }
+    function gradient(p) {
+      var f = forward(p), d2 = [0, 1].map(function (i) { return (f.o[i] - y[i]) * f.o[i] * (1 - f.o[i]); });
+      var d1 = [0, 1].map(function (j) { return (p.W2[0][j] * d2[0] + p.W2[1][j] * d2[1]) * f.h[j] * (1 - f.h[j]); });
+      return {
+        W1: d1.map(function (d) { return [d * x[0], d * x[1]]; }), b1: d1,
+        W2: d2.map(function (d) { return [d * f.h[0], d * f.h[1]]; }), b2: d2
+      };
+    }
+    function get(o, s) { return s.j === undefined ? o[s.k][s.i] : o[s.k][s.i][s.j]; }
+    function put(o, s, v) { if (s.j === undefined) o[s.k][s.i] = v; else o[s.k][s.i][s.j] = v; }
+    function nameOf(s) {
+      if (s.k === 'W1') return 'w^{(1)}_{' + (s.i + 1) + (s.j + 1) + '}';
+      if (s.k === 'W2') return 'w^{(2)}_{' + (s.i + 1) + (s.j + 1) + '}';
+      return 'b^{(' + s.k.charAt(1) + ')}_' + (s.i + 1);
+    }
+    var YP = [84, 214], XN = [44, 172, 300];
+    var P = plot({l: 400, r: 690, t: 30, b: 280, x0: -10, x1: 10, y0: 0, y1: 1.05});
+    var H = plot({l: 400, r: 690, t: 320, b: 400, x0: 0, x1: 50, y0: 0, y1: 0.4});
+    txt(svg, 20, 20, 'Сеть: щёлкните по весу или смещению', {c: '#111111', w: 700, s: 14});
+    var graph = el('g', {}, svg);
+    axes(svg, P, {xt: [-10, -5, 5, 10], xf: function (v) { return num(v, 0); }, yt: [0.25, 0.5, 0.75, 1], xl: '', yl: 'E'});
+    layers(svg, P);
+    var titleBox = el('foreignObject', {x: 400, y: 2, width: 310, height: 26}, svg);
+    var titleDiv = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
+    titleDiv.setAttribute('class', 'svg-math svg-math-fit');
+    titleDiv.setAttribute('style', 'font-size:14px;color:#111111;font-weight:700');
+    titleBox.appendChild(titleDiv);
+    txt(svg, 20, 330, 'Потери по шагам спуска', {c: '#111111', w: 700, s: 14});
+    var hist = el('g', {}, svg);
+    var S, sel = {k: 'W2', i: 0, j: 0}, slider = $('gdNetVal'), eta = $('gdNetEta');
+    function reset() { S = {p: copy(INIT), t: 0, h: [forward(INIT).E]}; draw(); }
+    function stepOnce() {
+      var e = +eta.value, g = gradient(S.p), p = S.p;
+      ['W1', 'W2'].forEach(function (k) { [0, 1].forEach(function (i) { [0, 1].forEach(function (j) { p[k][i][j] -= e * g[k][i][j]; }); }); });
+      ['b1', 'b2'].forEach(function (k) { [0, 1].forEach(function (i) { p[k][i] -= e * g[k][i]; }); });
+      S.t++; S.h.push(forward(p).E);
+    }
+    function sameSel(s) { return s.k === sel.k && s.i === sel.i && s.j === sel.j; }
+    function edge(s, x1, y1, x2, y2, tp) {
+      var v = get(S.p, s), on = sameSel(s);
+      el('line', {x1: x1, y1: y1, x2: x2, y2: y2, stroke: on ? RED : YELLOW, 'stroke-width': on ? 3.4 : Math.min(3, 0.8 + Math.abs(v) * 1.1), opacity: on ? 1 : 0.8}, graph);
+      var hit = el('line', {x1: x1, y1: y1, x2: x2, y2: y2, stroke: 'transparent', 'stroke-width': 18, style: 'cursor:pointer'}, graph);
+      hit.addEventListener('click', function () { sel = s; draw(); });
+      txt(graph, x1 + (x2 - x1) * tp, y1 + (y2 - y1) * tp + 4, num(v), {s: 12, c: on ? RED : '#8C7106', a: 'middle', halo: true, w: on ? 700 : 400}).setAttribute('pointer-events', 'none');
+    }
+    function node(cx, cy, label, fill) {
+      el('circle', {cx: cx, cy: cy, r: 21, fill: fill, stroke: '#3576C0', 'stroke-width': 1.6}, graph);
+      txt(graph, cx, cy + 4, label, {s: 12, c: '#111111', a: 'middle'});
+    }
+    function biasChip(s, cx, cy) {
+      var on = sameSel(s), g = el('g', {style: 'cursor:pointer'}, graph);
+      var top = s.i === 0 ? cy - 43 : cy + 25;
+      el('rect', {x: cx - 27, y: top, width: 54, height: 18, rx: 5, fill: on ? RED : '#FAFAF8', stroke: on ? RED : '#E0DDD3'}, g);
+      txt(g, cx, top + 13, 'b ' + num(get(S.p, s)), {s: 11.5, c: on ? '#FFFFFF' : '#8C7106', a: 'middle'});
+      g.addEventListener('click', function () { sel = s; draw(); });
+    }
+    function draw() {
+      var f = forward(S.p), g = gradient(S.p), v = get(S.p, sel), d = get(g, sel), e = +eta.value;
+      clear(graph); clear(P.dyn); clear(hist);
+      [0, 1].forEach(function (i) { [0, 1].forEach(function (j) { edge({k: 'W1', i: i, j: j}, XN[0], YP[j], XN[1], YP[i], i === j ? 0.5 : 0.28); }); });
+      [0, 1].forEach(function (i) { [0, 1].forEach(function (j) { edge({k: 'W2', i: i, j: j}, XN[1], YP[j], XN[2], YP[i], i === j ? 0.5 : 0.72); }); });
+      [0, 1].forEach(function (i) {
+        node(XN[0], YP[i], x[i].toFixed(1), '#EAF1F9');
+        node(XN[1], YP[i], f.h[i].toFixed(2), '#FFFFFF');
+        node(XN[2], YP[i], f.o[i].toFixed(2), '#F1F7E6');
+        biasChip({k: 'b1', i: i}, XN[1], YP[i]);
+        biasChip({k: 'b2', i: i}, XN[2], YP[i]);
+        txt(graph, XN[2] + 28, YP[i] + 4, 'цель ' + y[i], {s: 12, c: GRAY});
+      });
+      tex(titleDiv, '\\text{Срез } E \\text{ по } ' + nameOf(sel));
+      curve(P.dyn, P, function (t) { var q = copy(S.p); put(q, sel, t); return forward(q).E; }, {stroke: YELLOW, 'stroke-width': 2.4});
+      if (Math.abs(v) <= 10) {
+        var scale = 2.2;
+        el('line', {x1: P.sx(v - scale), y1: P.sy(f.E - scale * d), x2: P.sx(v + scale), y2: P.sy(f.E + scale * d), stroke: RED, 'stroke-width': 2.2}, P.dyn);
+        dot(P.dyn, P.sx(v), P.sy(f.E), 6, BLUE);
+      }
+      var mx = Math.max(50, S.h.length - 1), top = Math.max(0.1, Math.max.apply(null, S.h) * 1.15);
+      H = plot({l: 60, r: 690, t: 342, b: 412, x0: 0, x1: mx, y0: 0, y1: top});
+      axes(hist, H, {xt: [Math.round(mx / 2), mx], yt: [+(top / 2).toFixed(2), +top.toFixed(2)], xl: '', yl: ''});
+      var pts = S.h.map(function (E, t) { return H.sx(t).toFixed(1) + ',' + H.sy(E).toFixed(1); });
+      el('polyline', {points: pts.join(' '), fill: 'none', stroke: GREEN, 'stroke-width': 2.2}, hist);
+      dot(hist, H.sx(S.h.length - 1), H.sy(S.h[S.h.length - 1]), 4.5, GREEN);
+      slider.value = Math.max(-10, Math.min(10, v));
+      tex($('gdNetValName'), nameOf(sel));
+      setText('gdNetValOut', num(v, 3)); setText('gdNetEtaOut', num(e, 1));
+      setText('gdNetT', S.t); setText('gdNetE', f.E.toFixed(4));
+      setText('gdNetY', '(' + f.o[0].toFixed(4) + ', ' + f.o[1].toFixed(4) + ')');
+      setText('gdNetD', num(d, 4));
+      tex($('gdNetCalc'), nameOf(sel) + ' \\leftarrow ' + tnum(v, 4) + ' - ' + tnum(e, 1) + '\\cdot ' + paren(d, 4) + ' = ' + tnum(v - e * d, 4));
+    }
+    slider.addEventListener('input', function () { put(S.p, sel, +slider.value); S.t = 0; S.h = [forward(S.p).E]; draw(); });
+    eta.addEventListener('input', draw);
+    $('gdNetStep').addEventListener('click', function () { stepOnce(); draw(); });
+    $('gdNetRun').addEventListener('click', function () { for (var i = 0; i < 50; i++) stepOnce(); draw(); });
+    $('gdNetReset').addEventListener('click', function () { eta.value = 0.5; sel = {k: 'W2', i: 0, j: 0}; reset(); });
+    reset();
+  }
+
+  [fit, rate, map, loop, two, momentum, net].forEach(function (fn) {
+    try { fn(); } catch (e) { if (window.console) console.error('gd widget', fn.name, e); }
+  });
+})();
+</script>
