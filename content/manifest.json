@@ -329,6 +329,11 @@
           "articles": ["how-network-learns", "gradient-descent", "backprop"]
         },
         {
+          "group": "inside",
+          "label": { "ru": "Обученная сеть изнутри", "en": "A trained network from inside", "kk": "Оқытылған желі іштен" },
+          "articles": ["mnist-mlp-inside"]
+        },
+        {
           "group": "tools",
           "label": {
             "ru": "Инструменты",
@@ -773,6 +778,26 @@
     "ru": "content/articles/under-the-hood/libraries-and-frameworks.ru.md"
   }
 },
+    {
+      "slug": "mnist-mlp-inside",
+      "category": "under-the-hood",
+      "title": {
+        "ru": "Что внутри обученной сети: одна цифра от пикселей до ответа"
+      },
+      "description": {
+        "ru": "Настоящая обученная сеть 784 → 16 → 16 → 10 считает прямо в браузере. Прослеживаем семёрку от пикселей до ответа: нейрон как сумма весов под закрашенными пикселями, ReLU, логиты и потеря, запись всей сети на одной цифре одной матрицей и раскладка ответа по пикселям без остатка. Затем ошибка сети, рост разделимости классов по слоям и падение точности с 95.93% до 48.17% от сдвига на три пикселя. Шесть пошаговых сцен, семь живых виджетов, можно нарисовать свою цифру."
+      },
+      "date": "2026-11-07",
+      "reading_time": 25,
+      "tags": [
+        "deep-learning",
+        "computer-vision"
+      ],
+      "draft": false,
+      "content": {
+        "ru": "content/articles/under-the-hood/mnist-mlp-inside.ru.md"
+      }
+    },
     {
   "slug": "python-computer-intro",
   "category": "python",
