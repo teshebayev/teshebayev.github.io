@@ -20,3 +20,6 @@ npm-debug.log*
 
 # Substack exports (images and drafts, not part of the site)
 /substack/
+
+# Grant applications (drafts, not part of the site)
+/grants/
