@@ -77,6 +77,7 @@ if (!slug) window.location.replace("blog.html");
   const html = renderMarkdown(md);
   const body = document.getElementById("article-body");
   body.innerHTML = html;
+  body.setAttribute("lang", resolved.lang);
 
   // 5a. Restore script bodies that were stashed before innerHTML parsing.
   //     Inside <svg>, the HTML parser would otherwise eat any markup-like
@@ -596,6 +597,11 @@ function renderDataTexMath(root) {
  * highlight; groups not listed dim out. Safe to call more than once — a
  * stage already wired up (`data-ready`) is skipped.
  */
+const STAGE_LABELS = {
+  ru: { of: "из", next: "Далее →", restart: "Сначала ↺" },
+  en: { of: "of", next: "Next →", restart: "Start over ↺" },
+};
+
 function initStageScenes(root) {
   root.querySelectorAll(".stage").forEach((stage) => {
     if (stage.dataset.ready === "1") return;
@@ -610,6 +616,7 @@ function initStageScenes(root) {
     const jumps = Array.from(stage.querySelectorAll("[data-goto]"));
     if (!svg || !panels.length || !prev || !next || !counter || !progress) return;
 
+    const labels = STAGE_LABELS[stage.closest("[lang]")?.getAttribute("lang")] || STAGE_LABELS.ru;
     let cur = 0;
     panels.forEach(() => progress.appendChild(document.createElement("i")));
     const ticks = Array.from(progress.querySelectorAll("i"));
@@ -632,9 +639,9 @@ function initStageScenes(root) {
       ticks.forEach((tick, index) => tick.classList.toggle("done", index <= cur));
       jumps.forEach((jump) => jump.setAttribute("aria-pressed", String(Number(jump.dataset.goto) === cur)));
 
-      counter.textContent = `${cur + 1} из ${panels.length}`;
+      counter.textContent = `${cur + 1} ${labels.of} ${panels.length}`;
       prev.disabled = cur === 0;
-      next.textContent = cur === panels.length - 1 ? "Сначала ↺" : "Далее →";
+      next.textContent = cur === panels.length - 1 ? labels.restart : labels.next;
       renderDataTexMath(stage);
 
       requestAnimationFrame(() => {

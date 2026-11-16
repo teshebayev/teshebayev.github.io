@@ -748,17 +748,20 @@
   "slug": "nn-matryoshka",
   "category": "under-the-hood",
   "title": {
-    "ru": "Нейросеть как матрёшка: собираем слой за слоем"
+    "ru": "Нейросеть как матрёшка: собираем слой за слоем",
+    "en": "A neural network as a nesting doll: building it layer by layer"
   },
   "description": {
-    "ru": "Полносвязная сеть — одно действие «умножить строку на матрицу», вложенное само в себя столько раз, сколько у сети слоёв. На сквозном примере с квартирой: вход и выход как строки, слой как матрица m × H₁, домино размеров, почему без активаций четыре слоя сворачиваются в одну матрицу 3 × 3, ReLU и softmax, батч и обратный проход, который раскрывает матрёшку снаружи внутрь. Семь пошаговых сцен, у каждого слоя свой цвет."
+    "ru": "Полносвязная сеть — одно действие «умножить строку на матрицу», вложенное само в себя столько раз, сколько у сети слоёв. На сквозном примере с квартирой: вход и выход как строки, слой как матрица m × H₁, домино размеров, почему без активаций четыре слоя сворачиваются в одну матрицу 3 × 3, ReLU и softmax, батч и обратный проход, который раскрывает матрёшку снаружи внутрь. Семь пошаговых сцен, у каждого слоя свой цвет.",
+    "en": "A fully connected network is one operation, “multiply a row by a matrix”, nested inside itself as many times as the network has layers. On a running apartment example: input and output as rows, a layer as an m × H₁ matrix, shape dominoes, why without activations four layers fold into one 3 × 3 matrix, ReLU and softmax, batches, and the backward pass that opens the doll from the outside in. Seven step-by-step scenes, each layer in its own color."
   },
   "date": "2026-09-29",
   "reading_time": 25,
   "tags": ["ml-basics", "deep-learning"],
   "draft": false,
   "content": {
-    "ru": "content/articles/under-the-hood/nn-matryoshka.ru.md"
+    "ru": "content/articles/under-the-hood/nn-matryoshka.ru.md",
+    "en": "content/articles/under-the-hood/nn-matryoshka.en.md"
   }
 },
     {
