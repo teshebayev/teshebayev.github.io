@@ -58,10 +58,37 @@
   .prose .mi-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
   .prose .mi-btn { font: inherit; font-size: 14px; font-weight: 700; color: var(--text); background: var(--bg-elev); border: 1px solid var(--accent); border-radius: 9px; padding: 5px 13px; cursor: pointer; }
   .prose .mi-btn:hover, .prose .mi-btn.is-on { background: var(--accent); color: var(--bg-elev); }
-  .prose .mi-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 8px; margin-top: 14px; }
-  .prose .mi-metrics div { border: 1px solid var(--border); border-radius: 10px; padding: 6px 10px; }
-  .prose .mi-metrics span { display: block; font-size: 12px; color: var(--text-muted); line-height: 1.3; }
-  .prose .mi-metrics strong { font-size: 15px; font-variant-numeric: tabular-nums; }
+  .prose .mi-link { font: inherit; font-size: 13.5px; color: var(--text-muted); background: none; border: 0; padding: 2px 4px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .prose .mi-link:hover { color: var(--text); }
+  .prose .mi-eq { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px 6px; margin-top: 6px; }
+  .prose .mi-eq .mi-fig { flex: 0 1 112px; min-width: 88px; }
+  .prose .mi-eq .mi-fig canvas.mi-paint { border-color: var(--accent); }
+  .prose .mi-op { align-self: center; margin-top: -24px; font-size: 24px; color: var(--text-muted); }
+  .prose .mi-ledger { flex: 1 1 165px; min-width: 165px; margin-left: 6px; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+  .prose .mi-ledger div { display: flex; justify-content: space-between; gap: 10px; padding: 3px 0; white-space: nowrap; }
+  .prose .mi-ledger span { color: var(--text-muted); }
+  .prose .mi-ledger b { font-weight: 400; }
+  .prose .mi-ledger .is-tot { border-top: 1px solid var(--text); margin-top: 3px; padding-top: 5px; }
+  .prose .mi-ledger .is-tot b, .prose .mi-ledger .is-bad b { font-weight: 700; }
+  .prose .mi-ledger .is-bad b { color: #C30B0A; }
+  .prose .mi-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 12px; }
+  .prose .mi-seg { display: inline-flex; border: 1px solid var(--accent); border-radius: 9px; overflow: hidden; }
+  .prose .mi-seg button { font: inherit; font-size: 14px; font-weight: 700; color: var(--text); background: var(--bg-elev); border: 0; padding: 5px 13px; cursor: pointer; }
+  .prose .mi-seg button.is-on { background: var(--accent); color: var(--bg-elev); }
+  .prose .mi-mask { margin-top: 16px; }
+  .prose .mi-mrow { display: grid; grid-template-columns: 56px repeat(16, minmax(0, 1fr)); gap: 3px; align-items: center; margin-top: 4px; }
+  .prose .mi-cell { position: relative; height: 22px; border-radius: 3px; background: #3576C0; border: 1px solid #3576C0; }
+  .prose .mi-cell.is-off { background: var(--bg-elev); border: 1px dashed var(--text-muted); }
+  .prose .mi-cell.is-flip { border: 2px solid #C30B0A; box-shadow: 0 0 0 2px rgba(195, 11, 10, .15); }
+  .prose .mi-cell.is-flip::after { content: ""; position: absolute; inset: 3px; border-radius: 1px; background: repeating-linear-gradient(45deg, transparent 0 3px, rgba(195, 11, 10, .55) 3px 5px); }
+  .prose .mi-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 6px; font-size: 12.5px; color: var(--text-muted); }
+  .prose .mi-legend i { display: inline-block; width: 14px; height: 11px; border-radius: 2px; vertical-align: -1px; margin-right: 5px; }
+  .prose .mi-verdict { margin: 12px 0 0; padding: 8px 12px; border-radius: 9px; font-size: 14px; line-height: 1.45; }
+  .prose .mi-verdict.is-ok { background: rgba(115, 178, 34, .12); color: #4C8316; }
+  .prose .mi-verdict.is-bad { background: rgba(195, 11, 10, .08); color: #C30B0A; }
+  [data-theme="dark"] .prose .mi-verdict.is-ok { background: rgba(115, 178, 34, .16); color: #A6D86A; }
+  [data-theme="dark"] .prose .mi-verdict.is-bad { background: rgba(240, 122, 120, .12); color: #F29A98; }
+  [data-theme="dark"] .prose .mi-ledger .is-bad b { color: #F29A98; }
   .prose .mi-quad { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
   .prose .mi-scat { margin: 0; }
   .prose .mi-scat canvas { display: block; width: 100%; height: 220px; background: #FFFFFF; border: 1px solid var(--border); }
@@ -899,47 +926,86 @@ print(np.abs(x @ A + c - s).max())  # 7.1e-15
       listeners.push(paint);
     })();
 
-    /* 5. Замороженная матрица */
+    /* 5. Замороженная матрица: x × столбец A = вклады пикселей, ниже маска нейронов */
     (function () {
       var w = setup('wiLinear'); if (!w) return;
       addPicker(w);
-      var chips = make('div', 'mi-chiprow', w);
+      var K = 7, Mn = -1, cmp = false, erase = false, c;
+      var chips = make('div', 'mi-chiprow', w), kBtns = [];
       make('span', 'mi-cap', chips, 'Логит:');
-      var kBtns = [], mBtns = [], K = 7, Mn = -1, erase = false;
-      for (var c = 0; c < 10; c++) (function (c) { var b = make('button', 'mi-chip', chips, String(c)); b.type = 'button'; b.onclick = function () { K = c; if (Mn === c) Mn = -1; paint(); }; kBtns.push(b); })(c);
-      var chips2 = make('div', 'mi-chiprow', w);
+      for (c = 0; c < 10; c++) (function (c) { var b = make('button', 'mi-chip', chips, String(c)); b.type = 'button'; b.onclick = function () { K = c; if (Mn === c) Mn = runnerUp(); paint(); }; kBtns.push(b); })(c);
+      var cmpB = make('button', 'mi-link', chips); cmpB.type = 'button';
+      cmpB.onclick = function () { cmp = !cmp; Mn = cmp ? runnerUp() : -1; paint(); };
+      var chips2 = make('div', 'mi-chiprow', w), mBtns = [];
       make('span', 'mi-cap', chips2, 'Минус логит:');
-      var noneB = make('button', 'mi-chip', chips2, 'нет'); noneB.type = 'button'; noneB.onclick = function () { Mn = -1; paint(); };
-      for (c = 0; c < 10; c++) (function (c) { var b = make('button', 'mi-chip', chips2, String(c)); b.type = 'button'; b.onclick = function () { Mn = c === K ? -1 : c; paint(); }; mBtns.push(b); })(c);
-      var row = make('div', 'mi-row', w);
-      var ce = canvas28(row, 'картинка (можно рисовать)'), cg = canvas28(row, 'столбец A для этой маски'), cc = canvas28(row, 'вклад пикселя');
-      ce.classList.add('mi-paint');
-      var btns = make('div', 'mi-btns', w);
-      var inkB = make('button', 'mi-btn', btns, 'Закрашивать'); inkB.type = 'button';
-      var eraseB = make('button', 'mi-btn', btns, 'Стирать'); eraseB.type = 'button';
-      var resetB = make('button', 'mi-btn', btns, 'Вернуть цифру'); resetB.type = 'button';
-      var out = make('div', 'mi-metrics', w), hint = make('p', 'mi-read', w);
-      var base = null, baseF = null, L = null, edit = null;
-      function reset() { base = S.x; baseF = S.F; L = linear(S.F); edit = Float64Array.from(S.x); }
+      for (c = 0; c < 10; c++) (function (c) { var b = make('button', 'mi-chip', chips2, String(c)); b.type = 'button'; b.onclick = function () { if (c !== K) { Mn = c; paint(); } }; mBtns.push(b); })(c);
+
+      var eq = make('div', 'mi-eq', w);
+      var ce = canvas28(eq, 'x: картинка, рисуйте по ней');
+      ce.classList.add('mi-paint'); ce.setAttribute('aria-label', 'Картинка, по которой можно рисовать');
+      make('span', 'mi-op', eq, '×');
+      var cg = canvas28(eq, ' '), cgCap = cg.nextSibling;
+      make('span', 'mi-op', eq, '=');
+      var cc = canvas28(eq, ' '), ccCap = cc.nextSibling;
+      var led = make('div', 'mi-ledger', eq);
+
+      var tools = make('div', 'mi-tools', w), seg = make('div', 'mi-seg', tools);
+      var inkB = make('button', '', seg, 'Кисть'); inkB.type = 'button';
+      var eraseB = make('button', '', seg, 'Ластик'); eraseB.type = 'button';
+      var resetB = make('button', 'mi-link', tools, 'вернуть цифру'); resetB.type = 'button';
+
+      var mask = make('div', 'mi-mask', w), cells = {z1: [], z2: []};
+      make('p', 'mi-cap', mask, 'Маска нейронов: зафиксирована по исходной цифре');
+      [['слой 1', 'z1'], ['слой 2', 'z2']].forEach(function (l) {
+        var r = make('div', 'mi-mrow', mask);
+        make('span', 'mi-cap', r, l[0]);
+        for (var j = 0; j < 16; j++) cells[l[1]].push(make('span', 'mi-cell', r));
+      });
+      make('div', 'mi-legend', mask).innerHTML = '<span><i style="background:#3576C0"></i>работает</span><span><i style="border:1px dashed var(--text-muted)"></i>молчит</span><span><i style="border:2px solid #C30B0A;background:repeating-linear-gradient(45deg,transparent 0 2px,rgba(195,11,10,.55) 2px 4px)"></i>сменил режим после правки</span>';
+      var verdict = make('p', 'mi-verdict', w);
+
+      var baseF = null, L = null, edit = null;
+      function reset() { baseF = S.F; L = linear(S.F); edit = Float64Array.from(S.x); }
+      function runnerUp() { var b = -1; for (var k = 0; k < 10; k++) if (k !== K && (b < 0 || baseF.s[k] > baseF.s[b])) b = k; return b; }
       function rowVec() { var a = L.A[K]; if (Mn < 0) return a; var d = new Float64Array(784), b = L.A[Mn]; for (var i = 0; i < 784; i++) d[i] = a[i] - b[i]; return d; }
       function paint() {
         kBtns.forEach(function (b, k) { b.classList.toggle('is-on', k === K); });
         mBtns.forEach(function (b, k) { b.classList.toggle('is-on', k === Mn); b.disabled = k === K; });
-        noneB.classList.toggle('is-on', Mn < 0);
+        chips2.style.display = cmp ? '' : 'none';
+        cmpB.textContent = cmp ? 'убрать сравнение' : 'сравнить с другим логитом';
         inkB.classList.toggle('is-on', !erase); eraseB.classList.toggle('is-on', erase);
-        var g = rowVec(), F = forward(edit), contrib = new Float64Array(784), lin = L.c[K] - (Mn < 0 ? 0 : L.c[Mn]), i, fl = 0, j;
-        for (i = 0; i < 784; i++) { contrib[i] = g[i] * edit[i]; lin += contrib[i]; }
-        for (j = 0; j < 16; j++) { if ((F.z1[j] > 0) !== (baseF.z1[j] > 0)) fl++; if ((F.z2[j] > 0) !== (baseF.z2[j] > 0)) fl++; }
+        var g = rowVec(), F = forward(edit), contrib = new Float64Array(784), sum = 0, i, fl = 0;
+        for (i = 0; i < 784; i++) { contrib[i] = g[i] * edit[i]; sum += contrib[i]; }
+        var cK = L.c[K] - (Mn < 0 ? 0 : L.c[Mn]), lin = sum + cK, real = F.s[K] - (Mn < 0 ? 0 : F.s[Mn]);
+        ['z1', 'z2'].forEach(function (z, n) {
+          cells[z].forEach(function (el, j) {
+            var was = baseF[z][j] > 0, now = F[z][j] > 0;
+            if (was !== now) fl++;
+            el.className = 'mi-cell' + (was ? '' : ' is-off') + (was !== now ? ' is-flip' : '');
+            el.title = 'Нейрон ' + (j + 1) + ' слоя ' + (n + 1) + ': ' + (was ? 'работал' : 'молчал') + (was !== now ? ', после правки ' + (now ? 'работает' : 'молчит') : '');
+          });
+        });
         draw28(ce, edit, 'pix'); draw28(cg, g, 'grad'); draw28(cc, contrib, 'w');
-        var real = F.s[K] - (Mn < 0 ? 0 : F.s[Mn]), name = Mn < 0 ? 'логит ' + K : 'логит ' + K + ' − логит ' + Mn;
-        out.innerHTML = '<div><span>' + name + ' в сети</span><strong>' + num(real) + '</strong></div><div><span>по замороженной A</span><strong>' + num(lin) + '</strong></div><div><span>расхождение</span><strong>' + num(real - lin) + '</strong></div><div><span>сменили режим</span><strong>' + fl + ' из 32</strong></div><div><span>ответ сети</span><strong>' + F.pred + ' (' + pct(F.p[F.pred]) + ')</strong></div>';
-        hint.textContent = fl ? 'Хотя бы один нейрон сменил режим, поэтому матрица этой маски больше не описывает сеть точно.' : 'Маска прежняя: матрица считает логиты точно, сколько бы пикселей вы ни изменили.';
+        cgCap.textContent = Mn < 0 ? 'столбец ' + K + ' матрицы A' : 'столбец ' + K + ' минус столбец ' + Mn;
+        ccCap.textContent = Mn < 0 ? 'вклад каждого пикселя' : 'вклад в разность';
+        led.innerHTML = '<div><span>сумма вкладов</span><b>' + num(sum) + '</b></div>' +
+          '<div><span>+ c<sub>' + K + '</sub>' + (Mn < 0 ? '' : ' − c<sub>' + Mn + '</sub>') + '</span><b>' + plus(cK) + '</b></div>' +
+          '<div class="is-tot"><span>по матрице A</span><b>' + num(lin) + '</b></div>' +
+          '<div><span>сеть на самом деле</span><b>' + num(real) + '</b></div>' +
+          '<div' + (fl ? ' class="is-bad"' : '') + '><span>расхождение</span><b>' + num(real - lin) + '</b></div>';
+        var name = Mn < 0 ? 'логит ' + K : 'разность логитов ' + K + ' и ' + Mn, ans = ' Ответ сети: ' + F.pred + ' (' + pct(F.p[F.pred]) + ').';
+        verdict.className = 'mi-verdict ' + (fl ? 'is-bad' : 'is-ok');
+        verdict.textContent = fl
+          ? 'Сменили режим ' + fl + ' из 32 нейронов, поэтому матрица A исходной цифры больше не описывает сеть: ' + name + ' расходится на ' + num(Math.abs(real - lin)) + '.' + ans
+          : 'Маска прежняя: матрица A считает ' + name + ' точно, сколько бы пикселей вы ни изменили.' + ans;
       }
       var down = false;
       function stroke(e) {
         var r = ce.getBoundingClientRect(), x = Math.floor((e.clientX - r.left) / r.width * 28), y = Math.floor((e.clientY - r.top) / r.height * 28);
         if (x < 0 || x > 27 || y < 0 || y > 27) return;
-        edit[y * 28 + x] = erase ? 0 : 1; paint();
+        var v = erase ? 0 : 1;
+        if (edit[y * 28 + x] === v) return;
+        edit[y * 28 + x] = v; paint();
       }
       ce.addEventListener('pointerdown', function (e) { e.preventDefault(); down = true; ce.setPointerCapture(e.pointerId); stroke(e); });
       ce.addEventListener('pointermove', function (e) { if (down) stroke(e); });
@@ -947,7 +1013,7 @@ print(np.abs(x @ A + c - s).max())  # 7.1e-15
       inkB.onclick = function () { erase = false; paint(); };
       eraseB.onclick = function () { erase = true; paint(); };
       resetB.onclick = function () { reset(); paint(); };
-      listeners.push(function () { reset(); K = S.F.pred; if (Mn === K) Mn = -1; paint(); });
+      listeners.push(function () { reset(); K = S.F.pred; Mn = cmp ? runnerUp() : -1; paint(); });
     })();
 
     /* 6. Где цифры в каждом слое */
