@@ -2067,7 +2067,7 @@
 <g data-key="fm3" data-only="1"><foreignObject x="44" y="551" width="872" height="50"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111" data-tex="H^{(1)} = \max\left(0,\; Z^{(1)}\right) \qquad [4\times 32] \rightarrow [4\times 32]"></div></foreignObject></g>
 <g data-key="fm4" data-only="1"><foreignObject x="44" y="551" width="872" height="50"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111" data-tex="Z^{(2)} = H^{(1)} W^{(2)} + b^{(2)} \qquad [4\times 32]\cdot[32\times 10] \rightarrow [4\times 10]"></div></foreignObject></g>
 <g data-key="fm5" data-only="1"><foreignObject x="44" y="551" width="872" height="50"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111" data-tex="p_{ic} = e^{\,z^{(2)}_{ic}} \Big/ \sum_{c'=1}^{10} e^{\,z^{(2)}_{ic'}} \qquad \sum_c p_{ic} = 1"></div></foreignObject></g>
-<g data-key="fm6" data-only="1"><foreignObject x="44" y="551" width="872" height="50"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111" data-tex="L = -\frac{1}{B}\sum_{i=1}^{B}\sum_{c=1}^{10} y_{ic}\,\log p_{ic}"></div></foreignObject></g>
+<g data-key="fm6" data-only="1"><foreignObject x="44" y="551" width="872" height="50"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111" data-tex="L = -\frac{1}{B}\sum_{i=1}^{B}\sum_{c=0}^{9} y_{ic}\,\log p_{ic}"></div></foreignObject></g>
 <text x="40" y="628" font-size="12.5" fill="#5E5850" text-anchor="start" font-weight="400">синее — данные · жёлтое — обучаемые параметры · зелёное — пересчитывается на каждом батче · малиновое — размеры, которые должны совпасть</text>
 </svg>
   </div>
@@ -2704,7 +2704,59 @@
   по батчу.
 </p>
 
-<div class="math-display" data-tex="L = -\frac{1}{B}\sum_{i=1}^{B}\sum_{c=1}^{10} y_{ic}\,\log p_{ic} \;=\; -\frac{1}{B}\sum_{i=1}^{B} \log p_{i,\,y_i}"></div>
+### Ошибка на одной картинке
+
+<p>
+  Возьмём первую картинку батча, тройку. Прямой проход из части 7 закончился softmax: сеть выдала
+  десять вероятностей <span class="math-inline" data-tex="p_0, \dots, p_9"></span>, по одной на цифру, в сумме 1. Правильный ответ
+  известен из метки: это 3. Чтобы сравнить его с десятью вероятностями, метку записывают в том же
+  виде — строкой <span class="math-inline" data-tex="\mathbf y"></span> из десяти чисел, где на месте верной цифры стоит 1, а на остальных 0
+  (это и есть one-hot). Идеальная сеть выдала бы <span class="math-inline" data-tex="\mathbf p = \mathbf y"></span>: вероятность 1 у тройки и 0 у остальных.
+</p>
+
+<p>
+  Ошибка складывается из десяти слагаемых, по одному на цифру (классы здесь нумеруем самими цифрами, от 0 до 9): метка <span class="math-inline" data-tex="y_c"></span>, умноженная на
+  штраф <span class="math-inline" data-tex="-\log p_c"></span> (логарифм натуральный). Штраф показывает, насколько мала вероятность:
+  у <span class="math-inline" data-tex="p_c = 1"></span> он равен 0, у 0,5 — 0,69, у 0,1 — 2,30, у 0,01 — 4,61. Для нашей тройки:
+</p>
+
+<table class="shape-table">
+  <tr><th>Цифра <span class="math-inline" data-tex="c"></span></th><th>Вероятность <span class="math-inline" data-tex="p_c"></span></th><th>Метка <span class="math-inline" data-tex="y_c"></span></th><th>Штраф <span class="math-inline" data-tex="-\log p_c"></span></th><th><span class="math-inline" data-tex="y_c \cdot (-\log p_c)"></span></th></tr>
+  <tr><td>0</td><td>0,0876</td><td>0</td><td>2,4348</td><td>0</td></tr>
+  <tr><td>1</td><td>0,0949</td><td>0</td><td>2,3546</td><td>0</td></tr>
+  <tr><td>2</td><td>0,0824</td><td>0</td><td>2,4964</td><td>0</td></tr>
+  <tr><td><strong>3</strong></td><td><strong>0,1488</strong></td><td><strong>1</strong></td><td><strong>1,9050</strong></td><td><strong>1,9050</strong></td></tr>
+  <tr><td>4</td><td>0,1185</td><td>0</td><td>2,1326</td><td>0</td></tr>
+  <tr><td>5</td><td>0,0890</td><td>0</td><td>2,4187</td><td>0</td></tr>
+  <tr><td>6</td><td>0,0579</td><td>0</td><td>2,8486</td><td>0</td></tr>
+  <tr><td>7</td><td>0,1244</td><td>0</td><td>2,0845</td><td>0</td></tr>
+  <tr><td>8</td><td>0,0918</td><td>0</td><td>2,3882</td><td>0</td></tr>
+  <tr><td>9</td><td>0,1046</td><td>0</td><td>2,2576</td><td>0</td></tr>
+</table>
+
+<p>
+  Штраф посчитан для всех десяти цифр, но в последний столбец проходит только один: у девяти
+  неверных цифр метка 0, и произведение равно нулю, какой бы ни была вероятность. Остаётся строка
+  тройки. Ошибка сети на этой картинке:
+</p>
+
+<div class="math-display" data-tex="\ell = -\sum_{c=0}^{9} y_c \log p_c = -\log p_3 = -\log 0{,}1488 = 1{,}9050"></div>
+
+<p>
+  Чтобы уменьшить <span class="math-inline" data-tex="\ell"></span>, сети нужно поднять <span class="math-inline" data-tex="p_3"></span>: при <span class="math-inline" data-tex="p_3 = 1"></span> ошибка станет
+  нулевой. Вероятности остальных цифр в формулу не входят, но влияют на неё через softmax:
+  <span class="math-inline" data-tex="p_3 = e^{z_3} / \sum_c e^{z_c} = 1{,}3688 / 9{,}1979"></span>. Знаменатель общий для всех десяти,
+  поэтому <span class="math-inline" data-tex="p_3"></span> растёт и когда растёт оценка <span class="math-inline" data-tex="z_3"></span>, и когда падают оценки остальных цифр.
+  Шестёрке сеть дала меньше всех, 0,0579, но для тройки это не ошибка: её штраф 2,8486 в сумму не попал.
+</p>
+
+<p>
+  Так же считается ошибка каждой картинки батча, только у каждой своя верная цифра: у пятёрки
+  <span class="math-inline" data-tex="-\log 0{,}1381 = 1{,}9796"></span>, у двойки <span class="math-inline" data-tex="-\log 0{,}1099 = 2{,}2081"></span>, у восьмёрки
+  <span class="math-inline" data-tex="-\log 0{,}0843 = 2{,}4735"></span>. Потеря батча — их среднее:
+</p>
+
+<div class="math-display" data-tex="L = -\frac{1}{B}\sum_{i=1}^{B}\sum_{c=0}^{9} y_{ic}\,\log p_{ic} \;=\; -\frac{1}{B}\sum_{i=1}^{B} \log p_{i,\,y_i}"></div>
 
 <p>
   Второе равенство — это то же самое, записанное короче: one-hot метка обнуляет девять слагаемых
