@@ -799,7 +799,7 @@
         "deep-learning",
         "computer-vision"
       ],
-      "draft": false,
+      "draft": true,
       "content": {
         "ru": "content/articles/under-the-hood/mnist-mlp-inside.ru.md"
       }
