@@ -472,7 +472,7 @@ print(mylinalg.__file__)    # C:\Users\work\proj\mylinalg.py</code></pre>
       <h4>Имя mylinalg в main.py указывает на объект</h4>
       <p>После импорта <code>mylinalg</code> — обычная переменная, как <code>A</code> или <code>B</code>.
       Точка в <code>mylinalg.matmul</code> означает «достань атрибут объекта». Тот же самый
-      механизм позже даст нам <code>np.array</code>, <code>A.shape</code> и <code>model.forward</code>.</p>
+      механизм позже даст нам <code>np.array</code>, <code>A.shape</code> и <code>model.fit</code>.</p>
     </div>
     <div class="step-panel" data-on="main syspath a1 hit file module bind cache" data-focus="cache">
       <div class="step-kicker">Шаг 6 · кэш</div>

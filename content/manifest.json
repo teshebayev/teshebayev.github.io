@@ -768,17 +768,20 @@
   "slug": "libraries-and-frameworks",
   "category": "under-the-hood",
   "title": {
-    "ru": "Что на самом деле делают библиотеки и фреймворки: от трёх циклов до scikit-learn"
+    "ru": "Что на самом деле делают библиотеки и фреймворки: от трёх циклов до scikit-learn",
+    "en": "What libraries and frameworks actually do: from three loops to scikit-learn"
   },
   "description": {
-    "ru": "Библиотека — чужой код, который лежит обычной папкой в site-packages и после import становится объектом; фреймворк — та же библиотека, которая вдобавок сама вызывает ваш код. На одной операции — умножении матриц — от трёх вложенных циклов через import, pip install и объект ndarray до исходников NumPy, линейной регрессии градиентным спуском на NumPy и той же модели в scikit-learn: настройки, атрибуты с подчёркиванием, методы от родительских классов, исходный код LinearRegression и cross_val_score, который сам вызывает ваш fit. Девять пошаговых сцен."
+    "ru": "Библиотека — чужой код, который лежит обычной папкой в site-packages и после import становится объектом; фреймворк — та же библиотека, которая вдобавок сама вызывает ваш код. На одной операции — умножении матриц — от трёх вложенных циклов через import, pip install и объект ndarray до исходников NumPy, линейной регрессии градиентным спуском на NumPy и той же модели в scikit-learn: настройки, атрибуты с подчёркиванием, методы от родительских классов, исходный код LinearRegression и cross_val_score, который сам вызывает ваш fit. Девять пошаговых сцен.",
+    "en": "A library is someone else's code that sits as an ordinary folder in site-packages and becomes an object after import; a framework is the same kind of library that also calls your code itself. On a single operation, matrix multiplication: from three nested loops through import, pip install and the ndarray object to the NumPy sources, linear regression by gradient descent in NumPy and the same model in scikit-learn: settings, attributes with a trailing underscore, methods from parent classes, the source code of LinearRegression and cross_val_score calling your fit. Nine step-by-step scenes."
   },
   "date": "2026-09-30",
   "reading_time": 35,
   "tags": ["programming", "machine-learning"],
   "draft": false,
   "content": {
-    "ru": "content/articles/under-the-hood/libraries-and-frameworks.ru.md"
+    "ru": "content/articles/under-the-hood/libraries-and-frameworks.ru.md",
+    "en": "content/articles/under-the-hood/libraries-and-frameworks.en.md"
   }
 },
     {
