@@ -6,11 +6,11 @@
   и после <code>import</code> становится объектом с атрибутами и методами. Фреймворк —
   та же библиотека, которая вдобавок забирает у вас часть программы и сама вызывает
   ваш код. Я покажу это на одной-единственной операции — умножении матриц — и пройду
-  от трёх вложенных циклов до <code>loss.backward()</code>.
+  от трёх вложенных циклов до <code>model.fit(X, y)</code> в scikit-learn.
 </p>
 
 <p>
-  За строкой <code>import torch</code> стоят четыре вещи: файлы на диске, правило поиска
+  За строкой <code>import sklearn</code> стоят четыре вещи: файлы на диске, правило поиска
   модулей, объекты с методами и договорённость о том, кто кого вызывает. Я разберу их по
   порядку и на каждом шаге покажу, что происходит; скорость здесь не измеряется.
 </p>
@@ -19,9 +19,9 @@
   Маршрут такой. Сначала я умножу две матрицы голым Python. Потом вынесу функцию
   в отдельный файл и посмотрю, что делает <code>import</code>. Потом поставлю NumPy
   и найду, где на диске лежит его код. Потом разберу объект <code>ndarray</code>
-  и путь, по которому проходит вызов <code>A @ B</code>. И в конце соберу
-  маленькую нейросеть дважды — на NumPy и на PyTorch, — чтобы стало видно, какую
-  работу каждый уровень забирает на себя.
+  и путь, по которому проходит вызов <code>A @ B</code>. И в конце обучу
+  линейную регрессию дважды — руками на NumPy и объектом из scikit-learn, — чтобы стало видно,
+  какую работу забирает библиотека и как устроен её объект.
 </p>
 
 <div class="semantic-key" aria-label="Цветовые обозначения статьи">
@@ -229,8 +229,8 @@
       <p>Вторая строка <code>A</code> — <code>[3, −1, 2]</code>, второй столбец <code>B</code> —
       <code>[1, 1, −1]</code>. Произведения 3, −1 и −2 в сумме дают ровно ноль.</p>
       <div class="callout-blue">
-        <strong>Зачем этот пример:</strong> ноль потом появится во всех трёх реализациях — циклах,
-        NumPy и PyTorch. Если где-то он не получится, значит, ошибка в коде, а не в арифметике.
+        <strong>Зачем этот пример:</strong> ноль потом появится в обеих реализациях — в циклах
+        и в NumPy. Если где-то он не получится, значит, ошибка в коде, а не в арифметике.
       </div>
     </div>
     <div class="step-panel" data-on="mats c00 c11 crest" data-focus="crest">
@@ -1323,526 +1323,289 @@ A @ Spy(B)                                # перехват: matmul __call__</c
 
 <hr>
 
-<h2 id="part-5">Часть 5. Нейросеть на NumPy: весь пайплайн руками</h2>
+<h2 id="part-5">Часть 5. Линейная регрессия руками на NumPy</h2>
 
 <p>
-  Теперь соберу из тех же умножений нейросеть. Самая простая — <strong>полносвязная сеть
-  прямого распространения</strong> (FFN): вход из двух чисел, скрытый слой из двух нейронов с
-  активацией ReLU, один выход. Каждый слой — это ровно то умножение из части 1 плюс сдвиг:
+  Теперь соберу из тех же умножений модель машинного обучения — <strong>линейную регрессию</strong>.
+  Есть <span class="math-inline" data-tex="N = 4"></span> объекта, у каждого <span class="math-inline" data-tex="P = 2"></span>
+  признака и правильный ответ. Модель предсказывает ответ как взвешенную сумму признаков плюс сдвиг:
 </p>
 
-<div class="math-display" data-tex="z_1 = x W_1 + b_1, \qquad h = \max(z_1, 0), \qquad \hat{y} = h W_2 + b_2, \qquad L = (\hat{y} - y)^2"></div>
+<div class="math-display" data-tex="\hat y_i = w_1 x_{i1} + w_2 x_{i2} + b \qquad\Longleftrightarrow\qquad \hat{\mathbf y} = X\mathbf w + b"></div>
 
 <p>
-  Здесь <code>x</code> — вход формы <span class="math-inline" data-tex="1\times 2"></span>, <span class="math-inline" data-tex="W_{1}"></span> — матрица весов <span class="math-inline" data-tex="2\times 2"></span>,
-  <span class="math-inline" data-tex="W_{2}"></span> — <span class="math-inline" data-tex="2\times 1"></span>, <code>b</code> — сдвиги, <code>L</code> — ошибка
-  (среднеквадратичная, MSE). Обучение сети — это цикл из четырёх действий:
-  <strong>forward</strong> (посчитать ответ), <strong>loss</strong> (посчитать ошибку),
-  <strong>backward</strong> (посчитать, как ошибка зависит от каждого веса) и
-  <strong>шаг</strong> (сдвинуть веса против градиента).
+  Здесь <span class="math-inline" data-tex="X"></span> — матрица признаков <span class="math-inline" data-tex="4\times 2"></span>
+  (строка — объект), <span class="math-inline" data-tex="\mathbf w"></span> — два веса,
+  <span class="math-inline" data-tex="b"></span> — число. Запись <span class="math-inline" data-tex="X\mathbf w"></span> — то самое
+  умножение из части 1, у которого правая матрица — один столбец. Мои данные:
 </p>
+
+<div class="math-display" data-tex="X = \begin{bmatrix} 1 &amp; 2 \\ 2 &amp; 0 \\ 0 &amp; 1 \\ 3 &amp; 1 \end{bmatrix}, \qquad \mathbf y = \begin{bmatrix} 4.3 \\ 4.3 \\ 1.6 \\ 7.6 \end{bmatrix}"></div>
 
 <p>
-  Backward — это цепное правило, применённое к каждой формуле forward в обратном порядке.
-  Для нашей сети его можно выписать целиком:
+  Обучить модель — значит подобрать <span class="math-inline" data-tex="\mathbf w"></span> и <span class="math-inline" data-tex="b"></span>,
+  при которых средний квадрат ошибки (MSE) минимален:
 </p>
 
-<div class="math-display" data-tex="\begin{aligned}
-\frac{\partial L}{\partial \hat{y}} &amp;= 2(\hat{y}-y), &amp;
-\frac{\partial L}{\partial W_2} &amp;= h^{\top}\frac{\partial L}{\partial \hat{y}}, &amp;
-\frac{\partial L}{\partial b_2} &amp;= \frac{\partial L}{\partial \hat{y}}, \\
-\frac{\partial L}{\partial h} &amp;= \frac{\partial L}{\partial \hat{y}}\,W_2^{\top}, &amp;
-\frac{\partial L}{\partial z_1} &amp;= \frac{\partial L}{\partial h}\odot \mathbf{1}[z_1&gt;0], &amp;
-\frac{\partial L}{\partial W_1} &amp;= x^{\top}\frac{\partial L}{\partial z_1}, \quad \frac{\partial L}{\partial b_1} = \frac{\partial L}{\partial z_1}
-\end{aligned}"></div>
+<div class="math-display" data-tex="L = \frac{1}{N}\sum_{i=1}^{N} (\hat y_i - y_i)^2"></div>
 
 <p>
-  Каждую из этих строк на NumPy придётся написать самому. Библиотека даёт быстрое
-  <code>@</code>, транспонирование <code>.T</code> и поэлементные операции, но понятия
-  не имеет, что такое «слой», «ошибка» или «градиент». Посмотрим одну итерацию обучения
-  пошагово, на конкретных числах: слева — матрицы с формами, справа — строка кода, которая их считает.
+  Подбирать буду градиентным спуском: посчитать предсказание, ошибку и градиент, сдвинуть параметры
+  против градиента и повторить. Градиент для линейной регрессии записывается в одну строку; откуда он
+  берётся, подробно разобрано в статье
+  <a href="article.html?slug=linear-regression-full-cycle">«Линейная регрессия: полный цикл обучения на трёх числах»</a>:
 </p>
 
-<div class="stage" id="stageFFN" tabindex="0">
+<div class="math-display" data-tex="\frac{\partial L}{\partial \mathbf w} = \frac{2}{N}\,X^{\top}(\hat{\mathbf y} - \mathbf y), \qquad \frac{\partial L}{\partial b} = \frac{2}{N}\sum_{i=1}^{N}(\hat y_i - y_i)"></div>
+
+<p>
+  Из NumPy понадобятся только <code>@</code>, <code>.T</code>, <code>.sum()</code> и <code>.mean()</code> —
+  то, что уже встречалось в части 4. Посмотрим первую итерацию на числах: слева — таблица объектов,
+  параметры и ошибка, справа — строки кода, которые их считают.
+</p>
+
+<div class="stage" id="stageLR" tabindex="0">
   <div class="stage-figure">
-<svg id="ff" viewBox="0 0 960 640" role="img" aria-label="Одна итерация обучения сети 2-2-1 на NumPy: формы, матрицы прямого прохода, кэш, градиенты с проверкой форм и шаг обновления, рядом — строки кода">
+<svg id="lr" viewBox="0 0 960 600" role="img" aria-label="Одна итерация градиентного спуска для линейной регрессии на NumPy: данные, предсказание, ошибка, градиент, шаг и 500 повторов, рядом — код">
   <style>
-    #ff { font-family: Helvetica, Arial, sans-serif; }
-    #ff .bx  { fill: #F0F6FC; stroke: #3576C0; stroke-width: 1.6; }
-    #ff .by  { fill: #FFFBEB; stroke: #C29E08; stroke-width: 1.6; }
-    #ff .bg  { fill: #F0FAF0; stroke: #73B222; stroke-width: 1.6; }
-    #ff .br  { fill: #FFF2F2; stroke: #C30B0A; stroke-width: 1.6; }
-    #ff .bw  { fill: #FFFFFF; stroke: #5E5850; stroke-width: 1.2; }
-    #ff .cb  { fill: #EEF5FF; stroke: #3576C0; stroke-width: 1; }
-    #ff .cy  { fill: #FFFBEB; stroke: #C29E08; stroke-width: 1; }
-    #ff .cg  { fill: #F0FAF0; stroke: #73B222; stroke-width: 1; }
-    #ff .cr  { fill: #FFF2F2; stroke: #C30B0A; stroke-width: 1; }
-    #ff .cn  { fill: #FAFAFA; stroke: #5E5850; stroke-width: 1; }
-    #ff .rb  { fill: #F0F6FC; }
-    #ff .ry  { fill: #FFFBEB; }
-    #ff .sn  { font-size: 14px; fill: #111111; }
-    #ff .vt  { font-size: 17px; font-weight: 700; fill: #111111; }
-    #ff .mlb { font-size: 15px; font-weight: 700; fill: #111111; }
-    #ff .th  { font-size: 13px; font-weight: 700; fill: #5E5850; }
-    #ff .cap { font-size: 13px; fill: #5E5850; }
-    #ff .shp { font-size: 13px; fill: #5E5850; }
-    #ff .red { font-size: 14px; fill: #C30B0A; }
-    #ff .opx { font-size: 22px; fill: #5E5850; }
-    #ff .mono { font-family: "Courier New", Courier, monospace; font-size: 14px; fill: #111111; }
-    #ff .code { font-family: "Courier New", Courier, monospace; font-size: 13px; fill: #111111; }
-    #ff .cmt  { font-family: "Courier New", Courier, monospace; font-size: 13px; fill: #5E5850; }
-    #ff .edge { stroke: #5E5850; stroke-width: 1.5; fill: none; }
-    #ff .fb   { fill: none; stroke: #3576C0; stroke-width: 3; }
-    #ff .fbd  { fill: none; stroke: #3576C0; stroke-width: 2.4; stroke-dasharray: 6 4; }
-    #ff .frd  { fill: none; stroke: #C30B0A; stroke-width: 3; }
-    #ff .fgn  { fill: none; stroke: #73B222; stroke-width: 3; }
-    #ff .ab   { stroke: #3576C0; stroke-width: 2; fill: none; }
-    #ff .ar   { stroke: #C30B0A; stroke-width: 2; fill: none; }
-    #ff .dsh  { fill: none; stroke: #C30B0A; stroke-width: 2; stroke-dasharray: 5 3; }
-    #ff .sep  { stroke: #E4E0D8; stroke-width: 1; }
-    #ff .legend { font-size: 13px; fill: #5E5850; }
+    #lr { font-family: Helvetica, Arial, sans-serif; }
+    #lr .cb { fill: #F0F6FC; stroke: #3576C0; stroke-width: 1.2; }
+    #lr .cg { fill: #F0FAF0; stroke: #73B222; stroke-width: 1.2; }
+    #lr .cr { fill: #FFF2F2; stroke: #C30B0A; stroke-width: 1.2; }
+    #lr .ce { fill: #FFFFFF; stroke: #B9B3A6; stroke-width: 1.2; stroke-dasharray: 4 3; }
+    #lr .by { fill: #FFFBEB; stroke: #C29E08; stroke-width: 1.6; }
+    #lr .br { fill: #FFF2F2; stroke: #C30B0A; stroke-width: 1.6; }
+    #lr .tc { fill: #FFFFFF; stroke: #C8C3B6; stroke-width: 1; }
+    #lr .codebox { fill: #F4F2EC; stroke: #3576C0; stroke-width: 1.5; }
+    #lr .ttl { font-size: 15px; font-weight: 700; fill: #111111; }
+    #lr .cap { font-size: 13px; fill: #5E5850; }
+    #lr .capr { font-size: 13px; fill: #C30B0A; }
+    #lr .code { font-family: "Courier New", Courier, monospace; font-size: 13px; fill: #111111; }
+    #lr .legend { font-size: 13px; fill: #5E5850; }
   </style>
-  <defs>
-    <marker id="ff-arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5E5850"/></marker>
-    <marker id="ff-arwb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#3576C0"/></marker>
-    <marker id="ff-arwr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C30B0A"/></marker>
-  </defs>
-  <rect x="30" y="40" width="70" height="44" rx="8" class="bx"/>
-  <foreignObject x="42" y="47.5" width="46" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#111111;font-weight:400" data-tex="x"></div></foreignObject>
-  <rect x="130" y="40" width="70" height="44" rx="8" class="by"/>
-  <text x="165" y="67" class="sn" text-anchor="middle">Linear 1</text>
-  <rect x="230" y="40" width="70" height="44" rx="8" class="by"/>
-  <text x="265" y="67" class="sn" text-anchor="middle">ReLU</text>
-  <rect x="330" y="40" width="70" height="44" rx="8" class="by"/>
-  <text x="365" y="67" class="sn" text-anchor="middle">Linear 2</text>
-  <rect x="430" y="40" width="70" height="44" rx="8" class="by"/>
-  <text x="465" y="67" class="sn" text-anchor="middle">MSE</text>
-  <rect x="530" y="40" width="70" height="44" rx="8" class="br"/>
-  <foreignObject x="542" y="47.5" width="46" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#111111;font-weight:400" data-tex="L"></div></foreignObject>
-  <line x1="100" y1="62" x2="126" y2="62" class="edge" marker-end="url(#ff-arw)"/>
-  <line x1="200" y1="62" x2="226" y2="62" class="edge" marker-end="url(#ff-arw)"/>
-  <line x1="300" y1="62" x2="326" y2="62" class="edge" marker-end="url(#ff-arw)"/>
-  <line x1="400" y1="62" x2="426" y2="62" class="edge" marker-end="url(#ff-arw)"/>
-  <line x1="500" y1="62" x2="526" y2="62" class="edge" marker-end="url(#ff-arw)"/>
-  <g data-key="cur-l1" data-only="1">
-<rect x="126" y="36" width="78" height="52" rx="10" class="fb"/>
-<line x1="65" y1="100" x2="159" y2="100" class="ab" marker-end="url(#ff-arwb)"/>
+  <text x="130" y="36" class="cap" text-anchor="middle">признаки X</text>
+  <text x="270" y="36" class="cap" text-anchor="middle">предсказание</text>
+  <text x="365" y="36" class="cap" text-anchor="middle">ответы</text>
+  <text x="460" y="36" class="cap" text-anchor="middle">ошибка</text>
+  <foreignObject x="55" y="46" width="90" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="x_1"></div></foreignObject>
+  <foreignObject x="115" y="46" width="90" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="x_2"></div></foreignObject>
+  <foreignObject x="225" y="46" width="90" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="\hat y"></div></foreignObject>
+  <foreignObject x="320" y="46" width="90" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="y"></div></foreignObject>
+  <foreignObject x="415" y="46" width="90" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="\hat y - y"></div></foreignObject>
+  <foreignObject x="34" y="84.5" width="28" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="1"></div></foreignObject>
+  <rect x="70" y="80" width="60" height="36" class="cb"/>
+  <foreignObject x="72" y="81" width="56" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="1"></div></foreignObject>
+  <rect x="130" y="80" width="60" height="36" class="cb"/>
+  <foreignObject x="132" y="81" width="56" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="2"></div></foreignObject>
+  <rect x="330" y="80" width="70" height="36" class="cb"/>
+  <foreignObject x="332" y="81" width="66" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="4.3"></div></foreignObject>
+  <rect x="230" y="80" width="80" height="36" class="ce"/>
+  <rect x="420" y="80" width="80" height="36" class="ce"/>
+  <foreignObject x="34" y="120.5" width="28" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="2"></div></foreignObject>
+  <rect x="70" y="116" width="60" height="36" class="cb"/>
+  <foreignObject x="72" y="117" width="56" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="2"></div></foreignObject>
+  <rect x="130" y="116" width="60" height="36" class="cb"/>
+  <foreignObject x="132" y="117" width="56" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="0"></div></foreignObject>
+  <rect x="330" y="116" width="70" height="36" class="cb"/>
+  <foreignObject x="332" y="117" width="66" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="4.3"></div></foreignObject>
+  <rect x="230" y="116" width="80" height="36" class="ce"/>
+  <rect x="420" y="116" width="80" height="36" class="ce"/>
+  <foreignObject x="34" y="156.5" width="28" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="3"></div></foreignObject>
+  <rect x="70" y="152" width="60" height="36" class="cb"/>
+  <foreignObject x="72" y="153" width="56" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="0"></div></foreignObject>
+  <rect x="130" y="152" width="60" height="36" class="cb"/>
+  <foreignObject x="132" y="153" width="56" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="1"></div></foreignObject>
+  <rect x="330" y="152" width="70" height="36" class="cb"/>
+  <foreignObject x="332" y="153" width="66" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="1.6"></div></foreignObject>
+  <rect x="230" y="152" width="80" height="36" class="ce"/>
+  <rect x="420" y="152" width="80" height="36" class="ce"/>
+  <foreignObject x="34" y="192.5" width="28" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="4"></div></foreignObject>
+  <rect x="70" y="188" width="60" height="36" class="cb"/>
+  <foreignObject x="72" y="189" width="56" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="3"></div></foreignObject>
+  <rect x="130" y="188" width="60" height="36" class="cb"/>
+  <foreignObject x="132" y="189" width="56" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="1"></div></foreignObject>
+  <rect x="330" y="188" width="70" height="36" class="cb"/>
+  <foreignObject x="332" y="189" width="66" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="7.6"></div></foreignObject>
+  <rect x="230" y="188" width="80" height="36" class="ce"/>
+  <rect x="420" y="188" width="80" height="36" class="ce"/>
+  <rect x="30" y="246" width="260" height="80" rx="8" class="by"/>
+  <text x="44" y="270" class="ttl">параметры модели</text>
+  <rect x="310" y="246" width="270" height="80" rx="8" class="br"/>
+  <text x="324" y="270" class="ttl">ошибка MSE</text>
+  <g data-key="yh0" data-only="1">
+    <rect x="230" y="80" width="80" height="36" class="cg"/>
+    <foreignObject x="232" y="81" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="0"></div></foreignObject>
+    <rect x="230" y="116" width="80" height="36" class="cg"/>
+    <foreignObject x="232" y="117" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="0"></div></foreignObject>
+    <rect x="230" y="152" width="80" height="36" class="cg"/>
+    <foreignObject x="232" y="153" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="0"></div></foreignObject>
+    <rect x="230" y="188" width="80" height="36" class="cg"/>
+    <foreignObject x="232" y="189" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="0"></div></foreignObject>
   </g>
-  <g data-key="cur-relu" data-only="1">
-<rect x="226" y="36" width="78" height="52" rx="10" class="fb"/>
-<line x1="65" y1="100" x2="259" y2="100" class="ab" marker-end="url(#ff-arwb)"/>
+  <g data-key="er0" data-only="1">
+    <rect x="420" y="80" width="80" height="36" class="cr"/>
+    <foreignObject x="422" y="81" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="-4.3"></div></foreignObject>
+    <rect x="420" y="116" width="80" height="36" class="cr"/>
+    <foreignObject x="422" y="117" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="-4.3"></div></foreignObject>
+    <rect x="420" y="152" width="80" height="36" class="cr"/>
+    <foreignObject x="422" y="153" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="-1.6"></div></foreignObject>
+    <rect x="420" y="188" width="80" height="36" class="cr"/>
+    <foreignObject x="422" y="189" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="-7.6"></div></foreignObject>
   </g>
-  <g data-key="cur-head" data-only="1">
-<rect x="326" y="36" width="78" height="52" rx="10" class="fb"/>
-<rect x="426" y="36" width="78" height="52" rx="10" class="fb"/>
-<rect x="526" y="36" width="78" height="52" rx="10" class="fb"/>
-<line x1="65" y1="100" x2="559" y2="100" class="ab" marker-end="url(#ff-arwb)"/>
+  <g data-key="p0" data-only="1">
+    <foreignObject x="44" y="285" width="240" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:16px;color:#111111;font-weight:400" data-tex="\mathbf w = [0,\ 0],\quad b = 0"></div></foreignObject>
   </g>
-  <g data-key="cur-cache" data-only="1">
-<rect x="26" y="36" width="78" height="52" rx="10" class="fbd"/>
-<rect x="226" y="36" width="78" height="52" rx="10" class="fbd"/>
-<rect x="326" y="36" width="78" height="52" rx="10" class="fbd"/>
-<text x="600" y="104" class="cap" text-anchor="end">кэш forward</text>
+  <g data-key="l0" data-only="1">
+    <foreignObject x="324" y="285" width="240" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:16px;color:#111111;font-weight:400" data-tex="L = 24.325"></div></foreignObject>
   </g>
-  <g data-key="cur-b2" data-only="1">
-<rect x="326" y="36" width="78" height="52" rx="10" class="frd"/>
-<rect x="426" y="36" width="78" height="52" rx="10" class="frd"/>
-<line x1="565" y1="100" x2="371" y2="100" class="ar" marker-end="url(#ff-arwr)"/>
+  <g data-key="yh1" data-only="1">
+    <rect x="230" y="80" width="80" height="36" class="cg"/>
+    <foreignObject x="232" y="81" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="4.455"></div></foreignObject>
+    <rect x="230" y="116" width="80" height="36" class="cg"/>
+    <foreignObject x="232" y="117" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="4.46"></div></foreignObject>
+    <rect x="230" y="152" width="80" height="36" class="cg"/>
+    <foreignObject x="232" y="153" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="1.78"></div></foreignObject>
+    <rect x="230" y="188" width="80" height="36" class="cg"/>
+    <foreignObject x="232" y="189" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="7.135"></div></foreignObject>
   </g>
-  <g data-key="cur-brelu" data-only="1">
-<rect x="226" y="36" width="78" height="52" rx="10" class="frd"/>
-<line x1="565" y1="100" x2="271" y2="100" class="ar" marker-end="url(#ff-arwr)"/>
+  <g data-key="er1" data-only="1">
+    <rect x="420" y="80" width="80" height="36" class="cr"/>
+    <foreignObject x="422" y="81" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="0.155"></div></foreignObject>
+    <rect x="420" y="116" width="80" height="36" class="cr"/>
+    <foreignObject x="422" y="117" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="0.16"></div></foreignObject>
+    <rect x="420" y="152" width="80" height="36" class="cr"/>
+    <foreignObject x="422" y="153" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="0.18"></div></foreignObject>
+    <rect x="420" y="188" width="80" height="36" class="cr"/>
+    <foreignObject x="422" y="189" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="-0.465"></div></foreignObject>
   </g>
-  <g data-key="cur-b1" data-only="1">
-<rect x="126" y="36" width="78" height="52" rx="10" class="frd"/>
-<line x1="565" y1="100" x2="171" y2="100" class="ar" marker-end="url(#ff-arwr)"/>
+  <g data-key="p1" data-only="1">
+    <foreignObject x="44" y="285" width="240" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:16px;color:#111111;font-weight:400" data-tex="\mathbf w = [1.785,\ 0.89],\quad b = 0.89"></div></foreignObject>
   </g>
-  <g data-key="cur-upd" data-only="1">
-<rect x="126" y="36" width="78" height="52" rx="10" class="fgn"/>
-<rect x="326" y="36" width="78" height="52" rx="10" class="fgn"/>
-<foreignObject x="442" y="85.8" width="158" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="justify-content:flex-end;font-size:13px;color:#5E5850;font-weight:400" data-tex="\theta \leftarrow \theta - \mathrm{lr}\cdot d\theta"></div></foreignObject>
+  <g data-key="l1" data-only="1">
+    <foreignObject x="324" y="285" width="240" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:16px;color:#111111;font-weight:400" data-tex="L = 0.0746"></div></foreignObject>
   </g>
-  <rect x="620" y="40" width="310" height="540" rx="8" class="bw"/>
-  <text x="634" y="64" class="mlb">код одной итерации</text>
-  <text x="634" y="96" class="cmt"># forward</text>
-  <g data-key="k-z1">
-<text x="634" y="122" class="code">z1 = x @ W1 + b1</text>
+  <g data-key="yh5" data-only="1">
+    <rect x="230" y="80" width="80" height="36" class="cg"/>
+    <foreignObject x="232" y="81" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="4.45"></div></foreignObject>
+    <rect x="230" y="116" width="80" height="36" class="cg"/>
+    <foreignObject x="232" y="117" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="4.45"></div></foreignObject>
+    <rect x="230" y="152" width="80" height="36" class="cg"/>
+    <foreignObject x="232" y="153" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="1.45"></div></foreignObject>
+    <rect x="230" y="188" width="80" height="36" class="cg"/>
+    <foreignObject x="232" y="189" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="7.45"></div></foreignObject>
   </g>
-  <g data-key="k-h">
-<text x="634" y="148" class="code">h = np.maximum(z1, 0)</text>
+  <g data-key="er5" data-only="1">
+    <rect x="420" y="80" width="80" height="36" class="cr"/>
+    <foreignObject x="422" y="81" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="0.15"></div></foreignObject>
+    <rect x="420" y="116" width="80" height="36" class="cr"/>
+    <foreignObject x="422" y="117" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="0.15"></div></foreignObject>
+    <rect x="420" y="152" width="80" height="36" class="cr"/>
+    <foreignObject x="422" y="153" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="-0.15"></div></foreignObject>
+    <rect x="420" y="188" width="80" height="36" class="cr"/>
+    <foreignObject x="422" y="189" width="76" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:16px;color:#111111;font-weight:400" data-tex="-0.15"></div></foreignObject>
   </g>
-  <g data-key="k-yhat">
-<text x="634" y="174" class="code">y_hat = h @ W2 + b2</text>
+  <g data-key="p5" data-only="1">
+    <foreignObject x="44" y="285" width="240" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:16px;color:#111111;font-weight:400" data-tex="\mathbf w = [2,\ 1],\quad b = 0.45"></div></foreignObject>
+  </g>
+  <g data-key="l5" data-only="1">
+    <foreignObject x="324" y="285" width="240" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:16px;color:#111111;font-weight:400" data-tex="L = 0.0225"></div></foreignObject>
+  </g>
+  <g data-key="d-pred" data-only="1">
+    <foreignObject x="30" y="355" width="550" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:16px;color:#111111;font-weight:400" data-tex="\hat y_i = w_1 x_{i1} + w_2 x_{i2} + b"></div></foreignObject>
+    <foreignObject x="30" y="394" width="550" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400"><span>всё сразу: <span data-tex="\hat{\mathbf y} = X\mathbf w + b"></span>, формы <span data-tex="(4\times 2)\cdot(2\times 1) \to 4\times 1"></span></span></div></foreignObject>
+    <foreignObject x="30" y="430" width="550" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400"><span>первая строка: <span data-tex="\hat y_1 = 0\cdot 1 + 0\cdot 2 + 0 = 0"></span></span></div></foreignObject>
+    <text x="30" y="484" class="cap">веса пока нулевые, поэтому все четыре предсказания равны 0</text>
+  </g>
+  <g data-key="d-loss" data-only="1">
+    <foreignObject x="30" y="356" width="550" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:16px;color:#111111;font-weight:400" data-tex="L = \dfrac{1}{N}\sum_{i=1}^{N} (\hat y_i - y_i)^2"></div></foreignObject>
+    <foreignObject x="30" y="416" width="550" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400" data-tex="= \dfrac{4.3^2 + 4.3^2 + 1.6^2 + 7.6^2}{4} = \dfrac{97.3}{4} = 24.325"></div></foreignObject>
+    <text x="30" y="498" class="cap">квадрат делает каждую ошибку положительной, а большие ошибки — заметнее</text>
+  </g>
+  <g data-key="d-grad" data-only="1">
+    <foreignObject x="30" y="354" width="550" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400" data-tex="\dfrac{\partial L}{\partial \mathbf w} = \dfrac{2}{N}\,X^{\top}(\hat{\mathbf y} - \mathbf y) = [-17.85,\ -8.9]"></div></foreignObject>
+    <foreignObject x="30" y="412" width="550" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400" data-tex="\dfrac{\partial L}{\partial b} = \dfrac{2}{N}\sum_{i}(\hat y_i - y_i) = -8.9"></div></foreignObject>
+    <foreignObject x="30" y="476.5" width="550" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span>X.T @ err — снова умножение матриц: <span data-tex="(2\times 4)\cdot(4\times 1) \to 2\times 1"></span></span></div></foreignObject>
+    <text x="30" y="526" class="cap">оба градиента отрицательные: если увеличить w и b, ошибка уменьшится</text>
+  </g>
+  <g data-key="d-step" data-only="1">
+    <foreignObject x="30" y="362" width="550" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400" data-tex="\mathbf w \leftarrow [0,\ 0] - 0.1\cdot[-17.85,\ -8.9] = [1.785,\ 0.89]"></div></foreignObject>
+    <foreignObject x="30" y="402" width="550" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400" data-tex="b \leftarrow 0 - 0.1\cdot(-8.9) = 0.89"></div></foreignObject>
+    <foreignObject x="30" y="444" width="550" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400"><span>ошибка за один шаг: <span data-tex="24.325 \to 0.0746"></span></span></div></foreignObject>
+    <text x="30" y="498" class="cap">первые три предсказания чуть завышены, четвёртое занижено на 0.465</text>
+  </g>
+  <g data-key="d-loop" data-only="1">
+    <text x="30" y="372" class="ttl">ошибка по шагам</text>
+    <rect x="30" y="386" width="80" height="34" class="tc"/>
+    <foreignObject x="32" y="387" width="76" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#111111;font-weight:700" data-tex="\text{шаг}"></div></foreignObject>
+    <rect x="110" y="386" width="90" height="34" class="tc"/>
+    <foreignObject x="112" y="387" width="86" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#111111;font-weight:400" data-tex="0"></div></foreignObject>
+    <rect x="200" y="386" width="90" height="34" class="tc"/>
+    <foreignObject x="202" y="387" width="86" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#111111;font-weight:400" data-tex="1"></div></foreignObject>
+    <rect x="290" y="386" width="90" height="34" class="tc"/>
+    <foreignObject x="292" y="387" width="86" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#111111;font-weight:400" data-tex="10"></div></foreignObject>
+    <rect x="380" y="386" width="90" height="34" class="tc"/>
+    <foreignObject x="382" y="387" width="86" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#111111;font-weight:400" data-tex="100"></div></foreignObject>
+    <rect x="470" y="386" width="90" height="34" class="tc"/>
+    <foreignObject x="472" y="387" width="86" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#111111;font-weight:400" data-tex="500"></div></foreignObject>
+    <rect x="30" y="420" width="80" height="34" class="tc"/>
+    <foreignObject x="32" y="421" width="76" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#111111;font-weight:700" data-tex="L"></div></foreignObject>
+    <rect x="110" y="420" width="90" height="34" class="tc"/>
+    <foreignObject x="112" y="421" width="86" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#111111;font-weight:400" data-tex="24.325"></div></foreignObject>
+    <rect x="200" y="420" width="90" height="34" class="tc"/>
+    <foreignObject x="202" y="421" width="86" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#111111;font-weight:400" data-tex="0.0746"></div></foreignObject>
+    <rect x="290" y="420" width="90" height="34" class="tc"/>
+    <foreignObject x="292" y="421" width="86" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#111111;font-weight:400" data-tex="0.0407"></div></foreignObject>
+    <rect x="380" y="420" width="90" height="34" class="tc"/>
+    <foreignObject x="382" y="421" width="86" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#111111;font-weight:400" data-tex="0.0227"></div></foreignObject>
+    <rect x="470" y="420" width="90" height="34" class="tc"/>
+    <foreignObject x="472" y="421" width="86" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:14px;color:#111111;font-weight:400" data-tex="0.0225"></div></foreignObject>
+    <text x="30" y="484" class="cap">после 200 шагов ошибка почти не меняется: остаток 0.0225 — шум в данных</text>
+    <foreignObject x="30" y="490.5" width="550" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span>плоскость <span data-tex="\hat y = 2x_1 + x_2 + 0.45"></span> не проходит через все точки: ошибки <span data-tex="\pm 0.15"></span></span></div></foreignObject>
+  </g>
+  <g data-key="d-new" data-only="1">
+    <foreignObject x="30" y="356" width="550" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:700"><span>новый объект <span data-tex="\mathbf x = [1,\ 1]"></span></span></div></foreignObject>
+    <foreignObject x="30" y="393" width="550" height="34"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:16px;color:#111111;font-weight:400" data-tex="\hat y = 2\cdot 1 + 1\cdot 1 + 0.45 = 3.45"></div></foreignObject>
+    <text x="30" y="452" class="cap">predict(X_new, w, b): обученные w и b хранятся в двух переменных,</text>
+    <text x="30" y="472" class="cap">и передавать их в predict приходится самому</text>
+  </g>
+  <rect x="600" y="30" width="330" height="530" rx="8" class="codebox"/>
+  <text x="614" y="56" class="ttl">код на NumPy</text>
+  <g data-key="k-def">
+    <text x="614" y="88" class="code">def train(X, y, lr=0.1, steps=500):</text>
+  </g>
+  <g data-key="k-init">
+    <text x="614" y="109" class="code">    n, m = X.shape</text>
+    <text x="614" y="130" class="code">    w = np.zeros(m)</text>
+    <text x="614" y="151" class="code">    b = 0.0</text>
+  </g>
+  <g data-key="k-loop">
+    <text x="614" y="172" class="code">    for step in range(steps):</text>
+    <text x="614" y="319" class="code">    return w, b</text>
+  </g>
+  <g data-key="k-pred">
+    <text x="614" y="193" class="code">        y_hat = X @ w + b</text>
+  </g>
+  <g data-key="k-err">
+    <text x="614" y="214" class="code">        err = y_hat - y</text>
+  </g>
+  <g data-key="k-grad">
+    <text x="614" y="235" class="code">        dw = 2 / n * (X.T @ err)</text>
+    <text x="614" y="256" class="code">        db = 2 / n * err.sum()</text>
+  </g>
+  <g data-key="k-step">
+    <text x="614" y="277" class="code">        w -= lr * dw</text>
+    <text x="614" y="298" class="code">        b -= lr * db</text>
+  </g>
+  <g data-key="k-new">
+    <text x="614" y="361" class="code">def predict(X, w, b):</text>
+    <text x="614" y="382" class="code">    return X @ w + b</text>
   </g>
   <g data-key="k-loss">
-<text x="634" y="200" class="code">loss = ((y_hat - y) ** 2).mean()</text>
+    <text x="614" y="424" class="code">def mse(y_hat, y):</text>
+    <text x="614" y="445" class="code">    return ((y_hat - y) ** 2).mean()</text>
   </g>
-  <text x="634" y="238" class="cmt"># backward</text>
-  <g data-key="k-dy">
-<text x="634" y="264" class="code">d_yhat = 2 * (y_hat - y) / y.size</text>
-  </g>
-  <g data-key="k-dw2">
-<text x="634" y="290" class="code">dW2 = h.T @ d_yhat</text>
-  </g>
-  <g data-key="k-db2">
-<text x="634" y="316" class="code">db2 = d_yhat.sum(axis=0)</text>
-  </g>
-  <g data-key="k-dh">
-<text x="634" y="342" class="code">dh = d_yhat @ W2.T</text>
-  </g>
-  <g data-key="k-dz1">
-<text x="634" y="368" class="code">dz1 = dh * (z1 &gt; 0)</text>
-  </g>
-  <g data-key="k-dw1">
-<text x="634" y="394" class="code">dW1 = x.T @ dz1</text>
-  </g>
-  <g data-key="k-db1">
-<text x="634" y="420" class="code">db1 = dz1.sum(axis=0)</text>
-  </g>
-  <text x="634" y="458" class="cmt"># шаг, lr = 0.01</text>
-  <g data-key="k-upd">
-<text x="634" y="484" class="code">W1 -= lr * dW1;  b1 -= lr * db1</text>
-<text x="634" y="510" class="code">W2 -= lr * dW2;  b2 -= lr * db2</text>
-  </g>
-  <text x="634" y="560" class="cap">каждую строку пишу я сам</text>
-  <g data-key="v-tab" data-only="1">
-<text x="30" y="134" class="vt">Обозначения и формы</text>
-<text x="44" y="172" class="th">код</text>
-<text x="112" y="172" class="th">в формуле</text>
-<text x="190" y="172" class="th">форма</text>
-<text x="248" y="172" class="th">значение</text>
-<text x="462" y="172" class="th">роль</text>
-<rect x="34" y="183" width="562" height="26" class="rb"/>
-<line x1="34" y1="209" x2="596" y2="209" class="sep"/>
-<text x="44" y="202" class="mono">x</text>
-<foreignObject x="112" y="180.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400" data-tex="x"></div></foreignObject>
-<foreignObject x="190" y="182.5" width="66" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400" data-tex="1\times 2"></div></foreignObject>
-<text x="248" y="202" class="code">[[1, 2]]</text>
-<text x="462" y="202" class="cap">вход (данные)</text>
-<rect x="34" y="211" width="562" height="26" class="rb"/>
-<line x1="34" y1="237" x2="596" y2="237" class="sep"/>
-<text x="44" y="230" class="mono">y</text>
-<foreignObject x="112" y="208.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400" data-tex="y"></div></foreignObject>
-<foreignObject x="190" y="210.5" width="66" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400" data-tex="1\times 1"></div></foreignObject>
-<text x="248" y="230" class="code">[[2]]</text>
-<text x="462" y="230" class="cap">правильный ответ</text>
-<rect x="34" y="239" width="562" height="26" class="ry"/>
-<line x1="34" y1="265" x2="596" y2="265" class="sep"/>
-<text x="44" y="258" class="mono">W1</text>
-<foreignObject x="112" y="236.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400" data-tex="W_{1}"></div></foreignObject>
-<foreignObject x="190" y="238.5" width="66" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400" data-tex="2\times 2"></div></foreignObject>
-<text x="248" y="258" class="code">[[0.5, −1], [0.25, 0.5]]</text>
-<text x="462" y="258" class="cap">веса слоя 1</text>
-<rect x="34" y="267" width="562" height="26" class="ry"/>
-<line x1="34" y1="293" x2="596" y2="293" class="sep"/>
-<text x="44" y="286" class="mono">b1</text>
-<foreignObject x="112" y="264.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400" data-tex="b_{1}"></div></foreignObject>
-<text x="190" y="286" class="mono">(2,)</text>
-<text x="248" y="286" class="code">[0, −0.5]</text>
-<text x="462" y="286" class="cap">сдвиг слоя 1</text>
-<rect x="34" y="295" width="562" height="26" class="ry"/>
-<line x1="34" y1="321" x2="596" y2="321" class="sep"/>
-<text x="44" y="314" class="mono">W2</text>
-<foreignObject x="112" y="292.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400" data-tex="W_{2}"></div></foreignObject>
-<foreignObject x="190" y="294.5" width="66" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400" data-tex="2\times 1"></div></foreignObject>
-<text x="248" y="314" class="code">[[2], [1]]</text>
-<text x="462" y="314" class="cap">веса слоя 2</text>
-<rect x="34" y="323" width="562" height="26" class="ry"/>
-<line x1="34" y1="349" x2="596" y2="349" class="sep"/>
-<text x="44" y="342" class="mono">b2</text>
-<foreignObject x="112" y="320.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400" data-tex="b_{2}"></div></foreignObject>
-<text x="190" y="342" class="mono">(1,)</text>
-<text x="248" y="342" class="code">[0.5]</text>
-<text x="462" y="342" class="cap">сдвиг слоя 2</text>
-<line x1="34" y1="377" x2="596" y2="377" class="sep"/>
-<text x="44" y="370" class="mono">z1</text>
-<foreignObject x="112" y="348.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400" data-tex="z_{1}"></div></foreignObject>
-<foreignObject x="190" y="350.5" width="66" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400" data-tex="1\times 2"></div></foreignObject>
-<text x="248" y="370" class="cap">считается</text>
-<text x="462" y="370" class="cap">до активации</text>
-<line x1="34" y1="405" x2="596" y2="405" class="sep"/>
-<text x="44" y="398" class="mono">h</text>
-<foreignObject x="112" y="376.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400" data-tex="h"></div></foreignObject>
-<foreignObject x="190" y="378.5" width="66" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400" data-tex="1\times 2"></div></foreignObject>
-<text x="248" y="398" class="cap">считается</text>
-<text x="462" y="398" class="cap">после ReLU</text>
-<line x1="34" y1="433" x2="596" y2="433" class="sep"/>
-<text x="44" y="426" class="mono">y_hat</text>
-<foreignObject x="112" y="404.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400" data-tex="\hat{y}"></div></foreignObject>
-<foreignObject x="190" y="406.5" width="66" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400" data-tex="1\times 1"></div></foreignObject>
-<text x="248" y="426" class="cap">считается</text>
-<text x="462" y="426" class="cap">ответ сети</text>
-<text x="34" y="468" class="cap">синий фон — данные, жёлтый — параметры, без фона — промежуточное</text>
-<text x="34" y="492" class="cap">(2,) — одномерный сдвиг: при сложении растягивается на каждую строку</text>
-<foreignObject x="34" y="497.8" width="523" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span>правило форм то же, что в части 1: <span data-tex="(a\times b)\cdot(b\times c) \to a\times c"></span></span></div></foreignObject>
-  </g>
-  <g data-key="v-l1" data-only="1">
-<foreignObject x="30" y="109.9" width="354" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:17px;color:#111111;font-weight:700"><span>Linear 1: <span data-tex="z_1 = x \cdot W_1 + b_1"></span></span></div></foreignObject>
-<rect x="40" y="214" width="52" height="34" class="cb"/>
-<foreignObject x="42.5" y="214.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
-<rect x="92" y="214" width="52" height="34" class="cb"/>
-<foreignObject x="94.5" y="214.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="2"></div></foreignObject>
-<foreignObject x="68.5" y="182.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="x"></div></foreignObject>
-<foreignObject x="60" y="248.8" width="64" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="1\times 2"></div></foreignObject>
-<text x="164" y="238" class="opx" text-anchor="middle">·</text>
-<rect x="184" y="196" width="52" height="34" class="cy"/>
-<foreignObject x="176" y="196.6" width="68" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0.5"></div></foreignObject>
-<rect x="236" y="196" width="52" height="34" class="cy"/>
-<foreignObject x="233" y="196.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="-1"></div></foreignObject>
-<rect x="184" y="230" width="52" height="34" class="cy"/>
-<foreignObject x="170.5" y="230.6" width="79" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0.25"></div></foreignObject>
-<rect x="236" y="230" width="52" height="34" class="cy"/>
-<foreignObject x="228" y="230.6" width="68" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0.5"></div></foreignObject>
-<foreignObject x="207" y="164.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="W_{1}"></div></foreignObject>
-<foreignObject x="204" y="264.8" width="64" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="2\times 2"></div></foreignObject>
-<text x="308" y="238" class="opx" text-anchor="middle">+</text>
-<rect x="328" y="214" width="52" height="34" class="cy"/>
-<foreignObject x="330.5" y="214.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0"></div></foreignObject>
-<rect x="380" y="214" width="52" height="34" class="cy"/>
-<foreignObject x="366.5" y="214.6" width="79" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="-0.5"></div></foreignObject>
-<foreignObject x="351" y="182.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="b_{1}"></div></foreignObject>
-<text x="380" y="267" class="shp" text-anchor="middle">(2,)</text>
-<text x="452" y="238" class="opx" text-anchor="middle">=</text>
-<rect x="472" y="214" width="52" height="34" class="cb"/>
-<foreignObject x="474.5" y="214.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
-<rect x="524" y="214" width="52" height="34" class="cb"/>
-<foreignObject x="510.5" y="214.6" width="79" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="-0.5"></div></foreignObject>
-<foreignObject x="495" y="182.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="z_{1}"></div></foreignObject>
-<foreignObject x="492" y="248.8" width="64" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="1\times 2"></div></foreignObject>
-<foreignObject x="40" y="320.5" width="338" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400" data-tex="z_{1}[0] = 1\cdot 0.5 + 2\cdot 0.25 + 0 = 1"></div></foreignObject>
-<foreignObject x="40" y="348.5" width="389" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400" data-tex="z_{1}[1] = 1\cdot (-1) + 2\cdot 0.5 - 0.5 = -0.5"></div></foreignObject>
-<rect x="36" y="394" width="400" height="30" rx="8" class="bg"/>
-<foreignObject x="48" y="392.6" width="446" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400"><span><span data-tex="(1\times 2)\cdot(2\times 2) \to 1\times 2"></span>, сдвиг (2,) <span data-tex="\to 1\times 2"></span> ✓</span></div></foreignObject>
-<foreignObject x="40" y="437.8" width="644" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span>второй нейрон до сдвига дал ровно <span data-tex="0"></span> — сдвиг <span data-tex="-0.5"></span> увёл его в минус</span></div></foreignObject>
-  </g>
-  <g data-key="v-relu" data-only="1">
-<foreignObject x="30" y="109.9" width="281" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:17px;color:#111111;font-weight:700"><span>ReLU: <span data-tex="h = \max(z_1,\ 0)"></span></span></div></foreignObject>
-<rect x="40" y="190" width="52" height="34" class="cb"/>
-<foreignObject x="42.5" y="190.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
-<rect x="92" y="190" width="52" height="34" class="cb"/>
-<foreignObject x="78.5" y="190.6" width="79" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="-0.5"></div></foreignObject>
-<foreignObject x="40" y="158.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:700" data-tex="z_{1}"></div></foreignObject>
-<rect x="40" y="262" width="52" height="34" class="cn"/>
-<foreignObject x="42.5" y="262.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
-<rect x="92" y="262" width="52" height="34" class="cn"/>
-<foreignObject x="94.5" y="262.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0"></div></foreignObject>
-<foreignObject x="40" y="230.6" width="166" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:700"><span>маска <span data-tex="z_1 &gt; 0"></span></span></div></foreignObject>
-<rect x="40" y="334" width="52" height="34" class="cb"/>
-<foreignObject x="42.5" y="334.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
-<rect x="92" y="334" width="52" height="34" class="cb"/>
-<foreignObject x="94.5" y="334.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0"></div></foreignObject>
-<foreignObject x="40" y="302.6" width="187" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:700"><span><span data-tex="h = z_1 \odot"></span> маска</span></div></foreignObject>
-<rect x="89" y="185" width="58" height="44" rx="6" class="dsh"/>
-<rect x="89" y="257" width="58" height="44" rx="6" class="dsh"/>
-<rect x="89" y="329" width="58" height="44" rx="6" class="dsh"/>
-<text x="160" y="286" class="red">нейрон 2</text>
-<line x1="316" y1="380" x2="578" y2="380" class="edge" marker-end="url(#ff-arw)"/>
-<line x1="440" y1="404" x2="440" y2="232" class="edge" marker-end="url(#ff-arw)"/>
-<foreignObject x="572" y="379.8" width="45" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="z"></div></foreignObject>
-<foreignObject x="448" y="223.8" width="45" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="h"></div></foreignObject>
-<line x1="520" y1="376" x2="520" y2="384" class="edge"/>
-<foreignObject x="497.5" y="379.8" width="45" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="1"></div></foreignObject>
-<line x1="436" y1="300" x2="444" y2="300" class="edge"/>
-<foreignObject x="385" y="286.8" width="45" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="justify-content:flex-end;font-size:13px;color:#5E5850;font-weight:400" data-tex="1"></div></foreignObject>
-<polyline points="320,380 440,380 560,260" fill="none" stroke="#C29E08" stroke-width="3"/>
-<circle cx="520" cy="300" r="7" fill="#3576C0"/>
-<foreignObject x="530" y="303.8" width="120" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="z = 1 \to h = 1"></div></foreignObject>
-<circle cx="400" cy="380" r="7" fill="#C30B0A"/>
-<foreignObject x="231" y="346.5" width="157" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="justify-content:flex-end;font-size:14px;color:#C30B0A;font-weight:400" data-tex="z = -0.5 \to h = 0"></div></foreignObject>
-<foreignObject x="40" y="437.8" width="635" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span>у ReLU нет параметров; для backward ей нужна только маска <span data-tex="z_1 &gt; 0"></span></span></div></foreignObject>
-  </g>
-  <g data-key="v-head" data-only="1">
-<foreignObject x="30" y="109.9" width="636" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:17px;color:#111111;font-weight:700"><span>Linear 2 и ошибка: <span data-tex="\hat{y} = h \cdot W_2 + b_2,\quad L = (\hat{y} - y)^2"></span></span></div></foreignObject>
-<rect x="40" y="214" width="52" height="34" class="cb"/>
-<foreignObject x="42.5" y="214.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
-<rect x="92" y="214" width="52" height="34" class="cb"/>
-<foreignObject x="94.5" y="214.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0"></div></foreignObject>
-<foreignObject x="68.5" y="182.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="h"></div></foreignObject>
-<foreignObject x="60" y="248.8" width="64" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="1\times 2"></div></foreignObject>
-<text x="164" y="238" class="opx" text-anchor="middle">·</text>
-<rect x="184" y="196" width="52" height="34" class="cy"/>
-<foreignObject x="186.5" y="196.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="2"></div></foreignObject>
-<rect x="184" y="230" width="52" height="34" class="cy"/>
-<foreignObject x="186.5" y="230.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
-<foreignObject x="181" y="164.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="W_{2}"></div></foreignObject>
-<foreignObject x="178" y="264.8" width="64" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="2\times 1"></div></foreignObject>
-<text x="258" y="238" class="opx" text-anchor="middle">+</text>
-<rect x="280" y="214" width="52" height="34" class="cy"/>
-<foreignObject x="272" y="214.6" width="68" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0.5"></div></foreignObject>
-<foreignObject x="277" y="182.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="b_{2}"></div></foreignObject>
-<text x="306" y="267" class="shp" text-anchor="middle">(1,)</text>
-<text x="354" y="238" class="opx" text-anchor="middle">=</text>
-<rect x="376" y="214" width="52" height="34" class="cg"/>
-<foreignObject x="368" y="214.6" width="68" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="2.5"></div></foreignObject>
-<foreignObject x="378.5" y="182.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="\hat{y}"></div></foreignObject>
-<foreignObject x="370" y="248.8" width="64" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="1\times 1"></div></foreignObject>
-<foreignObject x="40" y="310.5" width="288" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400" data-tex="\hat{y} = 1\cdot 2 + 0\cdot 1 + 0.5 = 2.5"></div></foreignObject>
-<foreignObject x="40" y="335.8" width="560" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span>вход второго нейрона <span data-tex="0"></span> — его вес <span data-tex="W_2[1] = 1"></span> ничего не дал</span></div></foreignObject>
-<rect x="36" y="384" width="404" height="40" rx="8" class="br"/>
-<foreignObject x="50" y="390.5" width="359" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400" data-tex="L = (\hat{y} - y)^2 = (2.5 - 2)^2 = 0.25"></div></foreignObject>
-<text x="40" y="456" class="cap">одно число, которое дальше будем уменьшать</text>
-  </g>
-  <g data-key="v-cache" data-only="1">
-<text x="30" y="134" class="vt">Что forward оставляет для backward</text>
-<text x="44" y="176" class="th">переменная</text>
-<text x="160" y="176" class="th">значение</text>
-<text x="300" y="176" class="th">где нужна в backward</text>
-<rect x="34" y="188" width="562" height="32" rx="6" class="rb"/>
-<text x="44" y="210" class="mono">x</text>
-<text x="160" y="210" class="mono">[[1, 2]]</text>
-<text x="300" y="210" class="mono">dW1 = x.T @ dz1</text>
-<rect x="34" y="226" width="562" height="32" rx="6" class="rb"/>
-<text x="44" y="248" class="mono">z1</text>
-<text x="160" y="248" class="mono">[[1, −0.5]]</text>
-<text x="300" y="248" class="mono">маска z1 &gt; 0 в ReLU</text>
-<rect x="34" y="264" width="562" height="32" rx="6" class="rb"/>
-<text x="44" y="286" class="mono">h</text>
-<text x="160" y="286" class="mono">[[1, 0]]</text>
-<text x="300" y="286" class="mono">dW2 = h.T @ d_yhat</text>
-<rect x="34" y="302" width="562" height="32" rx="6" class="ry"/>
-<text x="44" y="324" class="mono">W2</text>
-<text x="160" y="324" class="mono">[[2], [1]]</text>
-<text x="300" y="324" class="mono">dh = d_yhat @ W2.T</text>
-<text x="40" y="386" class="cap">в NumPy кэш — просто переменные, которые ещё живы в цикле:</text>
-<text x="40" y="408" class="cap">перезапишу z1 до backward — и маску ReLU уже не восстановить</text>
-<text x="40" y="440" class="cap">в PyTorch эти значения за меня сохраняет autograd (часть 6)</text>
-  </g>
-  <g data-key="v-b2" data-only="1">
-<text x="30" y="134" class="vt">Назад через ошибку и Linear 2</text>
-<foreignObject x="40" y="154.6" width="673" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400"><span>цепное правило: <span data-tex="\partial L/\partial W_2 = h^{\top} \cdot \partial L/\partial \hat{y},\quad \partial L/\partial h = \partial L/\partial \hat{y} \cdot W_2^{\top}"></span></span></div></foreignObject>
-<foreignObject x="40" y="186.5" width="359" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400" data-tex="d\hat{y} = 2\cdot (\hat{y} - y) = 2\cdot (2.5 - 2) = 1"></div></foreignObject>
-<foreignObject x="40" y="242.5" width="167" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400" data-tex="dW_{2} = h^{\top} \cdot  d\hat{y}"></div></foreignObject>
-<rect x="190" y="232" width="52" height="34" class="cb"/>
-<foreignObject x="192.5" y="232.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
-<rect x="190" y="266" width="52" height="34" class="cb"/>
-<foreignObject x="192.5" y="266.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0"></div></foreignObject>
-<text x="262" y="274" class="opx" text-anchor="middle">·</text>
-<rect x="282" y="250" width="52" height="34" class="cr"/>
-<foreignObject x="284.5" y="250.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
-<text x="354" y="274" class="opx" text-anchor="middle">=</text>
-<rect x="376" y="232" width="52" height="34" class="cr"/>
-<foreignObject x="378.5" y="232.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
-<rect x="376" y="266" width="52" height="34" class="cr"/>
-<foreignObject x="378.5" y="266.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0"></div></foreignObject>
-<foreignObject x="444" y="253.8" width="186" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span><span data-tex="2\times 1"></span> = форма <span data-tex="W_2"></span> ✓</span></div></foreignObject>
-<foreignObject x="40" y="336.5" width="167" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400" data-tex="dh = d\hat{y} \cdot  W_{2}^{\top}"></div></foreignObject>
-<rect x="190" y="334" width="52" height="34" class="cr"/>
-<foreignObject x="192.5" y="334.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
-<text x="262" y="358" class="opx" text-anchor="middle">·</text>
-<rect x="282" y="334" width="52" height="34" class="cy"/>
-<foreignObject x="284.5" y="334.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="2"></div></foreignObject>
-<rect x="334" y="334" width="52" height="34" class="cy"/>
-<foreignObject x="336.5" y="334.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
-<text x="406" y="358" class="opx" text-anchor="middle">=</text>
-<rect x="428" y="334" width="52" height="34" class="cr"/>
-<foreignObject x="430.5" y="334.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="2"></div></foreignObject>
-<rect x="480" y="334" width="52" height="34" class="cr"/>
-<foreignObject x="482.5" y="334.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
-<foreignObject x="392" y="368.8" width="176" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400"><span><span data-tex="1\times 2"></span> = форма <span data-tex="h"></span> ✓</span></div></foreignObject>
-<foreignObject x="40" y="408.5" width="570" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400"><span><span data-tex="db_2 = d\hat{y} = 1"></span> — сдвиг получает градиент выхода целиком</span></div></foreignObject>
-<text x="40" y="464" class="cap">градиент по параметру всегда той же формы, что сам параметр</text>
-  </g>
-  <g data-key="v-brelu" data-only="1">
-<foreignObject x="30" y="109.9" width="452" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:17px;color:#111111;font-weight:700"><span>Назад через ReLU: <span data-tex="dz_1 = dh \odot \text{маска}"></span></span></div></foreignObject>
-<foreignObject x="40" y="150.6" width="500" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400"><span>цепное правило: <span data-tex="\partial L/\partial z_1 = \partial L/\partial h \odot \mathrm{ReLU}&#x27;(z_1)"></span></span></div></foreignObject>
-<foreignObject x="40" y="174.6" width="371" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#111111;font-weight:400"><span><span data-tex="\mathrm{ReLU}&#x27;(z) = 1"></span> при <span data-tex="z &gt; 0"></span>, иначе <span data-tex="0"></span></span></div></foreignObject>
-<rect x="40" y="236" width="52" height="34" class="cr"/>
-<foreignObject x="42.5" y="236.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="2"></div></foreignObject>
-<rect x="92" y="236" width="52" height="34" class="cr"/>
-<foreignObject x="94.5" y="236.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
-<foreignObject x="63" y="204.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="dh"></div></foreignObject>
-<foreignObject x="60" y="270.8" width="64" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="1\times 2"></div></foreignObject>
-<foreignObject x="144" y="234.1" width="40" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:22px;color:#5E5850;font-weight:400" data-tex="\odot"></div></foreignObject>
-<rect x="184" y="236" width="52" height="34" class="cn"/>
-<foreignObject x="186.5" y="236.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
-<rect x="236" y="236" width="52" height="34" class="cn"/>
-<foreignObject x="238.5" y="236.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0"></div></foreignObject>
-<text x="236" y="226" class="mlb" text-anchor="middle">маска</text>
-<foreignObject x="204" y="270.8" width="64" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="1\times 2"></div></foreignObject>
-<text x="308" y="260" class="opx" text-anchor="middle">=</text>
-<rect x="328" y="236" width="52" height="34" class="cr"/>
-<foreignObject x="330.5" y="236.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="2"></div></foreignObject>
-<rect x="380" y="236" width="52" height="34" class="cr"/>
-<foreignObject x="382.5" y="236.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0"></div></foreignObject>
-<foreignObject x="346" y="204.6" width="68" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="dz_{1}"></div></foreignObject>
-<foreignObject x="348" y="270.8" width="64" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="1\times 2"></div></foreignObject>
-<rect x="89" y="231" width="58" height="44" rx="6" class="dsh"/>
-<rect x="233" y="231" width="58" height="44" rx="6" class="dsh"/>
-<rect x="377" y="231" width="58" height="44" rx="6" class="dsh"/>
-<text x="40" y="340" class="red">нейрон 2 в forward выдал 0 → через него градиент не проходит</text>
-<text x="40" y="366" class="red">это «мёртвый» ReLU в миниатюре</text>
-  </g>
-  <g data-key="v-b1" data-only="1">
-<foreignObject x="30" y="109.9" width="624" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:17px;color:#111111;font-weight:700"><span>Назад через Linear 1: <span data-tex="dW_1 = x^{\top} \cdot dz_1,\quad db_1 = dz_1"></span></span></div></foreignObject>
-<rect x="40" y="196" width="52" height="34" class="cb"/>
-<foreignObject x="42.5" y="196.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
-<rect x="40" y="230" width="52" height="34" class="cb"/>
-<foreignObject x="42.5" y="230.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="2"></div></foreignObject>
-<foreignObject x="37" y="164.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="x^{\top}"></div></foreignObject>
-<foreignObject x="34" y="264.8" width="64" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="2\times 1"></div></foreignObject>
-<text x="112" y="238" class="opx" text-anchor="middle">·</text>
-<rect x="132" y="214" width="52" height="34" class="cr"/>
-<foreignObject x="134.5" y="214.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="2"></div></foreignObject>
-<rect x="184" y="214" width="52" height="34" class="cr"/>
-<foreignObject x="186.5" y="214.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0"></div></foreignObject>
-<foreignObject x="150" y="182.6" width="68" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="dz_{1}"></div></foreignObject>
-<foreignObject x="152" y="248.8" width="64" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="1\times 2"></div></foreignObject>
-<text x="256" y="238" class="opx" text-anchor="middle">=</text>
-<rect x="278" y="196" width="52" height="34" class="cr"/>
-<foreignObject x="280.5" y="196.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="2"></div></foreignObject>
-<rect x="330" y="196" width="52" height="34" class="cr"/>
-<foreignObject x="332.5" y="196.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0"></div></foreignObject>
-<rect x="278" y="230" width="52" height="34" class="cr"/>
-<foreignObject x="280.5" y="230.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="4"></div></foreignObject>
-<rect x="330" y="230" width="52" height="34" class="cr"/>
-<foreignObject x="332.5" y="230.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0"></div></foreignObject>
-<foreignObject x="296" y="164.6" width="68" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="dW_{1}"></div></foreignObject>
-<foreignObject x="237" y="264.8" width="186" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400"><span><span data-tex="2\times 2"></span> = форма <span data-tex="W_1"></span> ✓</span></div></foreignObject>
-<rect x="327" y="193" width="58" height="74" rx="6" class="dsh"/>
-<text x="398" y="238" class="red">столбец нейрона 2 — нули</text>
-<foreignObject x="40" y="320.5" width="520" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400"><span><span data-tex="dW_1[i][j] = x[i] \cdot dz_1[j]"></span> — внешнее произведение</span></div></foreignObject>
-<foreignObject x="40" y="350.5" width="217" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400" data-tex="db_1 = dz_1 = [2,\ 0]"></div></foreignObject>
-<foreignObject x="40" y="389.8" width="401" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span><span data-tex="dx"></span> не считаю: <span data-tex="x"></span> — данные, их не обучают</span></div></foreignObject>
-  </g>
-  <g data-key="v-upd" data-only="1">
-<foreignObject x="30" y="109.9" width="464" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:17px;color:#111111;font-weight:700"><span>Шаг: <span data-tex="W_1 \leftarrow W_1 - \mathrm{lr} \cdot dW_1,\quad \mathrm{lr} = 0.01"></span></span></div></foreignObject>
-<rect x="40" y="196" width="52" height="34" class="cy"/>
-<foreignObject x="32" y="196.6" width="68" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0.5"></div></foreignObject>
-<rect x="92" y="196" width="52" height="34" class="cy"/>
-<foreignObject x="89" y="196.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="-1"></div></foreignObject>
-<rect x="40" y="230" width="52" height="34" class="cy"/>
-<foreignObject x="26.5" y="230.6" width="79" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0.25"></div></foreignObject>
-<rect x="92" y="230" width="52" height="34" class="cy"/>
-<foreignObject x="84" y="230.6" width="68" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0.5"></div></foreignObject>
-<foreignObject x="63" y="164.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="W_{1}"></div></foreignObject>
-<text x="164" y="238" class="opx" text-anchor="middle">−</text>
-<foreignObject x="145.5" y="216.6" width="101" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:400" data-tex="0.01\,\cdot"></div></foreignObject>
-<rect x="228" y="196" width="52" height="34" class="cr"/>
-<foreignObject x="230.5" y="196.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="2"></div></foreignObject>
-<rect x="280" y="196" width="52" height="34" class="cr"/>
-<foreignObject x="282.5" y="196.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0"></div></foreignObject>
-<rect x="228" y="230" width="52" height="34" class="cr"/>
-<foreignObject x="230.5" y="230.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="4"></div></foreignObject>
-<rect x="280" y="230" width="52" height="34" class="cr"/>
-<foreignObject x="282.5" y="230.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0"></div></foreignObject>
-<foreignObject x="246" y="164.6" width="68" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="dW_{1}"></div></foreignObject>
-<text x="352" y="238" class="opx" text-anchor="middle">=</text>
-<rect x="374" y="196" width="52" height="34" class="cg"/>
-<foreignObject x="360.5" y="196.6" width="79" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0.48"></div></foreignObject>
-<rect x="426" y="196" width="52" height="34" class="cg"/>
-<foreignObject x="423" y="196.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="-1"></div></foreignObject>
-<rect x="374" y="230" width="52" height="34" class="cg"/>
-<foreignObject x="360.5" y="230.6" width="79" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0.21"></div></foreignObject>
-<rect x="426" y="230" width="52" height="34" class="cg"/>
-<foreignObject x="418" y="230.6" width="68" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="0.5"></div></foreignObject>
-<foreignObject x="365" y="164.6" width="122" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700"><span>новый <span data-tex="W_1"></span></span></div></foreignObject>
-<foreignObject x="40" y="296.5" width="540" height="29"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#111111;font-weight:400" data-tex="b_1 \to [-0.02,\ -0.5] \qquad W_2 \to [1.99,\ 1]^{\top} \qquad b_2 \to 0.49"></div></foreignObject>
-<foreignObject x="40" y="325.8" width="513" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span>второй столбец <span data-tex="W_1"></span> не изменился — его градиент был <span data-tex="0"></span></span></div></foreignObject>
-<rect x="36" y="378" width="480" height="40" rx="8" class="bg"/>
-<foreignObject x="50" y="382.6" width="608" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:15px;color:#5a8c1c;font-weight:700"><span>повторный forward: <span data-tex="\hat{y} = 2.2412,\; L = 0.0582"></span> (было <span data-tex="0.25"></span>)</span></div></foreignObject>
-  </g>
-  <text x="30" y="624" class="legend">синий — данные и активации · жёлтый — слои и параметры · зелёный — ответ и обновление · красный — ошибка и градиенты</text>
-
+  <text x="614" y="540" class="cap">каждую строку пишу я сам</text>
+  <text x="30" y="588" class="legend">синий — данные · жёлтый — параметры · зелёный — предсказание · красный — ошибка и градиент</text>
 </svg>
   </div>
   <div class="stage-bar">
@@ -1852,253 +1615,620 @@ A @ Spy(B)                                # перехват: matmul __call__</c
     <div class="stage-counter"></div>
   </div>
   <div class="stage-notes">
-    <div class="step-panel" data-on="v-tab k-z1 k-h k-yhat k-loss k-dy k-dw2 k-db2 k-dh k-dz1 k-dw1 k-db1 k-upd" data-focus="v-tab">
-      <div class="step-kicker">Шаг 1 · обозначения</div>
-      <h4>Сначала — формы всех массивов</h4>
-      <p>Вход <code>x = [[1, 2]]</code> — одна строка из двух признаков, правильный ответ <code>y = 2</code>.
-      Параметры — четыре обычных массива NumPy; объекта «слой» нет, есть переменные, которые я
-      договорился так понимать. Справа — весь код одной итерации: дальше каждый шаг подсвечивает
-      только те строки, которые объясняет.</p>
+    <div class="step-panel" data-on="p0 k-def k-init" data-focus="p0 k-init">
+      <div class="step-kicker">Шаг 1 · данные</div>
+      <h4>Четыре объекта, два признака, три параметра</h4>
+      <p>Каждая строка таблицы — объект: два признака <span class="math-inline" data-tex="x_1, x_2"></span> и правильный ответ
+      <span class="math-inline" data-tex="y"></span>. Признаки образуют матрицу <code>X</code> формы <code>(4, 2)</code>, ответы — вектор
+      <code>y</code> формы <code>(4,)</code>. Модель описывают три числа: два веса <code>w</code> и сдвиг <code>b</code>.
+      Начинаю с нулей: <code>w = np.zeros(m)</code>, где <code>m = 2</code> — число признаков.</p>
     </div>
-    <div class="step-panel" data-on="cur-l1 v-l1 k-z1" data-focus="v-l1">
-      <div class="step-kicker">Шаг 2 · первый слой</div>
-      <h4>Linear 1 — умножение из части 1 плюс сдвиг</h4>
-      <p>Строка <code>z1 = x @ W1 + b1</code>: каждый элемент <span class="math-inline" data-tex="z_{1}"></span> — строка <code>x</code>, умноженная
-      на столбец <span class="math-inline" data-tex="W_{1}"></span>. Сдвиг формы <code>(2,)</code> NumPy растягивает на строку сам — это
-      broadcasting; в пачке из N примеров он так же прибавился бы к каждой из N строк.</p>
+    <div class="step-panel" data-on="p0 yh0 d-pred k-pred" data-focus="yh0 d-pred k-pred">
+      <div class="step-kicker">Шаг 2 · предсказание</div>
+      <h4>Предсказание — умножение матрицы на вектор</h4>
+      <p>Строка <code>y_hat = X @ w + b</code> считает предсказание сразу для всех объектов: каждая строка
+      <code>X</code> скалярно умножается на <code>w</code>, к результату прибавляется <code>b</code>. Это умножение из
+      части 1, у которого правая матрица — один столбец. Пока веса нулевые, все предсказания равны нулю.</p>
+    </div>
+    <div class="step-panel" data-on="p0 yh0 er0 l0 d-loss k-err k-loss" data-focus="er0 l0 d-loss k-err k-loss">
+      <div class="step-kicker">Шаг 3 · ошибка</div>
+      <h4>Ошибка — среднее квадратов разностей</h4>
+      <p><code>err = y_hat - y</code> — разность по каждому объекту: сейчас все предсказания меньше ответов,
+      поэтому ошибки отрицательные. Функция <code>mse</code> возводит их в квадрат и усредняет:
+      <span class="math-inline" data-tex="L = 24.325"></span>. Обучение должно сделать это число как можно меньше.</p>
+    </div>
+    <div class="step-panel" data-on="p0 yh0 er0 l0 d-grad k-grad" data-focus="d-grad k-grad">
+      <div class="step-kicker">Шаг 4 · градиент</div>
+      <h4>Градиент показывает, куда двигать веса</h4>
+      <p>Градиент — вектор производных ошибки по каждому параметру. Для линейной регрессии он
+      считается двумя строками: <code>dw = 2 / n * (X.T @ err)</code> и <code>db = 2 / n * err.sum()</code>.
+      Знак говорит, в какую сторону растёт ошибка: оба градиента отрицательные, значит, рост весов ошибку уменьшит.</p>
       <div class="worked-example">
-        <div class="worked-label">Числовой пример · те же данные на всём пути</div>
+        <div class="worked-label">Числовой пример · первый вес</div>
         <div class="worked-grid">
           <div class="worked-cell">
             <span>Подставляем</span>
-            <div class="math-display worked-math" data-tex="(1\cdot0.5 + 2\cdot0.25,\; 1\cdot(-1) + 2\cdot0.5) + (0,\,-0.5)"></div>
+            <div class="math-display worked-math" data-tex="\tfrac{2}{4}\,(1\cdot(-4.3) + 2\cdot(-4.3) + 0\cdot(-1.6) + 3\cdot(-7.6))"></div>
           </div>
           <div class="worked-cell worked-result">
             <span>Получаем</span>
-            <div class="math-display worked-math" data-tex="z_1 = (1,\; -0.5)"></div>
+            <div class="math-display worked-math" data-tex="\partial L/\partial w_1 = -17.85"></div>
           </div>
         </div>
-        <p class="worked-reading"><strong>Как это прочитать:</strong> второй нейрон до сдвига
-        дал ровно 0, и отрицательный сдвиг −0.5 увёл его в минус — на следующем шаге это решит его судьбу.</p>
+        <p class="worked-reading"><strong>Как это прочитать:</strong> столбец признака <span class="math-inline" data-tex="x_1"></span>
+        скалярно умножается на столбец ошибок — это одна строка произведения <code>X.T @ err</code>.</p>
       </div>
     </div>
-    <div class="step-panel" data-on="cur-relu v-relu k-h" data-focus="v-relu">
-      <div class="step-kicker">Шаг 3 · активация</div>
-      <h4>ReLU обнуляет отрицательное</h4>
-      <p><code>h = np.maximum(z1, 0)</code> — поэлементный максимум с нулём: первый нейрон пропускает 1
-      как есть, второй выдаёт 0. Удобно смотреть на это как на маску <span class="math-inline" data-tex="z_1 &gt; 0"></span>, умноженную на
-      <span class="math-inline" data-tex="z_{1}"></span>: та же маска понадобится на обратном пути. Без этой нелинейности два линейных слоя
-      схлопнулись бы в один.</p>
+    <div class="step-panel" data-on="p1 yh1 er1 l1 d-step k-step" data-focus="p1 l1 d-step k-step">
+      <div class="step-kicker">Шаг 5 · шаг</div>
+      <h4>Параметры сдвигаются против градиента</h4>
+      <p><code>w -= lr * dw</code>: из каждого параметра вычитается его градиент, умноженный на шаг
+      <code>lr = 0.1</code>. Веса стали <code>[1.785, 0.89]</code>, сдвиг — <code>0.89</code>. С новыми параметрами
+      предсказания почти совпали с ответами, ошибка упала с 24.325 до 0.0746.</p>
     </div>
-    <div class="step-panel" data-on="cur-head v-head k-yhat k-loss" data-focus="v-head">
-      <div class="step-kicker">Шаг 4 · ответ и ошибка</div>
-      <h4>Linear 2 даёт ответ, MSE — одно число ошибки</h4>
-      <p><code>y_hat = h @ W2 + b2 = 2.5</code>: второй нейрон в ответ ничего не внёс, его вход — ноль.
-      <code>loss = ((y_hat - y) ** 2).mean() = 0.25</code> — сеть ответила на 0.5 больше нужного. Forward
-      закончен; дальше вопрос, какие веса и в какую сторону в этом виноваты.</p>
+    <div class="step-panel" data-on="p5 yh5 er5 l5 d-loop k-loop" data-focus="p5 l5 d-loop k-loop">
+      <div class="step-kicker">Шаг 6 · цикл</div>
+      <h4>500 повторов — и параметры перестают меняться</h4>
+      <p>Шаги 2–5 повторяются в цикле <code>for step in range(steps)</code>. Первый шаг убрал почти всю
+      ошибку, дальше она уменьшается медленно и к 500-му шагу останавливается на 0.0225. Параметры к этому
+      моменту — <code>w = [2, 1]</code>, <code>b = 0.45</code>: меньшей ошибки на этих данных не получить.</p>
     </div>
-    <div class="step-panel" data-on="cur-cache v-cache k-dw2 k-dh k-dz1 k-dw1" data-focus="v-cache">
-      <div class="step-kicker">Шаг 5 · кэш</div>
-      <h4>Что нужно запомнить из forward</h4>
-      <p>Каждая формула backward читает что-то из прямого прохода: <code>x</code> и <code>h</code> — для
-      градиентов весов, <span class="math-inline" data-tex="z_{1}"></span> — для маски ReLU, <span class="math-inline" data-tex="W_{2}"></span> — чтобы передать ошибку в скрытый
-      слой. На NumPy этот «кэш» — просто переменные, которые ещё живы; справа подсвечены строки,
-      которые их читают.</p>
-    </div>
-    <div class="step-panel" data-on="cur-b2 v-b2 k-dy k-dw2 k-db2 k-dh" data-focus="v-b2">
-      <div class="step-kicker">Шаг 6 · назад через второй слой</div>
-      <h4>Градиенты идут справа налево</h4>
-      <p>Производная ошибки по ответу — <span class="math-inline" data-tex="2\cdot(2.5 - 2) = 1"></span>. Через <code>Linear 2</code> она
-      раздаётся на веса, сдвиг и вход слоя. Сначала цепное правило, потом то же в матричном виде — и
-      проверка: градиент по параметру обязан иметь форму самого параметра.</p>
-      <div class="worked-example">
-        <div class="worked-label">Числовой пример · те же данные на всём пути</div>
-        <div class="worked-trace">
-          <div class="worked-trace-title">Три формулы — три строки кода</div>
-          <div class="worked-trace-row">
-            <div class="worked-trace-name">dW2</div>
-            <div class="math-display worked-trace-math" data-tex="h^{\top}\cdot 1 = (1,\;0)^{\top}"></div>
-            <div class="worked-trace-note">вес молчащего нейрона не виноват — его вход был 0</div>
-          </div>
-          <div class="worked-trace-row">
-            <div class="worked-trace-name">db2</div>
-            <div class="math-display worked-trace-math" data-tex="1"></div>
-            <div class="worked-trace-note">сдвиг получает градиент выхода целиком</div>
-          </div>
-          <div class="worked-trace-row">
-            <div class="worked-trace-name">dh</div>
-            <div class="math-display worked-trace-math" data-tex="1\cdot W_2^{\top} = (2,\;1)"></div>
-            <div class="worked-trace-note">ошибка, переданная назад в скрытый слой</div>
-          </div>
-        </div>
-        <p class="worked-reading"><strong>Как это прочитать:</strong> каждый градиент — снова
-        матричное умножение, только с транспонированными матрицами.</p>
-      </div>
-    </div>
-    <div class="step-panel" data-on="cur-brelu v-brelu k-dz1" data-focus="v-brelu">
-      <div class="step-kicker">Шаг 7 · назад через ReLU</div>
-      <h4>ReLU пропускает градиент только там, где пропускала сигнал</h4>
-      <p>Производная ReLU — та же маска: 1, где <span class="math-inline" data-tex="z_1 &gt; 0"></span>, и 0 в остальных местах. Поэтому
-      <code>dz1 = dh * (z1 &gt; 0)</code> <span class="math-inline" data-tex="= [2,\ 1] \odot [1,\ 0] = [2,\ 0]"></span> — поэлементное умножение, не матричное.</p>
-    </div>
-    <div class="step-panel" data-on="cur-b1 v-b1 k-dw1 k-db1" data-focus="v-b1">
-      <div class="step-kicker">Шаг 8 · назад через первый слой</div>
-      <h4>Градиент весов — внешнее произведение</h4>
-      <p><code>dW1 = x.T @ dz1</code>: столбец <span class="math-inline" data-tex="2\times 1"></span> на строку <span class="math-inline" data-tex="1\times 2"></span> даёт матрицу
-      <span class="math-inline" data-tex="2\times 2"></span>, каждый элемент — вход, умноженный на градиент нейрона. <code>db1 = dz1</code>:
-      сдвиг получает градиент нейрона целиком.</p>
-      <div class="callout-red">
-        <strong>Нейрон 2 не учится:</strong> весь второй столбец <span class="math-inline" data-tex="dW_{1}"></span> и <span class="math-inline" data-tex="db_1[1]"></span> — нули.
-        Его веса на этом шаге не изменятся. Это и есть «мёртвый» ReLU в миниатюре.
-      </div>
-    </div>
-    <div class="step-panel" data-on="cur-upd v-upd k-upd" data-focus="v-upd">
-      <div class="step-kicker">Шаг 9 · шаг и проверка</div>
-      <h4>Ошибка уменьшилась больше чем вчетверо</h4>
-      <p>Каждый параметр сдвигается против своего градиента с шагом <span class="math-inline" data-tex="\mathrm{lr} = 0.01"></span>:
-      <span class="math-inline" data-tex="W_1[0][0]"></span>: <span class="math-inline" data-tex="0.5 - 0.01\cdot 2 = 0.48"></span>, <span class="math-inline" data-tex="W_1[1][0]"></span>: <span class="math-inline" data-tex="0.25 - 0.01\cdot 4 = 0.21"></span>. Тот же forward
-      с новыми весами даёт <span class="math-inline" data-tex="z_1 = [0.88,\ -0.5]"></span>, <span class="math-inline" data-tex="\hat{y} = 2.2412"></span> и <span class="math-inline" data-tex="L = 0.0582"></span>.
-      Один проход вперёд, один назад и шаг — это итерация; дальше её повторяют в цикле.</p>
+    <div class="step-panel" data-on="p5 l5 d-new k-new" data-focus="d-new k-new">
+      <div class="step-kicker">Шаг 7 · новый объект</div>
+      <h4>Обученная модель — это два числа и формула</h4>
+      <p>Чтобы предсказать ответ для нового объекта, нужны только формула <code>X @ w + b</code> и найденные
+      <code>w</code> и <code>b</code>: для <code>[1, 1]</code> получается 3.45. Обученные параметры живут в двух
+      переменных, и передавать их в <code>predict</code> приходится самому.</p>
     </div>
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте ← → для навигации.</p>
 
-<p>Весь пайплайн на NumPy умещается в один файл — и каждая его строка написана мной:</p>
+<p>Целиком файл выглядит так:</p>
 
 <pre><code>import numpy as np
 
-x = np.array([[1.0, 2.0]])
-y = np.array([[2.0]])
+X = np.array([[1, 2], [2, 0], [0, 1], [3, 1]], dtype=float)
+y = np.array([4.3, 4.3, 1.6, 7.6])
 
-W1 = np.array([[0.5, -1.0],
-               [0.25, 0.5]])
-b1 = np.array([0.0, -0.5])
-W2 = np.array([[2.0],
-               [1.0]])
-b2 = np.array([0.5])
-lr = 0.01
+def train(X, y, lr=0.1, steps=500):
+    n, m = X.shape
+    w = np.zeros(m)
+    b = 0.0
+    for step in range(steps):
+        y_hat = X @ w + b              # предсказание для всех объектов
+        err = y_hat - y                # ошибка на каждом объекте
+        dw = 2 / n * (X.T @ err)       # градиент по весам
+        db = 2 / n * err.sum()         # градиент по сдвигу
+        w -= lr * dw                   # шаг против градиента
+        b -= lr * db
+    return w, b
 
-for step in range(100):
-    # forward
-    z1 = x @ W1 + b1
-    h = np.maximum(z1, 0)                # ReLU
-    y_hat = h @ W2 + b2
-    loss = ((y_hat - y) ** 2).mean()     # на step 0: 0.25
+def predict(X, w, b):
+    return X @ w + b
 
-    # backward — производные выписаны руками
-    d_yhat = 2 * (y_hat - y) / y.size
-    dW2 = h.T @ d_yhat
-    db2 = d_yhat.sum(axis=0)
-    dh = d_yhat @ W2.T
-    dz1 = dh * (z1 &gt; 0)
-    dW1 = x.T @ dz1
-    db1 = dz1.sum(axis=0)
+def mse(y_hat, y):
+    return ((y_hat - y) ** 2).mean()
 
-    # шаг градиентного спуска
-    W1 -= lr * dW1;  b1 -= lr * db1
-    W2 -= lr * dW2;  b2 -= lr * db2</code></pre>
+w, b = train(X, y)
+print(w.round(4), round(b, 4))                    # [2. 1.] 0.45
+print(mse(predict(X, w, b), y).round(4))          # 0.0225
+print(predict(np.array([[1, 1]]), w, b).round(4)) # [3.45]</code></pre>
 
 <div class="callout-yellow">
-  <strong>Как я проверяю ручной backward:</strong> немного шевелю каждый параметр на
-  <span class="math-inline" data-tex="\varepsilon = 10^{-6}"></span> вверх и вниз, пересчитываю loss и сравниваю разностное отношение с
-  формулой. Для этой сети расхождение порядка <span class="math-inline" data-tex="10^{-10}"></span> — формулы верны. На NumPy это
-  приходится делать самому: библиотека не знает, какую функцию вы дифференцируете.
+  <strong>Чего не хватает этой реализации:</strong> обученные <code>w</code> и <code>b</code> — две отдельные
+  переменные, их надо хранить самому и передавать в <code>predict</code> в правильном порядке. Если вызвать
+  <code>predict(X, None, None)</code> до обучения, Python упадёт на <code>TypeError</code> внутри <code>@</code>, и
+  по сообщению не понять, что модель просто не обучена. Настройки <code>lr</code> и <code>steps</code> нигде не
+  записаны рядом с результатом. Всё это в следующей части решает один объект.
 </div>
 
 <div class="callout">
-  <strong>Главная мысль части:</strong> на NumPy библиотека даёт быстрые операции над
-  массивами, но весь пайплайн — слои, ошибка, производные, шаг и цикл — остаётся вашим кодом.
+  <strong>Главная мысль части:</strong> линейная регрессия на NumPy — это четыре строки в цикле:
+  <code>X @ w + b</code>, разность с <code>y</code>, <code>X.T @ err</code> и сдвиг против градиента. NumPy даёт
+  быстрые <code>@</code> и <code>.T</code>, а модель, обучение и хранение параметров остаются вашим кодом.
 </div>
 
 <hr>
 
-<h2 id="part-6">Часть 6. Та же сеть на PyTorch: библиотека и фреймворк</h2>
+<h2 id="part-6">Часть 6. Та же модель в scikit-learn: объект с атрибутами и методами</h2>
 
 <p>
-  PyTorch ставится так же, как NumPy, — это ещё одно колесо, распакованное в
-  <code>site-packages</code>:
+  scikit-learn ставится так же, как NumPy, но с одной ловушкой для новичка: имя пакета для pip и
+  имя для import разные.
 </p>
 
-<pre><code>(.venv) C:\Users\work\proj&gt; pip install torch</code></pre>
+<pre><code>(.venv) C:\Users\work\proj&gt; pip install scikit-learn
+(.venv) C:\Users\work\proj&gt; python -c "import sklearn; print(sklearn.__version__)"
+1.9.1</code></pre>
 
 <p>
-  С PyPI на Windows приезжает сборка для процессора. Для видеокарты команду берут с
-  сайта pytorch.org: в ней указан отдельный каталог колёс (<code>--index-url</code>), где
-  лежат сборки с CUDA. Внутри папки всё устроено знакомо:
+  У NumPy обязательных зависимостей не было. У scikit-learn они есть, и pip сам скачает недостающие колёса:
+  <code>pip show scikit-learn</code> печатает строку <code>Requires: joblib, narwhals, numpy, scipy, threadpoolctl</code>.
+  В <code>site-packages</code> появится несколько папок:
 </p>
 
 <pre><code>C:\Users\work\proj\.venv\Lib\site-packages\
-└── torch\
-    ├── __init__.py              ← выполняется при import torch
-    ├── nn\                      ← слои и функции ошибок — обычный Python
-    ├── optim\                   ← оптимизаторы — обычный Python
-    ├── autograd\                ← Python-обёртка над движком градиентов
-    ├── _C.cp312-win_amd64.pyd   ← мост из Python в C++
-    └── lib\
-        ├── torch_cpu.dll        ← вычислительные ядра (ATen)
-        └── c10.dll              ← базовые типы и память</code></pre>
+├── sklearn\                      ← import sklearn
+│   ├── __init__.py
+│   ├── base.py                   ← BaseEstimator, RegressorMixin — общие родители моделей
+│   ├── linear_model\_base.py     ← LinearRegression — обычный Python
+│   ├── model_selection\          ← cross_val_score, GridSearchCV
+│   ├── utils\validation.py       ← check_is_fitted, validate_data
+│   └── …                         ← рядом есть и скомпилированные модули .pyd
+├── scipy\                        ← lstsq и LAPACK
+├── joblib\  threadpoolctl\  narwhals\
+└── scikit_learn-1.9.1.dist-info\</code></pre>
+
+<p>Та же задача, что в части 5, — в четыре строки:</p>
+
+<pre><code>from sklearn.linear_model import LinearRegression
+
+model = LinearRegression()
+model.fit(X, y)
+print(model.coef_, round(model.intercept_, 4))    # [2. 1.] 0.45
+print(model.predict([[1, 1]]))                    # [3.45]</code></pre>
 
 <p>
-  Та же картина, что у NumPy: сверху — Python, который можно открыть и прочитать
-  (попробуйте <code>torch\nn\modules\linear.py</code>: у класса <code>Linear</code> там пара десятков строк логики, остальное — документация),
-  снизу — скомпилированные ядра. Разница в том, <em>сколько</em> работы лежит в
-  Python-слое. Вот та же сеть с теми же весами:
+  Числа совпали с моими, но получены по-другому: <code>fit</code> не делает 500 шагов градиентного спуска,
+  а решает задачу наименьших квадратов точно, за один вызов. Важнее другое: вместо двух функций и двух
+  переменных теперь один <strong>объект</strong>. Посмотрим, что в нём лежит и откуда берутся его методы.
 </p>
 
-<pre><code>import torch
-from torch import nn
-
-x = torch.tensor([[1.0, 2.0]])
-y = torch.tensor([[2.0]])
-
-model = nn.Sequential(
-    nn.Linear(2, 2),
-    nn.ReLU(),
-    nn.Linear(2, 1),
-)
-with torch.no_grad():                    # копирую веса из части 5
-    model[0].weight.copy_(torch.tensor([[0.5, 0.25], [-1.0, 0.5]]))   # = W1.T
-    model[0].bias.copy_(torch.tensor([0.0, -0.5]))
-    model[2].weight.copy_(torch.tensor([[2.0, 1.0]]))                 # = W2.T
-    model[2].bias.copy_(torch.tensor([0.5]))
-
-loss_fn = nn.MSELoss()
-opt = torch.optim.SGD(model.parameters(), lr=0.01)
-
-y_hat = model(x)             # forward:  tensor([[2.5000]], grad_fn=&lt;AddmmBackward0&gt;)
-loss = loss_fn(y_hat, y)     # tensor(0.2500, grad_fn=&lt;MseLossBackward0&gt;)
-opt.zero_grad()
-loss.backward()              # все градиенты — одной строкой
-print(model[0].weight.grad)  # tensor([[2., 4.], [0., 0.]])  = dW1.T
-opt.step()                   # W ← W − lr·grad для всех параметров
-print(loss_fn(model(x), y))  # tensor(0.0582, ...)</code></pre>
-
-<div class="callout-yellow">
-  <strong>Почему веса транспонированы:</strong> <code>nn.Linear</code> хранит матрицу в форме
-  <code>[выходы, входы]</code> и считает <code>x @ weight.T + bias</code>. Поэтому мой
-  <span class="math-inline" data-tex="W_{1}"></span> из части 5 кладётся как <code>W1.T</code>, и градиент приходит тоже
-  транспонированным: <code>[[2, 4], [0, 0]]</code> вместо <code>[[2, 0], [4, 0]]</code>. Числа
-  те же, включая нулевую строку мёртвого нейрона.
+<div class="stage" id="stageEstimator" tabindex="0">
+  <div class="stage-figure">
+<svg id="es" viewBox="0 0 960 600" role="img" aria-label="Объект LinearRegression: настройки из конструктора, атрибуты, выученные в fit, и методы, унаследованные от родительских классов; слева — команды в консоли">
+  <style>
+    #es { font-family: Helvetica, Arial, sans-serif; }
+    #es .codebox { fill: #F4F2EC; stroke: #3576C0; stroke-width: 1.5; }
+    #es .obj { fill: #FFFFFF; stroke: #5E5850; stroke-width: 1.3; }
+    #es .sy { fill: #FFFBEB; stroke: #C29E08; stroke-width: 1.4; }
+    #es .sg { fill: #F0FAF0; stroke: #73B222; stroke-width: 1.4; }
+    #es .sb { fill: #F0F6FC; stroke: #3576C0; stroke-width: 1.4; }
+    #es .hl { fill: none; stroke: #3576C0; stroke-width: 2.5; }
+    #es .ttl { font-size: 15px; font-weight: 700; fill: #111111; }
+    #es .sub { font-size: 13px; font-weight: 700; fill: #5E5850; }
+    #es .cap { font-size: 13px; fill: #5E5850; }
+    #es .code { font-family: "Courier New", Courier, monospace; font-size: 13px; fill: #111111; }
+    #es .out { font-family: "Courier New", Courier, monospace; font-size: 13px; fill: #5E5850; }
+    #es .err { font-family: "Courier New", Courier, monospace; font-size: 13px; fill: #C30B0A; }
+    #es .edge { stroke: #5E5850; stroke-width: 1.5; fill: none; }
+    #es .edger { stroke: #C30B0A; stroke-width: 1.8; fill: none; stroke-dasharray: 5 3; }
+    #es .edgeg { stroke: #73B222; stroke-width: 2; fill: none; }
+    #es .legend { font-size: 13px; fill: #5E5850; }
+  </style>
+  <defs>
+    <marker id="es-arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5E5850"/></marker>
+    <marker id="es-arwr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C30B0A"/></marker>
+    <marker id="es-arwg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#73B222"/></marker>
+  </defs>
+  <rect x="30" y="30" width="420" height="480" rx="8" class="codebox"/>
+  <text x="44" y="56" class="ttl">консоль Python</text>
+  <g data-key="c1" data-only="1">
+    <text x="44" y="90" class="code">&gt;&gt;&gt; model = LinearRegression()</text>
+  </g>
+  <g data-key="c2" data-only="1">
+    <text x="44" y="128" class="code">&gt;&gt;&gt; model.get_params()</text>
+    <text x="44" y="150" class="out">{'copy_X': True, 'fit_intercept': True,</text>
+    <text x="44" y="168" class="out">'n_jobs': None, 'positive': False, 'tol': 1e-06}</text>
+  </g>
+  <g data-key="c3" data-only="1">
+    <text x="44" y="206" class="code">&gt;&gt;&gt; model.predict([[1, 1]])</text>
+    <text x="44" y="228" class="err">NotFittedError: This LinearRegression</text>
+    <text x="44" y="246" class="err">instance is not fitted yet. ...</text>
+  </g>
+  <g data-key="c4" data-only="1">
+    <text x="44" y="284" class="code">&gt;&gt;&gt; model.fit(X, y)</text>
+    <text x="44" y="306" class="out">LinearRegression()</text>
+  </g>
+  <g data-key="c5" data-only="1">
+    <text x="44" y="344" class="code">&gt;&gt;&gt; model.coef_, round(model.intercept_, 4)</text>
+    <text x="44" y="366" class="out">(array([2., 1.]), 0.45)</text>
+  </g>
+  <g data-key="c6" data-only="1">
+    <text x="44" y="404" class="code">&gt;&gt;&gt; model.predict([[1, 1]])</text>
+    <text x="44" y="426" class="out">array([3.45])</text>
+  </g>
+  <g data-key="c7" data-only="1">
+    <text x="44" y="464" class="code">&gt;&gt;&gt; model.score(X, y)</text>
+    <text x="44" y="486" class="out">0.9950248756218906</text>
+  </g>
+  <rect x="480" y="30" width="450" height="530" rx="8" class="obj"/>
+  <text x="494" y="56" class="ttl">model — объект класса LinearRegression</text>
+  <rect x="494" y="72" width="422" height="150" rx="6" class="sy"/>
+  <text x="506" y="94" class="sub">настройки: из __init__, имена без _</text>
+  <rect x="494" y="234" width="422" height="150" rx="6" class="sg"/>
+  <text x="506" y="256" class="sub">выучено в fit: имена с _ на конце</text>
+  <rect x="494" y="396" width="422" height="150" rx="6" class="sb"/>
+  <text x="506" y="418" class="sub">методы: где определены</text>
+  <g data-key="hyp" data-only="1">
+    <text x="506" y="118" class="code">fit_intercept</text>
+    <text x="650" y="118" class="code">= True</text>
+    <text x="506" y="138" class="code">copy_X</text>
+    <text x="650" y="138" class="code">= True</text>
+    <text x="506" y="158" class="code">tol</text>
+    <text x="650" y="158" class="code">= 1e-06</text>
+    <text x="506" y="178" class="code">n_jobs</text>
+    <text x="650" y="178" class="code">= None</text>
+    <text x="506" y="198" class="code">positive</text>
+    <text x="650" y="198" class="code">= False</text>
+  </g>
+  <g data-key="empty" data-only="1">
+    <text x="705" y="316" class="cap" text-anchor="middle">пусто: fit ещё не вызывали</text>
+  </g>
+  <g data-key="learned" data-only="1">
+    <text x="506" y="280" class="code">n_features_in_</text>
+    <text x="650" y="280" class="code">= 2</text>
+    <text x="506" y="300" class="code">coef_</text>
+    <text x="650" y="300" class="code">= [2., 1.]</text>
+    <text x="506" y="320" class="code">intercept_</text>
+    <text x="650" y="320" class="code">= 0.45</text>
+    <text x="506" y="340" class="code">rank_</text>
+    <text x="650" y="340" class="code">= 2</text>
+    <text x="506" y="360" class="code">singular_</text>
+    <text x="650" y="360" class="code">= [2.303, 1.303]</text>
+  </g>
+  <g data-key="meth">
+    <text x="506" y="444" class="code">fit(X, y)</text>
+    <text x="650" y="444" class="cap">LinearRegression</text>
+    <text x="506" y="470" class="code">predict(X)</text>
+    <text x="650" y="470" class="cap">MultiOutputLinearModel</text>
+    <text x="506" y="496" class="code">score(X, y)</text>
+    <text x="650" y="496" class="cap">RegressorMixin</text>
+    <text x="506" y="522" class="code">get_params()</text>
+    <text x="650" y="522" class="cap">BaseEstimator</text>
+  </g>
+  <g data-key="hl-fit" data-only="1">
+    <rect x="500" y="427" width="410" height="24" rx="5" class="hl"/>
+  </g>
+  <g data-key="hl-pred" data-only="1">
+    <rect x="500" y="453" width="410" height="24" rx="5" class="hl"/>
+  </g>
+  <g data-key="hl-score" data-only="1">
+    <rect x="500" y="479" width="410" height="24" rx="5" class="hl"/>
+  </g>
+  <g data-key="hl-gp" data-only="1">
+    <rect x="500" y="505" width="410" height="24" rx="5" class="hl"/>
+  </g>
+  <g data-key="a-gp" data-only="1">
+    <path d="M 452 138 C 470 138, 470 150, 490 150" class="edge" marker-end="url(#es-arw)"/>
+  </g>
+  <g data-key="a-nf" data-only="1">
+    <path d="M 452 216 C 472 216, 472 300, 490 300" class="edger" marker-end="url(#es-arwr)"/>
+  </g>
+  <g data-key="a-fit" data-only="1">
+    <path d="M 452 292 C 470 292, 470 280, 490 280" class="edgeg" marker-end="url(#es-arwg)"/>
+  </g>
+  <g data-key="n1" data-only="1">
+    <text x="30" y="540" class="cap">__init__ только записывает аргументы в self</text>
+  </g>
+  <g data-key="n2" data-only="1">
+    <text x="30" y="540" class="cap">get_params читает имена аргументов __init__</text>
+  </g>
+  <g data-key="n3" data-only="1">
+    <text x="30" y="540" class="cap">check_is_fitted не нашёл в vars(model) имён на _</text>
+  </g>
+  <g data-key="n4" data-only="1">
+    <text x="30" y="540" class="cap">fit записал атрибуты и вернул self: это и напечатано</text>
+  </g>
+  <g data-key="n5" data-only="1">
+    <foreignObject x="30" y="522.5" width="440" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span>те же <span data-tex="\mathbf w = [2,\ 1]"></span> и <span data-tex="b = 0.45"></span>, что у train из части 5</span></div></foreignObject>
+  </g>
+  <g data-key="n6" data-only="1">
+    <foreignObject x="30" y="522.5" width="440" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span>внутри predict: <span data-tex="[1,\ 1]\cdot[2,\ 1] + 0.45 = 3.45"></span></span></div></foreignObject>
+  </g>
+  <g data-key="n7" data-only="1">
+    <foreignObject x="30" y="522.5" width="440" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span>score — это <span data-tex="R^2 = 1 - 0.09/18.09 \approx 0.995"></span></span></div></foreignObject>
+  </g>
+  <g data-key="n8" data-only="1">
+    <text x="30" y="540" class="cap">родители: RegressorMixin → … → LinearModel → BaseEstimator</text>
+  </g>
+  <text x="30" y="588" class="legend">жёлтый — настройки · зелёный — выучено из данных · синий — методы · красный — ошибка</text>
+</svg>
+  </div>
+  <div class="stage-bar">
+    <button type="button" data-nav="prev">← Назад</button>
+    <button type="button" data-nav="next">Далее →</button>
+    <div class="stage-progress"></div>
+    <div class="stage-counter"></div>
+  </div>
+  <div class="stage-notes">
+    <div class="step-panel" data-on="c1 hyp empty meth n1" data-focus="c1 hyp n1">
+      <div class="step-kicker">Шаг 1 · создание</div>
+      <h4>Конструктор запоминает настройки</h4>
+      <p><code>LinearRegression()</code> создаёт объект и вызывает его <code>__init__</code>. Всё, что тот делает, —
+      записывает аргументы в атрибуты под теми же именами: <code>self.fit_intercept = fit_intercept</code> и так далее.
+      Аргументы я не передал, поэтому взялись значения по умолчанию. Данных объект ещё не видел.</p>
+    </div>
+    <div class="step-panel" data-on="c1 c2 hyp empty meth hl-gp a-gp n2" data-focus="c2 hl-gp a-gp n2">
+      <div class="step-kicker">Шаг 2 · get_params</div>
+      <h4>Настройки можно прочитать одним методом</h4>
+      <p>Метода <code>get_params</code> в классе <code>LinearRegression</code> нет: он достался от общего родителя
+      всех моделей sklearn, <code>BaseEstimator</code>. Метод смотрит, какие аргументы перечислены в сигнатуре
+      <code>__init__</code>, и возвращает словарь с текущими значениями атрибутов с этими именами.</p>
+    </div>
+    <div class="step-panel" data-on="c1 c2 c3 hyp empty meth a-nf n3" data-focus="c3 a-nf empty n3">
+      <div class="step-kicker">Шаг 3 · до обучения</div>
+      <h4>predict до fit — понятная ошибка</h4>
+      <p>Предсказывать пока нечем: весов нет. Вместо непонятного <code>AttributeError</code> sklearn выдаёт
+      <code>NotFittedError</code> с подсказкой вызвать <code>fit</code>. Проверка простая: функция
+      <code>check_is_fitted</code> ищет среди атрибутов объекта имена, которые кончаются на <code>_</code>.</p>
+    </div>
+    <div class="step-panel" data-on="c1 c2 c3 c4 hyp meth learned hl-fit a-fit n4" data-focus="c4 learned a-fit n4">
+      <div class="step-kicker">Шаг 4 · fit</div>
+      <h4>fit записывает в объект то, что выучил</h4>
+      <p><code>model.fit(X, y)</code> проверяет формы <code>X</code> и <code>y</code>, решает задачу наименьших квадратов
+      и записывает результат в атрибуты объекта. Сам метод возвращает <code>self</code> — тот же объект, поэтому консоль
+      напечатала <code>LinearRegression()</code>, и можно писать цепочкой: <code>LinearRegression().fit(X, y).predict(...)</code>.</p>
+    </div>
+    <div class="step-panel" data-on="c1 c2 c3 c4 c5 hyp meth learned n5" data-focus="c5 learned n5">
+      <div class="step-kicker">Шаг 5 · атрибуты</div>
+      <h4>Выученное — атрибуты с подчёркиванием на конце</h4>
+      <p><code>coef_</code> — веса, <code>intercept_</code> — сдвиг; это мои <code>w</code> и <code>b</code> из части 5,
+      и числа те же. Рядом служебные: <code>n_features_in_</code> — сколько признаков было при обучении,
+      <code>rank_</code> и <code>singular_</code> — побочные результаты решения. Подчёркивание на конце — договорённость
+      sklearn: так помечено всё, что получено из данных, а не задано вами.</p>
+    </div>
+    <div class="step-panel" data-on="c1 c2 c3 c4 c5 c6 hyp meth learned hl-pred n6" data-focus="c6 hl-pred n6">
+      <div class="step-kicker">Шаг 6 · predict</div>
+      <h4>predict — та же формула, что у меня</h4>
+      <p>Внутри <code>predict</code> стоит строка <code>return X @ coef_ + self.intercept_</code> — моя функция
+      <code>predict</code> из части 5, только веса берутся не из аргументов, а из атрибутов объекта. Передавать их
+      больше не нужно: объект носит их с собой.</p>
+    </div>
+    <div class="step-panel" data-on="c1 c2 c3 c4 c5 c6 c7 hyp meth learned hl-score n7" data-focus="c7 hl-score n7">
+      <div class="step-kicker">Шаг 7 · score</div>
+      <h4>score достался от родителя</h4>
+      <p><code>score</code> считает коэффициент детерминации <span class="math-inline" data-tex="R^2"></span>: единица минус
+      отношение суммы квадратов ошибок (0.09) к разбросу ответов вокруг среднего (18.09). Метод написан один раз в
+      <code>RegressorMixin</code> и работает у любой регрессии: он вызывает её <code>predict</code> и сравнивает с <code>y</code>.</p>
+    </div>
+    <div class="step-panel" data-on="c1 c2 c3 c4 c5 c6 c7 hyp meth learned n8" data-focus="meth n8">
+      <div class="step-kicker">Шаг 8 · итог</div>
+      <h4>Объект модели: настройки, выученное, методы</h4>
+      <p>В объекте три вида содержимого. Настройки заданы в конструкторе и после <code>fit</code> не меняются.
+      Выученные атрибуты появляются в <code>fit</code> и читаются в <code>predict</code>. Методы собраны из цепочки
+      родительских классов: <code>fit</code> свой, <code>predict</code> — от линейных моделей, <code>score</code> — от
+      всех регрессий, <code>get_params</code> — от всех моделей sklearn.</p>
+    </div>
+  </div>
 </div>
+<p class="stage-hint">Наведите фокус на сцену и используйте ← → для навигации.</p>
+
+<p>Моя версия из части 5 и объект sklearn отвечают на одни и те же вопросы:</p>
+
+<table class="shape-table">
+  <tr><th></th><th>NumPy, часть 5</th><th>scikit-learn</th></tr>
+  <tr><td>Настройки</td><td>аргументы <code>lr</code>, <code>steps</code> функции <code>train</code></td><td>аргументы конструктора: <code>LinearRegression(fit_intercept=True)</code></td></tr>
+  <tr><td>Обучение</td><td><code>w, b = train(X, y)</code></td><td><code>model.fit(X, y)</code></td></tr>
+  <tr><td>Где хранятся параметры</td><td>переменные <code>w</code>, <code>b</code></td><td>атрибуты <code>model.coef_</code>, <code>model.intercept_</code></td></tr>
+  <tr><td>Предсказание</td><td><code>predict(X, w, b)</code></td><td><code>model.predict(X)</code></td></tr>
+  <tr><td>Оценка</td><td><code>mse(predict(X, w, b), y)</code></td><td><code>model.score(X, y)</code> — это <span class="math-inline" data-tex="R^2"></span>, а не MSE</td></tr>
+  <tr><td>Вызов до обучения</td><td><code>TypeError</code> где-то внутри <code>@</code></td><td><code>NotFittedError</code> с подсказкой</td></tr>
+</table>
 
 <div class="callout-blue">
-  <strong>Откуда autograd знает, что дифференцировать:</strong> у каждого параметра стоит флаг
-  <code>requires_grad=True</code>. Пока идёт forward, каждая операция над такими тензорами
-  записывает себя в граф: <code>grad_fn=&lt;AddmmBackward0&gt;</code> в выводе — это узел
-  «умножение матриц плюс сдвиг». <code>loss.backward()</code> проходит этот граф в обратном
-  порядке и для каждого узла вызывает заранее написанную формулу производной — те самые
-  строки, которые в части 5 я выписывал руками.
+  <strong>Почему одни имена с подчёркиванием на конце, а другие без:</strong> это договорённость всех моделей
+  sklearn. Аргументы конструктора сохраняются под своими именами без изменений: <code>fit_intercept</code>,
+  <code>tol</code>. Всё, что вычислено из данных в <code>fit</code>, получает <code>_</code> на конце:
+  <code>coef_</code>, <code>intercept_</code>, <code>n_features_in_</code>. На этой договорённости держится
+  проверка «модель обучена?»: <code>check_is_fitted</code> просто ищет такие имена в <code>vars(model)</code>.
 </div>
 
+<h3>Внутри оригинала: исходный код LinearRegression</h3>
+
 <p>
-  Сравним три реализации одной сети построчно: что в каждой пишете вы, а что делает
-  библиотека.
+  В отличие от <code>matmul</code> в NumPy, код <code>LinearRegression</code> написан на Python, и его не нужно
+  искать на GitHub: он лежит в <code>site-packages\sklearn\linear_model\_base.py</code>, его можно открыть в
+  редакторе или напечатать прямо из интерпретатора командой
+  <code>import inspect; print(inspect.getsource(LinearRegression.fit))</code>. Ссылки ниже ведут на тег
+  <code>1.9.1</code>, чтобы номера строк не уехали.
+</p>
+
+<table class="shape-table">
+  <tr><th>Файл в scikit-learn</th><th>Что в нём</th></tr>
+  <tr><td><a class="src" href="https://github.com/scikit-learn/scikit-learn/blob/1.9.1/sklearn/linear_model/_base.py#L638-L652" target="_blank" rel="noopener"><code>linear_model/_base.py</code></a></td><td><code>LinearRegression.__init__</code>: пять присваиваний <code>self.имя = имя</code> и больше ничего</td></tr>
+  <tr><td><a class="src" href="https://github.com/scikit-learn/scikit-learn/blob/1.9.1/sklearn/linear_model/_base.py#L654-L760" target="_blank" rel="noopener"><code>linear_model/_base.py</code></a></td><td><code>LinearRegression.fit</code>: проверка данных, центрирование, <code>linalg.lstsq</code>, сдвиг, <code>return self</code></td></tr>
+  <tr><td><a class="src" href="https://github.com/scikit-learn/scikit-learn/blob/1.9.1/sklearn/linear_model/_base.py#L291-L299" target="_blank" rel="noopener"><code>linear_model/_base.py</code></a></td><td><code>LinearModel._decision_function</code> — то, что выполняет <code>predict</code></td></tr>
+  <tr><td><a class="src" href="https://github.com/scikit-learn/scikit-learn/blob/1.9.1/sklearn/base.py#L219-L270" target="_blank" rel="noopener"><code>base.py</code></a></td><td><code>BaseEstimator.get_params</code>: имена берутся из сигнатуры <code>__init__</code></td></tr>
+  <tr><td><a class="src" href="https://github.com/scikit-learn/scikit-learn/blob/1.9.1/sklearn/base.py#L672-L716" target="_blank" rel="noopener"><code>base.py</code></a></td><td><code>RegressorMixin.score</code>: <code>predict</code> плюс <code>r2_score</code></td></tr>
+  <tr><td><a class="src" href="https://github.com/scikit-learn/scikit-learn/blob/1.9.1/sklearn/utils/validation.py#L1599-L1634" target="_blank" rel="noopener"><code>utils/validation.py</code></a></td><td><code>_is_fitted</code>: поиск атрибутов с <code>_</code> на конце</td></tr>
+</table>
+
+<p>Весь <code>predict</code> линейной модели — девять строк, и их можно прочитать без подготовки:</p>
+
+<pre><code># sklearn/linear_model/_base.py, класс LinearModel
+def _decision_function(self, X):
+    check_is_fitted(self)
+
+    X = validate_data(self, X, accept_sparse=["csr", "csc", "coo"], reset=False)
+    coef_ = self.coef_
+    if coef_.ndim == 1:
+        return X @ coef_ + self.intercept_
+    else:
+        return X @ coef_.T + self.intercept_</code></pre>
+
+<p>
+  Строка <code>return X @ coef_ + self.intercept_</code> — моя функция <code>predict</code> из части 5. Ветка
+  <code>else</code> нужна, когда модель предсказывает сразу несколько ответов и <code>coef_</code> — матрица.
+  Пройдём по всему пути вызовов от моего кода до машинного.
+</p>
+
+<div class="stage" id="stageSkSource" tabindex="0">
+  <div class="stage-figure">
+<svg id="ss" viewBox="0 0 960 580" role="img" aria-label="Путь вызовов fit, predict и score через исходный код scikit-learn, SciPy и NumPy до машинного кода">
+  <style>
+    #ss { font-family: Helvetica, Arial, sans-serif; }
+    #ss .bx { fill: #F0F6FC; stroke: #3576C0; stroke-width: 1.6; }
+    #ss .by { fill: #FFFBEB; stroke: #C29E08; stroke-width: 1.6; }
+    #ss .bm { fill: #FFFBEB; stroke: #C29E08; stroke-width: 1.6; stroke-dasharray: 6 3; }
+    #ss .band { stroke: #C8C3B6; stroke-width: 1; stroke-dasharray: 5 4; }
+    #ss .band-t { font-size: 13px; font-weight: 700; fill: #5E5850; }
+    #ss .ttl { font-size: 14px; font-weight: 700; fill: #111111; }
+    #ss .mono { font-family: "Courier New", Courier, monospace; font-size: 13px; fill: #111111; }
+    #ss .file { font-family: "Courier New", Courier, monospace; font-size: 12px; fill: #8c7106; }
+    #ss .cap { font-size: 12.5px; fill: #5E5850; }
+    #ss .edge { stroke: #5E5850; stroke-width: 1.5; fill: none; }
+    #ss .legend { font-size: 13px; fill: #5E5850; }
+  </style>
+  <defs>
+    <marker id="ss-arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5E5850"/></marker>
+    <marker id="ss-arwr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C30B0A"/></marker>
+    <marker id="ss-arwg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#73B222"/></marker>
+  </defs>
+  <text x="24" y="28" class="band-t">ваш код</text>
+  <line x1="20" y1="106" x2="940" y2="106" class="band"/>
+  <text x="24" y="120" class="band-t">scikit-learn — обычный Python</text>
+  <line x1="20" y1="358" x2="940" y2="358" class="band"/>
+  <text x="24" y="372" class="band-t">SciPy и NumPy</text>
+  <line x1="20" y1="448" x2="940" y2="448" class="band"/>
+  <text x="24" y="462" class="band-t">машинный код</text>
+  <g data-key="u">
+    <rect x="30" y="40" width="290" height="56" rx="8" class="bx"/>
+    <text x="42" y="74" class="mono">model.fit(X, y)</text>
+    <rect x="335" y="40" width="290" height="56" rx="8" class="bx"/>
+    <text x="347" y="74" class="mono">model.predict(X_new)</text>
+    <rect x="640" y="40" width="290" height="56" rx="8" class="bx"/>
+    <text x="652" y="64" class="mono">model.score(X, y)</text>
+    <text x="652" y="84" class="mono">model.get_params()</text>
+  </g>
+  <g data-key="f-sk" data-only="1">
+    <rect x="30" y="132" width="290" height="228" rx="8" class="by"/>
+    <text x="42" y="156" class="ttl">LinearRegression.fit</text>
+    <text x="42" y="174" class="file">sklearn/linear_model/_base.py</text>
+    <text x="42" y="200" class="mono">validate_data(self, X, y)</text>
+    <text x="42" y="218" class="cap">формы и типы, n_features_in_</text>
+    <text x="42" y="244" class="mono">_preprocess_data(...)</text>
+    <text x="42" y="288" class="mono">linalg.lstsq(X, y)</text>
+    <text x="42" y="306" class="cap">веса по центрированным данным</text>
+    <text x="42" y="332" class="mono">_set_intercept(...)</text>
+    <foreignObject x="42" y="244.5" width="266" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span>вычесть средние <span data-tex="\bar{\mathbf x}"></span> и <span data-tex="\bar y"></span></span></div></foreignObject>
+    <foreignObject x="42" y="332.5" width="266" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span><span data-tex="b = \bar y - \bar{\mathbf x}\cdot\mathbf w"></span></span></div></foreignObject>
+    <line x1="270" y1="96" x2="270" y2="128" class="edge" marker-end="url(#ss-arw)"/>
+  </g>
+  <g data-key="f-low" data-only="1">
+    <rect x="30" y="384" width="290" height="56" rx="8" class="by"/>
+    <text x="42" y="406" class="mono">scipy.linalg.lstsq</text>
+    <text x="42" y="426" class="cap">наименьшие квадраты</text>
+    <rect x="30" y="474" width="290" height="56" rx="8" class="bm"/>
+    <text x="42" y="496" class="mono">LAPACK · gelsd</text>
+    <text x="42" y="516" class="cap">из колеса SciPy</text>
+    <line x1="175" y1="360" x2="175" y2="380" class="edge" marker-end="url(#ss-arw)"/>
+    <line x1="175" y1="440" x2="175" y2="470" class="edge" marker-end="url(#ss-arw)"/>
+  </g>
+  <g data-key="p-sk" data-only="1">
+    <rect x="335" y="132" width="290" height="228" rx="8" class="by"/>
+    <text x="347" y="156" class="ttl">LinearModel._decision_function</text>
+    <text x="347" y="174" class="file">sklearn/linear_model/_base.py</text>
+    <text x="347" y="204" class="mono">check_is_fitted(self)</text>
+    <text x="347" y="222" class="cap">есть ли атрибуты на _</text>
+    <text x="347" y="250" class="mono">validate_data(self, X,</text>
+    <text x="347" y="268" class="mono">              reset=False)</text>
+    <text x="347" y="286" class="cap">признаков столько же, сколько в fit</text>
+    <text x="347" y="322" class="mono">return X @ coef_ + self.intercept_</text>
+    <line x1="480" y1="96" x2="480" y2="128" class="edge" marker-end="url(#ss-arw)"/>
+  </g>
+  <g data-key="p-low" data-only="1">
+    <rect x="335" y="384" width="290" height="56" rx="8" class="by"/>
+    <text x="347" y="406" class="mono">ndarray.__matmul__ → np.matmul</text>
+    <text x="347" y="426" class="cap">часть 4</text>
+    <rect x="335" y="474" width="290" height="56" rx="8" class="bm"/>
+    <text x="347" y="496" class="mono">C-цикл NumPy или BLAS</text>
+    <text x="347" y="516" class="cap">float64 → dgemm/dgemv</text>
+    <line x1="480" y1="360" x2="480" y2="380" class="edge" marker-end="url(#ss-arw)"/>
+    <line x1="480" y1="440" x2="480" y2="470" class="edge" marker-end="url(#ss-arw)"/>
+  </g>
+  <g data-key="b-sk" data-only="1">
+    <rect x="640" y="132" width="290" height="228" rx="8" class="by"/>
+    <text x="652" y="156" class="ttl">общие родители</text>
+    <text x="652" y="174" class="file">sklearn/base.py</text>
+    <text x="652" y="204" class="mono">BaseEstimator.get_params</text>
+    <text x="652" y="222" class="cap">inspect.signature(__init__)</text>
+    <text x="652" y="258" class="mono">RegressorMixin.score</text>
+    <text x="652" y="276" class="mono">y_pred = self.predict(X)</text>
+    <text x="652" y="294" class="mono">r2_score(y, y_pred)</text>
+    <line x1="785" y1="96" x2="785" y2="128" class="edge" marker-end="url(#ss-arw)"/>
+    <line x1="640" y1="276" x2="629" y2="276" class="edge" marker-end="url(#ss-arw)"/>
+    <text x="652" y="316" class="cap">score вызывает predict</text>
+    <text x="652" y="334" class="cap">той же модели, слева</text>
+  </g>
+  <text x="30" y="566" class="legend">синий — ваш код · жёлтый — код библиотек · пунктир — скомпилированный код</text>
+</svg>
+  </div>
+  <div class="stage-bar">
+    <button type="button" data-nav="prev">← Назад</button>
+    <button type="button" data-nav="next">Далее →</button>
+    <div class="stage-progress"></div>
+    <div class="stage-counter"></div>
+  </div>
+  <div class="stage-notes">
+    <div class="step-panel" data-on="u" data-focus="u">
+      <div class="step-kicker">Шаг 1 · вызовы</div>
+      <h4>Три вызова одного объекта</h4>
+      <p>Сверху — то, что пишу я: <code>fit</code>, <code>predict</code> и <code>score</code>. Каждая точка — поиск
+      метода в классе объекта и его родителях, как в части 4. Дальше смотрим, куда ведёт каждый вызов.</p>
+    </div>
+    <div class="step-panel" data-on="u f-sk" data-focus="f-sk">
+      <div class="step-kicker">Шаг 2 · fit в sklearn</div>
+      <h4>fit: проверить, центрировать, решить</h4>
+      <p><code>validate_data</code> проверяет, что <code>X</code> двумерный, а строк в <code>X</code> и <code>y</code> поровну,
+      и запоминает <code>n_features_in_</code>. Затем из каждого столбца вычитается среднее:
+      <span class="math-inline" data-tex="\bar{\mathbf x} = [1.5,\ 1]"></span>, <span class="math-inline" data-tex="\bar y = 4.45"></span>.
+      По центрированным данным <code>lstsq</code> находит веса <code>[2, 1]</code>, а сдвиг считается отдельно:
+      <span class="math-inline" data-tex="b = \bar y - \bar{\mathbf x}\cdot\mathbf w = 4.45 - (1.5\cdot 2 + 1\cdot 1) = 0.45"></span>.</p>
+    </div>
+    <div class="step-panel" data-on="u f-sk f-low" data-focus="f-low">
+      <div class="step-kicker">Шаг 3 · fit ниже</div>
+      <h4>Решение — в чужой библиотеке: SciPy</h4>
+      <p>Сам sklearn систему не решает: <code>linalg.lstsq</code> — функция SciPy, которую pip поставил как зависимость.
+      SciPy, в свою очередь, вызывает процедуру <code>gelsd</code> из LAPACK — скомпилированной библиотеки линейной
+      алгебры, родственной BLAS из части 3. Ответ точный, за один вызов, без 500 шагов градиентного спуска.</p>
+    </div>
+    <div class="step-panel" data-on="u f-sk f-low p-sk" data-focus="p-sk">
+      <div class="step-kicker">Шаг 4 · predict в sklearn</div>
+      <h4>predict: две проверки и одна строка</h4>
+      <p><code>check_is_fitted</code> выдаёт <code>NotFittedError</code>, если <code>fit</code> ещё не вызывали.
+      <code>validate_data(..., reset=False)</code> сверяет число признаков с запомненным <code>n_features_in_</code>:
+      подать <code>X</code> с тремя столбцами — получить понятную <code>ValueError</code>. Само предсказание — одна строка
+      <code>X @ coef_ + self.intercept_</code>.</p>
+    </div>
+    <div class="step-panel" data-on="u f-sk f-low p-sk p-low" data-focus="p-low">
+      <div class="step-kicker">Шаг 5 · predict ниже</div>
+      <h4>Оператор @ ведёт в NumPy</h4>
+      <p>Дальше путь уже знаком по части 4: <code>@</code> — это <code>ndarray.__matmul__</code>, он вызывает
+      ufunc <code>np.matmul</code>, а та для массивов <code>float64</code> отдаёт работу в BLAS. Слои складываются:
+      sklearn вызывает NumPy, NumPy вызывает BLAS.</p>
+    </div>
+    <div class="step-panel" data-on="u f-sk f-low p-sk p-low b-sk" data-focus="b-sk">
+      <div class="step-kicker">Шаг 6 · родители</div>
+      <h4>Общие методы лежат в base.py</h4>
+      <p><code>get_params</code> и <code>score</code> написаны в <code>sklearn/base.py</code> один раз для всех моделей.
+      <code>score</code> сам ничего не обучает: он вызывает <code>self.predict(X)</code> — тот, что стоит слева, —
+      и сравнивает ответы через <code>r2_score</code>. Поэтому <code>score</code> работает у любого класса, который
+      унаследовал <code>RegressorMixin</code> и написал свой <code>predict</code>.</p>
+    </div>
+  </div>
+</div>
+<p class="stage-hint">Наведите фокус на сцену и используйте ← → для навигации.</p>
+
+<div class="callout">
+  <strong>Главная мысль части:</strong> модель sklearn — объект, в котором лежат настройки из конструктора и
+  выученные в <code>fit</code> атрибуты с <code>_</code> на конце, а методы собраны из цепочки родительских
+  классов. Внутри <code>predict</code> стоит тот же <code>X @ coef_ + intercept_</code>, а <code>fit</code>
+  отдаёт решение SciPy и LAPACK.
+</div>
+
+<hr>
+
+<h2 id="part-7">Часть 7. Библиотека и фреймворк: кто кого вызывает</h2>
+
+<p>
+  Сравним три реализации одной модели построчно: что в каждой пишете вы, а что делает библиотека.
 </p>
 
 <div class="stage" id="stageLevels" tabindex="0">
   <div class="stage-figure">
-<svg id="lv" viewBox="0 0 960 600" role="img" aria-label="Таблица: какие этапы обучения сети пишете вы, а какие берёт на себя библиотека, в чистом Python, NumPy и PyTorch">
+<svg id="lv" viewBox="0 0 960 600" role="img" aria-label="Таблица: какие этапы работы с линейной регрессией пишете вы, а какие берёт на себя библиотека, в чистом Python, NumPy и scikit-learn">
   <style>
     #lv { font-family: Helvetica, Arial, sans-serif; }
     #lv .cb { fill: #F0F6FC; stroke: #3576C0; stroke-width: 1.5; }
@@ -2114,87 +2244,85 @@ print(loss_fn(model(x), y))  # tensor(0.0582, ...)</code></pre>
   <g data-key="hdr">
     <text x="322" y="80" class="ttl" text-anchor="middle">чистый Python</text>
     <text x="572" y="80" class="ttl" text-anchor="middle">NumPy</text>
-    <text x="822" y="80" class="ttl" text-anchor="middle">PyTorch</text>
+    <text x="822" y="80" class="ttl" text-anchor="middle">scikit-learn</text>
     <text x="24" y="136" class="rlbl">умножение</text>
-    <text x="24" y="206" class="rlbl">слой (forward)</text>
-    <text x="24" y="276" class="rlbl">ошибка (loss)</text>
-    <text x="24" y="346" class="rlbl">backward</text>
-    <text x="24" y="416" class="rlbl">шаг обновления</text>
-    <text x="24" y="486" class="rlbl">цикл обучения</text>
+    <text x="24" y="206" class="rlbl">предсказание</text>
+    <text x="24" y="276" class="rlbl">ошибка</text>
+    <text x="24" y="346" class="rlbl">обучение</text>
+    <text x="24" y="416" class="rlbl">параметры</text>
+    <text x="24" y="486" class="rlbl">проверка</text>
   </g>
   <g data-key="cpy">
     <rect x="205" y="100" width="235" height="60" rx="8" class="cb"/>
-    <text x="322" y="126" class="code" text-anchor="middle">for i, j, k: s += …</text>
+    <text x="322" y="126" class="code" text-anchor="middle">for i, j, k: s += …</text>
     <text x="322" y="147" class="cap" text-anchor="middle">вы — часть 1</text>
     <rect x="205" y="170" width="235" height="60" rx="8" class="cb"/>
-    <text x="322" y="196" class="code" text-anchor="middle">списки и циклы</text>
+    <text x="322" y="196" class="code" text-anchor="middle">циклы по объектам</text>
     <text x="322" y="217" class="cap" text-anchor="middle">вы</text>
     <rect x="205" y="240" width="235" height="60" rx="8" class="cb"/>
-    <text x="322" y="266" class="code" text-anchor="middle">sum((y_hat - y)**2)</text>
+    <text x="322" y="266" class="code" text-anchor="middle">sum((yh - y)**2) / n</text>
     <text x="322" y="287" class="cap" text-anchor="middle">вы</text>
     <rect x="205" y="310" width="235" height="60" rx="8" class="cb"/>
-    <text x="322" y="336" class="code" text-anchor="middle">производные руками</text>
+    <text x="322" y="336" class="code" text-anchor="middle">производные в циклах</text>
     <text x="322" y="357" class="cap" text-anchor="middle">вы</text>
     <rect x="205" y="380" width="235" height="60" rx="8" class="cb"/>
-    <text x="322" y="406" class="code" text-anchor="middle">w -= lr * g в циклах</text>
+    <text x="322" y="406" class="code" text-anchor="middle">переменные w, b</text>
     <text x="322" y="427" class="cap" text-anchor="middle">вы</text>
     <rect x="205" y="450" width="235" height="60" rx="8" class="cb"/>
-    <text x="322" y="476" class="code" text-anchor="middle">for epoch in …</text>
+    <text x="322" y="476" class="code" text-anchor="middle">цикл по частям данных</text>
     <text x="322" y="497" class="cap" text-anchor="middle">вы</text>
   </g>
   <g data-key="np1">
     <rect x="455" y="100" width="235" height="60" rx="8" class="cg"/>
-    <text x="572" y="126" class="code" text-anchor="middle">x @ W1</text>
+    <text x="572" y="126" class="code" text-anchor="middle">X @ w</text>
     <text x="572" y="147" class="cap" text-anchor="middle">библиотека: C и BLAS</text>
   </g>
   <g data-key="cnp">
     <rect x="455" y="170" width="235" height="60" rx="8" class="cb"/>
-    <text x="572" y="196" class="code" text-anchor="middle">x @ W1 + b1</text>
-    <text x="572" y="217" class="cap" text-anchor="middle">np.maximum(z1, 0) — вы</text>
+    <text x="572" y="196" class="code" text-anchor="middle">predict(X, w, b)</text>
+    <text x="572" y="217" class="cap" text-anchor="middle">вы</text>
     <rect x="455" y="240" width="235" height="60" rx="8" class="cb"/>
-    <text x="572" y="266" class="code" text-anchor="middle">((y_hat - y)**2).mean()</text>
+    <text x="572" y="266" class="code" text-anchor="middle">mse(y_hat, y)</text>
     <text x="572" y="287" class="cap" text-anchor="middle">вы</text>
     <rect x="455" y="310" width="235" height="60" rx="8" class="cb"/>
-    <text x="572" y="336" class="code" text-anchor="middle">dW1 = x.T @ dz1 …</text>
+    <text x="572" y="336" class="code" text-anchor="middle">dw = 2/n*(X.T @ err)</text>
     <text x="572" y="357" class="cap" text-anchor="middle">каждая формула — вы</text>
     <rect x="455" y="380" width="235" height="60" rx="8" class="cb"/>
-    <text x="572" y="406" class="code" text-anchor="middle">W1 -= lr * dW1 …</text>
-    <text x="572" y="427" class="cap" text-anchor="middle">вы</text>
+    <text x="572" y="406" class="code" text-anchor="middle">w, b = train(X, y)</text>
+    <text x="572" y="427" class="cap" text-anchor="middle">храните и передаёте вы</text>
     <rect x="455" y="450" width="235" height="60" rx="8" class="cb"/>
-    <text x="572" y="476" class="code" text-anchor="middle">for epoch in …</text>
+    <text x="572" y="476" class="code" text-anchor="middle">цикл по частям данных</text>
     <text x="572" y="497" class="cap" text-anchor="middle">вы</text>
   </g>
-  <g data-key="t1">
+  <g data-key="s14">
     <rect x="705" y="100" width="235" height="60" rx="8" class="cg"/>
-    <text x="822" y="126" class="code" text-anchor="middle">x @ W1</text>
-    <text x="822" y="147" class="cap" text-anchor="middle">библиотека: ATen</text>
-  </g>
-  <g data-key="t4">
-    <rect x="705" y="310" width="235" height="60" rx="8" class="cg"/>
-    <text x="822" y="336" class="code" text-anchor="middle">loss.backward()</text>
-    <text x="822" y="357" class="cap" text-anchor="middle">autograd считает сам</text>
-  </g>
-  <g data-key="t235">
+    <text x="822" y="126" class="code" text-anchor="middle">X @ coef_</text>
+    <text x="822" y="147" class="cap" text-anchor="middle">внутри predict</text>
     <rect x="705" y="170" width="235" height="60" rx="8" class="cg"/>
-    <text x="822" y="196" class="code" text-anchor="middle">nn.Linear(2, 2)</text>
-    <text x="822" y="217" class="cap" text-anchor="middle">nn.ReLU() — готовые слои</text>
+    <text x="822" y="196" class="code" text-anchor="middle">model.predict(X)</text>
+    <text x="822" y="217" class="cap" text-anchor="middle">метод объекта</text>
     <rect x="705" y="240" width="235" height="60" rx="8" class="cg"/>
-    <text x="822" y="266" class="code" text-anchor="middle">nn.MSELoss()</text>
-    <text x="822" y="287" class="cap" text-anchor="middle">готовая функция ошибки</text>
-    <rect x="705" y="380" width="235" height="60" rx="8" class="cg"/>
-    <text x="822" y="406" class="code" text-anchor="middle">opt.step()</text>
-    <text x="822" y="427" class="cap" text-anchor="middle">optim.SGD</text>
+    <text x="822" y="266" class="code" text-anchor="middle">model.score(X, y)</text>
+    <text x="822" y="287" class="cap" text-anchor="middle">метод от RegressorMixin</text>
+    <rect x="705" y="310" width="235" height="60" rx="8" class="cg"/>
+    <text x="822" y="336" class="code" text-anchor="middle">model.fit(X, y)</text>
+    <text x="822" y="357" class="cap" text-anchor="middle">точное решение lstsq</text>
   </g>
-  <g data-key="t6">
-    <rect x="705" y="450" width="235" height="60" rx="8" class="cb"/>
-    <text x="822" y="476" class="code" text-anchor="middle">for epoch in …</text>
-    <text x="822" y="497" class="cap" text-anchor="middle">всё ещё вы</text>
+  <g data-key="s5">
+    <rect x="705" y="380" width="235" height="60" rx="8" class="cg"/>
+    <text x="822" y="406" class="code" text-anchor="middle">coef_, intercept_</text>
+    <text x="822" y="427" class="cap" text-anchor="middle">хранит сам объект</text>
+  </g>
+  <g data-key="s6">
+    <rect x="705" y="450" width="235" height="60" rx="8" class="cg"/>
+    <text x="822" y="476" class="code" text-anchor="middle">cross_val_score(model, X, y)</text>
+    <text x="822" y="497" class="cap" text-anchor="middle">вызывает fit и predict</text>
   </g>
   <g data-key="ioc" data-only="1">
     <rect x="700" y="445" width="245" height="70" rx="10" class="iocr"/>
-    <text x="205" y="545" class="ioct">Lightning: trainer.fit(model) забирает и цикл — дальше фреймворк сам вызывает ваш код</text>
+    <text x="205" y="545" class="ioct">cross_val_score сам вызывает fit и predict вашей модели: здесь sklearn работает как фреймворк</text>
   </g>
-  <text x="24" y="588" class="legend">синий — этот код пишете вы · зелёный — это делает библиотека · строки таблицы — этапы из части 5</text>
+  <text x="24" y="588" class="legend">синий — этот код пишете вы · зелёный — это делает библиотека · строки — этапы из частей 5 и 6</text>
 </svg>
   </div>
   <div class="stage-bar">
@@ -2206,57 +2334,54 @@ print(loss_fn(model(x), y))  # tensor(0.0582, ...)</code></pre>
   <div class="stage-notes">
     <div class="step-panel" data-on="hdr" data-focus="hdr">
       <div class="step-kicker">Шаг 1 · постановка</div>
-      <h4>Одна сеть, шесть этапов, три реализации</h4>
-      <p>Строки — этапы обучения из части 5, столбцы — три уровня инструментов. Для каждой
-      клетки задаём один вопрос: кто пишет этот код — вы или библиотека?</p>
+      <h4>Одна модель, шесть этапов, три реализации</h4>
+      <p>Строки — этапы работы с линейной регрессией из частей 5 и 6, столбцы — три уровня инструментов.
+      Для каждой клетки задаём один вопрос: кто пишет этот код — вы или библиотека?</p>
     </div>
     <div class="step-panel" data-on="hdr cpy" data-focus="cpy">
       <div class="step-kicker">Шаг 2 · чистый Python</div>
       <h4>Без библиотек всё синее</h4>
-      <p>Умножение — три цикла из части 1, слой — списки и циклы, производные — выписаны
-      вручную, обновление — ещё один цикл по каждому числу. Работает, но каждая строка на
-      вашей ответственности.</p>
+      <p>Умножение — три цикла из части 1, предсказание и ошибка — циклы по объектам, градиент — ещё циклы,
+      а проверку на разных частях данных тоже придётся писать вручную. Работает, но каждая строка на вашей ответственности.</p>
     </div>
     <div class="step-panel" data-on="hdr cpy np1 cnp" data-focus="np1 cnp">
       <div class="step-kicker">Шаг 3 · NumPy</div>
-      <h4>Библиотека забирает только вычисления</h4>
-      <p>Зелёной стала одна клетка: <code>@</code> и прочие операции над массивами. Всё
-      остальное — сборка слоёв, loss, backward, шаг — по-прежнему ваш код, просто
-      записанный короче. NumPy — классическая библиотека: вы её вызываете, когда вам нужно.</p>
+      <h4>NumPy забирает только вычисления</h4>
+      <p>Зелёной стала одна клетка: <code>@</code> и прочие операции над массивами. Предсказание, ошибка,
+      градиент, хранение <code>w</code> и <code>b</code> — по-прежнему ваш код, просто записанный короче.
+      NumPy — классическая библиотека: вы её вызываете, когда вам нужно.</p>
     </div>
-    <div class="step-panel" data-on="hdr cpy np1 cnp t1" data-focus="t1">
-      <div class="step-kicker">Шаг 4 · тензор</div>
-      <h4>torch.Tensor — это ndarray с дополнительными возможностями</h4>
-      <p>На нижнем уровне PyTorch повторяет NumPy: тот же <code>@</code>, та же форма, тот же
-      <code>dtype</code>, похожие методы (<code>.shape</code>, <code>.sum()</code>, <code>.T</code>).
-      Сверху добавлены два умения: жить на видеокарте и записывать операции в граф.</p>
+    <div class="step-panel" data-on="hdr cpy np1 cnp s14" data-focus="s14">
+      <div class="step-kicker">Шаг 4 · scikit-learn</div>
+      <h4>Модель и обучение — готовые методы</h4>
+      <p>В sklearn формулы предсказания, ошибки и обучения уже написаны: <code>predict</code>, <code>score</code>,
+      <code>fit</code>. Вы не выписываете градиент и не выбираете шаг: <code>fit</code> решает задачу точно через
+      <code>lstsq</code>. Умножение внутри — тот же <code>@</code> из NumPy.</p>
     </div>
-    <div class="step-panel" data-on="hdr cpy np1 cnp t1 t4" data-focus="t4">
-      <div class="step-kicker">Шаг 5 · autograd</div>
-      <h4>Главный скачок — backward становится зелёным</h4>
-      <p>Самая трудоёмкая и опасная часть ручной реализации — производные — заменяется одной
-      строкой <code>loss.backward()</code>. Именно ради этого PyTorch и существует: поменяйте
-      архитектуру как угодно, и градиенты по-прежнему посчитаются правильно.</p>
+    <div class="step-panel" data-on="hdr cpy np1 cnp s14 s5" data-focus="s5">
+      <div class="step-kicker">Шаг 5 · объект</div>
+      <h4>Параметры хранит объект</h4>
+      <p>В NumPy-версии <code>w</code> и <code>b</code> — две переменные, которые нужно не потерять и передать в
+      <code>predict</code>. В sklearn они записаны в атрибуты <code>coef_</code> и <code>intercept_</code> того же
+      объекта, у которого вызывается <code>predict</code>.</p>
     </div>
-    <div class="step-panel" data-on="hdr cpy np1 cnp t1 t4 t235" data-focus="t235">
-      <div class="step-kicker">Шаг 6 · готовые блоки</div>
-      <h4>Слои, ошибки и оптимизаторы — тоже из коробки</h4>
-      <p><code>nn.Linear</code> сам создаёт и хранит свои <code>weight</code> и <code>bias</code>,
-      <code>nn.MSELoss</code> — функция ошибки, <code>optim.SGD</code> знает все параметры модели
-      и обновляет их разом. Синим в столбце PyTorch остался только цикл.</p>
+    <div class="step-panel" data-on="hdr cpy np1 cnp s14 s5 s6" data-focus="s6">
+      <div class="step-kicker">Шаг 6 · проверка</div>
+      <h4>Проверка на частях данных — одной функцией</h4>
+      <p>Чтобы оценить модель честно, её обучают на одной части данных и проверяют на другой, и так несколько раз.
+      <code>cross_val_score(model, X, y, cv=5)</code> делает это сам: режет данные, обучает копии модели и собирает
+      оценки <code>score</code>.</p>
     </div>
-    <div class="step-panel" data-on="hdr cpy np1 cnp t1 t4 t235 t6 ioc" data-focus="t6 ioc">
+    <div class="step-panel" data-on="hdr cpy np1 cnp s14 s5 s6 ioc" data-focus="s6 ioc">
       <div class="step-kicker">Шаг 7 · кто кого вызывает</div>
-      <h4>Отдайте и цикл — получится фреймворк в чистом виде</h4>
-      <p>В PyTorch цикл <code>for epoch</code> вы всё ещё пишете сами. Надстройки вроде
-      PyTorch Lightning забирают и его: вы описываете, что делать на одном шаге, а
-      <code>trainer.fit</code> сам решает, когда вас вызвать. Управление перевернулось.</p>
+      <h4>Здесь управление переворачивается</h4>
+      <p>Во всех клетках выше вы вызываете библиотеку. В последней — наоборот: вы отдаёте модель, а
+      <code>cross_val_score</code> сам решает, когда вызвать её <code>fit</code> и <code>predict</code>.
+      Подойдёт любой объект с этими методами — в том числе написанный вами.</p>
     </div>
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и используйте ← → для навигации.</p>
-
-<h3>Библиотека против фреймворка: кто кого вызывает</h3>
 
 <p>
   Теперь можно дать определение, которое не зависит от размера пакета или от того, как он
@@ -2267,76 +2392,92 @@ print(loss_fn(model(x), y))  # tensor(0.0582, ...)</code></pre>
 </p>
 
 <p>
-  PyTorch стоит посередине, и это хорошо видно на привычном способе описывать модель
-  классом:
+  В sklearn обе роли видны на одном примере. Пока вы пишете <code>model.fit(X, y)</code>, sklearn —
+  библиотека. Но <code>cross_val_score</code>, <code>GridSearchCV</code> и <code>Pipeline</code> принимают модель и
+  сами решают, когда вызвать её <code>fit</code> и <code>predict</code>. Им подходит любой объект с этими
+  методами — в том числе мой градиентный спуск из части 5, если завернуть его в класс:
 </p>
 
-<pre><code>class FFN(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.fc1 = nn.Linear(2, 2)
-        self.fc2 = nn.Linear(2, 1)
+<pre><code>from sklearn.base import BaseEstimator, RegressorMixin
+from sklearn.model_selection import cross_val_score
 
-    def forward(self, x):
-        return self.fc2(torch.relu(self.fc1(x)))
+class GDRegressor(RegressorMixin, BaseEstimator):
+    def __init__(self, lr=0.1, steps=500):
+        self.lr = lr                    # только запоминаю настройки
+        self.steps = steps
 
-model = FFN()
-y_hat = model(x)        # не model.forward(x)!</code></pre>
+    def fit(self, X, y):
+        print("fit на", len(X), "объектах")
+        self.coef_, self.intercept_ = train(X, y, self.lr, self.steps)   # функция из части 5
+        return self
+
+    def predict(self, X):
+        return X @ self.coef_ + self.intercept_
+
+model = GDRegressor().fit(X, y)          # fit на 4 объектах
+print(model.coef_.round(4))              # [2. 1.]
+print(model.get_params())                # {'lr': 0.1, 'steps': 500}
+print(round(model.score(X, y), 4))       # 0.995
+
+scores = cross_val_score(GDRegressor(), X, y, cv=2)
+# fit на 2 объектах
+# fit на 2 объектах</code></pre>
 
 <p>
-  Метод <code>forward</code> я написал, но сам его не вызываю. Вызов <code>model(x)</code>
-  уходит в <code>nn.Module.__call__</code> — код фреймворка, — который выполняет служебную
-  работу (хуки, режимы) и уже оттуда вызывает мой <code>forward</code>. Это та же инверсия
-  управления, только маленькая. А присваивание <code>self.fc1 = nn.Linear(...)</code>
-  перехватывается <code>nn.Module</code>, и параметры слоя регистрируются в модели —
-  поэтому <code>model.parameters()</code> потом находит их сам.
+  Я написал только <code>__init__</code>, <code>fit</code> и <code>predict</code>. <code>get_params</code> достался
+  от <code>BaseEstimator</code>, <code>score</code> — от <code>RegressorMixin</code>, и он работает через мой
+  <code>predict</code>. Строка «fit на 2 объектах» напечаталась дважды, хотя сам я так <code>fit</code> не вызывал:
+  <code>cross_val_score</code> разрезал четыре объекта на две части (<code>cv=2</code>), для каждой создал свежую
+  копию модели, обучил её на одной части и оценил на другой. Копию он собирает по <code>get_params</code>,
+  поэтому <code>__init__</code> должен только сохранять аргументы под теми же именами: любая другая логика в
+  конструкторе в копию не попадёт.
 </p>
 
-<p>Если отдать фреймворку ещё и цикл обучения, получится так (PyTorch Lightning):</p>
+<div class="callout-yellow">
+  <strong>Чем мой класс хуже LinearRegression:</strong> мой <code>predict</code> не вызывает
+  <code>check_is_fitted</code>, поэтому до <code>fit</code> он упадёт с <code>AttributeError: 'GDRegressor' object
+  has no attribute 'coef_'</code>, а не с понятным <code>NotFittedError</code>. Готовые модели sklearn добавляют
+  такие проверки в каждый метод.
+</div>
 
-<pre><code>import lightning as L
-
-class LitFFN(L.LightningModule):
-    def __init__(self):
-        super().__init__()
-        self.net = FFN()
-
-    def training_step(self, batch, batch_idx):      # фреймворк вызовет это на каждом шаге
-        x, y = batch
-        return nn.functional.mse_loss(self.net(x), y)
-
-    def configure_optimizers(self):                 # и это — один раз в начале
-        return torch.optim.SGD(self.parameters(), lr=0.01)
-
-trainer = L.Trainer(max_epochs=100)
-trainer.fit(LitFFN(), train_dataloaders=loader)    # цикл, backward и step — внутри</code></pre>
+<p>
+  В глубоком обучении разделение то же. В PyTorch модель описывают классом-наследником
+  <code>nn.Module</code> с методом <code>forward</code>, но вызывают её как <code>model(x)</code>: метод
+  <code>nn.Module.__call__</code> из кода фреймворка выполняет служебную работу и уже сам вызывает ваш
+  <code>forward</code>. Надстройка PyTorch Lightning забирает и цикл обучения: вы пишете
+  <code>training_step</code> для одного шага, а <code>trainer.fit</code> решает, когда его вызвать. Как такая
+  сеть учится внутри, разобрано в статьях
+  <a href="article.html?slug=mlp-full-cycle">«Полносвязная нейросеть с нуля»</a> и
+  <a href="article.html?slug=how-network-learns">«Как обучается нейросеть»</a>.
+</p>
 
 <table class="shape-table">
   <tr><th></th><th>Библиотека</th><th>Фреймворк</th></tr>
   <tr><td>Кто управляет порядком</td><td>ваш код</td><td>фреймворк</td></tr>
-  <tr><td>Как вы с ним работаете</td><td>вызываете функции и методы</td><td>наследуете классы, переопределяете методы, отдаёте свои функции</td></tr>
+  <tr><td>Как вы с ним работаете</td><td>вызываете функции и методы</td><td>наследуете классы, переопределяете методы, отдаёте свои объекты</td></tr>
   <tr><td>Что отдаёте</td><td>отдельные вычисления</td><td>целый сценарий работы</td></tr>
-  <tr><td>Примеры из статьи</td><td><code>numpy</code>, <code>torch.Tensor</code></td><td><code>nn.Module.__call__</code>, Lightning <code>Trainer</code></td></tr>
+  <tr><td>Примеры из статьи</td><td><code>numpy</code>, <code>model.fit(X, y)</code></td><td><code>cross_val_score</code>, <code>GridSearchCV</code>, <code>Pipeline</code>; в PyTorch — <code>nn.Module.__call__</code> и <code>Trainer</code> из Lightning</td></tr>
   <tr><td>Вне ML</td><td><code>requests</code>, <code>json</code></td><td>Django, FastAPI: вы пишете обработчик, сервер сам решает, когда его вызвать</td></tr>
 </table>
 
 <div class="callout-blue">
-  <strong>Граница размыта, и это нормально:</strong> PyTorch обычно называют фреймворком,
-  хотя половиной он — библиотека тензоров, которую можно использовать как NumPy. Полезнее
-  не спорить о названии, а задавать вопрос из сцены выше: какую часть программы этот
-  инструмент забирает у меня и кто в ней решает, что вызывать дальше.
+  <strong>Граница размыта, и это нормально:</strong> scikit-learn обычно называют библиотекой, хотя
+  <code>cross_val_score</code> и <code>Pipeline</code> устроены как маленький фреймворк; PyTorch называют
+  фреймворком, хотя половиной он — библиотека тензоров, которую можно использовать как NumPy. Вместо спора о
+  названии полезнее задать вопрос из сцены выше: какую часть программы этот инструмент забирает у меня и кто в
+  ней решает, что вызывать дальше.
 </div>
 
 <div class="callout">
-  <strong>Главная мысль части:</strong> иерархия инструментов — это список того, что вы
-  перестаёте писать сами: NumPy забирает циклы, autograd — производные, <code>nn</code> и
-  <code>optim</code> — слои и шаг, а фреймворк вроде Lightning — и сам цикл, после чего
-  уже он вызывает ваш код.
+  <strong>Главная мысль части:</strong> иерархия инструментов — это список того, что вы перестаёте писать
+  сами: NumPy забирает циклы умножения, объект sklearn — обучение, хранение параметров и оценку, а
+  <code>cross_val_score</code> — ещё и порядок вызовов: дальше он сам вызывает <code>fit</code> и
+  <code>predict</code> вашей модели.
 </div>
 
 <hr>
 
-<h2 id="part-7">Часть 7. Что важно уметь восстановить по памяти</h2>
+<h2 id="part-8">Часть 8. Что важно уметь восстановить по памяти</h2>
 
 <ol class="end-list">
   <li><strong>Матричное умножение — три цикла.</strong> <code>C[i][j]</code> — скалярное произведение
@@ -2357,26 +2498,31 @@ trainer.fit(LitFFN(), train_dataloaders=loader)    # цикл, backward и step 
   <li><strong>Чужой код открыт — и расширяется снаружи.</strong> За <code>ndarray</code> стоит
   C-структура, за <code>@</code> — ufunc <code>np.matmul</code> с контрактом; вмешиваются аргументами,
   подклассом или <code>__array_ufunc__</code>, а пересборка — крайний случай.</li>
-  <li><strong>Пайплайн обучения — forward, loss, backward, шаг, цикл.</strong> На NumPy вы пишете
-  все пять; на PyTorch — только цикл и описание модели.</li>
+  <li><strong>Обучение — предсказание, ошибка, градиент, шаг, повтор.</strong> Для линейной регрессии это
+  <code>X @ w + b</code>, <code>y_hat - y</code>, <code>2 / n * (X.T @ err)</code> и <code>w -= lr * dw</code>; на NumPy
+  вы пишете каждую строку, в sklearn всё это — <code>model.fit(X, y)</code>.</li>
+  <li><strong>Модель sklearn — объект из трёх частей.</strong> Настройки из <code>__init__</code>
+  (<code>fit_intercept</code>), выученные в <code>fit</code> атрибуты с <code>_</code> на конце (<code>coef_</code>,
+  <code>intercept_</code>) и методы, часть которых унаследована: <code>score</code> от <code>RegressorMixin</code>,
+  <code>get_params</code> от <code>BaseEstimator</code>.</li>
   <li><strong>Библиотеку вызываете вы, фреймворк вызывает вас.</strong> Признак фреймворка —
-  вы пишете <code>forward</code> или <code>training_step</code>, но не вызываете их сами.</li>
+  вы пишете <code>fit</code> или <code>forward</code>, а вызывают их <code>cross_val_score</code> или <code>Trainer</code>.</li>
 </ol>
 
 <p>
   Если унести одну картину, то такую: внизу всегда те же три вложенных цикла из первой
   части. Каждый следующий уровень берёт на себя ещё один кусок программы, который раньше
-  приходилось писать вручную: NumPy — сами циклы, autograd — производные, <code>nn.Module</code>
-  и <code>optim</code> — слои и шаг, Lightning — цикл обучения. Всё, что отдано, вы больше не
+  приходилось писать вручную: NumPy — сами циклы, объект sklearn — обучение, хранение параметров
+  и оценку, <code>cross_val_score</code> — порядок вызовов. Всё, что отдано, вы больше не
   пишете, но и порядок этих действий задаёт уже код библиотеки.
 </p>
 
 <p class="tiny">
-  Все числа статьи посчитаны скриптом на Python и NumPy 2.x: умножение циклами и через
-  <code>@</code> дают одинаковое <code>[[2, 3], [8, 0]]</code>, ручной backward сети 2→2→1 сверен
-  с конечными разностями (расхождение порядка <span class="math-inline" data-tex="10^{-10}"></span>). Вывод PyTorch приведён для тех же весов
-  с учётом транспонирования в <code>nn.Linear</code>; значения округлены до четырёх знаков.
-  Пути вида <code>C:\Users\work\…</code>, версии пакетов и имена файлов с хешами у вас будут
-  немного другими. Ссылки на исходники NumPy ведут на тег <code>v2.5.3</code>; поведение
-  <code>out=</code>, подкласса и <code>__array_ufunc__</code> проверено на этой версии.
+  Все числа статьи посчитаны скриптом на Python: умножение циклами и через <code>@</code> дают одинаковое
+  <code>[[2, 3], [8, 0]]</code>; градиентный спуск на NumPy за 500 шагов и <code>LinearRegression</code> из
+  scikit-learn 1.9.1 дают одинаковые <code>w = [2, 1]</code>, <code>b = 0.45</code> (до четырёх знаков),
+  <code>score</code> равен 0.995. Пути вида <code>C:\Users\work\…</code>, версии пакетов и имена файлов с хешами
+  у вас будут немного другими. Ссылки на исходники NumPy ведут на тег <code>v2.5.3</code>, на исходники
+  scikit-learn — на тег <code>1.9.1</code>; поведение <code>out=</code>, подкласса и <code>__array_ufunc__</code>
+  проверено на NumPy 2.5.3.
 </p>
