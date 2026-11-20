@@ -206,7 +206,7 @@
             "en": "Convolutional networks",
             "kk": "Орама желілер"
           },
-          "articles": ["cnn-from-zero", "cnn-by-shapes", "conv-arithmetic"]
+          "articles": ["cnn-from-zero", "conv-arithmetic"]
         },
         {
           "group": "rnn",
@@ -853,7 +853,7 @@
   "date": "2026-09-21",
   "reading_time": 21,
   "tags": ["ml-basics", "deep-learning"],
-  "draft": false,
+  "draft": true,
   "content": {
     "ru": "content/articles/deep-learning/cnn-by-shapes.ru.md"
   }

@@ -45,12 +45,12 @@
     <div class="step-panel"><div class="step-kicker">Шаг 2 · координата</div><h4>У каждой клетки есть адрес (i, j)</h4><p>Строка отвечает вертикальной координате, столбец — горизонтальной. Верхняя перекладина семёрки лежит в строке 0, а её самые яркие пиксели — в столбцах 4 и 5.</p><div class="math-display" data-tex="X_{0,4}=16,\qquad X_{4,6}=10,\qquad X_{2,3}=0"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 3 · числа</div><h4>Изображение становится матрицей</h4><p>Соседние числа в матрице соответствуют соседним пикселям на бумаге. Именно это соседство и будет использовать свёртка; для полносвязного слоя оно, как мы увидим, значения не имеет.</p><div class="math-display" data-tex="\sum_{i,j}X_{ij}=277,\qquad \#\{X_{ij}>0\}=31\ \text{из}\ 64"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 4 · нормализация</div><h4>Диапазон 0…16 удобно перевести в 0…1</h4><p>Делим каждую яркость на максимум. Геометрия не меняется: та же матрица в более удобном масштабе. Это линейное преобразование, поэтому любая линейная операция после него — включая свёртку — просто масштабируется.</p><div class="math-display" data-tex="X'_{0,4}=\frac{16}{16}=1{,}00,\qquad X'_{1,1}=\frac{4}{16}=0{,}25"></div></div>
-    <div class="step-panel"><div class="step-kicker">Шаг 5 · форма тензора</div><h4>Оси имеют разный смысл</h4><p>К пространственным осям добавляются каналы <code>C</code> (у нас один, у RGB — три) и внешняя ось батча <code>N</code>. Порядок осей — соглашение библиотеки; в PyTorch это <code>[N, C, H, W]</code>.</p><div class="math-display" data-tex="[N,C,H,W]=[1,1,8,8]\qquad\text{против RGB: }[N,3,32,32]"></div></div>
+    <div class="step-panel"><div class="step-kicker">Шаг 5 · форма тензора</div><h4>Оси имеют разный смысл</h4><p>К пространственным осям добавляются каналы <span class="math-inline" data-tex="C"></span> (у нас один, у RGB — три) и внешняя ось батча <span class="math-inline" data-tex="N"></span>. Порядок осей — соглашение библиотеки; в PyTorch это <span class="math-inline" data-tex="[N,C,H,W]"></span>.</p><div class="math-display" data-tex="[N,C,H,W]=[1,1,8,8]\qquad\text{против RGB: }[N,3,32,32]"></div></div>
   </div>
 </div>
 <p class="tiny">Без JavaScript: сцена последовательно показывает растр цифры, адресацию пикселя, числовую матрицу 8×8, деление на 16 и форму тензора.</p>
 
-<div class="callout-yellow"><strong>Пока канал один:</strong> размер <code>8×8</code> означает 64 яркости и ни одного признака сверх них. Цвет и ось <code>C</code> появятся в части 7 — там же, где они появляются в лекции.</div>
+<div class="callout-yellow"><strong>Пока канал один:</strong> размер <span class="math-inline" data-tex="8\times8"></span> означает 64 яркости и ни одного признака сверх них. Цвет и ось <span class="math-inline" data-tex="C"></span> появятся в части 7 — там же, где они появляются в лекции.</div>
 
 ---
 
@@ -76,16 +76,16 @@
   <div class="stage-figure"><svg id="cl-viz" viewBox="0 0 960 700" role="img" aria-label="Переход от цифры к вектору, весам, логиту и вероятности бинарного классификатора"><g data-canvas=""></g></svg></div>
   <div class="stage-bar"><button type="button" data-nav="prev">← Назад</button><button type="button" data-nav="next">Далее →</button><div class="stage-progress"></div><div class="stage-counter"></div></div>
   <div class="stage-notes">
-    <div class="step-panel"><div class="step-kicker">Шаг 1 · flatten</div><h4>Матрица становится длинной строкой</h4><p>Операция <code>flatten</code> не удаляет ни одного пикселя и не меняет ни одного числа. Она меняет только форму: восемь строк записываются одна за другой, и координата <code>(i, j)</code> превращается в один индекс.</p><div class="math-display" data-tex="X'\in\mathbb{R}^{8\times8}\;\longrightarrow\;\mathbf x\in\mathbb{R}^{64},\qquad x_{8i+j}=X'_{ij}"></div></div>
+    <div class="step-panel"><div class="step-kicker">Шаг 1 · flatten</div><h4>Матрица становится длинной строкой</h4><p>Операция <code>flatten</code> не удаляет ни одного пикселя и не меняет ни одного числа. Она меняет только форму: восемь строк записываются одна за другой, и координата <span class="math-inline" data-tex="(i,\ j)"></span> превращается в один индекс.</p><div class="math-display" data-tex="X'\in\mathbb{R}^{8\times8}\;\longrightarrow\;\mathbf x\in\mathbb{R}^{64},\qquad x_{8i+j}=X'_{ij}"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 2 · веса</div><h4>Каждому пикселю соответствует ровно один вес</h4><p>Если развернуть 64 веса обратно в 8×8, видно шаблон: зелёным — координаты, где яркость говорит «семёрка», красным — где она говорит «не семёрка». Самый крупный вес стоит на пикселе (1, 4), самый отрицательный — на (6, 5): там, где у семёрки пусто, а у восьмёрки или нуля проходит штрих.</p><div class="math-display" data-tex="\mathbf w\in\mathbb{R}^{64},\qquad w_{1,4}=2{,}02,\qquad w_{6,5}=-2{,}51"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 3 · вклады</div><h4>Каждый пиксель даёт своё произведение</h4><p>Умножаем поэлементно: яркость на вес. Тёмный пиксель (нулевая яркость) не даёт вклада независимо от веса — он просто не участвует в решении.</p><div class="math-display" data-tex="x_{4,5}w_{4,5}=1{,}00\cdot1{,}21=1{,}21,\qquad x_{6,4}w_{6,4}=0{,}56\cdot(-2{,}01)=-1{,}13"></div></div>
-    <div class="step-panel"><div class="step-kicker">Шаг 4 · логит</div><h4>Все 64 вклада сворачиваются в одно число</h4><p>Положительные вклады дают в сумме <code>+9,05</code>, отрицательные — <code>−3,56</code>, свободный член <code>b</code> сдвигает результат вниз. До сигмоиды это ещё не вероятность: логит ничем не ограничен.</p><div class="math-display" data-tex="z=9{,}05-3{,}56-3{,}08=2{,}42"></div></div>
+    <div class="step-panel"><div class="step-kicker">Шаг 4 · логит</div><h4>Все 64 вклада сворачиваются в одно число</h4><p>Положительные вклады дают в сумме <span class="math-inline" data-tex="+9{,}05"></span>, отрицательные — <span class="math-inline" data-tex="-3{,}56"></span>, свободный член <span class="math-inline" data-tex="b"></span> сдвигает результат вниз. До сигмоиды это ещё не вероятность: логит ничем не ограничен.</p><div class="math-display" data-tex="z=9{,}05-3{,}56-3{,}08=2{,}42"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 5 · сигмоида</div><h4>Логит переводится в вероятность</h4><p>Сигмоида сжимает любое вещественное число в интервал от 0 до 1. Ноль на входе даёт ровно 0,5; наши 2,42 — уже больше девяти десятых.</p><div class="math-display" data-tex="\hat p_7=\sigma(2{,}42)=\frac{1}{1+e^{-2{,}42}}=0{,}918"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 6 · ответ</div><h4>Модель умеет сказать только «семёрка / не семёрка»</h4><p>При пороге 0,5 получаем класс 1. Но задача распознавания цифр требует выбрать один класс из десяти, а не ответить на один вопрос — этим займёмся дальше.</p><div class="math-display" data-tex="\hat y=[\hat p_7\ge0{,}5]=1,\qquad 0{,}918\ge0{,}5"></div></div>
   </div>
 </div>
 
-<div class="callout-blue"><strong>Это в точности полносвязный нейрон.</strong> Формула <span class="math-inline" data-tex="z=\mathbf x^\top\mathbf w+b"></span> — та же, что в статье про многослойный перцептрон. Новым является только смысл координат: теперь координата <code>i</code> — это конкретный пиксель конкретного места картинки.</div>
+<div class="callout-blue"><strong>Это в точности полносвязный нейрон.</strong> Формула <span class="math-inline" data-tex="z=\mathbf x^\top\mathbf w+b"></span> — та же, что в статье про многослойный перцептрон. Новым является только смысл координат: теперь координата <span class="math-inline" data-tex="i"></span> — это конкретный пиксель конкретного места картинки.</div>
 
 ---
 
@@ -107,7 +107,7 @@
     <div class="step-panel"><div class="step-kicker">Шаг 1 · десять вопросов</div><h4>Каждому классу нужен свой набор весов</h4><p>Столбец <span class="math-inline" data-tex="\mathbf w^{(0)}"></span> оценивает сходство с нулём, <span class="math-inline" data-tex="\mathbf w^{(1)}"></span> — с единицей и так далее. Вместе они образуют матрицу весов, а к ней добавляются десять смещений.</p><div class="math-display" data-tex="W\in\mathbb{R}^{64\times10},\quad\mathbf b\in\mathbb{R}^{10}\quad\Longrightarrow\quad 64\cdot10+10=650\ \text{параметров}"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 2 · логиты</div><h4>Один вход даёт десять несравнимых пока чисел</h4><p>Логиты не обязаны быть положительными и не обязаны во что-то суммироваться. У нашей семёрки седьмой логит заметно оторвался от остальных, ближайший конкурент — тройка.</p><div class="math-display" data-tex="z_7=5{,}63,\qquad z_3=3{,}31,\qquad z_6=-5{,}03"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 3 · softmax</div><h4>Теперь классы конкурируют друг с другом</h4><p>Экспонента делает все значения положительными, деление на общую сумму — нормирует. Разница логитов в 2,3 превращается в десятикратную разницу вероятностей.</p><div class="math-display" data-tex="\hat p_7=\frac{e^{5{,}63}}{\sum_j e^{z_j}}=0{,}8903,\qquad \hat p_3=0{,}0880"></div></div>
-    <div class="step-panel"><div class="step-kicker">Шаг 4 · ошибка</div><h4>Cross-entropy смотрит только на правильный класс</h4><p>Истинная метка равна 7, поэтому берём минус логарифм седьмой вероятности. Чем ближе она к единице, тем ближе ошибка к нулю; при <code>p = 0,5</code> ошибка была бы 0,69, при <code>p = 0,1</code> — уже 2,3.</p><div class="math-display" data-tex="L=-\log(0{,}8903)=0{,}1162"></div></div>
+    <div class="step-panel"><div class="step-kicker">Шаг 4 · ошибка</div><h4>Cross-entropy смотрит только на правильный класс</h4><p>Истинная метка равна 7, поэтому берём минус логарифм седьмой вероятности. Чем ближе она к единице, тем ближе ошибка к нулю; при <span class="math-inline" data-tex="\hat p_y=0{,}5"></span> ошибка была бы 0,69, при <span class="math-inline" data-tex="\hat p_y=0{,}1"></span> — уже 2,3.</p><div class="math-display" data-tex="L=-\log(0{,}8903)=0{,}1162"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 5 · градиент</div><h4>Производная по логиту получается предельно простой</h4><p>Для softmax с cross-entropy градиент равен «предсказание минус правда». Для нашего объекта он равен −0,11 на седьмом классе и +0,09 на тройке: модель в основном права, поэтому и правки небольшие.</p><div class="math-display" data-tex="\frac{\partial L}{\partial z_k}=\hat p_k-y_k:\qquad -0{,}1097\ \text{для }k=7,\quad +0{,}0880\ \text{для }k=3"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 6 · выученные шаблоны</div><h4>Столбцы весов можно развернуть обратно в картинки</h4><p>Так выглядят настоящие обученные веса всех десяти классов, свёрнутые обратно в 8×8. Видно, что модель выучила именно полноразмерные шаблоны: у семёрки зелёная зона идёт по верхнему штриху и правой диагонали, а красная — в середине слева и внизу по центру, где у семёрки пусто, а у восьмёрки или нуля проходит линия.</p><div class="math-display" data-tex="\mathbf w^{(7)}\in\mathbb{R}^{64}\;\longrightarrow\;W^{(7)}\in\mathbb{R}^{8\times8}"></div></div>
   </div>
@@ -140,11 +140,11 @@
 <table class="shape-table">
   <thead><tr><th>Сдвиг вправо</th><th>Вероятность семёрки у нашей цифры</th><th>Что предсказано</th><th>Точность на 540 объектах</th></tr></thead>
   <tbody>
-    <tr><td><code>−2</code></td><td><code>0,095</code></td><td>класс 4</td><td><code>12,6%</code></td></tr>
-    <tr><td><code>−1</code></td><td><code>0,879</code></td><td>класс 7</td><td><code>43,7%</code></td></tr>
-    <tr><td><code>0</code></td><td><code>0,890</code></td><td>класс 7</td><td><code>97,0%</code></td></tr>
-    <tr><td><code>+1</code></td><td><code>0,702</code></td><td>класс 7</td><td><code>39,3%</code></td></tr>
-    <tr><td><code>+2</code></td><td><code>0,261</code></td><td>класс 3</td><td><code>5,7%</code></td></tr>
+    <tr><td><span class="math-inline" data-tex="-2"></span></td><td><span class="math-inline" data-tex="0{,}095"></span></td><td>класс 4</td><td><span class="math-inline" data-tex="12{,}6\%"></span></td></tr>
+    <tr><td><span class="math-inline" data-tex="-1"></span></td><td><span class="math-inline" data-tex="0{,}879"></span></td><td>класс 7</td><td><span class="math-inline" data-tex="43{,}7\%"></span></td></tr>
+    <tr><td><span class="math-inline" data-tex="0"></span></td><td><span class="math-inline" data-tex="0{,}890"></span></td><td>класс 7</td><td><span class="math-inline" data-tex="97{,}0\%"></span></td></tr>
+    <tr><td><span class="math-inline" data-tex="+1"></span></td><td><span class="math-inline" data-tex="0{,}702"></span></td><td>класс 7</td><td><span class="math-inline" data-tex="39{,}3\%"></span></td></tr>
+    <tr><td><span class="math-inline" data-tex="+2"></span></td><td><span class="math-inline" data-tex="0{,}261"></span></td><td>класс 3</td><td><span class="math-inline" data-tex="5{,}7\%"></span></td></tr>
   </tbody>
 </table>
 
@@ -197,11 +197,11 @@
   <div class="stage-bar"><button type="button" data-nav="prev">← Назад</button><button type="button" data-nav="next">Далее →</button><div class="stage-progress"></div><div class="stage-counter"></div></div>
   <div class="stage-notes">
     <div class="step-panel"><div class="step-kicker">Шаг 1 · локальные веса</div><h4>Фильтр намного меньше изображения</h4><p>Девять весов против 64 у полносвязного шаблона. Столбец нулей посередине означает, что фильтру безразлична сама яркость — важен только перепад между левым и правым краем окна.</p><div class="math-display" data-tex="K\in\mathbb{R}^{3\times3},\qquad K_{00}=1,\ K_{01}=0,\ K_{02}=-1"></div></div>
-    <div class="step-panel"><div class="step-kicker">Шаг 2 · окно</div><h4>Берём верхний левый участок 3×3</h4><p>Клетка выхода <code>(0,0)</code> связана ровно с девятью пикселями входа — первыми тремя строками и первыми тремя столбцами. Остальные 55 пикселей в это вычисление не входят вообще.</p><div class="math-display" data-tex="P_{00}=X_{0:3,\,0:3}=\begin{bmatrix}0&amp;0&amp;3\\0&amp;4&amp;16\\0&amp;7&amp;6\end{bmatrix}"></div></div>
+    <div class="step-panel"><div class="step-kicker">Шаг 2 · окно</div><h4>Берём верхний левый участок 3×3</h4><p>Клетка выхода <span class="math-inline" data-tex="(0,0)"></span> связана ровно с девятью пикселями входа — первыми тремя строками и первыми тремя столбцами. Остальные 55 пикселей в это вычисление не входят вообще.</p><div class="math-display" data-tex="P_{00}=X_{0:3,\,0:3}=\begin{bmatrix}0&amp;0&amp;3\\0&amp;4&amp;16\\0&amp;7&amp;6\end{bmatrix}"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 3 · умножения</div><h4>Каждый пиксель умножается на вес в той же локальной позиции</h4><p>Это поэлементное умножение, а не матричное произведение. Левый столбец окна пустой, поэтому положительных вкладов нет; правый столбец содержит края верхней перекладины, и они входят со знаком минус.</p><div class="math-display" data-tex="P_{00}\odot K=\begin{bmatrix}0&amp;0&amp;-3\\0&amp;0&amp;-16\\0&amp;0&amp;-6\end{bmatrix}"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 4 · сумма</div><h4>Девять вкладов сворачиваются в одно число</h4><p>Отсюда и название: локальное окно превращается в один отклик. Знак минус читается буквально — в этом окне ярче <em>справа</em>, то есть фильтр нашёл левый край штриха, а не правый.</p><div class="math-display" data-tex="Z_{00}=(0+0+0)-(3+16+6)=-25"></div></div>
-    <div class="step-panel"><div class="step-kicker">Шаг 5 · bias и ReLU</div><h4>После линейной операции идёт активация</h4><p>Возьмём <code>b = 0</code>. ReLU оставляет положительные отклики и обнуляет отрицательные, поэтому этот фильтр после активации сообщает только про переходы «светлое слева → тёмное справа». Левые края штрихов достанутся другому фильтру, с противоположными знаками.</p><div class="math-display" data-tex="A_{00}=\operatorname{ReLU}(-25+0)=\max(0,-25)=0"></div></div>
-    <div class="step-panel"><div class="step-kicker">Шаг 6 · клетка карты</div><h4>Число записывается в карту признаков</h4><p>Мы посчитали одну клетку из тридцати шести. Тот же фильтр с теми же девятью весами сдвинется на столбец вправо; в позиции <code>(0,5)</code>, где штрих заканчивается и справа начинается фон, он даст уже <code>+47</code>.</p><div class="math-display" data-tex="Z_{05}=(15+16+16)-(0+0+0)=47"></div></div>
+    <div class="step-panel"><div class="step-kicker">Шаг 5 · bias и ReLU</div><h4>После линейной операции идёт активация</h4><p>Возьмём <span class="math-inline" data-tex="b=0"></span>. ReLU оставляет положительные отклики и обнуляет отрицательные, поэтому этот фильтр после активации сообщает только про переходы «светлое слева → тёмное справа». Левые края штрихов достанутся другому фильтру, с противоположными знаками.</p><div class="math-display" data-tex="A_{00}=\operatorname{ReLU}(-25+0)=\max(0,-25)=0"></div></div>
+    <div class="step-panel"><div class="step-kicker">Шаг 6 · клетка карты</div><h4>Число записывается в карту признаков</h4><p>Мы посчитали одну клетку из тридцати шести. Тот же фильтр с теми же девятью весами сдвинется на столбец вправо; в позиции <span class="math-inline" data-tex="(0,5)"></span>, где штрих заканчивается и справа начинается фон, он даст уже <span class="math-inline" data-tex="+47"></span>.</p><div class="math-display" data-tex="Z_{05}=(15+16+16)-(0+0+0)=47"></div></div>
   </div>
 </div>
 
@@ -229,7 +229,7 @@
 
 <p>
   Пролистайте позиции до правого края цифры: там отклики становятся большими и
-  положительными (максимум <code>+47</code> в клетке <code>(0,5)</code>), а слева от
+  положительными (максимум <span class="math-inline" data-tex="+47"></span> в клетке <span class="math-inline" data-tex="(0,5)"></span>), а слева от
   штриха — большими и отрицательными. Ноль означает, что перепада в этом окне нет:
   фон, ровная заливка или симметричное окружение.
 </p>
@@ -244,15 +244,15 @@
 <table class="shape-table">
   <thead><tr><th>Величина</th><th>Форма</th><th>Параметров</th><th>Что хранит</th></tr></thead>
   <tbody>
-    <tr><td><code>X</code></td><td><code>8×8</code></td><td>—</td><td>яркости рукописной цифры</td></tr>
-    <tr><td><code>K</code></td><td><code>3×3</code></td><td><code>9</code></td><td>девять общих весов</td></tr>
-    <tr><td><code>b</code></td><td><code>1</code></td><td><code>1</code></td><td>один общий сдвиг фильтра</td></tr>
-    <tr><td><code>Z</code></td><td><code>6×6</code></td><td>—</td><td>сырые отклики во всех позициях</td></tr>
-    <tr><td><code>A=ReLU(Z)</code></td><td><code>6×6</code></td><td>—</td><td>активированная карта признаков</td></tr>
+    <tr><td><span class="math-inline" data-tex="X"></span></td><td><span class="math-inline" data-tex="8\times8"></span></td><td>—</td><td>яркости рукописной цифры</td></tr>
+    <tr><td><span class="math-inline" data-tex="K"></span></td><td><span class="math-inline" data-tex="3\times3"></span></td><td><span class="math-inline" data-tex="9"></span></td><td>девять общих весов</td></tr>
+    <tr><td><span class="math-inline" data-tex="b"></span></td><td><span class="math-inline" data-tex="1"></span></td><td><span class="math-inline" data-tex="1"></span></td><td>один общий сдвиг фильтра</td></tr>
+    <tr><td><span class="math-inline" data-tex="Z"></span></td><td><span class="math-inline" data-tex="6\times6"></span></td><td>—</td><td>сырые отклики во всех позициях</td></tr>
+    <tr><td><span class="math-inline" data-tex="A=\operatorname{ReLU}(Z)"></span></td><td><span class="math-inline" data-tex="6\times6"></span></td><td>—</td><td>активированная карта признаков</td></tr>
   </tbody>
 </table>
 
-<div class="callout"><strong>Десять параметров против шестисот пятидесяти.</strong> Полносвязная модель из части 3 хранила <code>64·10+10 = 650</code> весов и была привязана к координатам. Один свёрточный фильтр хранит <code>3·3+1 = 10</code> весов и работает в любой позиции — и остался бы десятипараметрическим даже на картинке 1000×1000.</div>
+<div class="callout"><strong>Десять параметров против шестисот пятидесяти.</strong> Полносвязная модель из части 3 хранила <span class="math-inline" data-tex="64\cdot10+10=650"></span> весов и была привязана к координатам. Один свёрточный фильтр хранит <span class="math-inline" data-tex="3\cdot3+1=10"></span> весов и работает в любой позиции — и остался бы десятипараметрическим даже на картинке 1000×1000.</div>
 
 ---
 
@@ -272,12 +272,12 @@
   <div class="stage-notes">
     <div class="step-panel"><div class="step-kicker">Шаг 1 · второй фильтр</div><h4>Другие веса — другой вопрос к той же картинке</h4><p>Повернём ядро на 90°: теперь оно вычитает нижнюю строку окна из верхней и ищет горизонтальные края. На нашей семёрке оно откликается там, где вертикальный фильтр молчал — на верхней перекладине и на средней планке.</p><div class="math-display" data-tex="K^{(2)}=\begin{bmatrix}1&amp;1&amp;1\\0&amp;0&amp;0\\-1&amp;-1&amp;-1\end{bmatrix},\qquad Z^{(2)}_{11}=30,\qquad Z^{(2)}_{44}=33"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 2 · две карты</div><h4>Число фильтров становится глубиной выхода</h4><p>Это не два отдельных изображения, а два представления одного и того же входа: пространственные координаты у них общие, различается только смысл канала.</p><div class="math-display" data-tex="Z=\operatorname{stack}\bigl(Z^{(1)},Z^{(2)}\bigr)\in\mathbb{R}^{2\times6\times6}"></div></div>
-    <div class="step-panel"><div class="step-kicker">Шаг 3 · цветной вход</div><h4>RGB — это три согласованные матрицы</h4><p>Красный, зелёный и синий каналы имеют одни и те же координаты <code>H×W</code>. Поэтому цветная картинка — не три картинки, а один тензор с осью глубины.</p><div class="math-display" data-tex="X=(X_R,X_G,X_B)\in\mathbb{R}^{3\times H\times W},\qquad [3,6,6]"></div></div>
-    <div class="step-panel"><div class="step-kicker">Шаг 4 · глубина фильтра</div><h4>Глубина фильтра всегда равна числу входных каналов</h4><p>Для RGB «фильтр 3×3» на самом деле имеет форму <code>3×3×3</code>: по одной матрице весов на канал. Это жёсткое правило — не совпадение размеров, а условие, без которого свёртка не определена.</p><div class="math-display" data-tex="C_{in}=3\ \Longrightarrow\ K^{(m)}\in\mathbb{R}^{3\times3\times3}\ \text{— }3\cdot3\cdot3=27\ \text{весов}"></div></div>
-    <div class="step-panel"><div class="step-kicker">Шаг 5 · сумма по каналам</div><h4>27 произведений дают одно число, а не три</h4><p>У каждого из трёх каналов своё окно 3×3 и своя матрица весов. Внутри канала считаем обычную свёртку — девять произведений в частичную сумму: красный даёт <code>+2</code>, зелёный <code>+3</code>, синий <code>−1</code>. Затем три частичные суммы складываются с общим bias в <strong>одну</strong> клетку одной карты. Поэтому свёртка <code>6×6×3</code> ядром <code>3×3×3</code> даёт плоский результат, а не объём.</p><div class="math-display" data-tex="z=\underbrace{2}_{R}+\underbrace{3}_{G}+\underbrace{(-1)}_{B}+\underbrace{0{,}5}_{b}=4{,}5"></div></div>
+    <div class="step-panel"><div class="step-kicker">Шаг 3 · цветной вход</div><h4>RGB — это три согласованные матрицы</h4><p>Красный, зелёный и синий каналы имеют одни и те же координаты <span class="math-inline" data-tex="H\times W"></span>. Поэтому цветная картинка — не три картинки, а один тензор с осью глубины.</p><div class="math-display" data-tex="X=(X_R,X_G,X_B)\in\mathbb{R}^{3\times H\times W},\qquad [3,6,6]"></div></div>
+    <div class="step-panel"><div class="step-kicker">Шаг 4 · глубина фильтра</div><h4>Глубина фильтра всегда равна числу входных каналов</h4><p>Для RGB «фильтр 3×3» на самом деле имеет форму <span class="math-inline" data-tex="3\times3\times3"></span>: по одной матрице весов на канал. Это жёсткое правило — не совпадение размеров, а условие, без которого свёртка не определена.</p><div class="math-display" data-tex="C_{in}=3\ \Longrightarrow\ K^{(m)}\in\mathbb{R}^{3\times3\times3}\ \text{— }3\cdot3\cdot3=27\ \text{весов}"></div></div>
+    <div class="step-panel"><div class="step-kicker">Шаг 5 · сумма по каналам</div><h4>27 произведений дают одно число, а не три</h4><p>У каждого из трёх каналов своё окно 3×3 и своя матрица весов. Внутри канала считаем обычную свёртку — девять произведений в частичную сумму: красный даёт <span class="math-inline" data-tex="+2"></span>, зелёный <span class="math-inline" data-tex="+3"></span>, синий <span class="math-inline" data-tex="-1"></span>. Затем три частичные суммы складываются с общим bias в <strong>одну</strong> клетку одной карты. Поэтому свёртка <span class="math-inline" data-tex="6\times6\times3"></span> ядром <span class="math-inline" data-tex="3\times3\times3"></span> даёт плоский результат, а не объём.</p><div class="math-display" data-tex="z=\underbrace{2}_{R}+\underbrace{3}_{G}+\underbrace{(-1)}_{B}+\underbrace{0{,}5}_{b}=4{,}5"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 6 · слой целиком</div><h4>Свёрточный слой — это те же три действия, что и в полносвязном</h4><p>Линейная операция, прибавление bias, нелинейность. В полносвязной сети это был переход от входа <span class="math-inline" data-tex="\mathbf x"></span> к скрытому слою <span class="math-inline" data-tex="\mathbf h^{(1)}"></span>; здесь линейная часть устроена как скользящее окно, а на выходе получается карта <span class="math-inline" data-tex="A^{(1)}"></span>.</p><div class="math-display" data-tex="Z^{(1)}=K^{(1)}\ast X+b^{(1)},\qquad A^{(1)}=g\bigl(Z^{(1)}\bigr)"></div></div>
-    <div class="step-panel"><div class="step-kicker">Шаг 7 · параметры</div><h4>Один фильтр — 27 весов плюс один bias</h4><p>Классический вопрос лекции: сколько параметров у слоя из десяти фильтров <code>3×3×3</code>? Ответ не зависит от размера картинки — ни 1000×1000, ни 5000×5000 его не меняют.</p><div class="math-display" data-tex="10\cdot(3\cdot3\cdot3+1)=10\cdot28=280"></div></div>
-    <div class="step-panel"><div class="step-kicker">Шаг 8 · форма выхода</div><h4>Вход 6×6×3 превращается в 4×4×2</h4><p>Два фильтра <code>3×3×3</code> дают два канала по 4×4. Пространственный размер задают <code>K</code>, <code>P</code> и <code>S</code>, а глубину — только число фильтров.</p><div class="math-display" data-tex="[3,6,6]\;\xrightarrow{\;2\times K^{(m)}\in\mathbb{R}^{3\times3\times3}\;}\;[2,4,4]"></div></div>
+    <div class="step-panel"><div class="step-kicker">Шаг 7 · параметры</div><h4>Один фильтр — 27 весов плюс один bias</h4><p>Классический вопрос лекции: сколько параметров у слоя из десяти фильтров <span class="math-inline" data-tex="3\times3\times3"></span>? Ответ не зависит от размера картинки — ни 1000×1000, ни 5000×5000 его не меняют.</p><div class="math-display" data-tex="10\cdot(3\cdot3\cdot3+1)=10\cdot28=280"></div></div>
+    <div class="step-panel"><div class="step-kicker">Шаг 8 · форма выхода</div><h4>Вход 6×6×3 превращается в 4×4×2</h4><p>Два фильтра <span class="math-inline" data-tex="3\times3\times3"></span> дают два канала по 4×4. Пространственный размер задают <span class="math-inline" data-tex="K"></span>, <span class="math-inline" data-tex="P"></span> и <span class="math-inline" data-tex="S"></span>, а глубину — только число фильтров.</p><div class="math-display" data-tex="[3,6,6]\;\xrightarrow{\;2\times K^{(m)}\in\mathbb{R}^{3\times3\times3}\;}\;[2,4,4]"></div></div>
   </div>
 </div>
 
@@ -296,7 +296,7 @@
 
 <p>
   <strong>Padding</strong> добавляет рамку из нулей и лечит обе проблемы.
-  <strong>Stride</strong> — наоборот, задаёт шаг окна: при <code>S = 2</code> фильтр
+  <strong>Stride</strong> — наоборот, задаёт шаг окна: при <span class="math-inline" data-tex="S=2"></span> фильтр
   перескакивает через позицию и карта уменьшается примерно вдвое.
 </p>
 
@@ -314,19 +314,19 @@
   <div class="lab-readout" id="shape-readout"></div>
 </div>
 
-<div class="callout-yellow"><strong>Остаток от деления важен:</strong> в формуле стоит floor. Если в последней позиции окно не помещается целиком, библиотека не создаёт «неполную» клетку выхода, а просто отбрасывает хвост. При <code>K=4</code>, <code>P=0</code>, <code>S=3</code> из восьми столбцов используются только первые семь.</div>
+<div class="callout-yellow"><strong>Остаток от деления важен:</strong> в формуле стоит floor. Если в последней позиции окно не помещается целиком, библиотека не создаёт «неполную» клетку выхода, а просто отбрасывает хвост. При <span class="math-inline" data-tex="K=4"></span>, <span class="math-inline" data-tex="P=0"></span>, <span class="math-inline" data-tex="S=3"></span> из восьми столбцов используются только первые семь.</div>
 
 <table class="shape-table">
   <thead><tr><th>Настройка</th><th>Подстановка для входа 8×8</th><th>Выход</th><th>Как называется</th></tr></thead>
   <tbody>
-    <tr><td><code>K=3, P=0, S=1</code></td><td><code>(8+0−3)/1+1 = 6</code></td><td><code>6×6</code></td><td>valid</td></tr>
-    <tr><td><code>K=3, P=1, S=1</code></td><td><code>(8+2−3)/1+1 = 8</code></td><td><code>8×8</code></td><td>same</td></tr>
-    <tr><td><code>K=3, P=0, S=2</code></td><td><code>⌊(8−3)/2⌋+1 = 3</code></td><td><code>3×3</code></td><td>strided</td></tr>
-    <tr><td><code>K=5, P=2, S=1</code></td><td><code>(8+4−5)/1+1 = 8</code></td><td><code>8×8</code></td><td>same</td></tr>
+    <tr><td><span class="math-inline" data-tex="K=3,\ P=0,\ S=1"></span></td><td><span class="math-inline" data-tex="(8+0-3)/1+1=6"></span></td><td><span class="math-inline" data-tex="6\times6"></span></td><td>valid</td></tr>
+    <tr><td><span class="math-inline" data-tex="K=3,\ P=1,\ S=1"></span></td><td><span class="math-inline" data-tex="(8+2-3)/1+1=8"></span></td><td><span class="math-inline" data-tex="8\times8"></span></td><td>same</td></tr>
+    <tr><td><span class="math-inline" data-tex="K=3,\ P=0,\ S=2"></span></td><td><span class="math-inline" data-tex="\lfloor(8-3)/2\rfloor+1=3"></span></td><td><span class="math-inline" data-tex="3\times3"></span></td><td>strided</td></tr>
+    <tr><td><span class="math-inline" data-tex="K=5,\ P=2,\ S=1"></span></td><td><span class="math-inline" data-tex="(8+4-5)/1+1=8"></span></td><td><span class="math-inline" data-tex="8\times8"></span></td><td>same</td></tr>
   </tbody>
 </table>
 
-<div class="callout"><strong>Правило same-свёртки:</strong> размер сохраняется при <span class="math-inline" data-tex="P=(K-1)/2"></span> — отсюда и привычка брать нечётные ядра. Для <code>K=3</code> нужен <code>P=1</code>, для <code>K=5</code> — <code>P=2</code>. У чётного ядра такого целого <code>P</code> нет, и рамку пришлось бы делать несимметричной.</div>
+<div class="callout"><strong>Правило same-свёртки:</strong> размер сохраняется при <span class="math-inline" data-tex="P=(K-1)/2"></span> — отсюда и привычка брать нечётные ядра. Для <span class="math-inline" data-tex="K=3"></span> нужен <span class="math-inline" data-tex="P=1"></span>, для <span class="math-inline" data-tex="K=5"></span> — <span class="math-inline" data-tex="P=2"></span>. У чётного ядра такого целого <span class="math-inline" data-tex="P"></span> нет, и рамку пришлось бы делать несимметричной.</div>
 
 ---
 
@@ -346,11 +346,11 @@
   <div class="stage-figure"><svg id="pl-viz" viewBox="0 0 960 545" role="img" aria-label="Max pooling и average pooling карты признаков, независимость каналов и устойчивость к сдвигу"><g data-canvas=""></g></svg></div>
   <div class="stage-bar"><button type="button" data-nav="prev">← Назад</button><button type="button" data-nav="next">Далее →</button><div class="stage-progress"></div><div class="stage-counter"></div></div>
   <div class="stage-notes">
-    <div class="step-panel"><div class="step-kicker">Шаг 1 · разбиение</div><h4>Карта делится на непересекающиеся окна</h4><p>Берём стандартные значения: окно <code>2×2</code> и шаг <code>2</code>. Окна не перекрываются, потому что шаг равен размеру окна, и карта 6×6 распадается ровно на девять участков.</p><div class="math-display" data-tex="f=2,\ s=2:\qquad H_{out}=\left\lfloor\frac{6-2}{2}\right\rfloor+1=3"></div></div>
+    <div class="step-panel"><div class="step-kicker">Шаг 1 · разбиение</div><h4>Карта делится на непересекающиеся окна</h4><p>Берём стандартные значения: окно <span class="math-inline" data-tex="2\times2"></span> и шаг <span class="math-inline" data-tex="2"></span>. Окна не перекрываются, потому что шаг равен размеру окна, и карта 6×6 распадается ровно на девять участков.</p><div class="math-display" data-tex="f=2,\ s=2:\qquad H_{out}=\left\lfloor\frac{6-2}{2}\right\rfloor+1=3"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 2 · максимум</div><h4>От каждого окна остаётся самый сильный отклик</h4><p>В верхнем левом окне активаций почти нет, и от него остаётся 1. В правом верхнем стоят отклики правого края штриха — остаётся 47. Максимум по окну отвечает на вопрос «был ли здесь признак хоть где-нибудь?», а не «где именно он был».</p><div class="math-display" data-tex="\max\begin{bmatrix}0&amp;0\\0&amp;1\end{bmatrix}=1,\qquad \max\begin{bmatrix}18&amp;47\\14&amp;44\end{bmatrix}=47"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 3 · результат</div><h4>Карта 6×6 стала 3×3</h4><p>Данных вчетверо меньше, дальнейшие слои считаются быстрее, а самый сильный отклик каждого участка сохранён. Заодно исчезла часть мелких сдвигов: если бы край сместился на одну клетку внутри окна, максимум остался бы тем же числом.</p><div class="math-display" data-tex="A\in\mathbb{R}^{6\times6}\;\longrightarrow\;\text{MaxPool}_{2,2}(A)\in\mathbb{R}^{3\times3},\qquad 36\to9"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 4 · average pooling</div><h4>Второй вариант — среднее вместо максимума</h4><p>Average pooling усредняет окно и потому размывает одиночные сильные отклики: 47 и 44 превращаются в 30,75 и 32,00. Сегодня max pooling используют заметно чаще, а среднее обычно встречается в самом конце сети, в виде global average pooling.</p><div class="math-display" data-tex="\frac{18+47+14+44}{4}=30{,}75\qquad\text{против}\qquad\max=47"></div></div>
-    <div class="step-panel"><div class="step-kicker">Шаг 5 · каналы</div><h4>Pooling работает над каждым каналом отдельно</h4><p>Он уменьшает только высоту и ширину и никогда не смешивает каналы между собой, поэтому глубина проходит насквозь без изменений. С другими гиперпараметрами работает та же формула: окно <code>3×3</code> с шагом 1 превращает 5×5 в 3×3.</p><div class="math-display" data-tex="[n_C,5,5]\;\xrightarrow{\;f=3,\ s=1\;}\;[n_C,3,3],\qquad\text{параметров: }0"></div></div>
+    <div class="step-panel"><div class="step-kicker">Шаг 5 · каналы</div><h4>Pooling работает над каждым каналом отдельно</h4><p>Он уменьшает только высоту и ширину и никогда не смешивает каналы между собой, поэтому глубина проходит насквозь без изменений. С другими гиперпараметрами работает та же формула: окно <span class="math-inline" data-tex="3\times3"></span> с шагом 1 превращает 5×5 в 3×3.</p><div class="math-display" data-tex="[n_C,5,5]\;\xrightarrow{\;f=3,\ s=1\;}\;[n_C,3,3],\qquad\text{параметров: }0"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 6 · сдвиг</div><h4>Вот теперь сдвиг картинки перестаёт быть катастрофой</h4><p>Сдвинем ту же цифру на пиксель влево. Карта признаков сдвигается ровно на ту же клетку — это проверяется поэлементно и называется эквивариантностью. А максимум по карте вообще не меняется: 47 остаётся 47, тогда как у полносвязного шаблона из части 4 при таком же сдвиге точность падала с 97,0% до 43,7%.</p><div class="math-display" data-tex="A^{\text{сдвиг}}_{i,j-1}=A_{ij},\qquad \max_{ij}A^{\text{сдвиг}}=\max_{ij}A=47"></div></div>
   </div>
 </div>
@@ -375,7 +375,7 @@
     <div class="step-panel"><div class="step-kicker">Шаг 1 · первый слой</div><h4>Одна клетка Conv 1 напрямую видит девять пикселей</h4><p>Линии связывают выбранную клетку карты с тем самым окном входа, из которого она посчитана. Ни один пиксель за пределами окна на неё не влияет.</p><div class="math-display" data-tex="r_1=K_1=3,\qquad 3\times3=9\ \text{пикселей}"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 2 · второй слой</div><h4>Одна клетка Conv 2 видит 3×3 клеток Conv 1</h4><p>На своём собственном входе — карте первого слоя — область по-прежнему имеет размер 3×3. Второй слой не знает, что его вход был получен свёрткой; для него это просто тензор.</p><div class="math-display" data-tex="A^{(1)}\in\mathbb{R}^{6\times6}\;\xrightarrow{\;K_2=3\;}\;A^{(2)}\in\mathbb{R}^{4\times4}"></div></div>
     <div class="step-panel"><div class="step-kicker">Шаг 3 · косвенная область</div><h4>На исходном изображении это уже 5×5</h4><p>Соседние окна первого слоя перекрываются и сдвинуты друг относительно друга на один пиксель. Их объединение накрывает пять строк и пять столбцов входа: 25 пикселей из 64, почти 40% картинки, против 9 у первого слоя.</p><div class="math-display" data-tex="r_2=r_1+(K_2-1)=3+2=5,\qquad 5\times5=25\ \text{пикселей}"></div></div>
-    <div class="step-panel"><div class="step-kicker">Шаг 4 · общая рекурсия</div><h4>Глубина собирает контекст быстрее, чем растут ядра</h4><p>Мы по-прежнему смотрим на <em>ту же самую</em> клетку Conv 2 — поэтому её подсветка не меняется. Меняется то, во что она разворачивается влево: на своём входе это 3×3 клеток Conv 1, а те, перекрываясь, покрывают 5×5 пикселей входа. При шаге 1 каждый слой добавляет к рецептивному полю <code>K−1</code>; если где-то стоял stride или pooling, накопленный шаг <code>j</code> между соседними клетками растёт, и следующий слой прибавляет уже кратно больше.</p><div class="math-display" data-tex="r_l=r_{l-1}+(K_l-1)\,j_{l-1},\qquad j_l=j_{l-1}S_l"></div></div>
+    <div class="step-panel"><div class="step-kicker">Шаг 4 · общая рекурсия</div><h4>Глубина собирает контекст быстрее, чем растут ядра</h4><p>Мы по-прежнему смотрим на <em>ту же самую</em> клетку Conv 2 — поэтому её подсветка не меняется. Меняется то, во что она разворачивается влево: на своём входе это 3×3 клеток Conv 1, а те, перекрываясь, покрывают 5×5 пикселей входа. При шаге 1 каждый слой добавляет к рецептивному полю <span class="math-inline" data-tex="K-1"></span>; если где-то стоял stride или pooling, накопленный шаг <span class="math-inline" data-tex="j"></span> между соседними клетками растёт, и следующий слой прибавляет уже кратно больше.</p><div class="math-display" data-tex="r_l=r_{l-1}+(K_l-1)\,j_{l-1},\qquad j_l=j_{l-1}S_l"></div></div>
   </div>
 </div>
 
@@ -396,6 +396,14 @@
   .cnn-svg .edge-green { stroke:#73B222; stroke-width:2; fill:none; }
   .cnn-svg .edge-red   { stroke:#C30B0A; stroke-width:2; fill:none; }
   .cnn-svg .formula-bg { fill:#FAFAF8; stroke:#E4E1D7; stroke-width:1.5; }
+  .step-stage .stage-figure text, .lab .stage-figure text { font-family: Helvetica, Arial, sans-serif; fill: #111; }
+  .stage-figure .viz-title { font-size: 18px; font-weight: 700; }
+  .stage-figure .viz-label { font-size: 15px; }
+  .stage-figure .viz-small { font-size: 13px; fill: #5E5850; }
+  .stage-figure .viz-blue { fill: #3576C0; }
+  .stage-figure .viz-green { fill: #4E8A14; }
+  .stage-figure .viz-red { fill: #C30B0A; }
+  .stage-figure .viz-yellow { fill: #9A7D06; }
   .stage-figure foreignObject { overflow: hidden; }
   .stage-figure [data-key] { transition: opacity .22s ease; }
   .stage-figure .is-dim { opacity: .12; }
@@ -647,11 +655,11 @@
 <table class="shape-table">
   <thead><tr><th>Что помним</th><th>Форма</th><th>Зачем в backward</th></tr></thead>
   <tbody>
-    <tr><td><code>X</code></td><td><code>5×5</code></td><td>для <code>dK</code>: градиент ядра — свёртка входа с <code>dZ</code></td></tr>
-    <tr><td>маска ReLU <code>[Z&gt;0]</code></td><td><code>3×3</code></td><td>пропускает <code>dA</code> только там, где отклик был положителен</td></tr>
-    <tr><td>адреса победителей пулинга</td><td><code>2×2 → 3×3</code></td><td>маршрутизируют <code>dP</code> в нужную клетку <code>dA</code></td></tr>
-    <tr><td><code>p</code> (распрямлённая карта)</td><td><code>4</code></td><td>для <code>dW = dz · pᵀ</code></td></tr>
-    <tr><td><code>p̂</code> (softmax)</td><td><code>2</code></td><td>для <code>dz = p̂ − y</code></td></tr>
+    <tr><td><span class="math-inline" data-tex="X"></span></td><td><span class="math-inline" data-tex="5\times5"></span></td><td>для <span class="math-inline" data-tex="dK"></span>: градиент ядра — свёртка входа с <span class="math-inline" data-tex="dZ"></span></td></tr>
+    <tr><td>маска ReLU <span class="math-inline" data-tex="[Z&gt;0]"></span></td><td><span class="math-inline" data-tex="3\times3"></span></td><td>пропускает <span class="math-inline" data-tex="dA"></span> только там, где отклик был положителен</td></tr>
+    <tr><td>адреса победителей пулинга</td><td><span class="math-inline" data-tex="2\times2\to3\times3"></span></td><td>маршрутизируют <span class="math-inline" data-tex="dP"></span> в нужную клетку <span class="math-inline" data-tex="dA"></span></td></tr>
+    <tr><td><span class="math-inline" data-tex="\mathbf p"></span> (распрямлённая карта)</td><td><span class="math-inline" data-tex="4"></span></td><td>для <span class="math-inline" data-tex="dW=d\mathbf z\,\mathbf p^{\top}"></span></td></tr>
+    <tr><td><span class="math-inline" data-tex="\hat{\mathbf p}"></span> (softmax)</td><td><span class="math-inline" data-tex="2"></span></td><td>для <span class="math-inline" data-tex="d\mathbf z=\hat{\mathbf p}-\mathbf y"></span></td></tr>
   </tbody>
 </table>
 
@@ -1221,7 +1229,7 @@ print(ReLU().forward(edge.forward(X)).max())          # 47.0</code></pre>
   с cross-entropy объединены в <code>F.cross_entropy</code>. Методы
   <code>backward</code> писать не нужно: autograd сам записывает граф во время forward и
   проходит его назад. Две вещи остаются на нас — явные оси батча и каналов
-  <code>[N, C, H, W]</code> и обнуление градиентов после шага.
+  <span class="math-inline" data-tex="[N,C,H,W]"></span> и обнуление градиентов после шага.
 </p>
 
 <pre><code>import torch
@@ -1260,12 +1268,12 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
 <table class="shape-table">
   <thead><tr><th>Операция</th><th>NumPy-функция</th><th>Класс</th><th>PyTorch</th><th>Что помнит forward</th></tr></thead>
   <tbody>
-    <tr><td>свёртка</td><td><code>conv2d</code>, <code>conv2d_backward</code></td><td><code>Conv2d</code></td><td><code>nn.Conv2d</code></td><td>вход <code>X</code></td></tr>
-    <tr><td>ReLU</td><td><code>relu</code>, <code>relu_backward</code></td><td><code>ReLU</code></td><td><code>nn.ReLU</code></td><td>маска <code>Z &gt; 0</code></td></tr>
+    <tr><td>свёртка</td><td><code>conv2d</code>, <code>conv2d_backward</code></td><td><code>Conv2d</code></td><td><code>nn.Conv2d</code></td><td>вход <span class="math-inline" data-tex="X"></span></td></tr>
+    <tr><td>ReLU</td><td><code>relu</code>, <code>relu_backward</code></td><td><code>ReLU</code></td><td><code>nn.ReLU</code></td><td>маска <span class="math-inline" data-tex="Z&gt;0"></span></td></tr>
     <tr><td>max-пулинг</td><td><code>max_pool</code>, <code>max_pool_backward</code></td><td><code>MaxPool2d</code></td><td><code>nn.MaxPool2d</code></td><td>адреса победителей</td></tr>
     <tr><td>распрямление</td><td><code>P.ravel()</code></td><td><code>Flatten</code></td><td><code>nn.Flatten</code></td><td>форму карты</td></tr>
-    <tr><td>линейный слой</td><td><code>W @ p + c</code></td><td><code>Linear</code></td><td><code>nn.Linear</code></td><td>вектор <code>p</code></td></tr>
-    <tr><td>softmax + CE</td><td><code>softmax_ce</code></td><td><code>SoftmaxCrossEntropy</code></td><td><code>F.cross_entropy</code></td><td><code>p̂</code> и метку</td></tr>
+    <tr><td>линейный слой</td><td><code>W @ p + c</code></td><td><code>Linear</code></td><td><code>nn.Linear</code></td><td>вектор <span class="math-inline" data-tex="\mathbf p"></span></td></tr>
+    <tr><td>softmax + CE</td><td><code>softmax_ce</code></td><td><code>SoftmaxCrossEntropy</code></td><td><code>F.cross_entropy</code></td><td><span class="math-inline" data-tex="\hat{\mathbf p}"></span> и метку</td></tr>
     <tr><td>шаг обучения</td><td><code>K5 -= eta * dK</code> …</td><td><code>SGD</code></td><td><code>torch.optim.SGD</code></td><td>—</td></tr>
   </tbody>
 </table>
@@ -1278,14 +1286,14 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
 ### Что важно уметь восстановить по памяти
 
 <ol class="end-list">
-  <li><strong>Изображение — тензор.</strong> Пространственные оси <code>H, W</code>, каналы <code>C</code> и батч <code>N</code> несут разный смысл.</li>
+  <li><strong>Изображение — тензор.</strong> Пространственные оси <span class="math-inline" data-tex="H,\ W"></span>, каналы <span class="math-inline" data-tex="C"></span> и батч <span class="math-inline" data-tex="N"></span> несут разный смысл.</li>
   <li><strong>Полносвязный слой привязан к координатам.</strong> Один пиксель сдвига уронил точность с 97,0% до 39,3% — это и есть причина появления свёртки.</li>
   <li><strong>Одна клетка карты — локальный dot product.</strong> Окно и ядро перемножаются поэлементно, складываются и получают общий bias.</li>
   <li><strong>Веса разделяются по пространству.</strong> Десять параметров вместо шестисот пятидесяти, и это число не зависит от размера картинки.</li>
   <li><strong>Один фильтр — один выходной канал,</strong> а глубина фильтра всегда равна числу входных каналов.</li>
-  <li><strong>Размер выхода считается заранее:</strong> <code>⌊(n+2p−f)/s⌋+1</code>, одна формула для свёртки и для пулинга.</li>
+  <li><strong>Размер выхода считается заранее:</strong> <span class="math-inline" data-tex="\lfloor(n+2p-f)/s\rfloor+1"></span>, одна формула для свёртки и для пулинга.</li>
   <li><strong>Pooling не обучается.</strong> Он сжимает высоту и ширину, работает по каналам независимо и добавляет устойчивость к мелкому сдвигу.</li>
-  <li><strong>Глубина растит рецептивное поле:</strong> при шаге 1 каждый слой прибавляет <code>K−1</code>, поэтому три ядра 3×3 видят столько же, сколько одно 7×7.</li>
+  <li><strong>Глубина растит рецептивное поле:</strong> при шаге 1 каждый слой прибавляет <span class="math-inline" data-tex="K-1"></span>, поэтому три ядра 3×3 видят столько же, сколько одно 7×7.</li>
   <li><strong>Backward стартует с <span class="math-inline" data-tex="\hat{\mathbf p}-\mathbf y"></span></strong> и идёт справа налево; для него forward запоминает вход, маску ReLU и адреса победителей пулинга.</li>
   <li><strong>ReLU и max-пулинг — переключатели:</strong> градиент возвращается только по тем клеткам, через которые прошёл сигнал вперёд.</li>
   <li><strong>В backward общий вес получает сумму</strong> градиентов со всех позиций: <span class="math-inline" data-tex="dK=X\star dZ"></span>, а <span class="math-inline" data-tex="dX"></span> — полная свёртка <span class="math-inline" data-tex="dZ"></span> с перевёрнутым ядром.</li>
@@ -1531,7 +1539,7 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
   // y — базовая линия, как у <text>; центр подписи стоит на y − 0.36·size.
   function mtxt(x,y,str,o) {
     o = o || {};
-    const size=o.size||17, anchor=o.anchor||'middle';
+    const size=o.size||15, anchor=o.anchor||'middle';
     const parts=String(str).split('$');
     const plainLen=parts.map((p,i)=>i%2?Math.ceil(p.length*0.7):p.length).reduce((a,b)=>a+b,0);
     const w=o.w||Math.round(plainLen*size*0.6+28), h=Math.round(size*2.1), cy=y-0.36*size;
@@ -1625,52 +1633,54 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
     const g=canvas(stage);
     let s='<text x="36" y="42" class="viz-title">От рукописной цифры к тензору</text>';
     if(step===0){
-      s+=matrix(SMOOTH,80,100,9,{fillFn:shade,showNumbers:false,stroke:'none'});
-      s+='<rect x="80" y="100" width="288" height="288" fill="none" stroke="'+BLUE+'" stroke-width="2"/>';
-      s+='<text x="224" y="424" text-anchor="middle" class="viz-label">так её видит человек</text>';
-      s+='<text x="224" y="452" text-anchor="middle" class="viz-small">та же картинка с интерполяцией</text>';
-      s+=arrow(400,244,470,244,BLUE,false);
-      s+=matrix(X8,500,100,36,{fillFn:shade,showNumbers:false,stroke:'#D7D3CB',outline:BLUE});
-      s+='<text x="644" y="424" text-anchor="middle" class="viz-label">так её получает модель</text>';
-      s+='<text x="644" y="452" text-anchor="middle" class="viz-small">решётка 8×8, яркости от 0 до 16</text>';
-      s+=foMath(700,120,240,60,'X\\in\\mathbb{R}^{8\\times8}','lg');
-      s+='<text x="820" y="220" text-anchor="middle" class="viz-small">ни контура, ни объекта —</text>';
-      s+='<text x="820" y="246" text-anchor="middle" class="viz-small">только 64 измерения</text>';
+      s+=matrix(SMOOTH,40,100,9,{fillFn:shade,showNumbers:false,stroke:'none'});
+      s+='<rect x="40" y="100" width="288" height="288" fill="none" stroke="'+BLUE+'" stroke-width="2"/>';
+      s+='<text x="184" y="420" text-anchor="middle" class="viz-label">так её видит человек</text>';
+      s+='<text x="184" y="444" text-anchor="middle" class="viz-small">та же картинка с интерполяцией</text>';
+      s+=arrow(348,244,410,244,BLUE,false);
+      s+=matrix(X8,430,100,36,{fillFn:shade,showNumbers:false,stroke:'#D7D3CB',outline:BLUE});
+      s+='<text x="574" y="420" text-anchor="middle" class="viz-label">так её получает модель</text>';
+      s+='<text x="574" y="444" text-anchor="middle" class="viz-small">решётка 8×8, яркости от 0 до 16</text>';
+      s+=foMath(740,190,200,50,'X\\in\\mathbb{R}^{8\\times8}','lg');
+      s+='<text x="840" y="270" text-anchor="middle" class="viz-small">ни контура, ни объекта —</text>';
+      s+='<text x="840" y="292" text-anchor="middle" class="viz-small">только 64 измерения</text>';
     } else if(step===1){
-      s+=matrix(X8,180,120,42,{fillFn:shade,showNumbers:false,stroke:'#D7D3CB',highlight:{r:0,c:4,h:1,w:1,fill:'#FFF1A8',stroke:YELLOW}});
-      for(let c=0;c<8;c++) s+='<text x="'+(201+c*42)+'" y="108" text-anchor="middle" class="viz-small">'+c+'</text>';
-      for(let r=0;r<8;r++) s+='<text x="164" y="'+(148+r*42)+'" text-anchor="middle" class="viz-small">'+r+'</text>';
-      s+='<rect x="516" y="288" width="42" height="42" fill="#FFF1A8" stroke="'+YELLOW+'" stroke-width="2"/>';
-      s+='<text x="537" y="315" text-anchor="middle" font-size="15" fill="'+INK+'">10</text>';
-      s+=arrow(516,141,620,141,YELLOW,true);
-      s+='<text x="700" y="130" class="viz-label">строка 0, столбец 4</text><text x="700" y="158" class="viz-small">самый яркий пиксель верхнего штриха</text>';
-      s+=arrow(560,309,620,309,YELLOW,true);
-      s+='<text x="700" y="300" class="viz-label">строка 4, столбец 6</text><text x="700" y="328" class="viz-small">правый край нижней части</text>';
-      s+=foMath(560,390,360,58,'X_{ij}=\\text{яркость в координате }(i,j)','md');
+      const x0=150,y0=120,c=42;
+      s+=matrix(X8,x0,y0,c,{fillFn:shade,showNumbers:false,stroke:'#D7D3CB',highlight:{r:0,c:4,h:1,w:1,fill:'#FFF1A8',stroke:YELLOW}});
+      s+='<rect x="'+(x0+6*c)+'" y="'+(y0+4*c)+'" width="'+c+'" height="'+c+'" fill="#FFF1A8" stroke="'+YELLOW+'" stroke-width="2"/>';
+      s+='<text x="'+(x0+6*c+c/2)+'" y="'+(y0+4*c+27)+'" text-anchor="middle" class="viz-label">10</text>';
+      for(let k=0;k<8;k++) s+='<text x="'+(x0+k*c+c/2)+'" y="'+(y0-10)+'" text-anchor="middle" class="viz-small">'+k+'</text>';
+      for(let k=0;k<8;k++) s+='<text x="'+(x0-14)+'" y="'+(y0+k*c+c/2+5)+'" text-anchor="middle" class="viz-small">'+k+'</text>';
+      const xr=x0+8*c, tx=xr+86;
+      s+=arrow(xr+8,y0+c/2,xr+70,y0+c/2,YELLOW,true);
+      s+='<text x="'+tx+'" y="'+(y0+c/2-4)+'" class="viz-label">строка 0, столбец 4</text><text x="'+tx+'" y="'+(y0+c/2+18)+'" class="viz-small">самый яркий пиксель верхнего штриха</text>';
+      s+=arrow(xr+8,y0+4*c+c/2,xr+70,y0+4*c+c/2,YELLOW,true);
+      s+='<text x="'+tx+'" y="'+(y0+4*c+c/2-4)+'" class="viz-label">строка 4, столбец 6</text><text x="'+tx+'" y="'+(y0+4*c+c/2+18)+'" class="viz-small">правый край нижней части</text>';
+      s+=foMath(tx,y0+6*c,300,50,'X_{ij}=\\text{яркость в координате }(i,j)','md','left');
     } else if(step===2){
-      s+=matrix(X8,150,110,44,{fillFn:shade,stroke:'#D7D3CB',textColorFn:digitInk,title:'матрица $X$ · 8×8'});
-      s+='<rect x="580" y="150" width="330" height="200" rx="12" fill="#F8FBFE" stroke="#D9E4F0" stroke-width="2"/>';
-      s+='<text x="745" y="196" text-anchor="middle" class="viz-small">сумма всех яркостей</text><text x="745" y="234" text-anchor="middle" class="viz-title viz-blue">277</text>';
-      s+='<text x="745" y="276" text-anchor="middle" class="viz-small">ненулевых пикселей</text><text x="745" y="314" text-anchor="middle" class="viz-title viz-blue">31 из 64</text>';
-      s+=foMath(580,372,330,58,'X_{ij}\\in\\{0,\\ldots,16\\}','lg');
+      s+=matrix(X8,110,110,44,{fillFn:shade,stroke:'#D7D3CB',textColorFn:digitInk,title:'матрица $X$ · 8×8'});
+      s+='<rect x="540" y="150" width="330" height="200" rx="12" fill="#F8FBFE" stroke="#D9E4F0" stroke-width="2"/>';
+      s+='<text x="705" y="196" text-anchor="middle" class="viz-small">сумма всех яркостей</text><text x="705" y="232" text-anchor="middle" class="viz-title viz-blue">277</text>';
+      s+='<text x="705" y="276" text-anchor="middle" class="viz-small">ненулевых пикселей</text><text x="705" y="312" text-anchor="middle" class="viz-title viz-blue">31 из 64</text>';
+      s+=foMath(540,372,330,58,'X_{ij}\\in\\{0,\\ldots,16\\}','lg');
     } else if(step===3){
-      s+=matrix(X8,40,110,38,{fillFn:shade,stroke:'#D7D3CB',textColorFn:digitInk,title:'яркости 0…16'});
-      s+=arrow(360,230,510,230,BLUE,false);
-      s+=foMath(345,150,180,52,'\\div\\,16','lg');
+      s+=matrix(X8,90,110,38,{fillFn:shade,stroke:'#D7D3CB',textColorFn:digitInk,title:'яркости 0…16'});
+      s+=arrow(410,262,550,262,BLUE,false);
+      s+=foMath(420,200,120,52,'\\div\\,16','lg');
       const norm=X8.map(r=>r.map(v=>v?num(v/16,2):'0'));
-      s+=matrix(norm,560,110,38,{fillFn:(v,r,c)=>shade(X8[r][c]),textColorFn:(v,r,c)=>X8[r][c]>=11?'#FFFFFF':INK,stroke:'#B8CBB0',title:'после деления на 16'});
+      s+=matrix(norm,566,110,38,{fillFn:(v,r,c)=>shade(X8[r][c]),textColorFn:(v,r,c)=>X8[r][c]>=11?'#FFFFFF':INK,stroke:'#B8CBB0',title:'после деления на 16'});
       s+=foMath(280,438,400,58,'X\'_{ij}=X_{ij}/16\\in[0,1]','lg');
     } else {
       const boxes=[{t:'N',v:'1',d:'объектов в батче',c:BLUE},{t:'C',v:'1',d:'каналов',c:YELLOW},{t:'H',v:'8',d:'строк',c:GREEN},{t:'W',v:'8',d:'столбцов',c:GREEN}];
       boxes.forEach((b,i)=>{
         const x=90+i*205;
-        s+='<rect x="'+x+'" y="150" width="170" height="170" rx="12" fill="#FBFAF7" stroke="'+b.c+'" stroke-width="2"/>';
-        s+=mtxt(x+85,200,'$'+b.t+'$',{size:22,color:b.c});
-        s+='<text x="'+(x+85)+'" y="250" text-anchor="middle" class="viz-title">'+b.v+'</text>';
-        s+='<text x="'+(x+85)+'" y="292" text-anchor="middle" class="viz-small">'+b.d+'</text>';
+        s+='<rect x="'+x+'" y="130" width="170" height="170" rx="12" fill="#FBFAF7" stroke="'+b.c+'" stroke-width="2"/>';
+        s+=mtxt(x+85,182,'$'+b.t+'$',{size:24,color:b.c});
+        s+='<text x="'+(x+85)+'" y="236" text-anchor="middle" class="viz-title">'+b.v+'</text>';
+        s+='<text x="'+(x+85)+'" y="276" text-anchor="middle" class="viz-small">'+b.d+'</text>';
       });
-      s+=foMath(150,360,660,60,'[N,C,H,W]=[1,1,8,8]','lg');
-      s+='<text x="480" y="470" text-anchor="middle" class="viz-small">у цветной картинки 32×32 та же схема даёт [1, 3, 32, 32]</text>';
+      s+=foMath(150,340,660,60,'[N,C,H,W]=[1,1,8,8]','lg');
+      s+=mtxt(480,440,'у цветной картинки 32×32 та же схема даёт $[1,3,32,32]$',{size:13,color:MUTED});
     }
     g.innerHTML=s; renderMath(stage);
   }
@@ -1680,17 +1690,17 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
     const xs=[],ws=[],pr=[];
     for(let r=0;r<8;r++) for(let c=0;c<8;c++){ xs.push(X8[r][c]/16); ws.push(WBIN[r][c]); pr.push(X8[r][c]/16*WBIN[r][c]); }
     let s='<text x="36" y="42" class="viz-title">Логистический нейрон: 64 веса на 64 пикселя</text>';
-    // левая колонка: цифра сверху, тепловая карта весов под ней — без наложений
+    // левая колонка: цифра сверху, те же веса 8×8 под ней
     s+=matrix(X8,40,100,28,{fillFn:shade,showNumbers:false,stroke:'#D7D3CB',title:'$X$ · 8×8'});
-    s+=arrow(272,158,320,158,BLUE,false);
+    s+=arrow(272,158,322,158,BLUE,false);
     if(step>=1){
       s+=matrix(WBIN,40,400,28,{fillFn:(v)=>wFill(v,2.2),stroke:'#E2DED6',showNumbers:false,title:'те же $\\mathbf w$ как 8×8'});
-      s+='<text x="152" y="650" text-anchor="middle" class="viz-small">зелёный: за семёрку · красный: против</text>';
+      s+='<text x="152" y="646" text-anchor="middle" class="viz-small">зелёный: за семёрку</text><text x="152" y="666" text-anchor="middle" class="viz-small">красный: против</text>';
     }
     // три полосы справа: x, w, x⊙w
-    const stripX=340, stripW=8, stripGap=1;
+    const stripX=340, stripW=8, stripGap=1, mid=stripX+32*(stripW+stripGap);
     const strip=(vals,y,label,mode)=>{
-      let t=mtxt(stripX,y-10,label,{anchor:'start',w:560});
+      let t=mtxt(stripX,y-12,label,{anchor:'start',w:560,size:15});
       vals.forEach((v,i)=>{
         const x=stripX+i*(stripW+stripGap);
         let fill='#FFFFFF',stroke='#D7D3CB';
@@ -1703,28 +1713,28 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
     s+='<g opacity="1">'+strip(xs,110,'$\\mathbf x=\\operatorname{vec}(X\')$ · 64 числа','x')+'</g>';
     s+='<g opacity="'+(step>=1?1:0.18)+'">'+strip(ws,200,'$\\mathbf w$ · 64 обученных веса','w')+'</g>';
     s+='<g opacity="'+(step>=2?1:0.18)+'">'+strip(pr,290,'$\\mathbf x\\odot\\mathbf w$ · 64 вклада','w')+'</g>';
-    // формула суммы — своя строка под полосами
-    s+=foMath(stripX,335,600,48,step<2?'z=\\mathbf x^\\top\\mathbf w+b':(step<3?'x_k w_k':'z=\\sum_{k=0}^{63}x_kw_k+b'),'md');
-    // блок логита — справа, на уровне формулы суммы
+    // формула под полосами, по центру полос
+    s+=foMath(mid-200,336,400,48,step<2?'z=\\mathbf x^\\top\\mathbf w+b':(step<3?'x_k w_k':'z=\\sum_{k=0}^{63}x_kw_k+b'),'md');
     if(step>=3){
-      s+=mtxt(stripX,410,'+9,05 положительных · −3,56 отрицательных · $b=-3{,}08$',{anchor:'start',w:560});
-      s+=foMath(stripX,430,300,50,'z=\\textstyle\\sum_k x_kw_k+b','md');
-      s+=arrow(640,455,700,455,GREEN,false);
-      s+='<rect x="712" y="420" width="200" height="72" rx="12" fill="#F0FAF0" stroke="'+GREEN+'" stroke-width="2"/>';
-      s+='<text x="812" y="448" text-anchor="middle" class="viz-small">логит</text>'+mtxt(812,480,'$z=2{,}42$');
+      s+='<text x="'+stripX+'" y="414" class="viz-small">+9,05 положительных</text>';
+      s+='<text x="'+stripX+'" y="436" class="viz-small">−3,56 отрицательных</text>';
+      s+=mtxt(stripX,458,'$b=-3{,}08$',{anchor:'start',w:200,size:13,color:MUTED});
+      s+=arrow(520,430,700,430,GREEN,false);
+      s+='<rect x="712" y="394" width="200" height="72" rx="12" fill="#F0FAF0" stroke="'+GREEN+'" stroke-width="2"/>';
+      s+='<text x="812" y="422" text-anchor="middle" class="viz-small">логит</text>'+mtxt(812,452,'$z=2{,}42$',{size:17});
     }
-    // сигмоида — собственная зона внизу справа, ничего не пересекает
     if(step>=4){
-      const sx0=340, sx1=640, sy0=640, sy1=520, mid=(sx0+sx1)/2, ymid=(sy0+sy1)/2;
+      const sx0=340, sx1=640, sy0=640, sy1=520, cx=(sx0+sx1)/2, ymid=(sy0+sy1)/2;
+      s+=mtxt(sx0,506,'$\\sigma(z)=1/(1+e^{-z})$',{anchor:'start',w:300,size:15});
       s+='<line x1="'+sx0+'" y1="'+ymid+'" x2="'+sx1+'" y2="'+ymid+'" stroke="#D7D3CB" stroke-dasharray="4 4"/>';
-      s+='<path d="M'+sx0+' '+(sy0-6)+' C'+(sx0+90)+' '+(sy0-6)+' '+(mid-20)+' '+(sy0-2)+' '+mid+' '+ymid+' C'+(mid+20)+' '+(sy1+2)+' '+(sx1-90)+' '+(sy1+4)+' '+sx1+' '+(sy1+4)+'" fill="none" stroke="'+GREEN+'" stroke-width="3"/>';
-      s+='<circle cx="'+(mid+58)+'" cy="'+(ymid-38)+'" r="7" fill="'+GREEN+'"/>';
-      s+=mtxt(sx0,510,'$\\sigma(z)=1/(1+e^{-z})$',{anchor:'start',w:300});
+      s+='<path d="M'+sx0+' '+(sy0-6)+' C'+(sx0+90)+' '+(sy0-6)+' '+(cx-20)+' '+(sy0-2)+' '+cx+' '+ymid+' C'+(cx+20)+' '+(sy1+2)+' '+(sx1-90)+' '+(sy1+4)+' '+sx1+' '+(sy1+4)+'" fill="none" stroke="'+GREEN+'" stroke-width="3"/>';
+      s+='<circle cx="'+(cx+58)+'" cy="'+(ymid-38)+'" r="7" fill="'+GREEN+'"/>';
       s+=foMath(sx0,650,300,44,'\\hat p_7=\\sigma(2{,}42)=0{,}918','md');
     }
     if(step>=5){
-      s+='<rect x="712" y="560" width="200" height="72" rx="12" fill="#F0FAF0" stroke="'+GREEN+'" stroke-width="2"/>';
-      s+='<text x="812" y="592" text-anchor="middle" class="viz-small">порог 0,5</text><text x="812" y="620" text-anchor="middle" class="viz-label viz-green">класс: 7</text>';
+      s+=arrow(812,470,812,540,GREEN,false);
+      s+='<rect x="712" y="548" width="200" height="72" rx="12" fill="#F0FAF0" stroke="'+GREEN+'" stroke-width="2"/>';
+      s+='<text x="812" y="576" text-anchor="middle" class="viz-small">порог 0,5</text><text x="812" y="604" text-anchor="middle" class="viz-label viz-green">класс: 7</text>';
     }
     g.innerHTML=s; renderMath(stage);
   }
@@ -1732,48 +1742,67 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
   function renderTraining(stage,step){
     const g=canvas(stage);
     let s='<text x="36" y="42" class="viz-title">Десять классов, softmax и обученные шаблоны</text>';
+    const barX=k=>130+k*76, barW=46;
     if(step===0){
-      s+=matrix(X8,45,140,26,{fillFn:shade,showNumbers:false,stroke:'#D7D3CB',title:'вход $\\mathbf x$'});
-      s+=arrow(268,215,330,215,BLUE,false);
+      // вход: цифра и её распрямлённый столбец x; справа матрица W 64×10 из обученных весов, под ней b
+      s+=matrix(X8,40,170,20,{fillFn:shade,showNumbers:false,stroke:'#D7D3CB',title:'$X$ · 8×8'});
+      s+=arrow(208,250,248,250,BLUE,false);
+      const top=110, rh=5, colX=k=>350+k*56, colW=44;
+      const xs=[]; for(let r=0;r<8;r++) for(let c=0;c<8;c++) xs.push(X8[r][c]);
+      s+=mtxt(272,top-14,'$\\mathbf x$',{size:15});
+      xs.forEach((v,i)=>{ s+='<rect x="262" y="'+(top+i*rh)+'" width="20" height="'+rh+'" fill="'+(v?shade(v):'#fff')+'" stroke="none"/>'; });
+      s+='<rect x="262" y="'+top+'" width="20" height="'+(64*rh)+'" fill="none" stroke="'+BLUE+'" stroke-width="1.5"/>';
       for(let k=0;k<10;k++){
-        const x=350+k*58;
-        s+='<rect x="'+x+'" y="120" width="40" height="230" rx="4" fill="#FFF8D9" stroke="'+YELLOW+'"/>';
-        s+=mtxt(x+20,374,'$\\mathbf w^{('+k+')}$',{size:15,w:56});
+        const x=colX(k);
+        s+=mtxt(x+colW/2,top-14,'$\\mathbf w^{('+k+')}$',{size:14,w:56});
+        for(let i=0;i<64;i++){ const v=TPL[k][Math.floor(i/8)][i%8]; s+='<rect x="'+x+'" y="'+(top+i*rh)+'" width="'+colW+'" height="'+rh+'" fill="'+wFill(v,1.8)+'" stroke="none"/>'; }
+        s+='<rect x="'+x+'" y="'+top+'" width="'+colW+'" height="'+(64*rh)+'" fill="none" stroke="'+YELLOW+'" stroke-width="1.5"/>';
+        s+='<rect x="'+x+'" y="'+(top+64*rh+16)+'" width="'+colW+'" height="24" rx="3" fill="#FFF8D9" stroke="'+YELLOW+'" stroke-width="1.5"/>';
+        s+=mtxt(x+colW/2,top+64*rh+33,'$b_{'+k+'}$',{size:13,w:44});
       }
-      s+='<text x="640" y="100" text-anchor="middle" class="viz-label">десять столбцов по 64 веса</text>';
-      s+=foMath(300,410,400,60,'W\\in\\mathbb{R}^{64\\times10}','lg');
-      s+=foMath(700,410,240,60,'64\\cdot10+10=650','md');
-    } else if(step===1||step===2||step===4){
-      const vals=step===1?LOGITS:(step===2?PROBS:PROBS.map((p,k)=>p-(k===7?1:0)));
+      const right=colX(9)+colW;
+      s+=mtxt((350+right)/2,top+64*rh+70,'$W$ · 64×10: строка — пиксель, столбец — класс',{size:13,color:MUTED,w:560});
+      s+=mtxt(right+28,top+32*rh+5,'$W$',{size:17,w:40});
+      s+=mtxt(right+28,top+64*rh+33,'$\\mathbf b$',{size:17,w:40});
+    } else if(step===1||step===4){
+      // логиты и градиент: есть отрицательные столбцы, номера классов — отдельной строкой внизу
+      const vals=step===1?LOGITS:PROBS.map((p,k)=>p-(k===7?1:0));
       const maxAbs=Math.max.apply(null,vals.map(Math.abs));
-      const base=step===1?300:(step===4?300:420);
-      s+='<line x1="90" y1="'+base+'" x2="900" y2="'+base+'" stroke="#BDB8AE"/>';
+      const base=250, scale=140;
+      s+='<line x1="100" y1="'+base+'" x2="890" y2="'+base+'" stroke="#BDB8AE"/>';
       vals.forEach((v,k)=>{
-        const h=Math.abs(v)/maxAbs*(step===2?300:150), x=120+k*76;
+        const h=Math.max(1,Math.abs(v)/maxAbs*scale), x=barX(k);
         const y=v>=0?base-h:base, c=k===7?GREEN:(v<0?RED:BLUE);
-        s+='<rect x="'+x+'" y="'+y+'" width="46" height="'+h+'" rx="4" fill="'+c+'" fill-opacity=".78"/>';
-        s+='<text x="'+(x+23)+'" y="'+(base+26)+'" text-anchor="middle" class="viz-label">'+k+'</text>';
-        s+='<text x="'+(x+23)+'" y="'+(v>=0?y-8:base+h+20)+'" text-anchor="middle" class="viz-small">'+(step===1?num(v,2):num(v,step===4?3:3))+'</text>';
+        s+='<rect x="'+x+'" y="'+y+'" width="'+barW+'" height="'+h+'" rx="4" fill="'+c+'" fill-opacity=".78"/>';
+        s+='<text x="'+(x+barW/2)+'" y="'+(v>=0?y-8:base+h+18)+'" text-anchor="middle" class="viz-small">'+num(v,step===1?2:3)+'</text>';
+        s+='<text x="'+(x+barW/2)+'" y="430" text-anchor="middle" class="viz-label">'+k+'</text>';
       });
-      s+=mtxt(480,86,step===1?'логиты $z_0,\\ldots,z_9$ — любые числа':(step===2?'после softmax: сумма равна 1':'градиент по логитам: $\\hat{\\mathbf p}-\\mathbf y$'));
-      s+=foMath(230,'450','500',60,step===1?'\\mathbf z=W^\\top\\mathbf x+\\mathbf b':(step===2?'\\hat p_k=\\dfrac{e^{z_k}}{\\sum_j e^{z_j}}':'\\dfrac{\\partial L}{\\partial z_k}=\\hat p_k-y_k'),'lg');
-    } else if(step===3){
-      s+='<line x1="90" y1="420" x2="900" y2="420" stroke="#BDB8AE"/>';
+      s+=mtxt(480,80,step===1?'логиты $z_0,\\ldots,z_9$ — любые числа':'градиент по логитам: $\\hat{\\mathbf p}-\\mathbf y$',{size:15});
+      s+=foMath(230,456,500,60,step===1?'\\mathbf z=W^\\top\\mathbf x+\\mathbf b':'\\dfrac{\\partial L}{\\partial z_k}=\\hat p_k-y_k','lg');
+    } else if(step===2||step===3){
+      const base=400;
+      s+='<line x1="100" y1="'+base+'" x2="890" y2="'+base+'" stroke="#BDB8AE"/>';
       PROBS.forEach((v,k)=>{
-        const h=v*300,x=120+k*76,c=k===7?GREEN:BLUE;
-        s+='<rect x="'+x+'" y="'+(420-h)+'" width="46" height="'+h+'" rx="4" fill="'+c+'" fill-opacity="'+(k===7?'.85':'.35')+'"/>';
-        s+='<text x="'+(x+23)+'" y="446" text-anchor="middle" class="viz-label">'+k+'</text>';
+        const h=v*280, x=barX(k), c=k===7?GREEN:BLUE;
+        s+='<rect x="'+x+'" y="'+(base-h)+'" width="'+barW+'" height="'+h+'" rx="4" fill="'+c+'" fill-opacity="'+(step===3&&k!==7?'.35':'.78')+'"/>';
+        if(step===2) s+='<text x="'+(x+barW/2)+'" y="'+(base-h-8)+'" text-anchor="middle" class="viz-small">'+num(v,3)+'</text>';
+        s+='<text x="'+(x+barW/2)+'" y="430" text-anchor="middle" class="viz-label">'+k+'</text>';
       });
-      s+='<rect x="560" y="110" width="330" height="120" rx="12" fill="#FFF4F4" stroke="'+RED+'" stroke-width="2"/>';
-      s+=mtxt(725,150,'истинный класс $y=7$');
-      s+=mtxt(725,196,'$L=0{,}1162$',{size:20,color:RED});
-      s+=arrow(600,250,470,395,RED,true);
-      s+=foMath(120,470,500,60,'L=-\\log\\hat p_y=-\\log 0{,}8903','lg');
+      if(step===2){
+        s+=mtxt(480,80,'после softmax: сумма равна 1',{size:15});
+        s+=foMath(230,456,500,60,'\\hat p_k=\\dfrac{e^{z_k}}{\\sum_j e^{z_j}}','lg');
+      } else {
+        s+='<rect x="150" y="110" width="330" height="110" rx="12" fill="#FFF4F4" stroke="'+RED+'" stroke-width="2"/>';
+        s+=mtxt(315,148,'истинный класс $y=7$',{size:15});
+        s+=mtxt(315,192,'$L=0{,}1162$',{size:20,color:RED});
+        s+=arrow(480,165,barX(7)-8,190,RED,true);
+        s+=foMath(230,456,500,60,'L=-\\log\\hat p_y=-\\log 0{,}8903','lg');
+      }
     } else {
       for(let k=0;k<10;k++){
         const col=k%5,row=Math.floor(k/5),x=52+col*186,y=110+row*220,c=k===7?GREEN:BLUE;
         s+=matrix(TPL[k],x,y,17,{fillFn:(v)=>wFill(v,1.8),showNumbers:false,stroke:'#E8E5DE',outline:c});
-        s+=mtxt(x+68,y+166,k===7?'$\\mathbf w^{(7)}$ — семёрка':'$\\mathbf w^{('+k+')}$');
+        s+=mtxt(x+68,y+166,k===7?'$\\mathbf w^{(7)}$ — семёрка':'$\\mathbf w^{('+k+')}$',{size:15});
       }
       s+='<text x="480" y="86" text-anchor="middle" class="viz-label">обученные веса, свёрнутые обратно в 8×8</text>';
     }
@@ -1787,19 +1816,20 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
     const dx=Number(document.getElementById('shift-range').value);
     const info=SHIFTS[String(dx)], input=shiftedImage(dx);
     const g=document.querySelector('#sh-viz [data-canvas]');
+    const cell=34, lx=130, rx=510, gy=110;
     let s='<text x="36" y="42" class="viz-title">Полносвязные веса привязаны к координатам</text>';
-    s+=matrix(input,60,110,38,{fillFn:shade,showNumbers:false,stroke:'#D7D3CB',title:'вход: цифра сдвинута на '+(dx>0?'+':'')+dx});
-    s+=foMath(378,150,120,52,'\\odot','lg');
-    s+=matrix(TPL[7],510,110,38,{fillFn:(v)=>wFill(v,1.8),showNumbers:false,stroke:'#E8E5DE',title:'обученный шаблон $\\mathbf w^{(7)}$ — не двигается'});
-    const ok=info.cls===7;
-    s+='<rect x="60" y="440" width="404" height="76" rx="12" fill="'+(ok?'#F0FAF0':'#FFF4F4')+'" stroke="'+(ok?GREEN:RED)+'" stroke-width="2"/>';
-    s+='<text x="262" y="470" text-anchor="middle" class="viz-small">вероятность семёрки у этой цифры</text>';
-    s+='<text x="262" y="502" text-anchor="middle" class="viz-title '+(ok?'viz-green':'viz-red')+'">'+num(info.p,3)+'</text>';
-    s+='<rect x="510" y="440" width="390" height="76" rx="12" fill="'+(info.acc>90?'#F0FAF0':'#FFF4F4')+'" stroke="'+(info.acc>90?GREEN:RED)+'" stroke-width="2"/>';
-    s+='<text x="705" y="470" text-anchor="middle" class="viz-small">точность на 540 отложенных объектах</text>';
-    s+='<text x="705" y="502" text-anchor="middle" class="viz-title '+(info.acc>90?'viz-green':'viz-red')+'">'+num(info.acc,1)+' %</text>';
+    s+=matrix(input,lx,gy,cell,{fillFn:shade,showNumbers:false,stroke:'#D7D3CB',title:'вход: цифра сдвинута на '+(dx>0?'+':'')+dx});
+    s+=foMath(lx+8*cell,gy+4*cell-26,rx-lx-8*cell,52,'\\odot','lg');
+    s+=matrix(TPL[7],rx,gy,cell,{fillFn:(v)=>wFill(v,1.8),showNumbers:false,stroke:'#E8E5DE',title:'обученный шаблон $\\mathbf w^{(7)}$ — не двигается'});
     const col=dx>0?'j-'+dx:(dx<0?'j+'+(-dx):'j');
-    s+=foMath(300,378,360,54,'z=\\sum_{i,j}X\'_{i,\\,'+col+'}W_{ij}+b','md');
+    s+=foMath(lx,gy+8*cell+8,rx+8*cell-lx,44,'z=\\sum_{i,j}X\'_{i,\\,'+col+'}W_{ij}+b','md');
+    const ok=info.cls===7, by=gy+8*cell+60, bw=8*cell+40;
+    s+='<rect x="'+(lx-20)+'" y="'+by+'" width="'+bw+'" height="72" rx="12" fill="'+(ok?'#F0FAF0':'#FFF4F4')+'" stroke="'+(ok?GREEN:RED)+'" stroke-width="2"/>';
+    s+='<text x="'+(lx+4*cell)+'" y="'+(by+28)+'" text-anchor="middle" class="viz-small">вероятность семёрки у этой цифры</text>';
+    s+='<text x="'+(lx+4*cell)+'" y="'+(by+56)+'" text-anchor="middle" class="viz-title '+(ok?'viz-green':'viz-red')+'">'+num(info.p,3)+'</text>';
+    s+='<rect x="'+(rx-20)+'" y="'+by+'" width="'+bw+'" height="72" rx="12" fill="'+(info.acc>90?'#F0FAF0':'#FFF4F4')+'" stroke="'+(info.acc>90?GREEN:RED)+'" stroke-width="2"/>';
+    s+='<text x="'+(rx+4*cell)+'" y="'+(by+28)+'" text-anchor="middle" class="viz-small">точность на 540 отложенных объектах</text>';
+    s+='<text x="'+(rx+4*cell)+'" y="'+(by+56)+'" text-anchor="middle" class="viz-title '+(info.acc>90?'viz-green':'viz-red')+'">'+num(info.acc,1)+' %</text>';
     g.innerHTML=s;
     document.getElementById('shift-value').textContent=dx===0?'0':(dx>0?'+'+dx:String(dx));
     document.getElementById('shift-readout').innerHTML='<strong>Сдвиг '+(dx>0?'+':'')+dx+': вероятность семёрки '+num(info.p,3)+', предсказан класс '+info.cls+'.</strong> '+(dx===0?'Шаблон и цифра стоят в одних координатах — модель уверена, и на всей выборке точность 97,0%.':'Пиксели не изменились, изменились только их адреса. Каждое число встретилось с чужим весом, и точность по всей выборке упала до '+num(info.acc,1)+'%.');
@@ -1821,9 +1851,9 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
 
     if(step===0){
       // шаг 0: показываем только ядро крупно
-      s+=matrix(KV,470,150,72,{fillFn:v=>v>0?'#F0FAF0':(v<0?'#FFF4F4':'#F6F5F1'),textColorFn:()=>INK,stroke:'#C9C2B8',title:'ядро $K$ · 3×3'});
-      s+='<text x="578" y="400" text-anchor="middle" class="viz-small">левый столбец +1, правый −1, середина 0</text>';
-      s+=foMath(300,470,360,58,'K\\in\\mathbb{R}^{3\\times3},\\quad b\\in\\mathbb{R}','lg');
+      s+=matrix(KV,482,150,72,{fillFn:v=>v>0?'#F0FAF0':(v<0?'#FFF4F4':'#F6F5F1'),textColorFn:()=>INK,stroke:'#C9C2B8',title:'ядро $K$ · 3×3'});
+      s+='<text x="590" y="400" text-anchor="middle" class="viz-small">левый столбец +1, правый −1, середина 0</text>';
+      s+=foMath(410,430,360,58,'K\\in\\mathbb{R}^{3\\times3},\\quad b\\in\\mathbb{R}','lg');
       g.innerHTML=s; renderMath(stage); return;
     }
 
@@ -1837,14 +1867,14 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
     s+=matrix(KV,624,110,58,{fillFn:v=>v>0?'#F0FAF0':(v<0?'#FFF4F4':'#F6F5F1'),textColorFn:()=>INK,stroke:'#C9C2B8',title:'веса $K$'});
 
     if(step===1){
-      s+='<text x="480" y="330" text-anchor="middle" class="viz-small">клетка выхода ('+rr0+', '+cc0+') связана ровно с этими девятью пикселями</text>';
-      s+=foMath(240,470,480,58,'P=X_{'+rr0+':'+(rr0+3)+',\\,'+cc0+':'+(cc0+3)+'}','lg');
+      s+='<text x="590" y="310" text-anchor="middle" class="viz-small">клетка выхода ('+rr0+', '+cc0+') связана ровно с этими девятью пикселями</text>';
+      s+=foMath(350,350,480,58,'P=X_{'+rr0+':'+(rr0+3)+',\\,'+cc0+':'+(cc0+3)+'}','lg');
       g.innerHTML=s; renderMath(stage); return;
     }
 
     // шаги 2–4: показываем девять попарных произведений отдельной таблицей
     if(step<5){
-    s+='<text x="480" y="330" text-anchor="middle" class="viz-small">каждый пиксель умножается на вес в той же клетке</text>';
+    s+='<text x="590" y="310" text-anchor="middle" class="viz-small">каждый пиксель умножается на вес в той же клетке</text>';
     // таблица произведений: тройка «пиксель × вес = результат»
     // ширина тройки: pcell + ×(16) + pcell + =(16) + pcell = 3*pcell+32; шаг колонки — с запасом
     const pcell=44, opGap=18, tripW=3*pcell+2*opGap, colGap=26, rowGap=12;
@@ -1856,12 +1886,12 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
       // пиксель
       s+='<rect x="'+xPix+'" y="'+y+'" width="'+pcell+'" height="'+pcell+'" fill="'+shade(pv)+'" stroke="#C9C2B8"/>';
       s+='<text x="'+(xPix+pcell/2)+'" y="'+(y+pcell*.66)+'" text-anchor="middle" font-size="16" fill="'+INK+'">'+pv+'</text>';
-      s+='<text x="'+xMul+'" y="'+(y+pcell*.66)+'" text-anchor="middle" font-size="15" fill="'+MUTED+'">×</text>';
+      s+=mtxt(xMul,y+pcell*.66,'$\\times$',{size:14,color:MUTED,w:20});
       // вес
       const kfill=kv>0?'#F0FAF0':(kv<0?'#FFF4F4':'#F6F5F1');
       s+='<rect x="'+xKer+'" y="'+y+'" width="'+pcell+'" height="'+pcell+'" fill="'+kfill+'" stroke="#C9C2B8"/>';
       s+='<text x="'+(xKer+pcell/2)+'" y="'+(y+pcell*.66)+'" text-anchor="middle" font-size="16" fill="'+INK+'">'+kv+'</text>';
-      s+='<text x="'+xEq+'" y="'+(y+pcell*.66)+'" text-anchor="middle" font-size="15" fill="'+MUTED+'">=</text>';
+      s+=mtxt(xEq,y+pcell*.66,'$=$',{size:14,color:MUTED,w:20});
       // результат
       const rfill=res>0?'#DFF2D1':(res<0?'#FDE3E3':'#F6F5F1');
       s+='<rect x="'+xRes+'" y="'+y+'" width="'+pcell+'" height="'+pcell+'" fill="'+rfill+'" stroke="#B8CBB0" stroke-width="1.6"/>';
@@ -1870,7 +1900,7 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
     }
 
     if(step===2){
-      s+='<text x="640" y="357" text-anchor="middle" class="viz-small" fill="'+MUTED+'">пиксель × вес = вклад · девять независимых умножений</text>';
+      s+='<text x="590" y="332" text-anchor="middle" class="viz-small">пиксель × вес = вклад · девять независимых умножений</text>';
       g.innerHTML=s; renderMath(stage); return;
     }
 
@@ -1905,26 +1935,24 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
     const idx=Number(document.getElementById('scan-range').value), r=Math.floor(idx/6), c=idx%6;
     const g=document.querySelector('#sc-viz [data-canvas]');
     let s='<text x="36" y="42" class="viz-title">Один фильтр · тридцать шесть позиций</text>';
-    s+=matrix(X8,50,105,40,{fillFn:shade,stroke:'#D7D3CB',textColorFn:(v,rr,cc)=>(rr>=r&&rr<r+3&&cc>=c&&cc<c+3)?INK:digitInk(v),highlight:{r:r,c:c,h:3,w:3,fill:'#FFF7C9',stroke:YELLOW},title:'$X$ · 8×8'});
-    s+=matrix(KV,410,160,46,{fillFn:v=>v>0?'#F0FAF0':(v<0?'#FFF4F4':'#F6F5F1'),stroke:'#C9C2B8',title:'общие веса $K$'});
-    s+=arrow(378,235,402,235,YELLOW,true)+arrow(560,235,628,235,GREEN,false);
+    s+=matrix(X8,50,105,36,{fillFn:shade,stroke:'#D7D3CB',textColorFn:(v,rr,cc)=>(rr>=r&&rr<r+3&&cc>=c&&cc<c+3)?INK:digitInk(v),highlight:{r:r,c:c,h:3,w:3,fill:'#FFF7C9',stroke:YELLOW},title:'$X$ · 8×8'});
+    s+=matrix(KV,410,180,46,{fillFn:v=>v>0?'#F0FAF0':(v<0?'#FFF4F4':'#F6F5F1'),stroke:'#C9C2B8',title:'общие веса $K$'});
+    s+=arrow(350,249,402,249,YELLOW,true)+arrow(564,249,628,249,GREEN,false);
     const shown=ZV.map((row,rr)=>row.map((v,cc)=>(scanAll||rr*6+cc<=idx)?v:'·'));
-    s+=matrix(shown,640,120,42,{fillFn:(v,rr,cc)=>rr===r&&cc===c?'#DFF2D1':(v==='·'?'#fff':(v>0?'#F3FAF0':(v<0?'#FDF2F2':'#F6F5F1'))),stroke:'#B8CBB0',title:'$Z$ · 6×6'});
+    s+=matrix(shown,640,123,42,{fillFn:(v,rr,cc)=>rr===r&&cc===c?'#DFF2D1':(v==='·'?'#fff':(v>0?'#F3FAF0':(v<0?'#FDF2F2':'#F6F5F1'))),stroke:'#B8CBB0',title:'$Z$ · 6×6'});
     const win=[0,1,2].map(u=>[0,1,2].map(v=>X8[r+u][c+v]));
     const left=win[0][0]+win[1][0]+win[2][0], right=win[0][2]+win[1][2]+win[2][2];
-    s+=foMath(120,400,720,62,'Z_{'+r+','+c+'}=\\sum_{u=0}^{2}\\sum_{v=0}^{2}X_{'+r+'+u,\\,'+c+'+v}K_{uv}=('+left+')-('+right+')='+ZV[r][c],'lg');
+    s+=foMath(120,412,720,62,'Z_{'+r+','+c+'}=\\sum_{u=0}^{2}\\sum_{v=0}^{2}X_{'+r+'+u,\\,'+c+'+v}K_{uv}=('+left+')-('+right+')='+ZV[r][c],'lg');
     g.innerHTML=s;
     document.getElementById('scan-value').textContent=(idx+1)+' / 36';
     const sign=ZV[r][c]>0?'правый край штриха':(ZV[r][c]<0?'левый край штриха':'перепада нет');
     // подробная раскладка девяти произведений
-    const KVflat=[[1,0,-1],[1,0,-1],[1,0,-1]];
-    const terms=[];
-    for(let u=0;u<3;u++) for(let v=0;v<3;v++){ if(KVflat[u][v]!==0){ const pv=win[u][v], kv=KVflat[u][v]; terms.push(pv+'·'+(kv>0?'(+1)':'(−1)')+' = '+(pv*kv>=0?'+':'')+(pv*kv)); } }
-    document.getElementById('scan-readout').innerHTML='<strong>Позиция ('+r+', '+c+'): Z = '+ZV[r][c]+' — '+sign+'.</strong> '+
+    const m=t=>'<span class="math-inline" data-tex="'+t+'"></span>';
+    document.getElementById('scan-readout').innerHTML='<strong>Позиция '+m('('+r+','+c+')')+': '+m('Z_{'+r+','+c+'}='+ZV[r][c])+' — '+sign+'.</strong> '+
       'Окно накрывает пиксели входа со строк '+r+'–'+(r+2)+' и столбцов '+c+'–'+(c+2)+'. '+
       'Средний столбец ядра равен нулю, поэтому в сумму входят только левый и правый столбцы окна: '+
       'левый столбец ('+win[0][0]+', '+win[1][0]+', '+win[2][0]+') умножается на +1, правый ('+win[0][2]+', '+win[1][2]+', '+win[2][2]+') — на −1. '+
-      'Итого '+left+' − '+right+' = '+ZV[r][c]+'. Девять весов те же самые, что и во всех остальных 35 позициях.';
+      'Итого '+m(left+'-'+right+'='+ZV[r][c])+'. Девять весов те же самые, что и во всех остальных 35 позициях.';
     document.getElementById('scan-fill').textContent=scanAll?'Показывать по шагам':'Заполнить всю карту';
     renderMath(document.getElementById('scan-lab'));
   }
@@ -1942,16 +1970,16 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
       const kTopY=rowTopY, k1x=330;
       s+=matrix(KV,k1x,kTopY,kCell,{fillFn:v=>v>0?'#F0FAF0':(v<0?'#FFF4F4':'#F6F5F1'),textColorFn:()=>INK,stroke:'#C9C2B8',title:'$K^{(1)}$ вертикальный'});
       const kTopMid=kTopY+3*kCell/2;
-      s+=matrix(ZV,560,kTopY-24,mCell,{fillFn:v=>v>0?'#F3FAF0':(v<0?'#FDF2F2':'#F6F5F1'),stroke:'#B8CBB0',title:'$Z^{(1)}$ · 6×6'});
-      const zTopMid=(kTopY-24)+6*mCell/2;
+      s+=matrix(ZV,560,kTopY-33,mCell,{fillFn:v=>v>0?'#F3FAF0':(v<0?'#FDF2F2':'#F6F5F1'),stroke:'#B8CBB0',title:'$Z^{(1)}$ · 6×6'});
+      const zTopMid=(kTopY-33)+6*mCell/2;
       // нижняя строка
       const kBotY=rowBotY, k2x=330;
       s+=matrix(KH,k2x,kBotY,kCell,{fillFn:v=>v>0?'#F0FAF0':(v<0?'#FFF4F4':'#F6F5F1'),textColorFn:()=>INK,stroke:'#C9C2B8',title:'$K^{(2)}$ горизонтальный'});
       const kBotMid=kBotY+3*kCell/2;
-      s+=matrix(ZH,560,kBotY-24,mCell,{fillFn:v=>v>0?'#F3FAF0':(v<0?'#FDF2F2':'#F6F5F1'),stroke:'#B8CBB0',title:'$Z^{(2)}$ · 6×6'});
-      const zBotMid=(kBotY-24)+6*mCell/2;
+      s+=matrix(ZH,560,kBotY-33,mCell,{fillFn:v=>v>0?'#F3FAF0':(v<0?'#FDF2F2':'#F6F5F1'),stroke:'#B8CBB0',title:'$Z^{(2)}$ · 6×6'});
+      const zBotMid=(kBotY-33)+6*mCell/2;
       // стрелки: вход → каждое ядро, ядро → своя карта, на согласованных высотах
-      s+=arrow(300,kTopMid,k1x-8,kTopMid,YELLOW,false)+arrow(300,kBotMid,k2x-8,kBotMid,YELLOW,false);
+      s+=arrow(256,inMidY,k1x-8,kTopMid,YELLOW,false)+arrow(256,inMidY,k2x-8,kBotMid,YELLOW,false);
       s+=arrow(k1x+3*kCell+8,kTopMid,552,zTopMid,GREEN,false)+arrow(k2x+3*kCell+8,kBotMid,552,zBotMid,GREEN,false);
       s+='<text x="820" y="'+(zTopMid-10)+'" class="viz-small">максимум +47</text><text x="820" y="'+(zTopMid+14)+'" class="viz-small">на правых краях</text>';
       s+='<text x="820" y="'+(zBotMid-10)+'" class="viz-small">максимум +33</text><text x="820" y="'+(zBotMid+14)+'" class="viz-small">на горизонталях</text>';
@@ -1997,18 +2025,18 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
           s+='<rect x="'+(winX+v*cell)+'" y="'+(y+u*cell)+'" width="'+cell+'" height="'+cell+'" fill="'+mix([255,255,255],chRGB,t)+'" stroke="#D5D1C8"/>';
           s+='<text x="'+(winX+v*cell+cell/2)+'" y="'+(y+u*cell+cell*.66)+'" text-anchor="middle" font-size="12" fill="'+INK+'">'+ch.win[u][v]+'</text>';
         }
-        s+='<text x="'+(winX+cell*1.5)+'" y="'+(y-8)+'" text-anchor="middle" class="viz-small">окно ('+ch.name+')</text>';
+        s+=mtxt(winX+cell*1.5,y-8,'окно $X_'+ch.name+'$',{size:13});
         // ⊙
-        s+='<text x="'+(kerX-22)+'" y="'+(midY+5)+'" text-anchor="middle" font-size="18" fill="'+MUTED+'">⊙</text>';
+        s+=mtxt(kerX-22,midY+5,'$\\odot$',{size:16,color:MUTED,w:30});
         // ядро канала
         for(let u=0;u<3;u++) for(let v=0;v<3;v++){
           const kv=ch.ker[u][v], kf=kv>0?'#F0FAF0':(kv<0?'#FFF4F4':'#F6F5F1');
           s+='<rect x="'+(kerX+v*cell)+'" y="'+(y+u*cell)+'" width="'+cell+'" height="'+cell+'" fill="'+kf+'" stroke="#C9C2B8"/>';
           s+='<text x="'+(kerX+v*cell+cell/2)+'" y="'+(y+u*cell+cell*.66)+'" text-anchor="middle" font-size="12" fill="'+INK+'">'+kv+'</text>';
         }
-        s+=mtxt(kerX+cell*1.5,y-8,'ядро $K_'+ch.name+'$');
+        s+=mtxt(kerX+cell*1.5,y-8,'ядро $K_'+ch.name+'$',{size:13});
         // = частичная сумма
-        s+='<text x="'+(sumX-22)+'" y="'+(midY+5)+'" text-anchor="middle" font-size="18" fill="'+MUTED+'">=</text>';
+        s+=mtxt(sumX-22,midY+5,'$=$',{size:16,color:MUTED,w:30});
         s+='<rect x="'+sumX+'" y="'+(midY-26)+'" width="120" height="52" rx="8" fill="#FBFAF7" stroke="'+ch.col+'" stroke-width="2"/>';
         s+='<text x="'+(sumX+60)+'" y="'+(midY-6)+'" text-anchor="middle" class="viz-small">вклад '+ch.name+'</text>';
         s+='<text x="'+(sumX+60)+'" y="'+(midY+18)+'" text-anchor="middle" class="viz-label" fill="'+ch.col+'">'+(ch.sum>=0?'+':'')+ch.sum+'</text>';
@@ -2035,15 +2063,15 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
       const blocks=[{t:'X',d:'вход',c:BLUE},{t:'K\\ast X+b',d:'линейная часть',c:YELLOW},{t:'g(\\cdot)',d:'нелинейность',c:GREEN},{t:'A^{(1)}',d:'выход слоя',c:GREEN}];
       blocks.forEach((b,i)=>{
         const x=50+i*235;
-        s+='<rect x="'+x+'" y="180" width="185" height="130" rx="12" fill="#FBFAF7" stroke="'+b.c+'" stroke-width="2"/>';
-        s+=mtxt(x+92,232,'$'+b.t+'$',{size:21,color:b.c,w:180});
-        s+='<text x="'+(x+92)+'" y="276" text-anchor="middle" class="viz-small">'+b.d+'</text>';
-        if(i<3) s+=arrow(x+188,245,x+232,245,MUTED,false);
+        s+='<rect x="'+x+'" y="200" width="185" height="130" rx="12" fill="#FBFAF7" stroke="'+b.c+'" stroke-width="2"/>';
+        s+=mtxt(x+92,252,'$'+b.t+'$',{size:21,color:b.c,w:180});
+        s+='<text x="'+(x+92)+'" y="296" text-anchor="middle" class="viz-small">'+b.d+'</text>';
+        if(i<3) s+=arrow(x+188,265,x+232,265,MUTED,false);
       });
-      s+='<text x="480" y="500" text-anchor="middle" class="viz-small">та же тройка действий, что и в полносвязном слое</text>';
+      s+='<text x="480" y="390" text-anchor="middle" class="viz-small">та же тройка действий, что и в полносвязном слое</text>';
     } else if(step===6){
       s+=stackPlanes(3,80,180,120,120,[YELLOW,YELLOW,YELLOW],'один фильтр 3×3×3');
-      s+='<text x="170" y="360" text-anchor="middle" class="viz-title viz-yellow">27 + 1 = 28</text>';
+      s+=mtxt(170,360,'$27+1=28$',{size:19,color:YELLOW,w:160});
       s+='<text x="170" y="392" text-anchor="middle" class="viz-small">весов и один bias</text>';
       s+=arrow(300,250,380,250,MUTED,false);
       for(let i=0;i<10;i++) s+='<rect x="'+(400+i*46)+'" y="180" width="36" height="120" rx="5" fill="#FFF8D9" stroke="'+YELLOW+'"/>';
@@ -2068,8 +2096,8 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
     const S=Number(document.getElementById('stride-range').value);
     const n=8, np=n+2*P, out=Math.floor((np-K)/S)+1;
     const g=document.querySelector('#sp-viz [data-canvas]');
-    const cell=Math.min(36,Math.floor(400/np));
-    let s='<text x="36" y="42" class="viz-title">Калькулятор формы: K, P и S</text>';
+    const cell=Math.min(36,Math.floor(360/np));
+    let s=mtxt(36,42,'Калькулятор формы: $K$, $P$ и $S$',{anchor:'start',w:500,size:18,weight:700});
     const x0=60,y0=110;
     for(let r=0;r<np;r++) for(let c=0;c<np;c++){
       const ir=r-P, ic=c-P, inside=ir>=0&&ir<n&&ic>=0&&ic<n;
@@ -2079,12 +2107,13 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
     for(let r=0;r+K<=np;r+=S) for(let c=0;c+K<=np;c+=S)
       s+='<circle cx="'+(x0+c*cell+2)+'" cy="'+(y0+r*cell+2)+'" r="3.4" fill="'+YELLOW+'"/>';
     s+='<rect x="'+x0+'" y="'+y0+'" width="'+(K*cell)+'" height="'+(K*cell)+'" fill="none" stroke="'+YELLOW+'" stroke-width="2.4"/>';
-    s+='<text x="'+(x0+np*cell/2)+'" y="'+(y0-18)+'" text-anchor="middle" class="viz-label">вход с рамкой: '+np+'×'+np+' · жёлтые точки — левые верхние углы окон</text>';
-    const ox=620,oc=Math.min(46,Math.floor(260/Math.max(out,1)));
+    s+='<text x="'+x0+'" y="'+(y0-18)+'" class="viz-label">вход с рамкой: '+np+'×'+np+'</text>';
+    s+='<text x="'+x0+'" y="'+(y0+np*cell+22)+'" class="viz-small">жёлтые точки — левые верхние углы окон</text>';
+    const oc=Math.min(46,Math.floor(260/Math.max(out,1))), ox=750-out*oc/2;
     for(let r=0;r<out;r++) for(let c=0;c<out;c++)
       s+='<rect x="'+(ox+c*oc)+'" y="'+(140+r*oc)+'" width="'+oc+'" height="'+oc+'" fill="#F0FAF0" stroke="'+GREEN+'"/>';
-    s+='<text x="'+(ox+out*oc/2)+'" y="122" text-anchor="middle" class="viz-label">выход: '+out+'×'+out+'</text>';
-    s+=foMath(520,'380',400,64,'\\left\\lfloor\\frac{8+2\\cdot'+P+'-'+K+'}{'+S+'}\\right\\rfloor+1='+out,'lg');
+    s+='<text x="750" y="122" text-anchor="middle" class="viz-label">выход: '+out+'×'+out+'</text>';
+    s+=foMath(550,150+out*oc,400,64,'\\left\\lfloor\\frac{8+2\\cdot'+P+'-'+K+'}{'+S+'}\\right\\rfloor+1='+out,'lg');
     g.innerHTML=s;
     document.getElementById('kernel-value').textContent=K;
     document.getElementById('padding-value').textContent=P;
@@ -2102,23 +2131,23 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
     let s='<text x="36" y="42" class="viz-title">Pooling: девять окон вместо тридцати шести клеток</text>';
     const cellFill=(v)=>v>0?'#F3FAF0':'#F6F5F1';
     if(step<=3){
-      s+=matrix(AV,50,120,44,{fillFn:cellFill,stroke:'#B8CBB0',title:'$A=\\operatorname{ReLU}(Z)$ · 6×6'});
+      s+=matrix(AV,110,120,44,{fillFn:cellFill,stroke:'#B8CBB0',title:'$A=\\operatorname{ReLU}(Z)$ · 6×6'});
       for(let r=0;r<3;r++) for(let c=0;c<3;c++){
         const on=(step===1&&r===0)||step>=2;
-        s+='<rect x="'+(50+c*88)+'" y="'+(120+r*88)+'" width="88" height="88" fill="none" stroke="'+(on?YELLOW:'#CFC9BE')+'" stroke-width="'+(on?2.6:1.6)+'"/>';
+        s+='<rect x="'+(110+c*88)+'" y="'+(120+r*88)+'" width="88" height="88" fill="none" stroke="'+(on?YELLOW:'#CFC9BE')+'" stroke-width="'+(on?2.6:1.6)+'"/>';
       }
-      s+=arrow(360,240,440,240,step>=1?GREEN:MUTED,step<1);
+      s+=arrow(392,252,478,252,step>=1?GREEN:MUTED,step<1);
       const res=step===3?POOLA.map(r=>r.map(v=>num(v,2))):POOLM.map((row,r)=>row.map((v,c)=>(step>=2||(step===1&&r===0))?v:'·'));
-      s+=matrix(res,470,150,64,{fillFn:(v,r,c)=>v==='·'?'#fff':(Number(String(v).replace(',','.'))>0?'#DFF2D1':'#F6F5F1'),stroke:'#8ABF52',title:step===3?'AvgPool 2×2, $s=2$':'MaxPool 2×2, $s=2$'});
+      s+=matrix(res,500,156,64,{fillFn:(v,r,c)=>v==='·'?'#fff':(Number(String(v).replace(',','.'))>0?'#DFF2D1':'#F6F5F1'),stroke:'#8ABF52',title:step===3?'AvgPool 2×2, $s=2$':'MaxPool 2×2, $s=2$'});
       if(step===3){
-        s+=foMath(660,150,280,60,'\\text{avg}=30{,}75','md');
-        s+=foMath(660,230,280,60,'\\text{max}=47','md');
-        s+='<text x="800" y="330" text-anchor="middle" class="viz-small">среднее размывает</text><text x="800" y="356" text-anchor="middle" class="viz-small">одиночный сильный отклик</text>';
+        s+=foMath(712,160,220,40,'\\text{avg}=30{,}75','md');
+        s+=foMath(712,200,220,40,'\\text{max}=47','md');
+        s+='<text x="822" y="270" text-anchor="middle" class="viz-small">среднее размывает</text><text x="822" y="292" text-anchor="middle" class="viz-small">одиночный сильный отклик</text>';
       }
-      if(step===0) s+=foMath(240,430,480,62,'H_{out}=\\left\\lfloor\\frac{6-2}{2}\\right\\rfloor+1=3','lg');
-      if(step===1) s+=foMath(200,430,560,62,'\\max\\{0,0,0,1\\}=1,\\quad\\max\\{18,47,14,44\\}=47','md');
-      if(step===2) s+=foMath(240,430,480,62,'36\\ \\text{чисел}\\;\\longrightarrow\\;9\\ \\text{чисел}','lg');
-      if(step===3) s+=foMath(180,430,600,62,'\\tfrac{18+47+14+44}{4}=30{,}75','lg');
+      if(step===0) s+=foMath(160,430,480,62,'H_{out}=\\left\\lfloor\\frac{6-2}{2}\\right\\rfloor+1=3','lg');
+      if(step===1) s+=foMath(120,430,560,62,'\\max\\{0,0,0,1\\}=1,\\quad\\max\\{18,47,14,44\\}=47','md');
+      if(step===2) s+=foMath(160,430,480,62,'36\\ \\text{чисел}\\;\\longrightarrow\\;9\\ \\text{чисел}','lg');
+      if(step===3) s+=foMath(100,430,600,62,'\\tfrac{18+47+14+44}{4}=30{,}75','lg');
     } else if(step===4){
       s+=stackPlanes(3,90,170,190,190,[GREEN,'#8B6BB7','#D17A42'],'вход · $n_C\\times5\\times5$');
       s+=arrow(340,265,430,265,YELLOW,false);
@@ -2162,11 +2191,11 @@ print(round(F.cross_entropy(net(x), target).item(), 4))   # 0.0312</code></pre>
     s+=arrow(c2X-8,topY+18,c1X+3*cell+8,topY+1.5*cell,YELLOW,false);
     // подписи размеров рецептивного поля под каждой сеткой — появляются по мере шагов
     const labelY=topY+inH+30;
-    if(step>=0) s+='<text x="'+(inX+inH/2)+'" y="'+labelY+'" text-anchor="middle" class="viz-small">'+(step>=2?'смотрит на 5×5 = 25 пикселей':(step===0?'окно одной клетки Conv 1: 3×3':''))+'</text>';
+    if(step>=0) s+='<text x="'+(inX+inH/2)+'" y="'+labelY+'" text-anchor="middle" class="viz-small">'+(step>=2?'смотрит на 25 пикселей':(step===0?'окно одной клетки Conv 1: 3×3':''))+'</text>';
     if(step>=1) s+='<text x="'+(c1X+c1H/2)+'" y="'+labelY+'" text-anchor="middle" class="viz-small">окно одной клетки Conv 2: 3×3</text>';
     if(step>=1) s+='<text x="'+(c2X+c2H/2)+'" y="'+labelY+'" text-anchor="middle" class="viz-small">выбранная клетка Conv 2</text>';
     if(step===0) s+=foMath(230,470,500,60,'r_1=K_1=3','lg');
-    if(step===1) s+=foMath(200,470,560,60,'\\text{на своём входе Conv 2 видит снова }3\\times3','md');
+    if(step===1) s+=mtxt(480,505,'на своём входе Conv 2 видит снова $3\\times3$',{size:17,w:560});
     if(step===2) s+=foMath(180,470,600,60,'r_2=r_1+(K_2-1)=3+2=5','lg');
     if(step===3){
       // общая рекурсия: показываем всю цепочку r0=1 → r1=3 → r2=5 явными подписями
