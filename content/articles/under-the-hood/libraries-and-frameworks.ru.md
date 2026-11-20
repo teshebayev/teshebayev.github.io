@@ -1,5 +1,6 @@
-
-
+<style>
+  .prose .stage-figure .is-focus .svg-math > span:not(.katex) { font-weight: 700; }
+</style>
 <p class="lead">
   Библиотека — это чужой код, который лежит обычной папкой в <code>site-packages</code>
   и после <code>import</code> становится объектом с атрибутами и методами. Фреймворк —
@@ -9,11 +10,9 @@
 </p>
 
 <p>
-  Слова «библиотека» и «фреймворк» часто звучат как что-то монолитное и непрозрачное:
-  написал <code>import torch</code> — и магия. На деле за каждым таким словом стоят
-  вполне осязаемые вещи: файлы на диске, правило поиска модулей, объекты с методами и
-  договорённость о том, кто кого вызывает. Я разберу их по порядку, ничего не
-  измеряя по скорости: здесь важно не «насколько быстрее», а «что именно происходит».
+  За строкой <code>import torch</code> стоят четыре вещи: файлы на диске, правило поиска
+  модулей, объекты с методами и договорённость о том, кто кого вызывает. Я разберу их по
+  порядку и на каждом шаге покажу, что происходит; скорость здесь не измеряется.
 </p>
 
 <p>
@@ -25,24 +24,6 @@
   работу каждый уровень забирает на себя.
 </p>
 
-<div class="reading-contract">
-  <div class="contract-card">
-    <span>На входе</span>
-    <strong>Базовый Python</strong>
-    <p>Списки, циклы <code>for</code>, функции и умение запустить скрипт из терминала.</p>
-  </div>
-  <div class="contract-card">
-    <span>Сквозной пример</span>
-    <strong>Матрицы 2×3 и 3×2 и сеть 2→2→1</strong>
-    <p>Одни и те же числа проходят через циклы, NumPy и PyTorch — ответы совпадают.</p>
-  </div>
-  <div class="contract-card">
-    <span>На выходе</span>
-    <strong>Вы объясните, что происходит</strong>
-    <p>при <code>pip install</code>, <code>import</code>, <code>A @ B</code> и <code>loss.backward()</code> — и чем библиотека отличается от фреймворка.</p>
-  </div>
-</div>
-
 <div class="semantic-key" aria-label="Цветовые обозначения статьи">
   <span><i style="background:#3576C0"></i>данные, файлы, ваш код</span>
   <span><i style="background:#C29E08"></i>операция и параметр</span>
@@ -51,10 +32,9 @@
 </div>
 
 <div class="callout-blue">
-  <strong>Как работать с интерактивами:</strong> нажимайте «Далее» и смотрите не
-  на всю схему сразу, а только на яркую часть. Положение объектов остаётся
-  постоянным, поэтому меняется именно смысл шага, а не карта перед глазами.
-  Кнопки со стрелками на клавиатуре работают, когда сцена в фокусе.
+  <strong>Как работать с интерактивами:</strong> нажимайте «Далее» и смотрите только на яркую часть.
+  Расположение блоков от шага к шагу не меняется. Каждый шаг разобран под кнопками. Стрелки ← → на
+  клавиатуре работают, когда сцена в фокусе.
 </div>
 
 <h2 id="part-1">Часть 1. Умножение матриц руками</h2>
@@ -91,16 +71,12 @@
     #mm .cell { fill: #F0F6FC; stroke: #3576C0; stroke-width: 1.5; }
     #mm .cellc { fill: #FFFFFF; stroke: #3576C0; stroke-width: 1.5; stroke-dasharray: 4 3; }
     #mm .cg { fill: #F0FAF0; stroke: #73B222; stroke-width: 1.8; }
-    #mm .num { font-size: 20px; fill: #111111; }
-    #mm .ttl { font-size: 17px; fill: #111111; font-weight: 700; }
-    #mm .cap { font-size: 14px; fill: #5E5850; }
     #mm .sgn { font-size: 30px; fill: #5E5850; }
     #mm .hl { fill: none; stroke: #C29E08; stroke-width: 3; }
     #mm .code { font-family: "Courier New", Courier, monospace; font-size: 14px; fill: #111111; }
     #mm .codebox { fill: #F4F2EC; stroke: #3576C0; stroke-width: 1.5; }
     #mm .kbg { fill: #FFF3C4;  stroke: #C29E08; stroke-width: 1.2; }
     #mm .fbg { fill: #CDEBB0;  stroke: #73B222; stroke-width: 1.2; }
-    #mm .fml { font-size: 20px; fill: #111111; }
     #mm .gtx { font-size: 14px; fill: #5a8c1c; }
     #mm .legend { font-size: 13px; fill: #5E5850; }
   </style>
@@ -220,7 +196,7 @@
     </div>
     <div class="step-panel" data-on="mats rc00 f00 c00" data-focus="rc00 f00 c00">
       <div class="step-kicker">Шаг 3 · одна клетка</div>
-      <h4>Клетка C[0][0]: строка 0 на столбец 0</h4>
+      <h4>Клетка <span class="math-inline" data-tex="C[0][0]"></span>: строка 0 на столбец 0</h4>
       <p>Берём первую строку <code>A</code> и первый столбец <code>B</code>, перемножаем попарно и складываем.</p>
       <div class="worked-example">
         <div class="worked-label">Числовой пример · те же данные на всём пути</div>
@@ -249,7 +225,7 @@
     </div>
     <div class="step-panel" data-on="mats c00 rc11 f11 c11" data-focus="rc11 f11 c11">
       <div class="step-kicker">Шаг 4 · ещё одна клетка</div>
-      <h4>Клетка C[1][1] = 0</h4>
+      <h4>Клетка <span class="math-inline" data-tex="C[1][1] = 0"></span></h4>
       <p>Вторая строка <code>A</code> — <code>[3, −1, 2]</code>, второй столбец <code>B</code> —
       <code>[1, 1, −1]</code>. Произведения 3, −1 и −2 в сумме дают ровно ноль.</p>
       <div class="callout-blue">
@@ -275,8 +251,8 @@
       <div class="step-kicker">Шаг 7 · упаковка</div>
       <h4>Функция — зародыш библиотеки</h4>
       <p>Строка <code>def matmul(A, B):</code> дала всему этому имя. Теперь не нужно помнить
-      про три цикла: достаточно написать <code>matmul(A, B)</code>. Ровно эту идею —
-      «спрятать сложное за именем» — библиотеки доводят до конца.</p>
+      про три цикла: достаточно написать <code>matmul(A, B)</code>. Библиотека устроена так же:
+      это набор функций и классов, за именами которых лежат циклы, проверки форм и работа с памятью.</p>
     </div>
   </div>
 </div>
@@ -690,7 +666,7 @@ Successfully installed numpy-2.3.3</code></pre>
     <div class="step-panel" data-on="cmd pypi wheel tree lines" data-focus="tree">
       <div class="step-kicker">Шаг 4 · распаковка</div>
       <h4>Установка — это распаковка архива в site-packages</h4>
-      <p>Никакого реестра, никакой магии: pip разворачивает содержимое колеса в папку
+      <p>Установщик Windows и реестр не участвуют: pip разворачивает содержимое колеса в папку
       <code>site-packages</code> активного окружения. Удалите папку <code>numpy\</code> руками —
       и библиотеки не станет.</p>
     </div>
@@ -835,7 +811,6 @@ print(C)
     #nd .lbl { font-size: 16px; fill: #111111; }
     #nd .mono { font-family: "Courier New", Courier, monospace; font-size: 14px; fill: #111111; }
     #nd .mono15 { font-family: "Courier New", Courier, monospace; font-size: 15px; fill: #111111; }
-    #nd .num { font-size: 18px; fill: #111111; }
     #nd .cap { font-size: 13px; fill: #5E5850; }
     #nd .edge { stroke: #5E5850; stroke-width: 1.5; fill: none; }
     #nd .bord { stroke: #5E5850; stroke-width: 1.3; stroke-dasharray: 6 4; fill: none; }
@@ -995,8 +970,8 @@ print(C)
   <strong>Почему это быстрее циклов, если внутри те же циклы:</strong> в части 1 на каждое
   из 12 умножений интерпретатор разбирал индексы, доставал Python-объекты чисел и создавал
   новые. Здесь граница Python↔C пересекается один раз на всю операцию, а внутри C-кода
-  числа — просто байты в памяти. Библиотека выигрывает не другой математикой, а тем, что
-  выносит цикл за пределы интерпретатора.
+  числа — просто байты в памяти. Умножений столько же, 12; быстрее становится их обход, потому
+  что цикл крутится в машинном коде без участия интерпретатора.
 </div>
 
 
@@ -1038,7 +1013,6 @@ print(C)
     #sc .mono12 { font-family: "Courier New", Courier, monospace; font-size: 12px; fill: #111111; white-space: pre; }
     #sc .mono15 { font-family: "Courier New", Courier, monospace; font-size: 15px; font-weight: 700; fill: #111111; }
     #sc .file { font-family: "Courier New", Courier, monospace; font-size: 12px; fill: #8c7106; }
-    #sc .filb { font-family: "Courier New", Courier, monospace; font-size: 12px; fill: #2a5e9b; }
     #sc .cap  { font-size: 13px; fill: #5E5850; }
     #sc .capr { font-size: 13px; fill: #C30B0A; }
     #sc .capg { font-size: 13px; font-weight: 700; fill: #5a8c1c; }
@@ -1406,16 +1380,13 @@ A @ Spy(B)                                # перехват: matmul __call__</c
     #ff .cn  { fill: #FAFAFA; stroke: #5E5850; stroke-width: 1; }
     #ff .rb  { fill: #F0F6FC; }
     #ff .ry  { fill: #FFFBEB; }
-    #ff .ct  { font-size: 15px; font-weight: 700; fill: #111111; }
     #ff .sn  { font-size: 14px; fill: #111111; }
     #ff .vt  { font-size: 17px; font-weight: 700; fill: #111111; }
     #ff .mlb { font-size: 15px; font-weight: 700; fill: #111111; }
-    #ff .lbl { font-size: 15px; fill: #111111; }
     #ff .th  { font-size: 13px; font-weight: 700; fill: #5E5850; }
     #ff .cap { font-size: 13px; fill: #5E5850; }
     #ff .shp { font-size: 13px; fill: #5E5850; }
     #ff .red { font-size: 14px; fill: #C30B0A; }
-    #ff .grn { font-size: 15px; font-weight: 700; fill: #5a8c1c; }
     #ff .opx { font-size: 22px; fill: #5E5850; }
     #ff .mono { font-family: "Courier New", Courier, monospace; font-size: 14px; fill: #111111; }
     #ff .code { font-family: "Courier New", Courier, monospace; font-size: 13px; fill: #111111; }
@@ -1781,7 +1752,7 @@ A @ Spy(B)                                # перехват: matmul __call__</c
 <foreignObject x="94.5" y="236.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
 <foreignObject x="63" y="204.6" width="58" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="dh"></div></foreignObject>
 <foreignObject x="60" y="270.8" width="64" height="27"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400" data-tex="1\times 2"></div></foreignObject>
-<text x="164" y="260" class="opx" text-anchor="middle">⊙</text>
+<foreignObject x="144" y="234.1" width="40" height="36"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:22px;color:#5E5850;font-weight:400" data-tex="\odot"></div></foreignObject>
 <rect x="184" y="236" width="52" height="34" class="cn"/>
 <foreignObject x="186.5" y="236.6" width="47" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:15px;color:#111111;font-weight:700" data-tex="1"></div></foreignObject>
 <rect x="236" y="236" width="52" height="34" class="cn"/>
@@ -2394,16 +2365,16 @@ trainer.fit(LitFFN(), train_dataloaders=loader)    # цикл, backward и step 
 
 <p>
   Если унести одну картину, то такую: внизу всегда те же три вложенных цикла из первой
-  части. Каждый следующий уровень — NumPy, autograd, <code>nn.Module</code>, Lightning — не
-  делает ничего принципиально нового, а просто берёт на себя ещё один кусок программы,
-  который раньше приходилось писать вручную. Выбирая инструмент, вы на самом деле выбираете,
-  какую часть работы готовы отдать и какую часть контроля вместе с ней.
+  части. Каждый следующий уровень берёт на себя ещё один кусок программы, который раньше
+  приходилось писать вручную: NumPy — сами циклы, autograd — производные, <code>nn.Module</code>
+  и <code>optim</code> — слои и шаг, Lightning — цикл обучения. Всё, что отдано, вы больше не
+  пишете, но и порядок этих действий задаёт уже код библиотеки.
 </p>
 
 <p class="tiny">
   Все числа статьи посчитаны скриптом на Python и NumPy 2.x: умножение циклами и через
   <code>@</code> дают одинаковое <code>[[2, 3], [8, 0]]</code>, ручной backward сети 2→2→1 сверен
-  с конечными разностями (расхождение порядка 10⁻¹⁰). Вывод PyTorch приведён для тех же весов
+  с конечными разностями (расхождение порядка <span class="math-inline" data-tex="10^{-10}"></span>). Вывод PyTorch приведён для тех же весов
   с учётом транспонирования в <code>nn.Linear</code>; значения округлены до четырёх знаков.
   Пути вида <code>C:\Users\work\…</code>, версии пакетов и имена файлов с хешами у вас будут
   немного другими. Ссылки на исходники NumPy ведут на тег <code>v2.5.3</code>; поведение
