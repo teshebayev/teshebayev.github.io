@@ -42,9 +42,6 @@
   .prose .hn-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 6px; color: var(--text-muted); font-size: 12.5px; }
   .prose .hn-legend i { display: inline-block; width: 18px; height: 0; margin-right: 5px; vertical-align: middle; border-top: 2.5px solid currentColor; }
   .mg { font-family: Helvetica, Arial, sans-serif; }
-  .mg .cap { font-size: 13px; fill: #5E5850; }
-  .mg .mm { font-size: 12px; fill: #5E5850; }
-  .mg .legend { font-size: 13px; fill: #5E5850; }
   @media (max-width: 560px) { .prose .hn-maps { grid-template-columns: repeat(2, minmax(0, 1fr)); } .prose .hn-live { padding: 14px 12px; } }
 </style>
 
