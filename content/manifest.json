@@ -697,17 +697,20 @@
   "slug": "how-network-learns",
   "category": "under-the-hood",
   "title": {
-    "ru": "Как обучается нейросеть: полный цикл на картинках 8 × 8"
+    "ru": "Как обучается нейросеть: полный цикл на картинках 8 × 8",
+    "en": "How a neural network learns: the full cycle on 8 × 8 images"
   },
   "description": {
-    "ru": "Один и тот же цикл обучения из пяти действий, прожитый 1260 раз на настоящих данных: от рукописной цифры в 64 числа и случайных весов до 97,78% на картинках, которых сеть не видела. Сеть как граф и тот же граф матрицами, анатомия обучения, прямой проход, потеря, обратный проход красными стрелками на графе, вывод пяти формул со сверкой градиента, градиент первого слоя картинками, шаг спуска и эпохи — с полным кодом на NumPy и шестью живыми виджетами: можно посчитать любую клетку, потянуть оценки softmax, сверить градиент и обучить сеть в браузере."
+    "ru": "Один и тот же цикл обучения из пяти действий, прожитый 1260 раз на настоящих данных: от рукописной цифры в 64 числа и случайных весов до 97,78% на картинках, которых сеть не видела. Сеть как граф и тот же граф матрицами, анатомия обучения, прямой проход, потеря, обратный проход красными стрелками на графе, вывод пяти формул со сверкой градиента, градиент первого слоя картинками, шаг спуска и эпохи — с полным кодом на NumPy и шестью живыми виджетами: можно посчитать любую клетку, потянуть оценки softmax, сверить градиент и обучить сеть в браузере.",
+    "en": "One and the same training cycle of five actions, lived through 1260 times on real data: from a handwritten digit turned into 64 numbers and random weights to 97.78% on images the network has never seen. The network as a graph and the same graph as matrices, the anatomy of training, the forward pass, the loss, the backward pass as red arrows on the graph, the derivation of five formulas with a gradient check, the first-layer gradient as images, the descent step and epochs, with full NumPy code and six live widgets: compute any cell, drag the softmax scores, check the gradient and train the network in the browser."
   },
   "date": "2026-09-21",
   "reading_time": 55,
   "tags": ["ml-basics", "deep-learning"],
   "draft": false,
   "content": {
-    "ru": "content/articles/under-the-hood/how-network-learns.ru.md"
+    "ru": "content/articles/under-the-hood/how-network-learns.ru.md",
+    "en": "content/articles/under-the-hood/how-network-learns.en.md"
   }
 },
     {
