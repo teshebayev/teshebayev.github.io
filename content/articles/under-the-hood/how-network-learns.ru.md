@@ -2750,6 +2750,10 @@
   Шестёрке сеть дала меньше всех, 0,0579, но для тройки это не ошибка: её штраф 2,8486 в сумму не попал.
 </p>
 
+<p>Это можно проверить руками. Двигайте оценки одной картинки и следите, как меняются вероятности, штрафы всех десяти цифр и ошибка. Серые штрафы растут и падают, но в ошибку проходит только красный. Нижний ряд — градиент, с которого в части 9 начнётся обратный проход.</p>
+
+<div class="hn-live" id="wiLogits"></div>
+
 <p>
   Так же считается ошибка каждой картинки батча, только у каждой своя верная цифра: у пятёрки
   <span class="math-inline" data-tex="-\log 0{,}1381 = 1{,}9796"></span>, у двойки <span class="math-inline" data-tex="-\log 0{,}1099 = 2{,}2081"></span>, у восьмёрки
@@ -2923,10 +2927,6 @@
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и листайте шаги стрелками ← →.</p>
-
-<p>Softmax и кросс-энтропию удобно прощупать руками: двигайте оценки одной картинки и следите, как меняются вероятности, потеря и градиент, с которого в части 9 начнётся обратный проход.</p>
-
-<div class="hn-live" id="wiLogits"></div>
 
 ### Что именно мы уменьшаем
 
@@ -7533,7 +7533,7 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
 
   /* ======== В4. Потяните оценки ======== */
   function wLogits() {
-    var w = setup('wiLogits', 'Потяните оценки $z$ и смотрите на потерю', 'Тяните столбики верхнего ряда вверх и вниз. Средний ряд — вероятности после softmax, нижний — градиент $p - y$. Верный класс отмечен фиолетовым.');
+    var w = setup('wiLogits', 'Потяните оценки $z$ и смотрите на потерю', 'Тяните столбики верхнего ряда вверх и вниз. Второй ряд — вероятности после softmax, третий — штраф $-\\ln p_c$ каждой цифры, нижний — градиент $p - y$. Верный класс отмечен фиолетовым: только его штраф умножается на 1 и становится ошибкой картинки.');
     if (!w) return;
     var net = initNet(32), Z0 = DATA.BX.map(function (x) { return Float64Array.from(net.forward(x).z2); });
     var pic = 0, z = Float64Array.from(Z0[0]), y = DATA.BY[0];
@@ -7543,14 +7543,16 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
     button(bg, 'сбросить', function () { z = Float64Array.from(Z0[pic]); draw(); });
     button(bg, '+1 ко всем оценкам', function () { for (var c = 0; c < 10; c++) z[c] += 1; draw(); });
     button(bg, 'шаг против градиента', function () { var pr = new Float64Array(10); softmax(z, pr); for (var c = 0; c < 10; c++) z[c] -= 2 * (pr[c] - (c === y ? 1 : 0)); draw(); });
-    var box = svgBox(w, 680, 384), read = el('div', 'hn-read', w);
-    var X0 = 70, CW = 60, ZY = 90, ZS = 14, PY = 250, PH = 70, GY = 330, GS = 44;
+    var box = svgBox(w, 680, 516), read = el('div', 'hn-read', w);
+    var X0 = 70, CW = 60, ZY = 90, ZS = 14, PY = 250, PH = 70, NY = 380, NS = 11, NMAX = 6, GY = 460, GS = 44;
     var dyn = S('g', {}, box.svg);
     T(box.svg, 8, ZY - 58, 'оценка z', {'font-size': 12, 'font-weight': 700});
     T(box.svg, 8, PY - PH - 8, 'вероятность p', {'font-size': 12, 'font-weight': 700});
+    T(box.svg, 8, NY - NMAX * NS - 10, 'штраф −ln p', {'font-size': 12, 'font-weight': 700});
     T(box.svg, 8, GY - 22, 'градиент p − y', {'font-size': 12, 'font-weight': 700});
     S('line', {x1: X0 - 6, y1: ZY, x2: X0 + 10 * CW, y2: ZY, stroke: C.gray, 'stroke-width': 1}, box.svg);
     S('line', {x1: X0 - 6, y1: PY, x2: X0 + 10 * CW, y2: PY, stroke: C.gray, 'stroke-width': 1}, box.svg);
+    S('line', {x1: X0 - 6, y1: NY, x2: X0 + 10 * CW, y2: NY, stroke: C.gray, 'stroke-width': 1}, box.svg);
     S('line', {x1: X0 - 6, y1: GY, x2: X0 + 10 * CW, y2: GY, stroke: C.gray, 'stroke-width': 1}, box.svg);
     T(box.svg, X0 - 10, ZY + 4, '0', {'font-size': 11, 'text-anchor': 'end'});
     T(box.svg, X0 - 10, PY - PH + 4, '1', {'font-size': 11, 'text-anchor': 'end'});
@@ -7585,15 +7587,19 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
         T(dyn, x + wdt / 2, (hz >= 0 ? ZY - hz - 8 : ZY - hz + 16), fmt(z[c], 2), {'text-anchor': 'middle', 'font-size': 11, fill: C.ink});
         S('rect', {x: x, y: PY - pr[c] * PH, width: wdt, height: pr[c] * PH, fill: C.green}, dyn);
         T(dyn, x + wdt / 2, PY - pr[c] * PH - 4, fmt(pr[c], 3), {'text-anchor': 'middle', 'font-size': 10.5, fill: C.ink});
+        var pen = -Math.log(pr[c]), ph = Math.min(pen, NMAX) * NS;
+        S('rect', {x: x, y: NY - ph, width: wdt, height: ph, fill: isY ? C.red : '#CFCABD', opacity: isY ? 0.9 : 1}, dyn);
+        T(dyn, x + wdt / 2, NY - ph - 4, (pen > NMAX ? '>' + NMAX : fmt(pen, 2)), {'text-anchor': 'middle', 'font-size': 10.5, fill: isY ? C.red : C.gray, 'font-weight': isY ? 700 : 400});
+        T(dyn, x + wdt / 2, NY + 15, isY ? '× 1' : '× 0', {'text-anchor': 'middle', 'font-size': 11, fill: isY ? C.red : C.gray, 'font-weight': isY ? 700 : 400});
         S('rect', {x: x, y: g >= 0 ? GY - g * GS : GY, width: wdt, height: Math.abs(g) * GS, fill: C.red, opacity: 0.85}, dyn);
         T(dyn, x + wdt / 2, PY + 22, String(c), {'text-anchor': 'middle', 'font-size': 13, 'font-weight': isY ? 700 : 400, fill: isY ? '#FFFFFF' : C.gray});
         if (isY) dyn.insertBefore(S('rect', {x: x + wdt / 2 - 11, y: PY + 7, width: 22, height: 20, rx: 4, fill: '#7B4FB0'}), dyn.lastChild);
       }
       var L = -Math.log(pr[y]);
       clear(read);
-      p(read, 'потеря этой картинки: $L = -\\ln p_{' + y + '} = -\\ln ' + kn(pr[y], 4) + ' = ' + kn(L, 4) + '$', 'hn-big');
+      p(read, 'ошибка этой картинки: $\\ell = -\\ln p_{' + y + '} = -\\ln ' + kn(pr[y], 4) + ' = ' + kn(L, 4) + '$', 'hn-big');
       p(read, 'сумма вероятностей $= 1$, сумма градиента $= ' + kn(Math.abs(sg) < 5e-13 ? 0 : sg, 4) + '$ · ориентир «ничего не знаю»: $\\ln 10 = 2{,}3026$');
-      p(read, '«+1 ко всем» не меняет ни $p$, ни $L$: общий множитель $e$ сокращается в дроби softmax. Шаг против градиента поднимает верный класс и опускает остальные — так и учится выходной слой.', 'hn-note');
+      p(read, '«+1 ко всем» не меняет ни $p$, ни $\\ell$: общий множитель $e$ сокращается в дроби softmax. Шаг против градиента поднимает верный класс и опускает остальные — так и учится выходной слой.', 'hn-note');
     }
     draw();
   }
