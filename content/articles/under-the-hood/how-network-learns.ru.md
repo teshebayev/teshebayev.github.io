@@ -89,7 +89,7 @@
   а только на яркую часть. Расположение блоков не меняется от шага к шагу, поэтому переключается
   именно смысл, а не картинка перед глазами. Прямой и обратный проход показаны дважды: сначала формы и
   формулы, потом те же шаги с подставленными числами. Стрелки ← → на клавиатуре работают, когда сцена в фокусе.
-  Кроме сцен, в статье семь живых виджетов в рамках: в них можно тянуть и щёлкать,
+  Кроме сцен, в статье шесть живых виджетов в рамках: в них можно тянуть и щёлкать,
   а числа считаются прямо в браузере на тех же картинках и весах.
 </div>
 
@@ -4746,137 +4746,10 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
   Прогноз ошибся на 0,36 в оптимистичную сторону, и дело не в округлении. Разложение Тейлора
   описывает поверхность потери прямой линией, а она изогнута: чем дальше уходим, тем сильнее
   настоящая потеря отклоняется от касательной вверх. Именно поэтому η нельзя выбрать формулой,
-  а слишком большой шаг делает хуже, чем было. Посмотреть на изгиб можно прямо: посчитаем потерю
-  нашего батча для разных длин шага в уже известном направлении, то есть построим срез
-  <span class="math-inline" data-tex="L(\theta - t\,\nabla L)"></span> вдоль антиградиента.
+  а слишком большой шаг делает хуже, чем было: на том же батче η = 3 даёт потерю 2,9051, выше стартовой.
+  Лучший шаг для этих четырёх картинок — 0,95, он даёт 1,0952, но брать его не надо: это минимум
+  по четырём картинкам, а не по всем 1347, и, подстроившись под них, сеть испортила бы то, что уже знала.
 </p>
-
-<p>Посмотрим пошагово, что даёт один шаг из точки, в которой мы стоим.</p>
-
-<div class="stage" id="stageSP" tabindex="0">
-  <div class="stage-figure">
-<svg id="sp" viewBox="0 0 960 480" role="img" aria-label="Срез потери вдоль направления против градиента и вероятности верного класса до и после шага">
-  <style>
-    #sp { font-family: Helvetica, Arial, sans-serif; }
-    #sp .cap { font-size: 13px; fill: #5E5850; }
-  </style>
-  
-<g data-key="axes">
-<line x1="80" y1="400" x2="600" y2="400" stroke="#5E5850" stroke-width="1.2"/>
-<line x1="80" y1="70" x2="80" y2="400" stroke="#5E5850" stroke-width="1.2"/>
-<line x1="80.0" y1="400" x2="80.0" y2="405" stroke="#5E5850" stroke-width="1"/>
-<text x="80.0" y="420" class="cap" text-anchor="middle">0,0</text>
-<line x1="166.7" y1="400" x2="166.7" y2="405" stroke="#5E5850" stroke-width="1"/>
-<text x="166.7" y="420" class="cap" text-anchor="middle">0,5</text>
-<line x1="253.3" y1="400" x2="253.3" y2="405" stroke="#5E5850" stroke-width="1"/>
-<text x="253.3" y="420" class="cap" text-anchor="middle">1,0</text>
-<line x1="340.0" y1="400" x2="340.0" y2="405" stroke="#5E5850" stroke-width="1"/>
-<text x="340.0" y="420" class="cap" text-anchor="middle">1,5</text>
-<line x1="426.7" y1="400" x2="426.7" y2="405" stroke="#5E5850" stroke-width="1"/>
-<text x="426.7" y="420" class="cap" text-anchor="middle">2,0</text>
-<line x1="513.3" y1="400" x2="513.3" y2="405" stroke="#5E5850" stroke-width="1"/>
-<text x="513.3" y="420" class="cap" text-anchor="middle">2,5</text>
-<line x1="600.0" y1="400" x2="600.0" y2="405" stroke="#5E5850" stroke-width="1"/>
-<text x="600.0" y="420" class="cap" text-anchor="middle">3,0</text>
-<line x1="75" y1="400.0" x2="80" y2="400.0" stroke="#5E5850" stroke-width="1"/>
-<text x="70" y="404.0" class="cap" text-anchor="end">1,0</text>
-<line x1="75" y1="317.5" x2="80" y2="317.5" stroke="#5E5850" stroke-width="1"/>
-<text x="70" y="321.5" class="cap" text-anchor="end">1,5</text>
-<line x1="75" y1="235.0" x2="80" y2="235.0" stroke="#5E5850" stroke-width="1"/>
-<text x="70" y="239.0" class="cap" text-anchor="end">2,0</text>
-<line x1="75" y1="152.5" x2="80" y2="152.5" stroke="#5E5850" stroke-width="1"/>
-<text x="70" y="156.5" class="cap" text-anchor="end">2,5</text>
-<line x1="75" y1="70.0" x2="80" y2="70.0" stroke="#5E5850" stroke-width="1"/>
-<text x="70" y="74.0" class="cap" text-anchor="end">3,0</text>
-<foreignObject x="276.5" y="420.4" width="127" height="29.9"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#5E5850;font-weight:400"><span>длина шага <span data-tex="\eta"></span></span></div></foreignObject>
-<text x="34" y="56" class="cap">потеря батча</text>
-</g>
-<g data-key="curve">
-<polyline points="80.0,211.6 88.7,237.8 97.3,259.2 106.0,278.3 114.7,295.3 123.3,309.2 132.0,321.9 140.7,333.0 149.3,342.7 158.0,351.0 166.7,358.4 175.3,364.5 184.0,369.7 192.7,373.8 201.3,377.3 210.0,380.1 218.7,382.1 227.3,383.5 236.0,384.3 244.7,384.3 253.3,383.6 262.0,382.1 270.7,380.0 279.3,377.5 288.0,374.5 296.7,371.2 305.3,367.5 314.0,363.5 322.7,359.1 331.3,354.3 340.0,349.1 348.7,343.4 357.3,337.4 366.0,331.2 374.7,324.7 383.3,317.9 392.0,310.9 400.7,303.7 409.3,296.2 418.0,288.6 426.7,280.7 435.3,272.6 444.0,264.4 452.7,255.9 461.3,247.2 470.0,238.3 478.7,229.3 487.3,220.1 496.0,210.7 504.7,201.1 513.3,191.4 522.0,181.5 530.7,171.4 539.3,161.2 548.0,150.9 556.7,140.4 565.3,129.7 574.0,118.9 582.7,108.0 591.3,96.9 600.0,85.7" fill="none" stroke="#3576C0" stroke-width="2.2"/>
-</g>
-<g data-key="start" data-only="1">
-<circle cx="80.0" cy="211.6" r="5" fill="#5E5850"/><text x="80.0" y="197.6" class="cap" text-anchor="start" fill="#5E5850">старт: 2,1416</text>
-
-</g>
-<g data-key="eta03" data-only="1">
-<circle cx="132.0" cy="321.9" r="5" fill="#73B222"/><foreignObject x="51.4" y="288.3" width="161" height="29.9"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#73B222;font-weight:400" data-tex="\eta = 0{,}3 \to 1{,}4731"></div></foreignObject>
-<line x1="80.0" y1="211.6" x2="132.0" y2="321.9" stroke="#73B222" stroke-width="1.6" stroke-dasharray="5 4"/>
-</g>
-<g data-key="best" data-only="1">
-<circle cx="244.7" cy="384.3" r="5" fill="#C29E08"/><foreignObject x="95.4" y="348.7" width="299" height="29.9"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#C29E08;font-weight:400"><span>минимум среза: <span data-tex="\eta = 0{,}95 \to 1{,}0952"></span></span></div></foreignObject>
-</g>
-<g data-key="big" data-only="1">
-<circle cx="600.0" cy="85.7" r="5" fill="#C30B0A"/><foreignObject x="455.9" y="52.1" width="144" height="29.9"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#C30B0A;font-weight:400;justify-content:flex-end" data-tex="\eta = 3 \to 2{,}9051"></div></foreignObject>
-<text x="590" y="96" class="cap" text-anchor="end" fill="#C30B0A">хуже, чем было до шага</text>
-</g>
-<g data-key="probs">
-<text x="640" y="66" class="cap">вероятность верного класса</text>
-<text x="640" y="114" class="cap">цифра 3</text>
-<rect x="700" y="98" width="80.4" height="16" fill="#5E5850" fill-opacity="0.45" stroke="#5E5850" stroke-width="1"/>
-<text x="788.4" y="111" class="cap">0,1488</text>
-<rect x="700" y="120" width="105.1" height="16" fill="#73B222" fill-opacity="0.6" stroke="#73B222" stroke-width="1"/>
-<text x="813.1" y="133" class="cap">0,1947</text>
-<text x="640" y="188" class="cap">цифра 5</text>
-<rect x="700" y="172" width="74.6" height="16" fill="#5E5850" fill-opacity="0.45" stroke="#5E5850" stroke-width="1"/>
-<text x="782.6" y="185" class="cap">0,1381</text>
-<rect x="700" y="194" width="177.3" height="16" fill="#73B222" fill-opacity="0.6" stroke="#73B222" stroke-width="1"/>
-<text x="885.3" y="207" class="cap">0,3284</text>
-<text x="640" y="262" class="cap">цифра 2</text>
-<rect x="700" y="246" width="59.3" height="16" fill="#5E5850" fill-opacity="0.45" stroke="#5E5850" stroke-width="1"/>
-<text x="767.3" y="259" class="cap">0,1099</text>
-<rect x="700" y="268" width="100.4" height="16" fill="#73B222" fill-opacity="0.6" stroke="#73B222" stroke-width="1"/>
-<text x="808.4" y="281" class="cap">0,1859</text>
-<text x="640" y="336" class="cap">цифра 8</text>
-<rect x="700" y="320" width="45.5" height="16" fill="#5E5850" fill-opacity="0.45" stroke="#5E5850" stroke-width="1"/>
-<text x="753.5" y="333" class="cap">0,0843</text>
-<rect x="700" y="342" width="125.4" height="16" fill="#73B222" fill-opacity="0.6" stroke="#73B222" stroke-width="1"/>
-<text x="833.4" y="355" class="cap">0,2323</text>
-<text x="640" y="386" class="cap">серое — до шага, зелёное — после</text>
-<foreignObject x="640.0" y="384.4" width="221" height="29.9"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span>одного шага при <span data-tex="\eta = 0{,}3"></span></span></div></foreignObject>
-</g>
-<g data-key="rule">
-<rect x="640" y="440" width="290" height="0.1" fill="none" stroke="none"/>
-<foreignObject x="640" y="434" width="300" height="30"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-md" data-tex="\theta \leftarrow \theta - \eta\, \tfrac{\partial L}{\partial \theta}"></div></foreignObject>
-</g>
-<foreignObject x="40.0" y="448.4" width="676" height="29.9"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span>синяя кривая — как меняется потеря батча, если шагнуть на <span data-tex="\eta"></span> против градиента</span></div></foreignObject>
-</svg>
-  </div>
-
-  <div class="stage-bar">
-    <button type="button" data-nav="prev">← Назад</button>
-    <button type="button" data-nav="next">Далее →</button>
-    <div class="stage-progress"></div>
-    <div class="stage-counter"></div>
-  </div>
-
-  <div class="stage-notes">
-    <div class="step-panel" data-on="axes curve rule start" data-focus="start">
-      <div class="step-kicker">Шаг 1 · срез вдоль направления</div>
-      <h4>Что будет, если шагнуть на разную длину</h4>
-<p>Синяя кривая — это настоящая потеря нашего батча, посчитанная для шагов от 0 до 3 с интервалом 0,05. Слева она круто падает, потом выполаживается, а после единицы начинает расти: направление верное, но идти по нему бесконечно нельзя.</p>
-    </div>
-    <div class="step-panel" data-on="axes curve rule start eta03 probs" data-focus="eta03">
-      <div class="step-kicker">Шаг 2 · наш шаг</div>
-      <h4><span class="math-inline" data-tex="\eta = 0{,}3"></span> роняет потерю с 2,1416 до 1,4731</h4>
-<p>Один шаг по четырём картинкам — и вероятность верного класса у второй картинки выросла с 0,1381 до 0,3284, а у четвёртой с 0,0843 до 0,2323. Шаг подстроил веса под эти четыре картинки; про остальные 1343 он ничего не знает.</p>
-    </div>
-    <div class="step-panel" data-on="axes curve rule start eta03 best" data-focus="best">
-      <div class="step-kicker">Шаг 3 · а почему не сразу в минимум</div>
-      <h4>Лучший шаг для этого батча — 0,95, и брать его не надо</h4>
-<p>Минимум среза даёт потерю 1,0952 — вдвое меньше стартовой. Но это минимум по четырём картинкам, а не по всем 1347. Прыгнув туда, мы идеально подстроились бы под случайную четвёрку и испортили то, что уже знали. С маленьким шагом каждый батч сдвигает веса немного, и итоговое направление складывается из многих батчей.</p>
-    </div>
-    <div class="step-panel" data-on="axes curve rule start big" data-focus="big">
-      <div class="step-kicker">Шаг 4 · слишком длинный шаг</div>
-      <h4><span class="math-inline" data-tex="\eta = 3"></span> даёт 2,9051 — хуже, чем до шага</h4>
-<p>Направление осталось правильным, но мы перелетели долину и вылезли на противоположный склон. Именно так выглядит расходящееся обучение: потеря не просто перестаёт падать, а растёт от шага к шагу.</p>
-    </div>
-  </div>
-</div>
-<p class="stage-hint">Наведите фокус на сцену и листайте шаги стрелками ← →.</p>
-
-<p>Срез потери вдоль градиента можно пройти целиком: ползунок задаёт длину шага, справа видно, что этот шаг сделал с ответами на четыре картинки.</p>
-
-<div class="hn-live" id="wiStep"></div>
 
 <div class="callout">
   <strong>Главная мысль части:</strong> направление даёт обратный проход, а длину — вы сами,
@@ -5121,7 +4994,7 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
 (function () {
   'use strict';
   var DATA_URL = 'content/articles/under-the-hood/data/how-network-learns.json';
-  var IDS = ['wiCells', 'wiShapes', 'wiCell', 'wiLogits', 'wiCheck', 'wiStep', 'wiTrain'];
+  var IDS = ['wiCells', 'wiShapes', 'wiCell', 'wiLogits', 'wiCheck', 'wiTrain'];
   var C = {blue: '#3576C0', yellow: '#C29E08', dyellow: '#8C7206', green: '#73B222', red: '#C30B0A', gray: '#5E5850', pink: '#D83BB9', ink: '#111111', line: '#E0DDD3'};
   var NS = 'http://www.w3.org/2000/svg';
 
@@ -5353,7 +5226,7 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
   IDS.forEach(function (id) { var n = $(id); if (n) el('p', 'hn-status', n, 'Загружаем картинки и веса сети…'); });
   fetch(DATA_URL).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (D) {
     DATA = load(D);
-    [wCells, wShapes, wCell, wLogits, wCheck, wStep, wTrain].forEach(function (f) {
+    [wCells, wShapes, wCell, wLogits, wCheck, wTrain].forEach(function (f) {
       try { f(); } catch (e) { if (window.console) console.error(e); }
     });
   }).catch(function (e) {
@@ -5731,59 +5604,6 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
     syncInputs(); show();
   }
 
-  /* ======== В6. Длина шага ======== */
-  function wStep() {
-    var w = setup('wiStep', 'Шагните сами', 'Двигайте $\\eta$. Синяя кривая — настоящая потеря батча после шага $\\theta - \\eta\\,\\nabla L$, пунктир — прямая из разложения Тейлора $L(\\theta) - \\eta\\,\\|\\nabla L\\|^2$.');
-    if (!w) return;
-    var net = initNet(32), xs = DATA.BX, ys = DATA.BY, G = net.grads(xs, ys), L0 = G.loss, g2 = 0;
-    ['W1', 'b1', 'W2', 'b2'].forEach(function (k) { for (var i = 0; i < G[k].length; i++) g2 += G[k][i] * G[k][i]; });
-    function after(eta) { var q = net.clone(); q.step(G, eta); return q; }
-    var curve = [];
-    for (var i = 0; i <= 200; i++) curve.push(after(i * 0.02).loss(xs, ys));
-    var eta = 0.3;
-    var ctr = el('div', 'hn-ctrls', w);
-    range(ctr, '$\\eta$', 0, 4, 0.01, eta, function (v) { return fmt(v, 2); }, function (v) { eta = v; draw(); });
-    var row = el('div', 'hn-row', w), pb = svgBox(el('div', 'hn-side', row), 400, 250);
-    var side = el('div', 'hn-side', row), bb = svgBox(side, 260, 190), read = el('div', 'hn-read', w);
-    var Lx = 40, Rx = 390, Ty = 12, By = 214;
-    function X(e) { return Lx + e / 4 * (Rx - Lx); }
-    function Y(v) { return Ty + (3.2 - Math.min(3.2, Math.max(0, v))) / 3.2 * (By - Ty); }
-    function base() {
-      var g = pb.svg;
-      S('rect', {x: Lx, y: Ty, width: Rx - Lx, height: By - Ty, fill: '#FBFAF6', stroke: C.line}, g);
-      for (var e = 0; e <= 4; e++) { T(g, X(e), By + 16, String(e), {'text-anchor': 'middle', 'font-size': 11}); S('line', {x1: X(e), y1: Ty, x2: X(e), y2: By, stroke: C.line, 'stroke-width': 0.6}, g); }
-      for (var v = 0; v <= 3; v++) { T(g, Lx - 6, Y(v) + 4, String(v), {'text-anchor': 'end', 'font-size': 11}); S('line', {x1: Lx, y1: Y(v), x2: Rx, y2: Y(v), stroke: C.line, 'stroke-width': 0.6}, g); }
-      T(g, (Lx + Rx) / 2, By + 32, 'длина шага η', {'text-anchor': 'middle', 'font-size': 11});
-      S('line', {x1: X(0), y1: Y(L0), x2: X(L0 / g2), y2: Y(0), stroke: C.gray, 'stroke-dasharray': '5 4', 'stroke-width': 1.3}, g);
-      S('polyline', {points: curve.map(function (v, i) { return X(i * 0.02).toFixed(1) + ',' + Y(v).toFixed(1); }).join(' '), fill: 'none', stroke: C.blue, 'stroke-width': 2.2}, g);
-      [[0.3, '0,3'], [0.95, '0,95'], [3, '3']].forEach(function (m) { S('line', {x1: X(m[0]), y1: By - 6, x2: X(m[0]), y2: By, stroke: C.ink, 'stroke-width': 1.4}, g); T(g, X(m[0]), By - 9, m[1], {'text-anchor': 'middle', 'font-size': 10, fill: C.ink}); });
-    }
-    base();
-    var dyn = S('g', {}, pb.svg);
-    function draw() {
-      clear(dyn);
-      var q = after(eta), L = q.loss(xs, ys), lin = L0 - eta * g2;
-      S('line', {x1: X(eta), y1: Ty, x2: X(eta), y2: By, stroke: C.red, 'stroke-width': 1}, dyn);
-      S('circle', {cx: X(eta), cy: Y(L), r: 5.5, fill: L < L0 ? C.green : C.red}, dyn);
-      clear(bb.svg);
-      T(bb.svg, 4, 14, 'вероятность верного класса', {'font-size': 11.5, 'font-weight': 700});
-      var ok = 0;
-      xs.forEach(function (x, i) {
-        var p0 = net.forward(x).p[ys[i]], f1 = q.forward(x), p1 = f1.p[ys[i]], y0 = 30 + i * 40;
-        if (f1.pred === ys[i]) ok++;
-        thumb(bb.svg, DATA.BR[i], 4, y0, 4);
-        S('rect', {x: 46, y: y0, width: p0 * 150, height: 12, fill: '#BDB8AD'}, bb.svg);
-        T(bb.svg, 50 + p0 * 150, y0 + 10, fmt(p0, 4), {'font-size': 10.5});
-        S('rect', {x: 46, y: y0 + 15, width: p1 * 150, height: 12, fill: f1.pred === ys[i] ? C.green : C.red}, bb.svg);
-        T(bb.svg, 50 + p1 * 150, y0 + 25, fmt(p1, 4), {'font-size': 10.5, fill: C.ink});
-      });
-      clear(read);
-      p(read, '$\\eta = ' + kn(eta, 2) + '$: потеря $' + kn(L0, 4) + ' \\to ' + kn(L, 4) + '$, угадано ' + ok + ' из 4', 'hn-big');
-      p(read, 'прямая Тейлора обещала $' + kn(lin, 4) + '$ — ' + (eta < 0.05 ? 'при маленьком шаге прогноз почти точен' : lin < 0 ? 'потеря не бывает отрицательной: прямая годится только вблизи старта' : L > lin + 0.02 ? 'настоящая потеря выше: прямая верна только вблизи старта, дальше кривая загибается вверх' : 'пока прогноз близок к правде'));
-      p(read, 'серые полосы — до шага, цветные — после: зелёная, если картинка угадана, красная, если нет.', 'hn-note');
-    }
-    draw();
-  }
 
   /* ======== В7. Обучение в браузере ======== */
   var REF = null;
