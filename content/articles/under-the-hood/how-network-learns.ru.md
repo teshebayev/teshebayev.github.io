@@ -8167,34 +8167,38 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
       }
     }
     function mat(g, x, y, rows, cols, s, fill, stroke, name, nameSide) {
-      S('rect', {x: x, y: y, width: cols * s, height: rows * s, fill: fill, stroke: stroke, 'stroke-width': 1.4}, g);
+      /* как в сцене «Прямой проход: сначала формы»: светлая заливка, белая сетка, скобки цвета матрицы */
+      var w = cols * s, h = rows * s;
+      S('rect', {x: x, y: y, width: w, height: h, rx: 2, fill: fill}, g);
       var step = s * 8 >= 12 ? 8 : 16;
-      for (var r = step; r < rows; r += step) S('line', {x1: x, y1: y + r * s, x2: x + cols * s, y2: y + r * s, stroke: stroke, 'stroke-width': 0.5, opacity: 0.5}, g);
-      for (var c = step; c < cols; c += step) S('line', {x1: x + c * s, y1: y, x2: x + c * s, y2: y + rows * s, stroke: stroke, 'stroke-width': 0.5, opacity: 0.5}, g);
+      for (var r = step; r < rows; r += step) S('line', {x1: x, y1: y + r * s, x2: x + w, y2: y + r * s, stroke: '#FFFFFF', 'stroke-width': 1.1}, g);
+      for (var c = step; c < cols; c += step) S('line', {x1: x + c * s, y1: y, x2: x + c * s, y2: y + h, stroke: '#FFFFFF', 'stroke-width': 1.1}, g);
+      S('path', {d: 'M ' + (x - 3) + ' ' + (y - 3) + ' h -5 V ' + (y + h + 3) + ' h 5', fill: 'none', stroke: stroke, 'stroke-width': 1.8}, g);
+      S('path', {d: 'M ' + (x + w + 3) + ' ' + (y - 3) + ' h 5 V ' + (y + h + 3) + ' h -5', fill: 'none', stroke: stroke, 'stroke-width': 1.8}, g);
       var t = name + '\\;\\; ' + rows + '\\times ' + cols;
-      if (nameSide === 'left') fo(g, x - 8, y + 14, 150, 22, t, 13, C.ink, 'end');
-      else if (nameSide === 'right') fo(g, x + cols * s + 8, y + 14, 150, 22, t, 13, C.ink, 'start');
+      if (nameSide === 'left') fo(g, x - 30, y + 14, 150, 22, t, 13, C.ink, 'end');
+      else if (nameSide === 'right') fo(g, x + cols * s + 14, y + 14, 150, 22, t, 13, C.ink, 'start');
       else if (nameSide === 'below') fo(g, x + cols * s / 2, y + rows * s + 34, 150, 22, t, 13, C.ink);
       else fo(g, x + cols * s / 2, y - 14, 150, 22, t, 13, C.ink);
     }
     function draw() {
       var g = box.svg; clear(g);
       if (err) { err.remove(); err = null; }
-      var gap = 34, pad = 150;
+      var gap = 48, pad = 150;
       if (!swap) {
         var s = Math.min(5, (680 - pad - 2 * gap - 20) / (64 + H + 10), (400 - 90) / (64 + Math.max(B, 1) + 6));
         var xX = 30, xZ1 = xX + 64 * s + gap, xZ2 = xZ1 + H * s + gap;
         var top = 400 - 70 - B * s, yW1 = top - 22 - 64 * s, yW2 = top - 22 - H * s;
         if (yW1 < 30) { top += 30 - yW1; yW1 = 30; yW2 = top - 22 - H * s; }
-        mat(g, xX, top, B, 64, s, '#E3EEF9', C.blue, 'X', 'up');
-        mat(g, xZ1, yW1, 64, H, s, C.yellow, C.dyellow, 'W^{(1)}', 'left');
-        mat(g, xZ1, top, B, H, s, '#E8F3D8', C.green, 'Z^{(1)}', 'below');
-        mat(g, xZ2, yW2, H, 10, s, C.yellow, C.dyellow, 'W^{(2)}', 'right');
-        mat(g, xZ2, top, B, 10, s, '#E8F3D8', C.green, 'Z^{(2)}', 'below');
-        brace(g, xX, top + B * s + 4, xX + 64 * s, top + B * s + 4, '64', C.pink);
-        brace(g, xZ1 - 4, yW1, xZ1 - 4, yW1 + 64 * s, '64', C.pink);
-        S('line', {x1: xX + 64 * s + 4, y1: top + B * s / 2, x2: xZ1 - 4, y2: top + B * s / 2, stroke: C.gray, 'stroke-width': 1.2}, g);
-        S('line', {x1: xZ1 + H * s + 4, y1: top + B * s / 2, x2: xZ2 - 4, y2: top + B * s / 2, stroke: C.gray, 'stroke-width': 1.2}, g);
+        mat(g, xX, top, B, 64, s, '#EBF1F9', C.blue, 'X', 'up');
+        mat(g, xZ1, yW1, 64, H, s, '#F0E8C4', C.yellow, 'W^{(1)}', 'left');
+        mat(g, xZ1, top, B, H, s, '#EAF4DE', C.green, 'Z^{(1)}', 'below');
+        mat(g, xZ2, yW2, H, 10, s, '#F0E8C4', C.yellow, 'W^{(2)}', 'right');
+        mat(g, xZ2, top, B, 10, s, '#EAF4DE', C.green, 'Z^{(2)}', 'below');
+        brace(g, xX, top + B * s + 8, xX + 64 * s, top + B * s + 8, '64', C.pink);
+        brace(g, xZ1 - 14, yW1, xZ1 - 14, yW1 + 64 * s, '64', C.pink);
+        S('line', {x1: xX + 64 * s + 12, y1: top + B * s / 2, x2: xZ1 - 12, y2: top + B * s / 2, stroke: C.gray, 'stroke-width': 1.2}, g);
+        S('line', {x1: xZ1 + H * s + 12, y1: top + B * s / 2, x2: xZ2 - 12, y2: top + B * s / 2, stroke: C.gray, 'stroke-width': 1.2}, g);
         T(g, (xZ1 + H * s + xZ2) / 2, top + B * s / 2 - 6, 'ReLU', {'text-anchor': 'middle', 'font-size': 11});
         var params = 64 * H + H + H * 10 + 10;
         clear(read);
@@ -8205,12 +8209,12 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
         var s2 = Math.min(5, (680 - 200) / (H + 64 + 10), (400 - 90) / (B + 64 + 6));
         var xW = 150, yy = 400 - 70 - 64 * s2, xX2 = xW + H * s2 + gap, yX = yy - 22 - B * s2;
         if (yX < 44) { yy += 44 - yX; yX = 44; }
-        mat(g, xW, yy, 64, H, s2, C.yellow, C.dyellow, 'W^{(1)}', 'left');
-        mat(g, xX2, yX, B, 64, s2, '#E3EEF9', C.blue, 'X', 'up');
+        mat(g, xW, yy, 64, H, s2, '#F0E8C4', C.yellow, 'W^{(1)}', 'left');
+        mat(g, xX2, yX, B, 64, s2, '#EBF1F9', C.blue, 'X', 'up');
         var okShape = H === B;
-        brace(g, xW, yy + 64 * s2 + 4, xW + H * s2, yy + 64 * s2 + 4, String(H), okShape ? C.pink : C.red);
-        brace(g, xX2 - 4, yX, xX2 - 4, yX + B * s2, String(B), okShape ? C.pink : C.red);
-        if (okShape) mat(g, xX2, yy, 64, 64, s2, '#FBE3E3', C.red, '?', 'below');
+        brace(g, xW, yy + 64 * s2 + 8, xW + H * s2, yy + 64 * s2 + 8, String(H), okShape ? C.pink : C.red);
+        brace(g, xX2 - 14, yX, xX2 - 14, yX + B * s2, String(B), okShape ? C.pink : C.red);
+        if (okShape) mat(g, xX2, yy, 64, 64, s2, '#F8E2E2', C.red, '?', 'below');
         clear(read);
         if (!okShape) {
           p(read, 'Внутренние размеры не совпадают: у $W^{(1)}$ ' + H + ' столбцов, у $X$ ' + B + ' строк. NumPy остановится сразу:', 'hn-big');
