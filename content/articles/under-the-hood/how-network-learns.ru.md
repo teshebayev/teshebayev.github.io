@@ -78,8 +78,8 @@
 </div>
 
 <p>
-  Внутри схем работает ещё одно правило: <strong>тёмная заливка — то, что обучается</strong>
-  (веса и смещения), <strong>светлая — то, что пересчитывается заново</strong> на каждом батче
+  Внутри схем работает ещё одно правило: <strong>жёлтое — то, что обучается</strong>
+  (веса и смещения), <strong>зелёное — то, что пересчитывается заново</strong> на каждом батче
   и выбрасывается. Разделение на эти две группы — самое полезное, что стоит унести из первых четырёх частей.
 </p>
 
@@ -87,7 +87,7 @@
 <div class="callout-blue">
   <strong>Как работать с интерактивами:</strong> нажимайте «Далее» и смотрите не на всю схему сразу,
   а только на яркую часть. Расположение блоков не меняется от шага к шагу, поэтому переключается
-  именно смысл, а не картинка перед глазами. Каждая пара сцен устроена одинаково: сначала формы и
+  именно смысл, а не картинка перед глазами. Прямой и обратный проход показаны дважды: сначала формы и
   формулы, потом те же шаги с подставленными числами. Стрелки ← → на клавиатуре работают, когда сцена в фокусе.
   Кроме сцен, в статье девять живых виджетов в рамках: в них можно тянуть, щёлкать и рисовать,
   а числа считаются прямо в браузере на тех же картинках и весах.
@@ -113,7 +113,7 @@
 
 <p>
   Правильный ответ тоже становится числами: класс «3» записывается строкой из десяти чисел с
-  единицей на третьем месте. Такая запись называется <strong>one-hot</strong>, и нужна она затем,
+  единицей на четвёртом месте: места отвечают цифрам от 0 до 9. Такая запись называется <strong>one-hot</strong>, и нужна она затем,
   чтобы ответ сети и правду можно было сравнить одной формулой, без ветвлений по номеру класса.
 </p>
 
@@ -1564,7 +1564,7 @@
     <div class="step-panel" data-on="img one" data-focus="one">
       <div class="step-kicker">Шаг 2 · клетка</div>
       <h4>Одна клетка — одно число, и половина из них нули</h4>
-<p>По всей обучающей выборке 48,93 % клеток равны нулю: цифра занимает середину, поля пустые. Четыре клетки — №0, №24, №32 и №39 — нулевые у всех 1347 картинок сразу. Позже это даст занятный эффект: соответствующие им веса не сдвинутся за всё обучение ни на йоту.</p>
+<p>По всей обучающей выборке 48,93 % клеток равны нулю: цифра занимает середину, поля пустые. Четыре клетки — №1, №25, №33 и №40 — нулевые у всех 1347 картинок сразу.</p>
     </div>
     <div class="step-panel" data-on="strip" data-focus="strip">
       <div class="step-kicker">Шаг 3 · вектор</div>
@@ -1579,7 +1579,7 @@
     <div class="step-panel" data-on="onehot" data-focus="onehot">
       <div class="step-kicker">Шаг 5 · правильный ответ</div>
       <h4>Метку тоже превращаем в строку чисел</h4>
-<p>Класс «3» записывается как строка из десяти чисел, где на третьем месте единица, а на остальных нули. Такая запись называется one-hot. Она нужна, чтобы ответ сети (десять чисел) и правильный ответ (десять чисел) можно было сравнивать одной формулой.</p>
+<p>Класс «3» записывается как строка из десяти чисел: места отвечают цифрам от 0 до 9, поэтому единица стоит на четвёртом месте, а на остальных нули. Такая запись называется one-hot. Она нужна, чтобы ответ сети (десять чисел) и правильный ответ (десять чисел) можно было сравнивать одной формулой.</p>
     </div>
     <div class="step-panel" data-on="split" data-focus="split">
       <div class="step-kicker">Шаг 6 · честная проверка</div>
@@ -1609,13 +1609,6 @@
 ---
 
 ## Часть 2. Сеть как граф: 64 входа, 32 нейрона, 10 выходов
-
-<p>
-  Дальше сеть рисуется не графом, а матрицами: два слоя — это две матрицы весов и две строки сдвигов.
-  Так удобнее: вместо 2368 линий четыре прямоугольника, у каждого видна форма, и батч из любого числа
-  картинок считается теми же формулами. Никаких свёрток, нормализаций и остаточных связей: всё, что
-  нужно для полного цикла обучения, здесь уже есть, а лишние детали только помешают увидеть цикл целиком.
-</p>
 
 <p>
   Нарисуем сеть так, как её обычно рисуют, графом, и пропустим через неё первую картинку батча.
@@ -1743,7 +1736,7 @@
 
 <p>
   Архитектура выбрана самая обыкновенная: 64 входа, один скрытый слой из 32 нейронов, 10 выходов.
-  Между ними — <strong>ReLU</strong>, на выходе — <strong>softmax</strong>. Никаких свёрток, нормализаций
+  Между ними — <strong>ReLU</strong>, на выходе — <strong>softmax</strong>. ReLU здесь обязательна: без неё два линейных слоя схлопнулись бы в один, потому что произведение двух матриц снова матрица. Никаких свёрток, нормализаций
   и остаточных связей: всё, что нужно для полного цикла обучения, здесь уже есть, а лишние детали
   только помешают увидеть цикл целиком.
 </p>
@@ -1839,12 +1832,6 @@
 <text x="880" y="422" class="cap">одно</text>
 <foreignObject x="880.0" y="420.4" width="75" height="29.9"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:13px;color:#5E5850;font-weight:400"><span>число <span data-tex="L"></span></span></div></foreignObject>
 </g>
-<g data-key="back" data-only="1">
-<line x1="748" y1="356" x2="684" y2="356" stroke="#C30B0A" stroke-width="2.2" fill="none" marker-end="url(#ar-arr)"/><foreignObject x="682.5" y="322.4" width="67" height="29.9"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#C30B0A;font-weight:700" data-tex="\partial L/\partial P"></div></foreignObject><text x="716" y="378" class="dim" text-anchor="middle">4 × 10</text>
-<line x1="568" y1="356" x2="504" y2="356" stroke="#C30B0A" stroke-width="2.2" fill="none" marker-end="url(#ar-arr)"/><foreignObject x="489.7" y="322.4" width="93" height="29.9"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#C30B0A;font-weight:700" data-tex="\partial L/\partial Z^{(2)}"></div></foreignObject><text x="536" y="378" class="dim" text-anchor="middle">4 × 10</text>
-<line x1="388" y1="356" x2="324" y2="356" stroke="#C30B0A" stroke-width="2.2" fill="none" marker-end="url(#ar-arr)"/><foreignObject x="309.7" y="322.4" width="93" height="29.9"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#C30B0A;font-weight:700" data-tex="\partial L/\partial H^{(1)}"></div></foreignObject><text x="356" y="378" class="dim" text-anchor="middle">4 × 32</text>
-<line x1="208" y1="356" x2="144" y2="356" stroke="#C30B0A" stroke-width="2.2" fill="none" marker-end="url(#ar-arr)"/><foreignObject x="142.6" y="322.4" width="67" height="29.9"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:13px;color:#C30B0A;font-weight:700" data-tex="\partial L/\partial X"></div></foreignObject><text x="176" y="378" class="dim" text-anchor="middle">4 × 64</text>
-</g>
 <g data-key="count" data-only="1">
 <rect x="180" y="404" width="172" height="70" rx="9" fill="none" stroke="#C30B0A" stroke-width="2"/>
 <rect x="360" y="404" width="172" height="70" rx="9" fill="none" stroke="#C30B0A" stroke-width="2"/>
@@ -1864,43 +1851,13 @@
   </div>
 
   <div class="stage-notes">
-    <div class="step-panel" data-on="inp" data-focus="inp">
-      <div class="step-kicker">Шаг 1 · вход</div>
-      <h4>На входе прямоугольник, а не картинка</h4>
-<p>Сеть принимает матрицу 4 × 64: четыре картинки батча, у каждой 64 числа в строку. Ни про квадрат 8 × 8, ни про то, что соседние клетки рядом, она не знает — полносвязная сеть учит связи «клетка — признак» с нуля.</p>
-    </div>
-    <div class="step-panel" data-on="inp lin1 par1" data-focus="par1">
-      <div class="step-kicker">Шаг 2 · скрытый слой</div>
-      <h4>Матрица весов 64 × 32 и 32 смещения</h4>
-<p>Слой умножает вход на <span class="math-inline" data-tex="W^{(1)}"></span> и прибавляет строку <span class="math-inline" data-tex="b^{(1)}"></span>. Столбец матрицы — один скрытый нейрон: 64 веса, по одному на каждую клетку картинки. Всего 2080 чисел, и это 86,3 % всех параметров сети.</p>
-    </div>
-    <div class="step-panel" data-on="inp lin1 par1 relu" data-focus="relu">
-      <div class="step-kicker">Шаг 3 · нелинейность</div>
-      <h4>ReLU обнуляет всё отрицательное</h4>
-<p>Она живёт внутри той же карточки, потому что не имеет параметров и не меняет форму: на входе 4 × 32, на выходе 4 × 32. Без неё два линейных слоя схлопнулись бы в один — произведение двух матриц снова матрица.</p>
-    </div>
-    <div class="step-panel" data-on="inp lin1 par1 relu lin2 par2" data-focus="par2">
-      <div class="step-kicker">Шаг 4 · выходной слой</div>
-      <h4>Из 32 признаков — 10 оценок</h4>
-<p>Второй слой устроен так же и не подозревает, что перед ним был первый: он видит просто матрицу чисел. Его выход <span class="math-inline" data-tex="Z^{(2)}"></span> — по одной оценке на каждую цифру. Пока это произвольные числа, а не вероятности.</p>
-    </div>
-    <div class="step-panel" data-on="inp lin1 par1 relu lin2 par2 soft" data-focus="soft">
-      <div class="step-kicker">Шаг 5 · softmax</div>
-      <h4>Десять оценок превращаются в десять вероятностей</h4>
-<p>Softmax возводит оценки в экспоненту и делит на сумму: числа становятся положительными и в сумме дают единицу. Порядок сохраняется — кто был больше, тот и остаётся больше. Формы это не меняет: 4 × 10 на входе, 4 × 10 на выходе.</p>
-    </div>
-    <div class="step-panel" data-on="inp lin1 par1 relu lin2 par2 soft out loss" data-focus="loss">
-      <div class="step-kicker">Шаг 6 · потеря</div>
+    <div class="step-panel" data-on="inp lin1 par1 relu lin2 par2 soft out loss" data-focus="inp lin1 par1 relu lin2 par2 soft out loss">
+      <div class="step-kicker">Шаг 1 · вся сеть</div>
       <h4>Вся сеть сходится в одно число</h4>
 <p>Последняя карточка принимает сразу два входа: ответ P и метки Y. На выходе — одно число на весь батч. Именно оно будет уменьшаться при обучении, и именно по нему берутся производные по всем 2410 параметрам.</p>
     </div>
-    <div class="step-panel" data-on="inp lin1 par1 relu lin2 par2 soft out loss back" data-focus="back">
-      <div class="step-kicker">Шаг 7 · тот же маршрут назад</div>
-      <h4>Красные стрелки идут по тем же рёбрам, что и зелёные</h4>
-<p>У каждого тензора на пути есть производная той же формы: у <span class="math-inline" data-tex="X"></span> она 4 × 64, у <span class="math-inline" data-tex="H^{(1)}"></span> — 4 × 32, у <span class="math-inline" data-tex="P"></span> — 4 × 10. Обратный проход не строит новый граф, он просто идёт по нарисованным стрелкам справа налево. <span class="math-inline" data-tex="\partial L/\partial X"></span> считать не нужно — под ним нет параметров, но форма у него та же, что у входа.</p>
-    </div>
-    <div class="step-panel" data-on="inp lin1 par1 relu lin2 par2 soft out loss back count" data-focus="count">
-      <div class="step-kicker">Шаг 8 · что здесь обучается</div>
+    <div class="step-panel" data-on="inp lin1 par1 relu lin2 par2 soft out loss count" data-focus="count">
+      <div class="step-kicker">Шаг 2 · что здесь обучается</div>
       <h4>Обучается только то, что висит под карточками</h4>
 <p><span class="math-inline" data-tex="W^{(1)}"></span>, <span class="math-inline" data-tex="b^{(1)}"></span>, <span class="math-inline" data-tex="W^{(2)}"></span>, <span class="math-inline" data-tex="b^{(2)}"></span> — это состояние сети: 2410 чисел, которые меняются шаг за шагом и живут между батчами. <span class="math-inline" data-tex="X"></span>, <span class="math-inline" data-tex="H^{(1)}"></span>, <span class="math-inline" data-tex="Z^{(2)}"></span>, <span class="math-inline" data-tex="P"></span> пересчитываются заново для каждого батча и выбрасываются. Обучить сеть — значит подобрать 2410 чисел так, чтобы вторая группа выдавала нужный ответ.</p>
     </div>
@@ -2102,14 +2059,14 @@
     <div class="step-panel" data-on="x w1 b1 z1 h1 h1b w2 b2 z2 p soft" data-focus="p soft">
       <div class="step-kicker">Шаг 6 · softmax</div>
       <h4>Каждая строка превращается в десять вероятностей</h4>
-<p>Softmax применяется построчно: объекты не смешиваются между собой. После него в каждой строке десять положительных чисел, которые в сумме дают ровно 1. Форма прежняя — 4 × 10, изменился смысл: это уже не оценки, а вероятности классов.</p>
+<p>Softmax применяется построчно: объекты не смешиваются между собой. После него в каждой строке десять положительных чисел, которые в сумме дают ровно 1. Порядок сохраняется: у какой оценки число было больше, у той больше и вероятность. Форма прежняя — 4 × 10, изменился смысл: это уже не оценки, а вероятности классов.</p>
 <div class="math-display" data-tex="p_{ic} = e^{\,z^{(2)}_{ic}} \Big/ \sum_{c'=1}^{10} e^{\,z^{(2)}_{ic'}} \qquad \sum_c p_{ic} = 1"></div>
     </div>
     <div class="step-panel" data-on="x w1 b1 z1 h1 h1b w2 b2 z2 p l lmark" data-focus="l lmark">
       <div class="step-kicker">Шаг 7 · потеря</div>
       <h4>Матрица 4 × 10 и метки 4 × 10 схлопываются в одно число</h4>
 <p>Последний шаг сравнивает P с Y и выдаёт единственное число — потерю батча. Весь прямой проход — это два умножения матриц, два прибавления сдвигов и две поэлементные операции; ничего сверх этого в сети нет.</p>
-<div class="math-display" data-tex="L = -\frac{1}{B}\sum_{i=1}^{B}\sum_{c=0}^{9} y_{ic}\,\log p_{ic}"></div>
+<div class="math-display" data-tex="L = -\frac{1}{B}\sum_{i=1}^{B}\sum_{c} y_{ic}\,\log p_{ic}"></div>
     </div>
   </div>
 </div>
@@ -2161,8 +2118,8 @@
 <p>
   Дальше — сама арифметика, клетка за клеткой. Матрицы ниже нарисованы с индексами: видно,
   какая строка на какой столбец умножается и в какую клетку результата это попадает.
-  Чисел внутри клеток нет — они бы туда не поместились, — зато они подставлены под схемой
-  и в описании каждого шага, так что любую цифру можно перепроверить на калькуляторе.
+  Чисел внутри клеток нет — они бы туда не поместились, — зато они подставлены
+  в описании каждого шага, так что любую цифру можно перепроверить на калькуляторе.
 </p>
 
 <div class="stage" id="stageFX" tabindex="0">
@@ -2742,20 +2699,13 @@
   <span class="math-inline" data-tex="-\log 0{,}0843 = 2{,}4735"></span>. Потеря батча — их среднее:
 </p>
 
-<div class="math-display" data-tex="L = -\frac{1}{B}\sum_{i=1}^{B}\sum_{c=0}^{9} y_{ic}\,\log p_{ic} \;=\; -\frac{1}{B}\sum_{i=1}^{B} \log p_{i,\,y_i}"></div>
+<div class="math-display" data-tex="L = -\frac{1}{B}\sum_{i=1}^{B}\sum_{c} y_{ic}\,\log p_{ic} \;=\; -\frac{1}{B}\sum_{i=1}^{B} \log p_{i,\,y_i}"></div>
 
 <p>
   Второе равенство — это то же самое, записанное короче: one-hot метка обнуляет девять слагаемых
   из десяти, и в сумме остаётся ровно одно. Обе записи полезны: первая удобна для вывода градиента,
   вторая — для понимания.
 </p>
-
-<div class="callout-blue">
-  <strong>Почему логарифм, а не «1 − p»:</strong> из-за формы штрафа. Рядом с единицей −log p почти
-  плоский, а у нуля уходит в бесконечность. Значит, уверенная ошибка наказывается несопоставимо
-  сильнее, чем честное «не знаю»: вероятность 0,01 у верного класса стоит 4,61, а 0,1 — только 2,30.
-  Это ровно то поведение, которого мы хотим от классификатора.
-</div>
 
 <p>Посмотрим пошагово, как из сорока чисел получается одно.</p>
 
@@ -2881,28 +2831,18 @@
   </div>
 
   <div class="stage-notes">
-    <div class="step-panel" data-on="bars" data-focus="bars">
-      <div class="step-kicker">Шаг 1 · ответ сети</div>
-      <h4>Десять чисел на объект, в сумме 1</h4>
-<p>Каждая строка — одна картинка. Столбики почти одинаковой высоты: необученная сеть раздаёт всем классам примерно по 0,1. Заметьте, что сравнивать высоту столбиков между строками бессмысленно — сумма внутри строки всегда 1.</p>
-    </div>
-    <div class="step-panel" data-on="bars pick" data-focus="pick">
-      <div class="step-kicker">Шаг 2 · метка выбирает один столбик</div>
-      <h4>Из десяти чисел в счёт идёт ровно одно</h4>
-<p>One-hot метка обнуляет девять слагаемых из десяти, и в потере остаётся только вероятность верного класса: 0,1488, 0,1381, 0,1099 и 0,0843. Всё, что сеть думает про остальные классы, попадает в потерю лишь косвенно — через сумму в знаменателе softmax.</p>
-    </div>
     <div class="step-panel" data-on="bars pick curve" data-focus="curve">
-      <div class="step-kicker">Шаг 3 · логарифм</div>
+      <div class="step-kicker">Шаг 1 · логарифм</div>
       <h4>Штраф равен <span class="math-inline" data-tex="-\log p"></span> и растёт до бесконечности</h4>
 <p>Почему логарифм, а не, скажем, 1 − p? Из-за формы: около единицы штраф почти нулевой, а при стремлении вероятности к нулю он неограниченно растёт. Сеть, уверенно давшая верному классу 0,01, получает штраф 4,61 — вдвое больше, чем сеть, честно сказавшая «не знаю» (0,1): у неё 2,30.</p>
     </div>
     <div class="step-panel" data-on="bars pick curve dots mean" data-focus="mean">
-      <div class="step-kicker">Шаг 4 · средняя по батчу</div>
+      <div class="step-kicker">Шаг 2 · средняя по батчу</div>
       <h4><span class="math-inline" data-tex="L = 2{,}1416"></span> на четырёх картинках</h4>
 <p>Четыре штрафа усредняются: (1,9050 + 1,9796 + 2,2081 + 2,4735) / 4 = 2,1416. Именно деление на размер батча делает потерю сравнимой между батчами разного размера — и оно же появится в первой формуле обратного прохода.</p>
     </div>
     <div class="step-panel" data-on="bars pick curve dots mean ln10" data-focus="ln10">
-      <div class="step-kicker">Шаг 5 · с чем сравнивать</div>
+      <div class="step-kicker">Шаг 3 · с чем сравнивать</div>
       <h4><span class="math-inline" data-tex="\ln 10 = 2{,}3026"></span> — уровень полного незнания</h4>
 <p>Если сеть выдаёт всем десяти классам по 0,1, потеря равна −log 0,1 = 2,3026. Наши 2,1416 чуть ниже — просто повезло с начальными весами. Это лучший ориентир на старте обучения: потеря около 2,3 — сеть не сдвинулась, потеря 5 или 10 — где-то ошибка в коде или шаг слишком велик.</p>
     </div>
@@ -2995,7 +2935,7 @@
     <div class="step-panel" data-on="img flat net loss d2 g2" data-focus="g2"><div class="step-kicker">Шаг 3 · веса второго слоя</div><h4>Производная веса — вход связи, умноженный на сигнал</h4><p>Вес <span class="math-inline" data-tex="w^{(2)}_{jc}"></span> входит в оценку <span class="math-inline" data-tex="z_c"></span> слагаемым <span class="math-inline" data-tex="h_j w^{(2)}_{jc}"></span>. Если сдвинуть вес на малое ε, оценка сдвинется на <span class="math-inline" data-tex="h_j \varepsilon"></span>, а потеря — на <span class="math-inline" data-tex="h_j \delta_c \varepsilon"></span>. Значит, производная по весу связи равна «значение на её входе × сигнал на её выходе».</p>
 <div class="math-display" data-tex="\partial L/\partial w^{(2)}_{jc} = \textstyle\sum_{\text{картинки}} h_j\,\delta^{(2)}_c, \qquad \partial L/\partial b^{(2)}_c = \textstyle\sum_{\text{картинки}} \delta^{(2)}_c"></div>
 <p>Для связи 22 → «3» вклад тройки:</p><div class="math-display" data-tex="h_{22}\,\delta_3 = 1{,}0536\cdot(-0{,}2128) = -0{,}2242"></div><p>Красные связи — самые большие из 320 таких произведений. От пунктирных нейронов связей нет: у них <span class="math-inline" data-tex="h_j = 0"></span>, и вес от них на этой картинке ни на что не повлиял. Производная сдвига — просто сигнал δ, потому что сдвиг входит в оценку с множителем 1.</p></div>
-    <div class="step-panel" data-on="img flat net loss d2 dh" data-focus="dh"><div class="step-kicker">Шаг 4 · сигнал в скрытый нейрон</div><h4>Нейрон собирает сигналы со всех выходов, в которые он смотрит</h4><p>Значение <span class="math-inline" data-tex="h_{22}"></span> входит во все десять оценок, каждый раз со своим весом. Поэтому его производная — сумма десяти вкладов «вес связи × сигнал на её конце». Красные стрелки идут по тем же десяти связям, что и на прямом проходе, только в обратную сторону.</p><div class="math-display" data-tex="\begin{gathered} \frac{\partial L}{\partial h_{22}} = \sum_{c=0}^{9} w^{(2)}_{22,c}\,\delta_c = 0{,}2681\cdot(-0{,}2128) + (-0{,}1697)\cdot 0{,}0219 + \ldots \\ = -0{,}0661 \end{gathered}"></div><p>Главный вклад, −0,0570, даёт связь в правильный класс. Так же считается сигнал у каждого из 32 нейронов.</p></div>
+    <div class="step-panel" data-on="img flat net loss d2 dh" data-focus="dh"><div class="step-kicker">Шаг 4 · сигнал в скрытый нейрон</div><h4>Нейрон собирает сигналы со всех выходов, в которые он смотрит</h4><p>Значение <span class="math-inline" data-tex="h_{22}"></span> входит во все десять оценок, каждый раз со своим весом. Поэтому его производная — сумма десяти вкладов «вес связи × сигнал на её конце». Красные стрелки идут по тем же десяти связям, что и на прямом проходе, только в обратную сторону.</p><div class="math-display" data-tex="\begin{gathered} \frac{\partial L}{\partial h_{22}} = \sum_{c} w^{(2)}_{22,c}\,\delta_c = 0{,}2681\cdot(-0{,}2128) + (-0{,}1697)\cdot 0{,}0219 + \ldots \\ = -0{,}0661 \end{gathered}"></div><p>Главный вклад, −0,0570, даёт связь в правильный класс. Так же считается сигнал у каждого из 32 нейронов.</p></div>
     <div class="step-panel" data-on="img flat net loss d2 mask" data-focus="mask"><div class="step-kicker">Шаг 5 · через ReLU</div><h4>Сигнал проходит только через открытые нейроны</h4><p>На прямом проходе ReLU пропустила положительные суммы и обнулила остальные. Назад то же самое: у открытого нейрона малый сдвиг суммы <span class="math-inline" data-tex="z_j"></span> сдвигает <span class="math-inline" data-tex="h_j"></span> на столько же, у закрытого не сдвигает вовсе. Поэтому <span class="math-inline" data-tex="\delta^{(1)}_j"></span> равен сигналу из шага 4 у 12 открытых нейронов и нулю у 20 закрытых.</p>
 <div class="math-display" data-tex="\delta^{(1)}_j = \partial L/\partial h_j \cdot \mathbb 1\left[z^{(1)}_j > 0\right]"></div>
 <p>У нейрона 22 <span class="math-inline" data-tex="\delta^{(1)}_{22} = -0{,}0661"></span>. Насыщенность красного показывает величину сигнала, самые сильные у нейронов 15 и 16: −0,1015 и 0,1021.</p></div>
@@ -3009,6 +2949,36 @@
   </div>
 </div>
 <p class="stage-hint">Наведите фокус на сцену и листайте шаги стрелками ← →.</p>
+
+### Те же связи на всех четырёх картинках
+
+<p>
+  Шаги 2–6 шли по одной тройке. В батче четыре картинки, и производная по весу — сумма вкладов
+  всех четырёх (шаг 7). Для двух связей, которые мы разбирали, вот все числа, из которых эти суммы
+  собраны. У пятёрки, двойки и восьмёрки тройка — неверный класс, поэтому сигнал выхода «3» у них
+  положительный: <span class="math-inline" data-tex="p_3/4"></span>, а у тройки <span class="math-inline" data-tex="(p_3 - 1)/4"></span>. Сигнал нейрона 22 на каждой картинке получен так же, как на тройке в шагах 4–5.
+</p>
+
+<table class="shape-table">
+  <tr><th>Картинка</th><th>Нейрон 22, <span class="math-inline" data-tex="h_{22}"></span></th><th>Вероятность «3», <span class="math-inline" data-tex="p_3"></span></th><th>Сигнал выхода «3», <span class="math-inline" data-tex="\delta^{(2)}_3"></span></th><th>Клетка 2, <span class="math-inline" data-tex="x_2"></span></th><th>Сигнал нейрона 22, <span class="math-inline" data-tex="\delta^{(1)}_{22}"></span></th></tr>
+  <tr><td>тройка</td><td><span class="math-inline" data-tex="1{,}0536"></span></td><td><span class="math-inline" data-tex="0{,}1488"></span></td><td><span class="math-inline" data-tex="-0{,}2128"></span></td><td><span class="math-inline" data-tex="0{,}0625"></span></td><td><span class="math-inline" data-tex="-0{,}0661"></span></td></tr>
+  <tr><td>пятёрка</td><td><span class="math-inline" data-tex="0{,}5808"></span></td><td><span class="math-inline" data-tex="0{,}1356"></span></td><td><span class="math-inline" data-tex="0{,}0339"></span></td><td><span class="math-inline" data-tex="0"></span></td><td><span class="math-inline" data-tex="-0{,}0297"></span></td></tr>
+  <tr><td>двойка</td><td><span class="math-inline" data-tex="0{,}5335"></span></td><td><span class="math-inline" data-tex="0{,}1235"></span></td><td><span class="math-inline" data-tex="0{,}0309"></span></td><td><span class="math-inline" data-tex="0{,}1875"></span></td><td><span class="math-inline" data-tex="0{,}0486"></span></td></tr>
+  <tr><td>восьмёрка</td><td><span class="math-inline" data-tex="0{,}9531"></span></td><td><span class="math-inline" data-tex="0{,}1160"></span></td><td><span class="math-inline" data-tex="0{,}0290"></span></td><td><span class="math-inline" data-tex="0"></span></td><td><span class="math-inline" data-tex="-0{,}0491"></span></td></tr>
+</table>
+
+<p>Связь 22 → «3»: значение нейрона, умноженное на сигнал выхода, по четырём картинкам.</p>
+
+<div class="math-display" data-tex="\begin{gathered} 1{,}0536\cdot(-0{,}2128) + 0{,}5808\cdot 0{,}0339 \\ + 0{,}5335\cdot 0{,}0309 + 0{,}9531\cdot 0{,}0290 \\ = -0{,}2242 + 0{,}0197 + 0{,}0165 + 0{,}0276 = -0{,}1604 \end{gathered}"></div>
+
+<p>Связь из клетки 2 в нейрон 22: яркость клетки, умноженная на сигнал нейрона. У пятёрки и восьмёрки клетка 2 пустая, и их вклад равен нулю.</p>
+
+<div class="math-display" data-tex="\begin{gathered} 0{,}0625\cdot(-0{,}0661) + 0\cdot(-0{,}0297) \\ + 0{,}1875\cdot 0{,}0486 + 0\cdot(-0{,}0491) = 0{,}0050 \end{gathered}"></div>
+
+<p>
+  Эти два числа встретятся ещё дважды: в части 10 их дадут матричные формулы, в части 12 по ним
+  сделаем шаг спуска.
+</p>
 
 <div class="callout">
   <strong>Главная мысль части:</strong> обратный проход идёт по тем же связям, что и прямой. На связи
@@ -3123,10 +3093,10 @@
 </p>
 
 <div class="callout-blue">
-  <strong>Проверка на нашем батче:</strong> возьмём вес между нейроном 21 и классом «3». Формула даёт
+  <strong>Проверка на нашем батче:</strong> возьмём вес между нейроном 22 и классом «3». Формула даёт
   сумму четырёх произведений «активация × градиент выхода»:
   1,0536 · (−0,2128) + 0,5808 · 0,0339 + 0,5335 · 0,0309 + 0,9531 · 0,0290 = −0,1604.
-  Столько и стоит в <span class="math-inline" data-tex="\partial L/\partial W^{(2)}"></span> на месте [21, 3]. Видно и смысл: первое слагаемое, где нейрон был
+  Столько и стоит в <span class="math-inline" data-tex="\partial L/\partial W^{(2)}"></span> в строке 22, столбце 4: столбцы нумеруются с единицы, цифры с нуля. Видно и смысл: первое слагаемое, где нейрон был
   активнее всего, а класс ошибся сильнее всего, задаёт знак всей суммы.
 </div>
 
@@ -3255,10 +3225,6 @@
 <g data-key="gz1" data-only="1">
 <text x="560" y="432" class="cap">маска сохранена с прямого прохода: 4 × 32</text>
 </g>
-<g data-key="rule" data-only="1">
-<foreignObject x="560.0" y="388.9" width="218" height="32.2"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit" style="font-size:14px;color:#C30B0A;font-weight:700"><span>форма <span data-tex="\partial L/\partial \theta ="></span> форма <span data-tex="\theta"></span></span></div></foreignObject>
-<text x="560" y="432" class="cap">проверка, которая ловит почти все ошибки в коде</text>
-</g>
 <text x="34" y="500" class="legend">красные коробочки под карточками — то, ради чего затевался обратный проход: производные по параметрам слоя</text>
 </svg>
   </div>
@@ -3301,11 +3267,6 @@
       <div class="step-kicker">Шаг 6 · параметры первого слоя</div>
       <h4>Ровно та же формула, что и для второго</h4>
 <p><span class="math-inline" data-tex="\partial L/\partial W^{(1)} = X^{\top} \cdot \partial L/\partial Z^{(1)}"></span>: [64 × 4] · [4 × 32] = [64 × 32]. Формула та же, что у второго слоя, только вход слоя теперь <span class="math-inline" data-tex="X"></span>: слой не знает своего номера. Именно поэтому обратный проход пишется одним циклом по слоям в обратном порядке.</p>
-    </div>
-    <div class="step-panel" data-on="net gp gz2 gw2 ga1 gx gw1 rule" data-focus="rule">
-      <div class="step-kicker">Шаг 7 · правило форм</div>
-      <h4>У градиента всегда форма того, по чему дифференцируем</h4>
-<p>Это самая полезная проверка на практике: <span class="math-inline" data-tex="\partial L/\partial W^{(1)}"></span> обязана быть 64 × 32, <span class="math-inline" data-tex="\partial L/\partial b^{(2)}"></span> — вектором из 10 чисел, <span class="math-inline" data-tex="\partial L/\partial Z^{(2)}"></span> — матрицей 4 × 10. Слева от первого слоя градиент тоже существует — <span class="math-inline" data-tex="\partial L/\partial X"></span> формы 4 × 64, — но считать его незачем: под ним нет параметров. Если формы сошлись, вероятность ошибки в выкладке резко падает; если нет — ошибка найдена, даже не начав считать.</p>
     </div>
   </div>
 </div>
@@ -4054,43 +4015,38 @@
   </div>
 
   <div class="stage-notes">
-    <div class="step-panel" data-on="e1" data-focus="e1">
-      <div class="step-kicker">Шаг 1 · что мы ищем</div>
-      <h4>2410 производных — по одной на каждый параметр</h4>
-<p>Обратный проход не ищет ничего, кроме этих четырёх таблиц. У каждой производной та же форма, что у параметра: если <span class="math-inline" data-tex="W^{(1)}"></span> — это 64 × 32, то и <span class="math-inline" data-tex="\partial L/\partial W^{(1)}"></span> — 64 × 32.</p><div class="math-display" data-tex="\left(\dfrac{\partial L}{\partial W}\right)_{kj} = \dfrac{\partial L}{\partial w_{kj}}"></div><p>Считать их по определению — 2410 отдельных прямых проходов. Мы получим все разом, двигаясь справа налево и переиспользуя уже посчитанное.</p>
-    </div>
     <div class="step-panel" data-on="mm0 e2 h2" data-focus="h2">
-      <div class="step-kicker">Шаг 2 · вход обратного прохода</div>
+      <div class="step-kicker">Шаг 1 · вход обратного прохода</div>
       <h4><span class="math-inline" data-tex="\partial L/\partial z^{(2)}_{1,4} = (0{,}1488 - 1) / 4 = -0{,}2128"></span></h4>
 <p>Пара «softmax + кросс-энтропия» схлопывается в разность «что выдала сеть минус что было надо», делённую на размер батча. Верному классу вычитается единица, остальным — ноль.</p><div class="math-display" data-tex="\dfrac{\partial L}{\partial z^{(2)}_{1,4}} = \dfrac{0{,}1488 - 1}{4} = -0{,}2128, \qquad \dfrac{\partial L}{\partial z^{(2)}_{1,1}} = \dfrac{0{,}0876 - 0}{4} = 0{,}0219"></div><p>Первая строка целиком: 0,0219; 0,0237; 0,0206; <strong>−0,2128</strong>; 0,0296; 0,0223; 0,0145; 0,0311; 0,0229; 0,0262. Сумма строки — ровно ноль: сумма всех p равна единице, сумма всех y — тоже.</p>
     </div>
     <div class="step-panel" data-on="mm1 e3 h3" data-focus="h3">
-      <div class="step-kicker">Шаг 3 · градиент весов второго слоя</div>
+      <div class="step-kicker">Шаг 2 · градиент весов второго слоя</div>
       <h4><span class="math-inline" data-tex="\partial L/\partial w^{(2)}_{22,4} = -0{,}1604"></span></h4>
 <p>Вес между нейроном 22 и классом «3» участвовал в четырёх выходах — по одному на картинку. Вклады складываются, и каждый равен «активация × градиент выхода».</p><div class="math-display" data-tex="\begin{gathered} \dfrac{\partial L}{\partial w^{(2)}_{22,4}} = 1{,}0536\cdot(-0{,}2128) + 0{,}5808\cdot 0{,}0339 \\ + 0{,}5335\cdot 0{,}0309 + 0{,}9531\cdot 0{,}0290 \end{gathered}"></div><div class="math-display" data-tex="= -0{,}2242 + 0{,}0197 + 0{,}0165 + 0{,}0276 = -0{,}1604"></div><p>Первое слагаемое задаёт знак всей суммы: там, где нейрон был активнее всего, класс ошибся сильнее всего. Минус означает «увеличь этот вес, и потеря упадёт».</p>
     </div>
     <div class="step-panel" data-on="mm2 e4 h4" data-focus="h4">
-      <div class="step-kicker">Шаг 4 · градиент смещений</div>
+      <div class="step-kicker">Шаг 3 · градиент смещений</div>
       <h4><span class="math-inline" data-tex="\partial L/\partial b^{(2)}_{4} = -0{,}1190"></span> — просто сумма столбца</h4>
 <p>На прямом проходе смещение размножалось по строкам батча. Обратная операция к размножению — суммирование: складываем столбец <span class="math-inline" data-tex="\partial L/\partial Z^{(2)}"></span> по всем четырём объектам.</p><div class="math-display" data-tex="\dfrac{\partial L}{\partial b^{(2)}_{4}} = -0{,}2128 + 0{,}0339 + 0{,}0309 + 0{,}0290 = -0{,}1190"></div><p>Вся строка: 0,1076; 0,0868; −0,1736; −0,1190; 0,0993; −0,1269; 0,0648; 0,1207; −0,1605; 0,1007. Их сумма — ноль, потому что нулевая сумма была у каждой строки <span class="math-inline" data-tex="\partial L/\partial Z^{(2)}"></span>. Смещения не сдвинут все десять оценок разом, они меняют только разницу между классами.</p>
     </div>
     <div class="step-panel" data-on="mm3 e5 h5" data-focus="h5">
-      <div class="step-kicker">Шаг 5 · протолкнуть градиент влево</div>
+      <div class="step-kicker">Шаг 4 · протолкнуть градиент влево</div>
       <h4><span class="math-inline" data-tex="\partial L/\partial h^{(1)}_{1,22} = -0{,}0661"></span></h4>
 <p>Активация 22-го нейрона участвовала во всех десяти оценках своей строки, каждый раз с множителем-весом. Значит, складываем десять произведений «вес × градиент оценки».</p><div class="math-display" data-tex="\begin{gathered} \dfrac{\partial L}{\partial h^{(1)}_{1,22}} = \sum_{c=1}^{10} w^{(2)}_{22,c}\,\dfrac{\partial L}{\partial z^{(2)}_{1c}} \\ = -0{,}2128\cdot 0{,}2681 + 0{,}0219\cdot(-0{,}0172) + \ldots = -0{,}0661 \end{gathered}"></div><p>Главное слагаемое — верный класс: −0,2128 · 0,2681 = −0,0570. Тот же самый вес, что нёс число вперёд, несёт градиент назад — только теперь матрица транспонирована.</p>
     </div>
     <div class="step-panel" data-on="mm4 e6 h6" data-focus="h6">
-      <div class="step-kicker">Шаг 6 · маска ReLU</div>
+      <div class="step-kicker">Шаг 5 · маска ReLU</div>
       <h4>72 клетки из 128 обнуляются</h4>
 <p>Производная max(0, z) равна единице там, где z был положителен, и нулю в остальных местах. Поэтому маска, снятая на прямом проходе, просто умножается поклеточно.</p><div class="math-display" data-tex="\dfrac{\partial L}{\partial z^{(1)}_{1,22}} = -0{,}0661\cdot 1 = -0{,}0661, \qquad \dfrac{\partial L}{\partial z^{(1)}_{1,21}} = 0{,}0490\cdot 0 = 0"></div><p>Здесь и живёт «умирание» нейронов: у десяти нейронов маска нулевая на всех четырёх картинках, и до их весов градиент просто не доходит.</p>
     </div>
     <div class="step-panel" data-on="mm5 e7 h7" data-focus="h7">
-      <div class="step-kicker">Шаг 7 · градиент первого слоя</div>
+      <div class="step-kicker">Шаг 6 · градиент первого слоя</div>
       <h4><span class="math-inline" data-tex="\partial L/\partial w^{(1)}_{2,22} = 0{,}0050"></span> — и та же формула, что была для второго</h4>
 <p>Формула та же, что для второго слоя: вход слоя транспонируется и умножается на градиент выхода. Для первого слоя вход — сами картинки.</p><div class="math-display" data-tex="\begin{gathered} \dfrac{\partial L}{\partial w^{(1)}_{2,22}} = 0{,}0625\cdot(-0{,}0661) + 0\cdot(-0{,}0297) \\ + 0{,}1875\cdot 0{,}0486 + 0\cdot(-0{,}0491) \\ = -0{,}0041 + 0{,}0091 = 0{,}0050 \end{gathered}"></div><p>Две картинки из четырёх имеют в этом пикселе ноль и не вносят вклада вовсе. Если пиксель пуст у всех четырёх — вся строка <span class="math-inline" data-tex="\partial L/\partial W^{(1)}"></span> нулевая; на нашем батче таких строк 18 из 64. Смещения считаются так же, как во втором слое: <span class="math-inline" data-tex="\partial L/\partial b^{(1)}_{22} = -0{,}0661 - 0{,}0297 + 0{,}0486 - 0{,}0491 = -0{,}0963"></span>.</p>
     </div>
     <div class="step-panel" data-on="e1 ok" data-focus="ok">
-      <div class="step-kicker">Шаг 8 · проверка формами</div>
+      <div class="step-kicker">Шаг 7 · проверка формами</div>
       <h4><span class="math-inline" data-tex="2048 + 32 + 320 + 10 = 2410"></span> — всё сошлось</h4>
 <p>Самая полезная проверка на практике: у <span class="math-inline" data-tex="\partial L/\partial W^{(1)}"></span> обязана быть форма 64 × 32, у <span class="math-inline" data-tex="\partial L/\partial b^{(2)}"></span> — десять чисел, у <span class="math-inline" data-tex="\partial L/\partial Z^{(2)}"></span> — 4 × 10. Если формы сходятся, вероятность ошибки в выкладке резко падает; если нет — ошибка найдена, даже не начав считать.</p><p>Слева от первого слоя градиент тоже существует — <span class="math-inline" data-tex="\partial L/\partial X"></span> формы 4 × 64, — но считать его незачем: под ним нет параметров. Все 2410 чисел ниже сверены центральными разностями, худшее расхождение 3,7 · <span class="math-inline" data-tex="10^{-11}"></span>.</p>
     </div>
@@ -4127,49 +4083,6 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
 </p>
 
 <div class="math-display" data-tex="\frac{\partial L}{\partial \theta} \;\approx\; \frac{L(\theta + \varepsilon) - L(\theta - \varepsilon)}{2\varepsilon}, \qquad \varepsilon = 10^{-5}"></div>
-
-### Одно число сквозь всю сеть
-
-<p>
-  Проверим формулы руками. Возьмём первую картинку батча — тройку — и двадцать второй нейрон
-  скрытого слоя (в таблице индексы как в коде на NumPy, с нуля, поэтому у него номер 21), и проследим одно-единственное число вперёд и назад. Все промежуточные значения
-  ниже настоящие, их можно пересчитать на калькуляторе.
-</p>
-
-<table class="shape-table">
-  <tr><th>Что считаем</th><th>Как</th><th>Сколько</th></tr>
-  <tr><td>оценка нейрона<br><span class="math-inline" data-tex="z^{(1)}[0, 21]"></span></td>
-      <td>0,0625 · 0,1160 + 0,5000 · 0,1114 + 0,8750 · 0,1284 + … <br>(34 ненулевых слагаемых, смещение равно нулю)</td>
-      <td>1,0536</td></tr>
-  <tr><td>после ReLU<br><span class="math-inline" data-tex="h^{(1)}[0, 21]"></span></td><td>число положительное, значит проходит как есть</td><td>1,0536</td></tr>
-  <tr><td>оценка класса «3»<br><span class="math-inline" data-tex="z^{(2)}[0, 3]"></span></td><td>тридцать два произведения «активация × вес» плюс нулевое смещение</td><td>0,3139</td></tr>
-  <tr><td>вероятность<br><span class="math-inline" data-tex="p[0, 3]"></span></td><td><span class="math-inline" data-tex="e^{0{,}3139} = 1{,}3688"></span>, сумма всех десяти экспонент 9,1979, делим одно на другое</td><td>0,1488</td></tr>
-  <tr><td>штраф объекта</td><td>−log 0,1488</td><td>1,9050</td></tr>
-  <tr><td>градиент оценки<br><span class="math-inline" data-tex="\partial L/\partial z^{(2)}[0, 3]"></span></td><td>(0,1488 − 1) / 4</td><td>−0,2128</td></tr>
-  <tr><td>градиент веса<br><span class="math-inline" data-tex="\partial L/\partial W^{(2)}[21, 3]"></span></td>
-      <td>1,0536 · (−0,2128) + 0,5808 · 0,0339 + 0,5335 · 0,0309 + 0,9531 · 0,0290</td>
-      <td>−0,1604</td></tr>
-  <tr><td>градиент активации<br><span class="math-inline" data-tex="\partial L/\partial h^{(1)}[0, 21]"></span></td>
-      <td>десять произведений «градиент оценки × вес», из них главное −0,2128 · 0,2681 = −0,0570</td>
-      <td>−0,0661</td></tr>
-  <tr><td>через ReLU<br><span class="math-inline" data-tex="\partial L/\partial z^{(1)}[0, 21]"></span></td><td>нейрон был открыт, маска равна единице</td><td>−0,0661</td></tr>
-  <tr><td>градиент веса первого слоя<br><span class="math-inline" data-tex="\partial L/\partial W^{(1)}[1, 21]"></span></td>
-      <td>0,0625 · (−0,0661) + 0 + 0,1875 · 0,0486 + 0 <br>(две картинки из четырёх имеют в этой клетке ноль)</td>
-      <td>0,0050</td></tr>
-</table>
-
-<p>
-  Последняя строка показывает всю механику сразу: вклад картинки в градиент веса — это её яркость
-  в нужной клетке, умноженная на градиент нейрона. Если клетка пустая, вклад равен нулю при любом
-  состоянии сети; если пустая у всех картинок батча — нулевой будет вся строка. Отсюда и берутся
-  18 нулевых строк в <span class="math-inline" data-tex="\partial L/\partial W^{(1)}"></span> на этом батче.
-</p>
-
-<div class="callout-blue">
-  <strong>Знаки читаются буквально:</strong> у <span class="math-inline" data-tex="\partial L/\partial W^{(2)}[21, 3]"></span> знак минус означает «увеличь этот вес,
-  и потеря упадёт» — что логично, ведь верным классом была именно тройка, а нейрон 21 был активен.
-  Шаг спуска вычитает производную, то есть как раз увеличит этот вес.
-</div>
 
 <div class="callout-yellow">
   <strong>Где численная проверка честно ломается:</strong> ReLU имеет излом в нуле. Если взять ε
@@ -4210,7 +4123,7 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
   <div class="stage-notes">
     <div class="step-panel" data-on="imgs sig" data-focus="sig"><div class="step-kicker">Шаг 1 · сигналы</div><h4>Сигнал нейрона 22 на каждой из четырёх картинок</h4><p>Обратный проход уже дошёл до скрытого слоя и посчитал сигнал каждого нейрона на каждой картинке: это матрица <span class="math-inline" data-tex="\partial L/\partial Z^{(1)}"></span> формы 4 × 32, в части 9 мы обозначали её элементы <span class="math-inline" data-tex="\delta^{(1)}"></span>. Возьмём из неё столбец нейрона 22: четыре числа, по одному на картинку.</p><p>Минус у тройки, пятёрки и восьмёрки значит, что потеря упадёт, если на этих картинках сумма нейрона станет больше. Плюс у двойки — если меньше.</p></div>
     <div class="step-panel" data-on="imgs sig prod" data-focus="prod"><div class="step-kicker">Шаг 2 · вклады</div><h4>Каждая картинка, умноженная на свой сигнал</h4><p>Вес <span class="math-inline" data-tex="w^{(1)}_{k,22}"></span> входит в сумму нейрона 22 слагаемым <span class="math-inline" data-tex="x_k\, w^{(1)}_{k,22}"></span>, поэтому вклад картинки в его производную — яркость клетки <span class="math-inline" data-tex="k"></span>, умноженная на сигнал (часть 9, шаг 6). Для всех 64 клеток сразу это картинка, умноженная на одно число.</p><p>Тройка, пятёрка и восьмёрка окрашиваются синим, двойка — красным. Пустые клетки остаются серыми: ноль, умноженный на любой сигнал, даёт ноль.</p></div>
-    <div class="step-panel" data-on="imgs sig prod sum cell" data-focus="sum cell"><div class="step-kicker">Шаг 3 · сумма</div><h4>Сумма четырёх карт — столбец 22 матрицы <span class="math-inline" data-tex="\partial L/\partial W^{(1)}"></span></h4><p>Вклады картинок батча складываются, поэтому четыре карты складываются поклеточно. Получаются 64 числа — столбец 22 матрицы <span class="math-inline" data-tex="\partial L/\partial W^{(1)} = X^{\top} \partial L/\partial Z^{(1)}"></span>, разложенный обратно в 8 × 8. Обведённая клетка — та, что в таблице выше:</p><div class="math-display" data-tex="\begin{gathered} \frac{\partial L}{\partial w^{(1)}_{2,22}} = 0{,}0625\cdot(-0{,}0661) + 0 + 0{,}1875\cdot 0{,}0486 + 0 \\ = 0{,}0050 \end{gathered}"></div></div>
+    <div class="step-panel" data-on="imgs sig prod sum cell" data-focus="sum cell"><div class="step-kicker">Шаг 3 · сумма</div><h4>Сумма четырёх карт — столбец 22 матрицы <span class="math-inline" data-tex="\partial L/\partial W^{(1)}"></span></h4><p>Вклады картинок батча складываются, поэтому четыре карты складываются поклеточно. Получаются 64 числа — столбец 22 матрицы <span class="math-inline" data-tex="\partial L/\partial W^{(1)} = X^{\top} \partial L/\partial Z^{(1)}"></span>, разложенный обратно в 8 × 8. Обведённая клетка — та, что мы считали в части 9:</p><div class="math-display" data-tex="\begin{gathered} \frac{\partial L}{\partial w^{(1)}_{2,22}} = 0{,}0625\cdot(-0{,}0661) + 0 + 0{,}1875\cdot 0{,}0486 + 0 \\ = 0{,}0050 \end{gathered}"></div></div>
     <div class="step-panel" data-on="imgs sig prod sum upd" data-focus="sum upd"><div class="step-kicker">Шаг 4 · что сделает шаг</div><h4>Синие клетки вырастут, красные уменьшатся</h4><p>Шаг спуска вычитает производную, умноженную на <span class="math-inline" data-tex="\eta = 0{,}3"></span> (часть 12). Где карта синяя, вес нейрона 22 вырастет, где красная — уменьшится, где серая — не изменится.</p><p>Синих клеток 41, и они лежат на штрихах тройки, пятёрки и восьмёрки. Красных 5, и все они там, где светлая двойка. После шага нейрон 22 сильнее откликается на тройку, пятёрку и восьмёрку и слабее на двойку: так и требовали знаки сигналов из шага 1.</p></div>
     <div class="step-panel" data-on="grid" data-focus="grid"><div class="step-kicker">Шаг 5 · все нейроны</div><h4>32 нейрона — 32 карты, 10 из них пустые</h4><p>Так же раскладывается каждый столбец <span class="math-inline" data-tex="\partial L/\partial W^{(1)}"></span>. Десять нейронов (1, 2, 4, 6, 10, 20, 21, 27, 30, 31) закрыты ReLU на всех четырёх картинках: их сигнал везде ноль, и карта пустая. Те же десять нейронов дают нулевые строки в <span class="math-inline" data-tex="\partial L/\partial W^{(2)}"></span>: их значение <span class="math-inline" data-tex="h"></span> равно нулю, и исходящие из них веса на этом батче ни на что не повлияли.</p><p>Нейрон, открытый только на одной картинке, получает её копию, умноженную на сигнал: у нейронов 3, 19, 24 и 28 это пятёрка, у 25, 26 и 29 — восьмёрка.</p></div>
     <div class="step-panel" data-on="grid empty" data-focus="empty"><div class="step-kicker">Шаг 6 · пустые клетки</div><h4>18 строк <span class="math-inline" data-tex="\partial L/\partial W^{(1)}"></span> — ровно нули</h4><p>Серые клетки по краям стоят на одних и тех же местах у всех 22 карт: это клетки, пустые у всех четырёх картинок батча. Вклад картинки — яркость клетки на сигнал, а яркость ноль, поэтому строка <span class="math-inline" data-tex="\partial L/\partial W^{(1)}"></span> этой клетки нулевая при любых сигналах. Таких клеток 18: весь левый и правый край и две клетки справа сверху. Веса этих клеток на этом батче не сдвинутся.</p><p>Четыре клетки пустые у всех 1347 обучающих картинок, на маленькой карте они темнее. Их 128 весов за 1260 шагов обучения не изменились ни разу.</p></div>
@@ -4942,7 +4855,7 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
     <div class="step-panel" data-on="mmall e6" data-focus="e6">
       <div class="step-kicker">Шаг 7 · почему нельзя шагнуть сразу в минимум</div>
       <h4>После шага маска ReLU уже другая: 51 открытая клетка вместо 56</h4>
-<p>Градиент — это производная в одной конкретной точке, и он верен только рядом с ней. Достаточно сделать шаг, и сеть меняется качественно: часть нейронов закрывается, часть открывается, и производные пересчитываются заново.</p><p>Поэтому шаг делают небольшим и повторяют — 1260 раз за наше обучение. Слишком длинный шаг перепрыгивает минимум: при η = 3 потеря на том же батче станет 2,9051, хуже, чем была до шага.</p>
+<p>Градиент — это производная в одной конкретной точке, и он верен только рядом с ней. Достаточно сделать шаг, и сеть меняется качественно: часть нейронов закрывается, часть открывается, и производные пересчитываются заново.</p><p>Поэтому шаг делают небольшим и повторяют — 1260 раз за наше обучение.</p>
     </div>
   </div>
 </div>
@@ -5067,28 +4980,23 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
   </div>
 
   <div class="stage-notes">
-    <div class="step-panel" data-on="axes curve rule" data-focus="rule">
-      <div class="step-kicker">Шаг 1 · правило шага</div>
-      <h4>Из каждого числа вычитаем его производную, умноженную на <span class="math-inline" data-tex="\eta"></span></h4>
-<p>Градиент показывает направление наискорейшего роста потери, поэтому идём в противоположную сторону. Все 2410 параметров обновляются одновременно и по одной и той же формуле — ни у весов, ни у смещений нет привилегий.</p>
-    </div>
     <div class="step-panel" data-on="axes curve rule start" data-focus="start">
-      <div class="step-kicker">Шаг 2 · срез вдоль направления</div>
+      <div class="step-kicker">Шаг 1 · срез вдоль направления</div>
       <h4>Что будет, если шагнуть на разную длину</h4>
 <p>Синяя кривая — это настоящая потеря нашего батча, посчитанная для шагов от 0 до 3 с интервалом 0,05. Слева она круто падает, потом выполаживается, а после единицы начинает расти: направление верное, но идти по нему бесконечно нельзя.</p>
     </div>
     <div class="step-panel" data-on="axes curve rule start eta03 probs" data-focus="eta03">
-      <div class="step-kicker">Шаг 3 · наш шаг</div>
+      <div class="step-kicker">Шаг 2 · наш шаг</div>
       <h4><span class="math-inline" data-tex="\eta = 0{,}3"></span> роняет потерю с 2,1416 до 1,4731</h4>
 <p>Один шаг по четырём картинкам — и вероятность верного класса у второй картинки выросла с 0,1381 до 0,3284, а у четвёртой с 0,0843 до 0,2323. Шаг подстроил веса под эти четыре картинки; про остальные 1343 он ничего не знает.</p>
     </div>
     <div class="step-panel" data-on="axes curve rule start eta03 best" data-focus="best">
-      <div class="step-kicker">Шаг 4 · а почему не сразу в минимум</div>
+      <div class="step-kicker">Шаг 3 · а почему не сразу в минимум</div>
       <h4>Лучший шаг для этого батча — 0,95, и брать его не надо</h4>
 <p>Минимум среза даёт потерю 1,0952 — вдвое меньше стартовой. Но это минимум по четырём картинкам, а не по всем 1347. Прыгнув туда, мы идеально подстроились бы под случайную четвёрку и испортили то, что уже знали. С маленьким шагом каждый батч сдвигает веса немного, и итоговое направление складывается из многих батчей.</p>
     </div>
     <div class="step-panel" data-on="axes curve rule start big" data-focus="big">
-      <div class="step-kicker">Шаг 5 · слишком длинный шаг</div>
+      <div class="step-kicker">Шаг 4 · слишком длинный шаг</div>
       <h4><span class="math-inline" data-tex="\eta = 3"></span> даёт 2,9051 — хуже, чем до шага</h4>
 <p>Направление осталось правильным, но мы перелетели долину и вылезли на противоположный склон. Именно так выглядит расходящееся обучение: потеря не просто перестаёт падать, а растёт от шага к шагу.</p>
     </div>
@@ -5099,13 +5007,6 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
 <p>Срез потери вдоль градиента можно пройти целиком: ползунок задаёт длину шага, справа видно, что этот шаг сделал с ответами на четыре картинки.</p>
 
 <div class="hn-live" id="wiStep"></div>
-
-<div class="callout-red">
-  <strong>Соблазн, которому нельзя поддаваться:</strong> длину шага 0,95 можно найти точным поиском
-  и получить на этом батче потерю 1,0952 вместо 1,4731. Но четыре картинки — это 0,3 % обучающей
-  выборки. Идеально подстроившись под них, мы сломали бы то, что уже выучили по остальным 1343.
-  С осторожным шагом каждый батч сдвигает веса лишь немного.
-</div>
 
 <div class="callout">
   <strong>Главная мысль части:</strong> направление даёт обратный проход, а длину — вы сами,
@@ -5120,7 +5021,7 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
 <p>
   Всё, что нужно для обучения, уже собрано. Осталось замкнуть цикл: взять батч, посчитать прямой
   проход, потерю, обратный проход, сдвинуть параметры — и повторить. Полный цикл обучения
-  умещается в семь строк:
+  умещается в двенадцать строк:
 </p>
 
 <pre><code>for ep in range(1, epochs + 1):
@@ -5135,26 +5036,6 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
         dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)
         W1 -= eta*dW1; b1 -= eta*db1             # шаг спуска
         W2 -= eta*dW2; b2 -= eta*db2</code></pre>
-
-<p>
-  Три слова, которые часто путают. <strong>Шаг</strong> — одно обновление параметров по одному батчу.
-  <strong>Эпоха</strong> — один проход по всем обучающим картинкам, у нас это 42 шага.
-  <strong>Батч</strong> — сколько картинок участвует в одном шаге; у нас 32, а последний батч эпохи
-  забирает остаток и получается из 35 картинок.
-</p>
-
-<div class="callout-blue">
-  <strong>Зачем перемешивать перед каждой эпохой:</strong> без этого сеть будет получать одни и те же
-  42 градиента в одном и том же порядке — и подстраиваться под порядок, а не под данные.
-  Перемешивание стоит одну строку, а разница на данных, отсортированных по классам, — 16 процентных
-  пунктов точности.
-</div>
-
-<p>
-  После первой эпохи, то есть всего 42 шагов, точность на отложенной выборке уже 88,44 %, после
-  пятой — 95,56 %, после тридцатой — 97,78 %. Основная часть качества набирается почти сразу,
-  а последние два процента стоят двадцати пяти эпох.
-</p>
 
 <p>Посмотрим пошагово, как выглядит обучение целиком.</p>
 
@@ -5279,7 +5160,7 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
     <div class="step-panel" data-on="tape" data-focus="tape">
       <div class="step-kicker">Шаг 1 · из чего состоит обучение</div>
       <h4>Шаг, батч, эпоха — три разных слова</h4>
-<p>Шаг — это один цикл «прямой проход → потеря → обратный проход → обновление» на одном батче. 1347 картинок при батче 32 дают 42 шага; последний батч забирает остаток и получается чуть больше. Проход по всем картинкам ровно один раз называется эпохой.</p>
+<p>Шаг — это один цикл «прямой проход → потеря → обратный проход → обновление» на одном батче. 1347 картинок при батче 32 дают 42 шага; последний батч забирает остаток и получается из 35 картинок. Проход по всем картинкам ровно один раз называется эпохой.</p>
     </div>
     <div class="step-panel" data-on="tape shuf" data-focus="shuf">
       <div class="step-kicker">Шаг 2 · перемешивание</div>
@@ -5299,7 +5180,7 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
     <div class="step-panel" data-on="tape accax atr ate first" data-focus="first">
       <div class="step-kicker">Шаг 5 · точность</div>
       <h4>88,44 % уже после первой эпохи</h4>
-<p>Сорок два шага по 32 картинки — и сеть узнаёт девять цифр из десяти. Так выглядит типичная кривая обучения: большая часть качества набирается в самом начале, а последние проценты стоят десятков эпох.</p>
+<p>Сорок два шага по 32 картинки — и сеть узнаёт девять цифр из десяти, после пятой эпохи — 95,56 %. Так выглядит типичная кривая обучения: большая часть качества набирается в самом начале, а последние проценты стоят десятков эпох.</p>
     </div>
     <div class="step-panel" data-on="tape accax atr ate" data-focus="ate">
       <div class="step-kicker">Шаг 6 · чем всё кончилось</div>
@@ -6420,7 +6301,7 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
 <rect x="508" y="211" width="13" height="13" fill="rgb(247,249,253)"/>
 <rect x="521" y="211" width="13" height="13" fill="rgb(239,204,202)"/>
 <rect x="430" y="120" width="104" height="104" fill="none" stroke="#5E5850" stroke-width="1.2"/>
-<text x="482" y="244" text-anchor="middle" font-size="12" fill="#111111">нейрон 16</text>
+<text x="482" y="244" text-anchor="middle" font-size="12" fill="#111111">нейрон 17</text>
 <text x="482" y="262" text-anchor="middle" font-size="12" fill="#5E5850">тянет к «0»</text>
 <rect x="560" y="120" width="13" height="13" fill="rgb(237,195,192)"/>
 <rect x="573" y="120" width="13" height="13" fill="rgb(249,238,237)"/>
@@ -6487,7 +6368,7 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
 <rect x="638" y="211" width="13" height="13" fill="rgb(246,228,226)"/>
 <rect x="651" y="211" width="13" height="13" fill="rgb(240,207,205)"/>
 <rect x="560" y="120" width="104" height="104" fill="none" stroke="#5E5850" stroke-width="1.2"/>
-<text x="612" y="244" text-anchor="middle" font-size="12" fill="#111111">нейрон 21</text>
+<text x="612" y="244" text-anchor="middle" font-size="12" fill="#111111">нейрон 22</text>
 <text x="612" y="262" text-anchor="middle" font-size="12" fill="#5E5850">тянет к «1»</text>
 <rect x="690" y="120" width="13" height="13" fill="rgb(251,242,242)"/>
 <rect x="703" y="120" width="13" height="13" fill="rgb(250,238,237)"/>
@@ -6554,7 +6435,7 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
 <rect x="768" y="211" width="13" height="13" fill="rgb(245,248,253)"/>
 <rect x="781" y="211" width="13" height="13" fill="rgb(249,237,236)"/>
 <rect x="690" y="120" width="104" height="104" fill="none" stroke="#5E5850" stroke-width="1.2"/>
-<text x="742" y="244" text-anchor="middle" font-size="12" fill="#111111">нейрон 18</text>
+<text x="742" y="244" text-anchor="middle" font-size="12" fill="#111111">нейрон 19</text>
 <text x="742" y="262" text-anchor="middle" font-size="12" fill="#5E5850">тянет к «6»</text>
 <rect x="820" y="120" width="13" height="13" fill="rgb(253,251,250)"/>
 <rect x="833" y="120" width="13" height="13" fill="rgb(247,249,253)"/>
@@ -6621,7 +6502,7 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
 <rect x="898" y="211" width="13" height="13" fill="rgb(214,226,246)"/>
 <rect x="911" y="211" width="13" height="13" fill="rgb(207,222,245)"/>
 <rect x="820" y="120" width="104" height="104" fill="none" stroke="#5E5850" stroke-width="1.2"/>
-<text x="872" y="244" text-anchor="middle" font-size="12" fill="#111111">нейрон 3</text>
+<text x="872" y="244" text-anchor="middle" font-size="12" fill="#111111">нейрон 4</text>
 <text x="872" y="262" text-anchor="middle" font-size="12" fill="#5E5850">тянет к «8»</text>
 <rect x="430" y="296" width="24" height="14" fill="rgb(195,55,45)"/>
 <text x="462" y="308" class="cap">красное — «здесь чернила нужны»</text>
@@ -6787,6 +6668,9 @@ dW1, db1 = Xb.T @ dZ1, dZ1.sum(0)</code></pre>
   <strong>Красивая история, которая не подтверждается:</strong> про скрытые нейроны обычно говорят,
   что они учат части образа — палочки, петельки, углы. У нашей сети ни один из 32 нейронов не похож
   ни на петлю, ни на палочку: это пятна из плюсов и минусов, разбросанные по всей картинке.
+  В части 11 градиент первого слоя на одном батче был похож на сами цифры. Но веса после обучения —
+  это случайные начальные числа плюс 1260 таких поправок от разных батчей и с разными знаками,
+  и в сумме цифры расплываются в пятна.
   Слои действительно строят промежуточные признаки, но выглядят эти признаки не так, как хотелось бы,
   и объяснимость приходится добывать отдельными методами, а не разглядыванием весов.
 </div>
