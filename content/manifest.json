@@ -178,7 +178,7 @@
             "en": "Decision trees",
             "kk": "Шешім ағаштары"
           },
-          "articles": ["decision-tree-full-cycle"]
+          "articles": ["decision-tree-full-cycle", "random-forest-full-cycle"]
         }
       ]
     },
@@ -564,6 +564,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/machine-learning/decision-tree-full-cycle.ru.md"
+  }
+},
+    {
+  "slug": "random-forest-full-cycle",
+  "category": "machine-learning",
+  "title": {
+    "ru": "Случайный лес: как неустойчивые деревья дают устойчивый ответ"
+  },
+  "description": {
+    "ru": "Случайный лес с нуля на тех же десяти студентах: теорема Кондорсе о голосовании, бутстрэп-выборки и 63,2 %, разные деревья на разных выборках, случайные признаки в узлах, голосование и вероятность, OOB-оценка, эксперимент на синтетических данных, дисперсия среднего, важность признаков, код с нуля и на sklearn."
+  },
+  "date": "2026-11-26",
+  "reading_time": 25,
+  "tags": ["ml-basics"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/random-forest-full-cycle.ru.md"
   }
 },
     {
