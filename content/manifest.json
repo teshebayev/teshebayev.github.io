@@ -178,7 +178,7 @@
             "en": "Decision trees",
             "kk": "Шешім ағаштары"
           },
-          "articles": ["decision-tree-full-cycle", "random-forest-full-cycle", "gradient-boosting-full-cycle"]
+          "articles": ["decision-tree-full-cycle", "regression-tree-full-cycle", "random-forest-full-cycle", "gradient-boosting-full-cycle"]
         }
       ]
     },
@@ -598,6 +598,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/machine-learning/gradient-boosting-full-cycle.ru.md"
+  }
+},
+    {
+  "slug": "regression-tree-full-cycle",
+  "category": "machine-learning",
+  "title": {
+    "ru": "Дерево регрессии: как оно строится на баллах десяти студентов"
+  },
+  "description": {
+    "ru": "Дерево регрессии с нуля: почему в листе среднее, сумма квадратов как мера неоднородности, перебор порогов по уменьшению SSE, рекурсия и ступенчатый прогноз, переобучение на новых студентах, обрезка по стоимости сложности, код с нуля и на sklearn."
+  },
+  "date": "2026-11-26",
+  "reading_time": 20,
+  "tags": ["ml-basics"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/regression-tree-full-cycle.ru.md"
   }
 },
     {
