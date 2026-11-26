@@ -170,6 +170,15 @@
             "kk": "Логистикалық регрессия"
           },
           "articles": ["logistic-regression-full-cycle"]
+        },
+        {
+          "group": "trees",
+          "label": {
+            "ru": "Деревья решений",
+            "en": "Decision trees",
+            "kk": "Шешім ағаштары"
+          },
+          "articles": ["decision-tree-full-cycle"]
         }
       ]
     },
@@ -538,6 +547,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/machine-learning/logistic-regression-full-cycle.ru.md"
+  }
+},
+    {
+  "slug": "decision-tree-full-cycle",
+  "category": "machine-learning",
+  "title": {
+    "ru": "Дерево решений: как оно строится на десяти студентах"
+  },
+  "description": {
+    "ru": "Дерево решений с нуля на десяти студентах: как два порога делят плоскость на прямоугольники, как дерево отвечает новому студенту, энтропия и прирост информации с живыми виджетами, перебор всех 16 порогов, рекурсивное построение и условия остановки, индекс Gini, переобучение на одном шумном студенте и неустойчивость к смене одной метки, код с нуля и проверка на sklearn. 10 частей и 7 пошаговых схем."
+  },
+  "date": "2026-11-26",
+  "reading_time": 25,
+  "tags": ["ml-basics"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/decision-tree-full-cycle.ru.md"
   }
 },
     {
