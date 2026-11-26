@@ -882,7 +882,8 @@
 <ul>
   <li><code>max_depth</code>: наибольшее число вопросов от корня до листа;</li>
   <li><code>min_samples_leaf</code>: сколько объектов должно остаться в каждом листе;
-      при значении 2 лист из одного студента 11 запрещён;</li>
+      при значении 2 лист из одного студента 11 запрещён, но и лист из одного студента 4 тоже,
+      и что из этого выходит, видно в части 9;</li>
   <li><code>min_samples_split</code>: сколько объектов нужно в узле, чтобы его вообще делить;</li>
   <li><code>ccp_alpha</code>: обрезка готового дерева. Ветку оставляют, только если она уменьшает
       суммарную неоднородность листьев хотя бы на <code>ccp_alpha</code> в расчёте на каждый
@@ -987,7 +988,7 @@
 ### Дерево на чистом Python
 
 <p>
-  Всё, что разобрано выше, умещается в четыре функции. <code>entropy</code> считает
+  Начнём с самой короткой версии: всё, что разобрано выше, умещается в четыре функции. <code>entropy</code> считает
   энтропию группы, <code>best_split</code> перебирает пороги-середины по обоим признакам,
   <code>build</code> рекурсивно строит дерево и хранит его во вложенных словарях,
   <code>predict</code> спускает объект от корня к листу.
@@ -1068,32 +1069,184 @@ print("студент Б (15 ч, 7 пропусков):", predict(tree, (15, 7))
 студент Б (15 ч, 7 пропусков): 1
 ```
 
-### Переобучение в коде
+### То же дерево в объектном виде
 
 <p>
-  Добавим студента 11 и шесть новых студентов из части 7 и сравним дерево без ограничений
-  с деревом глубины 2. Код продолжает предыдущий файл:
+  Алгоритм тот же, меняется упаковка. Узел становится объектом <code>Node</code>: в нём
+  хранятся вопрос (номер признака и порог), счётчики обучающих объектов и две ветки; лист
+  отличается от внутреннего узла только тем, что вопроса у него нет. Модель становится классом
+  с тем же интерфейсом, что в <code>sklearn</code>: гиперпараметры задаются в конструкторе,
+  обучение в <code>fit</code>, прогноз в <code>predict</code> и <code>predict_proba</code>.
+</p>
+
+<p>
+  По сравнению с функциями добавилось три вещи. Меру неоднородности можно выбрать параметром
+  <code>criterion</code>, потому что <code>_best_split</code> вызывает её через
+  <code>self.impurity</code> и не знает, какая именно стоит. Параметр
+  <code>min_samples_leaf</code> проверяется прямо при переборе: порог, после которого в одной
+  из групп остаётся слишком мало объектов, пропускается. Метод <code>score</code> считает
+  долю верных ответов.
 </p>
 
 ```python
-train = data + [(5, 8, 1)]                     # студент 11: 5 часов, 8 пропусков, сдал
-test = [(3, 9, 0), (7, 9, 0), (10, 1, 1), (17, 4, 1), (11, 4, 0), (18, 7, 1)]
+from dataclasses import dataclass
+from math import log2
 
 
-def accuracy(tree, rows):
-    return sum(predict(tree, r[:2]) == r[2] for r in rows)
+def entropy(labels):
+    p = sum(labels) / len(labels)
+    return -sum(q * log2(q) for q in (p, 1 - p) if q > 0)
 
 
-for max_depth in (None, 2):
-    tree = build(train, max_depth=max_depth)
-    print(f"max_depth={max_depth}: обучение {accuracy(tree, train)} из {len(train)}, "
-          f"новые {accuracy(tree, test)} из {len(test)}")
+def gini(labels):
+    p = sum(labels) / len(labels)
+    return 1 - p ** 2 - (1 - p) ** 2
+
+
+@dataclass
+class Node:
+    n: int                            # сколько обучающих объектов дошло до узла
+    passed: int                       # сколько из них класса 1
+    feature: int | None = None        # вопрос узла: номер признака
+    threshold: float | None = None    # и порог
+    gain: float = 0.0                 # прирост, с которым вопрос победил
+    left: "Node | None" = None        # ветка «да»:  x[feature] <= threshold
+    right: "Node | None" = None       # ветка «нет»: x[feature] >  threshold
+
+    @property
+    def is_leaf(self):
+        return self.feature is None
+
+    @property
+    def proba(self):                  # доля класса 1: вероятность, которую выдаёт лист
+        return self.passed / self.n
+
+
+class DecisionTreeScratch:
+    def __init__(self, criterion="entropy", max_depth=None, min_samples_leaf=1):
+        self.impurity = {"entropy": entropy, "gini": gini}[criterion]
+        self.max_depth = max_depth
+        self.min_samples_leaf = min_samples_leaf
+        self.root = None
+
+    # ---------- обучение
+    def fit(self, X, y):
+        self.root = self._grow(list(X), list(y), depth=0)
+        return self
+
+    def _grow(self, X, y, depth):
+        node = Node(n=len(y), passed=sum(y))
+        if self.impurity(y) == 0 or depth == self.max_depth:
+            return node                                   # чистый узел или предел глубины
+        split = self._best_split(X, y)
+        if split is None:
+            return node                                   # нет допустимого порога
+        node.feature, node.threshold, node.gain = split
+        yes = [x[node.feature] <= node.threshold for x in X]
+        node.left = self._grow([x for x, s in zip(X, yes) if s], [t for t, s in zip(y, yes) if s], depth + 1)
+        node.right = self._grow([x for x, s in zip(X, yes) if not s], [t for t, s in zip(y, yes) if not s], depth + 1)
+        return node
+
+    def _best_split(self, X, y):
+        parent, best = self.impurity(y), None
+        for f in range(len(X[0])):
+            values = sorted({x[f] for x in X})
+            for a, b in zip(values, values[1:]):
+                t = (a + b) / 2
+                left = [yi for x, yi in zip(X, y) if x[f] <= t]
+                right = [yi for x, yi in zip(X, y) if x[f] > t]
+                if min(len(left), len(right)) < self.min_samples_leaf:
+                    continue                              # такой лист запрещён гиперпараметром
+                child = (len(left) * self.impurity(left) + len(right) * self.impurity(right)) / len(y)
+                if best is None or parent - child > best[2]:
+                    best = (f, t, parent - child)
+        return best
+
+    # ---------- прогноз
+    def _leaf(self, x):
+        node = self.root
+        while not node.is_leaf:
+            node = node.left if x[node.feature] <= node.threshold else node.right
+        return node
+
+    def predict_proba(self, X):
+        return [self._leaf(x).proba for x in X]
+
+    def predict(self, X):
+        return [int(p > 0.5) for p in self.predict_proba(X)]
+
+    def score(self, X, y):
+        return sum(p == t for p, t in zip(self.predict(X), y)) / len(y)
+
+    # ---------- печать
+    def show(self, names, node=None, indent=""):
+        node = node or self.root
+        if node.is_leaf:
+            answer = "сдал" if node.proba > 0.5 else "не сдал"
+            print(f"{indent}лист: {answer} ({node.passed} из {node.n})")
+            return
+        print(f"{indent}{names[node.feature]} <= {node.threshold:g}  (прирост {node.gain:.3f})")
+        self.show(names, node.left, indent + "  ")
+        self.show(names, node.right, indent + "  ")
+
+
+if __name__ == "__main__":
+    # часы подготовки, пропуски, сдал
+    data = [(2, 3, 0), (4, 7, 0), (6, 4, 0), (8, 1, 1), (10, 8, 0),
+            (12, 5, 0), (14, 2, 1), (16, 6, 1), (18, 3, 1), (20, 4, 1)]
+    names = ["часы", "пропуски"]
+    X = [(h, a) for h, a, _ in data]
+    y = [s for _, _, s in data]
+
+    tree = DecisionTreeScratch(criterion="entropy").fit(X, y)
+    tree.show(names)
+    print(tree.predict([(11, 1), (15, 7)]), tree.predict_proba([(11, 1)]))
+
+    DecisionTreeScratch(criterion="gini").fit(X, y).show(names)
+
+    # переобучение: студент 11 и шесть новых студентов из части 7
+    X11, y11 = X + [(5, 8)], y + [1]
+    X_new = [(3, 9), (7, 9), (10, 1), (17, 4), (11, 4), (18, 7)]
+    y_new = [0, 0, 1, 1, 0, 1]
+    for params in ({}, {"max_depth": 2}, {"min_samples_leaf": 2}):
+        model = DecisionTreeScratch(**params).fit(X11, y11)
+        print(f"{str(params):24} обучение {model.score(X11, y11):.2f}  новые {model.score(X_new, y_new):.2f}")
 ```
 
 ```text
-max_depth=None: обучение 11 из 11, новые 4 из 6
-max_depth=2: обучение 10 из 11, новые 6 из 6
+часы <= 13  (прирост 0.610)
+  пропуски <= 2  (прирост 0.650)
+    лист: сдал (1 из 1)
+    лист: не сдал (0 из 5)
+  лист: сдал (4 из 4)
+[1, 1] [1.0]
+часы <= 13  (прирост 0.333)
+  пропуски <= 2  (прирост 0.278)
+    лист: сдал (1 из 1)
+    лист: не сдал (0 из 5)
+  лист: сдал (4 из 4)
+{}                       обучение 1.00  новые 0.67
+{'max_depth': 2}         обучение 0.91  новые 1.00
+{'min_samples_leaf': 2}  обучение 0.91  новые 0.67
 ```
+
+<p>
+  Первые два дерева повторяют части 1 и 6: с энтропией и с Gini вопросы одинаковые, отличаются
+  только приросты, 0,610 и 1/3 в корне. Последние три строки повторяют часть 7:
+  без ограничений 11 из 11 на обучении и 4 из 6 на новых, с <code>max_depth=2</code>
+  10 из 11 и 6 из 6.
+</p>
+
+<p>
+  С <code>min_samples_leaf=2</code> результат на новых студентах не улучшился. Этот параметр
+  запрещает лист из одного студента 11, но так же запрещает лист из одного студента 4, ради
+  которого дерево спрашивало про пропуски. Поэтому вопрос про пропуски исчезает, и левую
+  ветку дерево делит только по часам: «часы ≤ 4,5», затем «часы ≤ 9». В лист между этими
+  порогами попадают студенты 3, 4 и 11, и он отвечает «сдал» по большинству 2 из 3.
+  Новые студенты (7 ч, 9 пропусков) и (10 ч, 1 пропуск) получают неверные ответы,
+  снова 4 из 6. Какое ограничение подходит данным, заранее не видно: его подбирают
+  по качеству на отложенной выборке.
+</p>
 
 ### То же самое в sklearn
 
@@ -1135,9 +1288,10 @@ print(clf.predict_proba([[11, 1]]))
 <p>
   <code>predict_proba</code> для студента А возвращает <span class="math-inline" data-tex="[0;\ 1]"></span>: это доли классов
   в его листе, где один студент, и он сдал. Та же уверенность на одном объекте, о которой
-  шла речь в части 2. С 11-м студентом и <code>max_depth=2</code> библиотека тоже
-  воспроизводит наши результаты: глубина 4 и 5 листьев без ограничения, 10 из 11 на обучении
-  и 6 из 6 на новых с ограничением.
+  шла речь в части 2. На данных с 11-м студентом библиотека воспроизводит и результаты
+  класса: без ограничений глубина 4 и 5 листьев, с <code>max_depth=2</code> 10 из 11 на обучении
+  и 6 из 6 на новых, а с <code>min_samples_leaf=2</code> то же дерево из вопросов только
+  про часы.
 </p>
 
 ## Часть 10. Что получилось
