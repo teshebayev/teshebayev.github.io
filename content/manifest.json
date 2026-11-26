@@ -178,7 +178,7 @@
             "en": "Decision trees",
             "kk": "Шешім ағаштары"
           },
-          "articles": ["decision-tree-full-cycle", "random-forest-full-cycle"]
+          "articles": ["decision-tree-full-cycle", "random-forest-full-cycle", "gradient-boosting-full-cycle"]
         }
       ]
     },
@@ -581,6 +581,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/machine-learning/random-forest-full-cycle.ru.md"
+  }
+},
+    {
+  "slug": "gradient-boosting-full-cycle",
+  "category": "machine-learning",
+  "title": {
+    "ru": "Градиентный бустинг: деревья, которые исправляют ошибки друг друга"
+  },
+  "description": {
+    "ru": "Градиентный бустинг с нуля на тех же десяти студентах: пни по очереди исправляют ошибки суммы предыдущих, логит и остатки y − p, шаг Ньютона в листьях на оси логита, бустинг на плоскости с остатками-кружками, бустинг как градиентный спуск по прогнозам, переобучение и ранняя остановка, честное сравнение со случайным лесом, AdaBoost и XGBoost, код с нуля и проверка на sklearn."
+  },
+  "date": "2026-11-26",
+  "reading_time": 25,
+  "tags": ["ml-basics"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/gradient-boosting-full-cycle.ru.md"
   }
 },
     {
