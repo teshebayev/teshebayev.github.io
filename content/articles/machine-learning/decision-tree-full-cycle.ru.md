@@ -39,7 +39,10 @@
   @media (max-width: 820px) { .prose .dt-bars svg { min-width: 640px; } }
   .prose .dt-metric strong.two { white-space: pre-line; font-size: 16px; line-height: 1.35; }
   .prose .dt-bars rect.bar { cursor: pointer; }
-  @media (max-width: 820px) { .prose .dt-live-grid { grid-template-columns: 1fr; } .prose .dt-live { padding: 16px 14px; } }
+  .prose .dt-groups { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+  .prose .dt-group { border: 1px solid #E0DDD3; border-radius: 12px; padding: 10px 12px; min-width: 0; }
+  .prose .dt-group .dt-formula { margin-top: 8px; font-size: 12.5px; padding: 8px 4px; }
+  @media (max-width: 820px) { .prose .dt-live-grid, .prose .dt-groups { grid-template-columns: 1fr; } .prose .dt-live { padding: 16px 14px; } }
 </style>
 
 <p class="lead">
@@ -788,11 +791,227 @@
 <p class="stage-hint">Наведите фокус на сцену и листайте стрелками ← →.</p>
 
 <p>
+  Откуда берётся формула, проще всего увидеть на квадрате. Вытянем из узла наугад одного
+  студента, вернём его обратно и вытянем ещё одного. Оба окажутся сдавшими с вероятностью
+  <span class="math-inline" data-tex="p^2"></span>, оба несдавшими с вероятностью <span class="math-inline" data-tex="(1-p)^2"></span>, а исходы будут разными с вероятностью
+  <span class="math-inline" data-tex="2p(1-p)"></span>. Если нарисовать квадрат со стороной 1 и разрезать обе стороны в точке <span class="math-inline" data-tex="p"></span>,
+  эти три вероятности станут площадями: зелёный угол, красный угол и два жёлтых прямоугольника.
+  Индекс Gini равен жёлтой площади:
+</p>
+
+<div class="math-display" data-tex="G = 1 - p^2 - (1-p)^2 = 2p(1-p)"></div>
+
+<p>
+  Для левого узла после «часы ≤ 13» доля сдавших <span class="math-inline" data-tex="1/6"></span>, и <span class="math-inline" data-tex="G = 2 \cdot \tfrac{1}{6} \cdot \tfrac{5}{6} = \tfrac{10}{36}"></span>.
+  В чистом узле один из отрезков стороны имеет длину ноль, жёлтых прямоугольников нет, <span class="math-inline" data-tex="G = 0"></span>.
+  Наибольшее значение 0,5 получается при <span class="math-inline" data-tex="p = 1/2"></span>, когда квадрат делится на четыре равные части.
+</p>
+
+<p>
   Прирост по Gini считается по той же схеме, что и прирост информации, только вместо
   <span class="math-inline" data-tex="H"></span> подставляется <span class="math-inline" data-tex="G"></span>:
 </p>
 
 <div class="math-display" data-tex="\Delta G = G(\text{родитель}) - \frac{n_L}{n}G_L - \frac{n_R}{n}G_R = 0{,}5 - \frac{6}{10}\cdot\frac{10}{36} - \frac{4}{10}\cdot 0 = \frac{1}{3}"></div>
+
+<p>
+  Ниже тот же перебор порогов, что в части 4, но с подробным расчётом по Gini для обеих групп.
+  Что стоит попробовать: на пороге «часы ≤ 13» правый квадрат целиком зелёный, а у левого
+  узкая жёлтая полоса площадью 10/36. На пороге «часы ≤ 11» обе группы по пятеро с одним
+  студентом другого класса, квадраты зеркальные, <span class="math-inline" data-tex="G_L = G_R = 8/25 = 0{,}32"></span>, и прирост
+  падает до 0,180. Самый слабый порог «пропуски ≤ 5,5» даёт 0,024: квадраты обеих групп
+  почти такие же, как у корня.
+</p>
+
+<div class="dt-live" id="giniLive">
+  <div class="dt-live-head"><strong>Интерактив: перебор порогов по индексу Gini</strong>
+    <p>Тот же перебор 16 порогов, но неоднородность считается через Gini. Для каждой группы показан квадрат пар студентов:
+    его жёлтая часть и есть индекс Gini. Внизу прирост по Gini стоит рядом с приростом энтропии.</p></div>
+  <div class="dt-live-grid">
+    <div><svg id="giniPlane" viewBox="0 0 520 450" role="img" aria-label="Студенты на плоскости и текущий порог"></svg></div>
+    <div class="dt-controls">
+      <div class="dt-seg"><button type="button" data-gf="0" aria-pressed="true">часы</button><button type="button" data-gf="1" aria-pressed="false">пропуски</button></div>
+      <div class="dt-control"><label for="giniR"><span>порог</span><output id="giniT">—</output></label>
+        <input id="giniR" type="range" min="0" max="8" step="1" value="5"></div>
+      <div class="dt-metrics">
+        <div class="dt-metric"><span>Gini корня</span><strong>0,500</strong></div>
+        <div class="dt-metric"><span>взвешенный Gini детей</span><strong id="giniW">—</strong></div>
+        <div class="dt-metric is-main"><span>прирост по Gini ΔG</span><strong id="giniG">—</strong></div>
+        <div class="dt-metric"><span>прирост энтропии IG</span><strong id="giniIG">—</strong></div>
+        <div class="dt-metric"><span>место среди 16 порогов</span><strong id="giniRank">—</strong></div>
+      </div>
+    </div>
+  </div>
+  <div class="dt-groups">
+    <div class="dt-group"><svg id="giniSqL" viewBox="0 0 420 240" role="img" aria-label="Квадрат пар для левой группы"></svg><div class="dt-formula" id="giniFL"></div></div>
+    <div class="dt-group"><svg id="giniSqR" viewBox="0 0 420 240" role="img" aria-label="Квадрат пар для правой группы"></svg><div class="dt-formula" id="giniFR"></div></div>
+  </div>
+  <div class="dt-formula" id="giniFW"></div>
+  <div class="dt-bars"><svg id="giniBars" viewBox="0 0 900 220" role="img" aria-label="Прирост по Gini и прирост энтропии для всех 16 порогов"></svg></div>
+</div>
+<script>
+(function () {
+  var svg = document.getElementById('giniPlane');
+  if (!svg) return;
+  function el(n, a, t) {
+    var e = document.createElementNS('http://www.w3.org/2000/svg', n);
+    for (var k in a) e.setAttribute(k, a[k]);
+    if (t !== undefined) e.textContent = t;
+    return e;
+  }
+  function fmt(v, d) { return v.toFixed(d).replace('.', ','); }
+  function H(k, n) {
+    if (n === 0) return 0;
+    var p = k / n, s = 0;
+    [p, 1 - p].forEach(function (q) { if (q > 0) s -= q * Math.log2(q); });
+    return s;
+  }
+  function tex(node, src, plain) {
+    if (window.katex) window.katex.render(src, node, {throwOnError: false, displayMode: false});
+    else node.textContent = plain;
+  }
+  function G(k, n) { if (n === 0) return 0; var p = k / n; return 1 - p * p - (1 - p) * (1 - p); }
+  var D = [[2, 3, 0], [4, 7, 0], [6, 4, 0], [8, 1, 1], [10, 8, 0], [12, 5, 0], [14, 2, 1], [16, 6, 1], [18, 3, 1], [20, 4, 1]];
+  var NAMES = ['часы', 'пропуски'];
+  var cands = [];
+  [0, 1].forEach(function (f) {
+    var vals = Array.from(new Set(D.map(function (r) { return r[f]; }))).sort(function (a, b) { return a - b; });
+    for (var i = 0; i + 1 < vals.length; i++) {
+      var t = (vals[i] + vals[i + 1]) / 2;
+      var L = D.filter(function (r) { return r[f] <= t; }), R = D.filter(function (r) { return r[f] > t; });
+      var kL = L.filter(function (r) { return r[2]; }).length, kR = R.filter(function (r) { return r[2]; }).length;
+      var gL = G(kL, L.length), gR = G(kR, R.length), w = (L.length * gL + R.length * gR) / D.length;
+      var ig = 1 - (L.length * H(kL, L.length) + R.length * H(kR, R.length)) / D.length;
+      cands.push({f: f, t: t, nL: L.length, kL: kL, nR: R.length, kR: kR, gL: gL, gR: gR, w: w, g: 0.5 - w, ig: ig});
+    }
+  });
+  var sorted = cands.slice().sort(function (a, b) { return b.g - a.g; });
+  function rank(c) { return sorted.filter(function (q) { return q.g > c.g + 1e-9; }).length + 1; }
+  var best = sorted[0];
+  var st = {f: 0, i: 5};
+  var P = {x0: 60, y0: 390, kx: 20, ky: 32};
+  function X(h) { return P.x0 + h * P.kx; }
+  function Y(a) { return P.y0 - a * P.ky; }
+  function num(v) { return String(v).replace('.', ','); }
+  function list() { return cands.filter(function (c) { return c.f === st.f; }); }
+  function clear(s, w, h) { while (s.firstChild) s.removeChild(s.firstChild); s.appendChild(el('rect', {x: 0, y: 0, width: w, height: h, fill: '#FFFFFF'})); }
+  function drawPlane(c) {
+    clear(svg, 520, 450);
+    var W = 22 * P.kx, Hh = 10 * P.ky;
+    var tint = function (k, n) { return k === n ? '#EEF6E2' : (k === 0 ? '#FCE9E9' : '#F7F4EC'); };
+    svg.appendChild(el('rect', {x: P.x0, y: Y(10), width: W, height: Hh, fill: '#FFFFFF', stroke: '#D8D4C8'}));
+    if (c.f === 0) {
+      svg.appendChild(el('rect', {x: P.x0, y: Y(10), width: X(c.t) - P.x0, height: Hh, fill: tint(c.kL, c.nL)}));
+      svg.appendChild(el('rect', {x: X(c.t), y: Y(10), width: X(22) - X(c.t), height: Hh, fill: tint(c.kR, c.nR)}));
+      svg.appendChild(el('line', {x1: X(c.t), y1: Y(10), x2: X(c.t), y2: P.y0, stroke: '#C29E08', 'stroke-width': 3}));
+      svg.appendChild(el('text', {x: X(c.t), y: Y(10) - 8, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700, fill: '#8F7406'}, 'часы = ' + num(c.t)));
+    } else {
+      svg.appendChild(el('rect', {x: P.x0, y: Y(c.t), width: W, height: P.y0 - Y(c.t), fill: tint(c.kL, c.nL)}));
+      svg.appendChild(el('rect', {x: P.x0, y: Y(10), width: W, height: Y(c.t) - Y(10), fill: tint(c.kR, c.nR)}));
+      svg.appendChild(el('line', {x1: P.x0, y1: Y(c.t), x2: X(22), y2: Y(c.t), stroke: '#C29E08', 'stroke-width': 3}));
+      svg.appendChild(el('text', {x: X(22) - 6, y: Y(c.t) - 7, 'text-anchor': 'end', 'font-size': 13, 'font-weight': 700, fill: '#8F7406'}, 'пропуски = ' + num(c.t)));
+    }
+    for (var h = 0; h <= 20; h += 4) svg.appendChild(el('text', {x: X(h), y: P.y0 + 20, 'text-anchor': 'middle', 'font-size': 13, fill: '#5E5850'}, String(h)));
+    for (var a = 0; a <= 10; a += 2) svg.appendChild(el('text', {x: P.x0 - 9, y: Y(a) + 5, 'text-anchor': 'end', 'font-size': 13, fill: '#5E5850'}, String(a)));
+    svg.appendChild(el('text', {x: X(11), y: P.y0 + 42, 'text-anchor': 'middle', 'font-size': 14, fill: '#5E5850'}, 'часы подготовки'));
+    svg.appendChild(el('text', {x: 22, y: Y(5), 'text-anchor': 'middle', 'font-size': 14, fill: '#5E5850', transform: 'rotate(-90 22 ' + Y(5) + ')'}, 'пропуски'));
+    D.forEach(function (r, i) {
+      svg.appendChild(el('circle', {cx: X(r[0]), cy: Y(r[1]), r: 11.5, fill: r[2] ? '#73B222' : '#C30B0A', stroke: '#FFFFFF', 'stroke-width': 1.5}));
+      svg.appendChild(el('text', {x: X(r[0]), y: Y(r[1]) + 4.5, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#FFFFFF'}, String(i + 1)));
+    });
+  }
+  function drawSquare(s, title, k, n) {
+    clear(s, 420, 240);
+    var p = k / n, S = 160, x0 = 26, y0 = 60;
+    s.appendChild(el('text', {x: 6, y: 20, 'font-size': 17, 'font-weight': 700, fill: '#111111'}, title + ': ' + n + ' студ., сдали ' + k));
+    var step = Math.min(14, 300 / n);
+    for (var i = 0; i < n; i++) s.appendChild(el('circle', {cx: 16 + i * step + 5, cy: 38, r: Math.min(5.5, step / 2 - 0.5), fill: i < k ? '#73B222' : '#C30B0A'}));
+    var a = p * S;
+    var cells = [[0, 0, a, a, '#CFE6B0'], [a, a, S - a, S - a, '#F5C4C4'], [a, 0, S - a, a, '#F1DE8E'], [0, a, a, S - a, '#F1DE8E']];
+    cells.forEach(function (q) { if (q[2] > 0 && q[3] > 0) s.appendChild(el('rect', {x: x0 + q[0], y: y0 + q[1], width: q[2], height: q[3], fill: q[4], stroke: '#FFFFFF', 'stroke-width': 1.5})); });
+    s.appendChild(el('rect', {x: x0, y: y0, width: S, height: S, fill: 'none', stroke: '#A8A296'}));
+    if (a > 14) s.appendChild(el('text', {x: x0 + a / 2, y: y0 - 4, 'text-anchor': 'middle', 'font-size': 13, fill: '#5F9420'}, 'сдал'));
+    if (S - a > 14) s.appendChild(el('text', {x: x0 + a + (S - a) / 2, y: y0 - 4, 'text-anchor': 'middle', 'font-size': 13, fill: '#9C0908'}, 'не сдал'));
+    s.appendChild(el('text', {x: x0 + S / 2, y: y0 + S + 18, 'text-anchor': 'middle', 'font-size': 13, fill: '#5E5850'}, 'первый студент'));
+    s.appendChild(el('text', {x: x0 - 10, y: y0 + S / 2, 'text-anchor': 'middle', 'font-size': 13, fill: '#5E5850', transform: 'rotate(-90 ' + (x0 - 10) + ' ' + (y0 + S / 2) + ')'}, 'второй студент'));
+    var lx = 208, rows = [
+      ['#CFE6B0', 'оба сдали', 'p²', p * p],
+      ['#F5C4C4', 'оба не сдали', '(1−p)²', (1 - p) * (1 - p)],
+      ['#F1DE8E', 'разные исходы', '2p(1−p) = G', 2 * p * (1 - p)]];
+    rows.forEach(function (r, j) {
+      var y = 82 + j * 50;
+      s.appendChild(el('rect', {x: lx, y: y - 14, width: 18, height: 18, fill: r[0], stroke: '#A8A296'}));
+      s.appendChild(el('text', {x: lx + 26, y: y, 'font-size': 15, fill: '#111111', 'font-weight': j === 2 ? 700 : 400}, r[1]));
+      s.appendChild(el('text', {x: lx + 26, y: y + 20, 'font-size': 15, fill: j === 2 ? '#8F7406' : '#5E5850', 'font-weight': j === 2 ? 700 : 400}, r[2] + ' = ' + fmt(r[3], 3)));
+    });
+  }
+  function gtex(name, k, n) {
+    var f = function (a) { return '\\left(\\tfrac{' + a + '}{' + n + '}\\right)^2'; };
+    if (k === 0 || k === n) return name + ' = 1 - ' + f(k) + ' - ' + f(n - k) + ' = 0';
+    return name + ' = 1 - ' + f(k) + ' - ' + f(n - k) + ' = \\tfrac{' + (2 * k * (n - k)) + '}{' + (n * n) + '} \\approx ' + fmt(G(k, n), 3).replace(',', '{,}');
+  }
+  var bars = document.getElementById('giniBars');
+  function drawBars(c) {
+    clear(bars, 900, 220);
+    var base = 165, k = 200;
+    bars.appendChild(el('line', {x1: 30, y1: base, x2: 890, y2: base, stroke: '#D8D4C8'}));
+    bars.appendChild(el('rect', {x: 30, y: 8, width: 12, height: 12, fill: '#C29E08'}));
+    bars.appendChild(el('text', {x: 48, y: 19, 'font-size': 13, fill: '#5E5850'}, 'прирост по Gini'));
+    bars.appendChild(el('rect', {x: 170, y: 8, width: 12, height: 12, fill: '#3576C0'}));
+    bars.appendChild(el('text', {x: 188, y: 19, 'font-size': 13, fill: '#5E5850'}, 'прирост энтропии (для сравнения, та же шкала)'));
+    cands.forEach(function (q, j) {
+      var x = q.f === 0 ? 50 + j * 50 : 50 + 9 * 50 + 40 + (j - 9) * 50;
+      var on = q === c;
+      [[q.g, on ? '#C29E08' : '#E6D9A4', 0], [q.ig, on ? '#3576C0' : '#BFD2EA', 17]].forEach(function (b) {
+        var r = el('rect', {x: x + b[2], y: base - b[0] * k - 1, width: 16, height: b[0] * k + 1, rx: 2, 'class': 'bar', fill: b[1]});
+        r.addEventListener('click', function () { st.f = q.f; st.i = list().indexOf(q); sync(); });
+        bars.appendChild(r);
+      });
+      if (on) {
+        bars.appendChild(el('text', {x: x + 15, y: base - q.g * k - 6, 'text-anchor': 'end', 'font-size': 11, 'font-weight': 700, fill: '#8F7406'}, fmt(q.g, 3)));
+        bars.appendChild(el('text', {x: x + 18, y: base - q.ig * k - 6, 'text-anchor': 'start', 'font-size': 11, 'font-weight': 700, fill: '#2A5E9B'}, fmt(q.ig, 3)));
+      }
+      bars.appendChild(el('text', {x: x + 17, y: base + 16, 'text-anchor': 'middle', 'font-size': 12, fill: on ? '#111111' : '#5E5850', 'font-weight': on ? 700 : 400}, num(q.t)));
+    });
+    bars.appendChild(el('text', {x: 50 + 4 * 50 + 17, y: base + 38, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700, fill: '#5E5850'}, 'пороги по часам'));
+    bars.appendChild(el('text', {x: 540 + 3 * 50 + 17, y: base + 38, 'text-anchor': 'middle', 'font-size': 13, 'font-weight': 700, fill: '#5E5850'}, 'пороги по пропускам'));
+  }
+  function sync() {
+    var L = list(), range = document.getElementById('giniR');
+    range.max = L.length - 1;
+    st.i = Math.max(0, Math.min(L.length - 1, st.i));
+    range.value = st.i;
+    document.querySelectorAll('#giniLive [data-gf]').forEach(function (b) { b.setAttribute('aria-pressed', String(+b.getAttribute('data-gf') === st.f)); });
+    var c = L[st.i];
+    document.getElementById('giniT').textContent = NAMES[c.f] + ' ≤ ' + num(c.t);
+    document.getElementById('giniW').textContent = fmt(c.w, 3);
+    document.getElementById('giniG').textContent = fmt(c.g, 3) + (c === best ? '  ★ лучший' : '');
+    document.getElementById('giniIG').textContent = fmt(c.ig, 3);
+    document.getElementById('giniRank').textContent = rank(c) + '-е';
+    drawPlane(c);
+    drawSquare(document.getElementById('giniSqL'), 'слева (≤)', c.kL, c.nL);
+    drawSquare(document.getElementById('giniSqR'), 'справа (>)', c.kR, c.nR);
+    tex(document.getElementById('giniFL'), gtex('G_L', c.kL, c.nL), 'G_L = ' + fmt(c.gL, 3));
+    tex(document.getElementById('giniFR'), gtex('G_R', c.kR, c.nR), 'G_R = ' + fmt(c.gR, 3));
+    var src = '\\Delta G = 0{,}5 - \\tfrac{' + c.nL + '}{10}\\cdot ' + fmt(c.gL, 3).replace(',', '{,}') + ' - \\tfrac{' + c.nR + '}{10}\\cdot '
+            + fmt(c.gR, 3).replace(',', '{,}') + ' = ' + fmt(c.g, 3).replace(',', '{,}');
+    tex(document.getElementById('giniFW'), src, 'ΔG = ' + fmt(c.g, 3));
+    drawBars(c);
+  }
+  document.getElementById('giniR').addEventListener('input', function (ev) { st.i = +ev.target.value; sync(); });
+  document.querySelectorAll('#giniLive [data-gf]').forEach(function (b) {
+    b.addEventListener('click', function () { var f = +b.getAttribute('data-gf'); if (f !== st.f) { st.f = f; st.i = 0; } sync(); });
+  });
+  sync();
+})();
+</script>
+
+<p>
+  Жёлтые столбики примерно вдвое ниже синих, но растут и падают вместе с ними: место каждого
+  порога по Gini совпадает с его местом по энтропии, включая ничьи. Например, «часы ≤ 7»
+  и «часы ≤ 15» делят второе место в обоих рейтингах. Это прямое следствие того, что кривая
+  <span class="math-inline" data-tex="2G(p)"></span> почти повторяет <span class="math-inline" data-tex="H(p)"></span>, как в последнем шаге схемы выше.
+</p>
 
 <p>
   На практике выбор меры редко меняет качество заметно. Gini немного быстрее, потому что
