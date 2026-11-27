@@ -196,7 +196,7 @@
             "en": "Unsupervised learning",
             "kk": "Мұғалімсіз оқыту"
           },
-          "articles": ["pca-full-cycle"]
+          "articles": ["pca-full-cycle", "tsne-full-cycle"]
         },
         {
           "group": "evaluation",
@@ -729,6 +729,25 @@
   "draft": false,
   "content": {
     "ru": "content/articles/machine-learning/pca-full-cycle.ru.md"
+  }
+},
+    {
+  "slug": "tsne-full-cycle",
+  "category": "machine-learning",
+  "title": {
+    "ru": "t-SNE: карта, на которой у каждой точки те же соседи"
+  },
+  "description": {
+    "ru": "t-SNE на двенадцати точках и рукописных цифрах: почему PCA смешивает группы, расстояния как вероятности соседства, σ каждой точки и перплексия, бинарный поиск, симметричные p, вероятности на карте по распределению Стьюдента, KL как мера несовпадения, градиент как притяжение и отталкивание, раннее преувеличение, проблема тесноты, t-SNE в браузере на 400 цифрах, как читать карту: размеры, расстояния, шум, запуски и перплексия, код на numpy и sklearn."
+  },
+  "date": "2026-11-27",
+  "reading_time": 24,
+  "tags": [
+    "ml-basics"
+  ],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/tsne-full-cycle.ru.md"
   }
 },
     {
