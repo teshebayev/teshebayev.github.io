@@ -70,6 +70,7 @@
   .prose .dt-table, .prose .cm-fig, .prose .dt-formula, .prose .math-display, .prose pre { position: relative; }
   .prose .dt-table tr.hl td { background: #EEF4FB; }
   .prose .stage-figure .katex svg { height: inherit; }
+  .prose #resTab th, .prose #resTab td { padding: 6px 7px; font-size: 13px; text-align: right; white-space: nowrap; }
   .prose .rm-modes { display: flex; flex-wrap: wrap; gap: 6px; }
   .prose .rm-modes button { flex: 1 1 auto; }
 </style>
@@ -185,16 +186,320 @@
 
 
 <p>
-  Кроме MAE и RMSE полезны ещё два числа.
+  Сцена показала весь путь коротко. Теперь разберём каждый шаг подробно: что именно считается,
+  как метрика реагирует на отдельные промахи и как метрики связаны между собой.
+</p>
+
+### Остаток и его знак
+
+<p>
+  Остаток студента <span class="math-inline" data-tex="i"></span> — разность между настоящим ответом и прогнозом:
+</p>
+
+<div class="math-display" data-tex="e_i = y_i - \hat y_i"></div>
+
+<p>
+  Знак остатка показывает направление промаха. Положительный остаток значит, что модель недооценила студента:
+  студент 7 набрал 72, а дерево дало ему 45,25, остаток <span class="math-inline" data-tex="+26{,}75"></span>. Отрицательный — переоценила: студенту 1 дерево
+  дало 48,67 при настоящих 30, остаток <span class="math-inline" data-tex="-18{,}67"></span>. Знак в формуле — договорённость. Иногда пишут <span class="math-inline" data-tex="\hat y_i - y_i"></span>,
+  и тогда смысл знака противоположный. На MAE, MSE и RMSE это не влияет, на смещение влияет.
+</p>
+
+<p>
+  В статистике различают остаток и ошибку. Ошибка — отклонение от настоящей закономерности, которую мы не знаем.
+  Остаток — отклонение от прогноза модели, его можно посчитать. Метрики работают с остатками, хотя в их названиях
+  стоит слово error.
+</p>
+
+<p>
+  Все остатки дерева и всё, что из них получается, в одной таблице:
+</p>
+
+
+<div class="dt-table"><table class="shape-table">
+  <tr><th>#</th><th><span class="math-inline" data-tex="y"></span></th><th><span class="math-inline" data-tex="\hat y"></span></th><th><span class="math-inline" data-tex="e = y - \hat y"></span></th><th><span class="math-inline" data-tex="|e|"></span></th><th><span class="math-inline" data-tex="e^2"></span></th></tr>
+  <tr><td>1</td><td>30</td><td>48,67</td><td>−18,67</td><td>18,67</td><td>348,4</td></tr>
+  <tr><td>2</td><td>22</td><td>38,25</td><td>−16,25</td><td>16,25</td><td>264,1</td></tr>
+  <tr><td>3</td><td>41</td><td>26,00</td><td>+15,00</td><td>15,00</td><td>225,0</td></tr>
+  <tr><td>4</td><td>58</td><td>41,00</td><td>+17,00</td><td>17,00</td><td>289,0</td></tr>
+  <tr><td>5</td><td>35</td><td>48,67</td><td>−13,67</td><td>13,67</td><td>186,8</td></tr>
+  <tr><td>6</td><td>47</td><td>32,00</td><td>+15,00</td><td>15,00</td><td>225,0</td></tr>
+  <tr class="hl"><td>7</td><td>72</td><td>45,25</td><td>+26,75</td><td>26,75</td><td>715,6</td></tr>
+  <tr><td>8</td><td>61</td><td>72,00</td><td>−11,00</td><td>11,00</td><td>121,0</td></tr>
+  <tr><td>9</td><td>80</td><td>66,50</td><td>+13,50</td><td>13,50</td><td>182,2</td></tr>
+  <tr><td>10</td><td>84</td><td>76,00</td><td>+8,00</td><td>8,00</td><td>64,0</td></tr>
+  <tr><td><b>сумма</b></td><td><b>530</b></td><td></td><td><b>+35,67</b></td><td><b>154,83</b></td><td><b>2621,1</b></td></tr>
+  <tr><td><b>среднее</b></td><td><b>53</b></td><td></td><td><b>3,57</b> (смещение)</td><td><b>15,48</b> (MAE)</td><td><b>262,1</b> (MSE)</td></tr>
+</table></div>
+
+
+### Смещение
+
+<p>
+  Среднее остатков со знаком называют смещением (bias):
+</p>
+
+<div class="math-display" data-tex="\bar e = \frac{1}{n}\sum_i e_i = \frac{35{,}67}{10} = 3{,}57"></div>
+
+<p>
+  Положительные остатки дают в сумме <span class="math-inline" data-tex="95{,}25"></span>, отрицательные <span class="math-inline" data-tex="-59{,}58"></span>. Дерево чаще и сильнее недооценивает,
+  чем переоценивает, и в среднем занижает балл на 3,57.
+</p>
+
+<p>
+  Смещение связано с MSE точной формулой: средний квадрат остатков равен квадрату их среднего плюс их дисперсия.
+</p>
+
+<div class="math-display" data-tex="\text{MSE} = \bar e^{\,2} + \text{Var}(e) = 3{,}57^2 + 249{,}4 = 12{,}7 + 249{,}4 = 262{,}1"></div>
+
+<p>
+  Это та же формула, что <span class="math-inline" data-tex="\text{Var}(x) = \overline{x^2} - \bar x^{\,2}"></span>, только прочитанная в другую сторону.
+  Если прибавить ко всем прогнозам 3,57, смещение станет нулевым, и MSE упадёт до 249,4, а MAE с 15,48 до 14,77.
+  Больше простым сдвигом ничего не выиграть: оставшиеся 249,4 — разброс остатков вокруг их среднего,
+  и уменьшить его можно только другой моделью.
+</p>
+
+<p>
+  Здесь только 5 % MSE приходится на смещение. Но поправку 3,57 мы посчитали на тех же студентах, на которых
+  её проверяем, поэтому выигрыш завышен. На практике сдвиг оценивают на валидационной выборке.
+</p>
+
+### MAE: средний модуль
+
+<div class="math-display" data-tex="\text{MAE} = \frac{1}{n}\sum_i |e_i| = \frac{154{,}83}{10} = 15{,}48"></div>
+
+<p>
+  MAE — среднее расстояние между прогнозом и правдой, в баллах. Её проще всего объяснить: «модель в среднем
+  промахивается на 15,5 балла». Для масштаба: баллы студентов лежат от 22 до 84, их стандартное отклонение 20,3.
+</p>
+
+<p>
+  Главное свойство MAE: каждый балл промаха стоит одинаково. Если приблизить прогноз на 1 балл к правде, MAE
+  уменьшится на <span class="math-inline" data-tex="1/10 = 0{,}1"></span> у любого студента, будь его промах 8 баллов или 26,75. Поэтому модель, которая
+  минимизирует MAE, не тратит силы на крупные промахи сильнее, чем на мелкие. В части 3 видно, к чему это ведёт:
+  лучший постоянный прогноз по MAE — медиана.
+</p>
+
+<p>
+  Рядом с MAE полезно смотреть ещё на два числа.
 </p>
 
 <ul>
-  <li><b>Медиана модулей остатков</b> (median absolute error): у дерева 15 баллов. Половина студентов предсказана
+  <li><b>Медиана модулей остатков</b> (median absolute error): 15 баллов. Половина студентов предсказана
     точнее, половина хуже. Один огромный промах её почти не сдвигает.</li>
   <li><b>Максимальная ошибка</b> (max error): 26,75 балла на студенте 7. Нужна там, где важен худший случай,
     а не средний.</li>
 </ul>
 
+### MSE: средний квадрат
+
+<div class="math-display" data-tex="\text{MSE} = \frac{1}{n}\sum_i e_i^2 = \frac{2621{,}1}{10} = 262{,}1"></div>
+
+<p>
+  Квадрат меняет вес промахов. Студент 7 даёт 17 % суммы модулей (<span class="math-inline" data-tex="26{,}75 / 154{,}83"></span>), но 27 % суммы квадратов
+  (<span class="math-inline" data-tex="715{,}6 / 2621{,}1"></span>). Чем крупнее промах, тем большую долю MSE он занимает.
+</p>
+
+<p>
+  Это видно и по тому, как MSE реагирует на исправление одного прогноза. Приблизим прогноз на 1 балл к правде:
+</p>
+
+<ul>
+  <li>студенту 7: квадрат падает с <span class="math-inline" data-tex="26{,}75^2 = 715{,}6"></span> до <span class="math-inline" data-tex="25{,}75^2 = 663{,}1"></span>, MSE уменьшается на 5,25;</li>
+  <li>студенту 10: с <span class="math-inline" data-tex="8^2 = 64"></span> до <span class="math-inline" data-tex="7^2 = 49"></span>, MSE уменьшается на 1,5.</li>
+</ul>
+
+<p>
+  MAE в обоих случаях уменьшилась бы на одни и те же 0,1. MSE за тот же балл награждает исправление студента 7
+  в 3,5 раза щедрее: выигрыш пропорционален размеру промаха, <span class="math-inline" data-tex="(e^2 - (e-1)^2)/n \approx 2e/n"></span>. Поэтому модель
+  на MSE в первую очередь борется с крупными промахами.
+</p>
+
+<p>
+  У MSE неудобные единицы, баллы в квадрате. Зато она связана с дисперсией: MSE постоянного прогноза средним
+  равна дисперсии баллов, 413,4. Поэтому на MSE построен <span class="math-inline" data-tex="R^2"></span> из части 4, и по той же причине MSE удобно
+  дифференцировать при обучении: производная квадрата равна <span class="math-inline" data-tex="2e"></span>, она плавно уменьшается у минимума.
+</p>
+
+### RMSE: корень из MSE
+
+<div class="math-display" data-tex="\text{RMSE} = \sqrt{\text{MSE}} = \sqrt{262{,}1} = 16{,}19"></div>
+
+<p>
+  Корень возвращает баллы, и RMSE можно ставить рядом с MAE. Это среднее квадратическое модулей остатков:
+  сторона квадрата, площадь которого равна средней площади всех десяти квадратов из сцены.
+</p>
+
+<p>
+  RMSE никогда не меньше MAE. Применим ту же формулу «средний квадрат = квадрат среднего + дисперсия»
+  к модулям остатков:
+</p>
+
+<div class="math-display" data-tex="\text{RMSE}^2 = \text{MAE}^2 + \text{Var}(|e|) = 15{,}48^2 + 22{,}4 = 239{,}7 + 22{,}4 = 262{,}1"></div>
+
+<p>
+  Дисперсия не бывает отрицательной, поэтому <span class="math-inline" data-tex="\text{RMSE} \ge \text{MAE}"></span>. Равенство только при
+  <span class="math-inline" data-tex="\text{Var}(|e|) = 0"></span>, когда все промахи одного размера. Разрыв между ними — мера того, насколько промахи
+  разные. У дерева стандартное отклонение модулей всего 4,7 балла, поэтому RMSE 16,19 почти не отличается
+  от MAE 15,48.
+</p>
+
+<p>
+  Сверху RMSE ограничена тоже: <span class="math-inline" data-tex="\text{RMSE} \le \sqrt{n}\cdot\text{MAE}"></span>. Граница достигается, когда весь
+  промах приходится на одного студента. Для десяти студентов отношение RMSE/MAE лежит между 1 и
+  <span class="math-inline" data-tex="\sqrt{10} \approx 3{,}16"></span>; у дерева оно 1,05.
+</p>
+
+<p>
+  Поэтому RMSE нельзя читать как «типичный промах». Типичный промах у дерева 15 баллов (медиана модулей),
+  а RMSE отражает и типичные промахи, и то, насколько среди них выделяются крупные.
+</p>
+
+<p>
+  В интерактиве все эти формулы пересчитываются при каждом движении прогноза. Попробуйте кнопки: «убрать смещение»
+  обнуляет <span class="math-inline" data-tex="\bar e"></span>, «все промахи по 15,48» делает RMSE равной MAE, а «ошибка только у студента 10» доводит
+  отношение RMSE/MAE до <span class="math-inline" data-tex="\sqrt{10}"></span>.
+</p>
+
+
+<div class="dt-live" id="resLive">
+  <div class="dt-live-head"><strong>Интерактив: двигайте прогнозы и смотрите на четыре метрики</strong>
+    <p>Перетащите синюю черточку любого студента вверх или вниз, или выберите студента кнопкой и двигайте ползунок. Кнопки ниже ставят готовые наборы прогнозов.</p></div>
+  <div class="thr-fig"><svg id="resSvg" viewBox="0 0 640 330" role="img" aria-label="Баллы, прогнозы и остатки десяти студентов" style="touch-action: pan-y; cursor: ns-resize; user-select: none; -webkit-user-select: none"></svg></div>
+  <div class="thr-panel">
+    <div class="dt-controls">
+      <div class="rm-modes" id="resPick"><button type="button" data-k="0" aria-pressed="false">1</button><button type="button" data-k="1" aria-pressed="false">2</button><button type="button" data-k="2" aria-pressed="false">3</button><button type="button" data-k="3" aria-pressed="false">4</button><button type="button" data-k="4" aria-pressed="false">5</button><button type="button" data-k="5" aria-pressed="false">6</button><button type="button" data-k="6" aria-pressed="true">7</button><button type="button" data-k="7" aria-pressed="false">8</button><button type="button" data-k="8" aria-pressed="false">9</button><button type="button" data-k="9" aria-pressed="false">10</button></div>
+      <div class="dt-control"><label for="resR"><span id="resLab">прогноз для студента 7</span><output id="resV">45,3</output></label>
+        <input id="resR" type="range" min="0" max="100" step="0.5" value="45.25"></div>
+      <div class="dt-seg"><button type="button" id="resSq" aria-pressed="false">показать квадраты</button></div>
+    </div>
+    <div class="dt-presets" style="align-content: start">
+      <button type="button" data-preset="tree">прогноз дерева</button>
+      <button type="button" data-preset="shift">убрать смещение: всем +3,57</button>
+      <button type="button" data-preset="equal">все промахи по 15,48</button>
+      <button type="button" data-preset="one">ошибка только у студента 10</button>
+    </div>
+    <div class="dt-metrics">
+      <div class="dt-metric"><span>смещение</span><strong id="resB">—</strong></div>
+      <div class="dt-metric"><span>MAE</span><strong id="resMae">—</strong></div>
+      <div class="dt-metric"><span>MSE</span><strong id="resMse">—</strong></div>
+      <div class="dt-metric"><span>RMSE</span><strong id="resRmse">—</strong></div>
+      <div class="dt-metric" style="grid-column: 1 / -1"><span>RMSE / MAE (от 1 до √10 ≈ 3,16)</span><strong id="resRatio">—</strong></div>
+    </div>
+  </div>
+  <div class="dt-table"><table class="shape-table" id="resTab"><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>сумма</th></tr></table></div>
+  <div class="dt-formula" id="resF1"></div>
+  <div class="dt-formula" id="resF2"></div>
+</div>
+<script>
+(function () {
+  var svg = document.getElementById('resSvg');
+  if (!svg) return;
+  function el(n, a, t) {
+    var e = document.createElementNS('http://www.w3.org/2000/svg', n);
+    for (var k in a) e.setAttribute(k, a[k]);
+    if (t !== undefined) e.textContent = t;
+    return e;
+  }
+  function fmt(v, d) { return v.toFixed(d).replace('.', ','); }
+  function H(k, n) {
+    if (n === 0) return 0;
+    var p = k / n, s = 0;
+    [p, 1 - p].forEach(function (q) { if (q > 0) s -= q * Math.log2(q); });
+    return s;
+  }
+  function tex(node, src, plain) {
+    if (window.katex) window.katex.render(src, node, {throwOnError: false, displayMode: false});
+    else node.textContent = plain;
+  }
+  var D = {"y": [30.0, 22.0, 41.0, 58.0, 35.0, 47.0, 72.0, 61.0, 80.0, 84.0], "p": [48.667, 38.25, 26.0, 41.0, 48.667, 32.0, 45.25, 72.0, 66.5, 76.0]};
+  var p = D.p.slice(), sel = 6, squares = false, drag = false;
+  var R = document.getElementById('resR');
+  function cx(i) { return 80 + i * 56; }
+  function sy(v) { return 290 - v * 2.4; }
+  function vy(py) { return Math.max(0, Math.min(100, Math.round((290 - py) / 2.4 * 2) / 2)); }
+  function f1(v) { return fmt(v, Math.abs(v) >= 100 ? 0 : 1).replace('-', '−'); }
+  function draw(e) {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    svg.appendChild(el('rect', {x: 0, y: 0, width: 640, height: 330, fill: '#FFFFFF'}));
+    svg.appendChild(el('rect', {x: cx(sel) - 26, y: 40, width: 52, height: 252, fill: '#EEF4FB'}));
+    [0, 20, 40, 60, 80, 100].forEach(function (v) {
+      svg.appendChild(el('line', {x1: 50, y1: sy(v), x2: 630, y2: sy(v), stroke: v ? '#F1EEE6' : '#D8D4C8'}));
+      svg.appendChild(el('text', {x: 44, y: sy(v) + 4, 'text-anchor': 'end', 'font-size': 11, fill: '#5E5850'}, String(v)));
+    });
+    for (var i = 0; i < 10; i++) {
+      var s = Math.abs(e[i]) * 2.4, top = Math.min(sy(D.y[i]), sy(p[i]));
+      if (squares && s > 0.5) svg.appendChild(el('rect', {x: cx(i), y: top, width: s, height: s, fill: '#F6EFD0', 'fill-opacity': 0.6, stroke: '#C29E08', 'stroke-width': 1}));
+    }
+    for (var j = 0; j < 10; j++) {
+      svg.appendChild(el('line', {x1: cx(j), y1: sy(p[j]), x2: cx(j), y2: sy(D.y[j]), stroke: '#C29E08', 'stroke-width': 2.6}));
+      svg.appendChild(el('circle', {cx: cx(j), cy: sy(D.y[j]), r: 10, fill: D.y[j] >= 50 ? '#73B222' : '#C30B0A', stroke: '#FFFFFF', 'stroke-width': 1.5}));
+      svg.appendChild(el('text', {x: cx(j), y: sy(D.y[j]) + 4, 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 700, fill: '#FFFFFF'}, String(j + 1)));
+      svg.appendChild(el('line', {x1: cx(j) - 15, y1: sy(p[j]), x2: cx(j) + 15, y2: sy(p[j]), stroke: j === sel ? '#2A5E9B' : '#3576C0', 'stroke-width': j === sel ? 5 : 3.4}));
+      svg.appendChild(el('text', {x: cx(j), y: 312, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 700, fill: e[j] >= 0 ? '#5F9420' : '#9C0908'}, (e[j] > 0 ? '+' : '') + f1(e[j])));
+    }
+    svg.appendChild(el('text', {x: 630, y: 326, 'text-anchor': 'end', 'font-size': 11, fill: '#5E5850'}, 'остаток e = y − ŷ'));
+  }
+  function update() {
+    var e = D.y.map(function (v, i) { return v - p[i]; });
+    var n = 10, se = 0, sa = 0, sq = 0;
+    e.forEach(function (v) { se += v; sa += Math.abs(v); sq += v * v; });
+    var b = se / n, mae = sa / n, mse = sq / n, rmse = Math.sqrt(mse);
+    document.getElementById('resB').textContent = f1(b);
+    document.getElementById('resMae').textContent = fmt(mae, 2);
+    document.getElementById('resMse').textContent = fmt(mse, 1);
+    document.getElementById('resRmse').textContent = fmt(rmse, 2);
+    document.getElementById('resRatio').textContent = mae > 0 ? fmt(rmse / mae, 2) : '—';
+    document.getElementById('resLab').textContent = 'прогноз для студента ' + (sel + 1);
+    document.getElementById('resV').textContent = fmt(p[sel], 1);
+    R.value = p[sel];
+    var rows = [['e', e, se], ['|e|', e.map(Math.abs), sa], ['e²', e.map(function (v) { return v * v; }), sq]];
+    var tab = document.getElementById('resTab');
+    while (tab.rows.length > 1) tab.deleteRow(1);
+    rows.forEach(function (r) {
+      var tr = tab.insertRow();
+      tr.insertCell().innerHTML = '<b>' + r[0] + '</b>';
+      r[1].forEach(function (v, i) { var c = tr.insertCell(); c.textContent = f1(v); if (i === sel) c.className = 'hl'; });
+      tr.insertCell().innerHTML = '<b>' + f1(r[2]) + '</b>';
+    });
+    var c = function (v, d) { return fmt(v, d).replace('-', '-').replace(',', '{,}'); };
+    tex(document.getElementById('resF1'), '\\text{MSE} = \\bar e^{\\,2} + \\text{Var}(e):\\quad ' + c(mse, 1) + ' = ' + c(b * b, 1) + ' + ' + c(mse - b * b, 1), 'MSE = bias² + Var(e)');
+    tex(document.getElementById('resF2'), '\\text{RMSE}^2 = \\text{MAE}^2 + \\text{Var}(|e|):\\quad ' + c(mse, 1) + ' = ' + c(mae * mae, 1) + ' + ' + c(mse - mae * mae, 1), 'RMSE² = MAE² + Var(|e|)');
+    draw(e);
+  }
+  function pick(k) {
+    sel = k;
+    document.querySelectorAll('#resPick [data-k]').forEach(function (o) { o.setAttribute('aria-pressed', String(+o.getAttribute('data-k') === k)); });
+  }
+  function fromEvent(ev, start) {
+    var r = svg.getBoundingClientRect(), x = (ev.clientX - r.left) * 640 / r.width, y = (ev.clientY - r.top) * 330 / r.height;
+    if (start) pick(Math.max(0, Math.min(9, Math.round((x - 80) / 56))));
+    p[sel] = vy(y); update();
+  }
+  svg.addEventListener('pointerdown', function (ev) { drag = true; svg.setPointerCapture(ev.pointerId); fromEvent(ev, true); });
+  svg.addEventListener('pointermove', function (ev) { if (drag) fromEvent(ev, false); });
+  svg.addEventListener('pointerup', function () { drag = false; });
+  svg.addEventListener('pointercancel', function () { drag = false; });
+  R.addEventListener('input', function () { p[sel] = +R.value; update(); });
+  document.querySelectorAll('#resPick [data-k]').forEach(function (b) { b.addEventListener('click', function () { pick(+b.getAttribute('data-k')); update(); }); });
+  document.getElementById('resSq').addEventListener('click', function () {
+    squares = !squares; this.setAttribute('aria-pressed', String(squares)); this.textContent = squares ? 'скрыть квадраты' : 'показать квадраты'; update();
+  });
+  var TREE_BIAS = D.y.reduce(function (s, v, i) { return s + v - D.p[i]; }, 0) / 10;
+  var MAE0 = D.y.reduce(function (s, v, i) { return s + Math.abs(v - D.p[i]); }, 0) / 10;
+  document.querySelectorAll('#resLive [data-preset]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var k = b.getAttribute('data-preset');
+      if (k === 'tree') p = D.p.slice();
+      if (k === 'shift') p = D.p.map(function (v) { return v + TREE_BIAS; });
+      if (k === 'equal') p = D.y.map(function (v, i) { return v - (v - D.p[i] >= 0 ? 1 : -1) * MAE0; });
+      if (k === 'one') { p = D.y.slice(); p[9] = 0; pick(9); }
+      update();
+    });
+  });
+  update();
+})();
+</script>
 
 ## Часть 2. MAE против RMSE: один выброс
 
