@@ -70,42 +70,44 @@
   .prose .dt-table, .prose .cm-fig, .prose .dt-formula, .prose .math-display, .prose pre { position: relative; }
   .prose .dt-table tr.hl td { background: #EEF4FB; }
   .prose .stage-figure .katex svg { height: inherit; }
-  .prose #resTab th, .prose #resTab td { padding: 6px 7px; font-size: 13px; text-align: right; white-space: nowrap; }
+  .prose #resTab th, .prose #resTab td { padding: 6px 9px; font-size: 13px; text-align: right; white-space: nowrap; }
   .prose .rm-modes { display: flex; flex-wrap: wrap; gap: 6px; }
   .prose .rm-modes button { flex: 1 1 auto; }
 </style>
 
 <p class="lead">
-  Модель предсказывает число, например баллы за экзамен. Насколько хорошо? Разберём на тех же десяти студентах,
+  Модель предсказывает число, например цену квартиры. Насколько хорошо? Разберём на четырёх квартирах,
   какие метрики считают для регрессии, что каждая измеряет и какой прогноз она считает лучшим.
 </p>
 
 <p>
   Это продолжение <a href="article.html?slug=classification-metrics-full-cycle">статьи о метриках классификации</a>.
   Там ответ модели был классом, и ошибку можно было только посчитать: верно или нет. Здесь ответ — число,
-  и важно, на сколько модель промахнулась. Баллы и дерево взяты из
-  <a href="article.html?slug=regression-tree-full-cycle">статьи про дерево регрессии</a>.
+  и важно, на сколько модель промахнулась.
 </p>
 
 <p>
-  Модель для разбора — дерево регрессии глубины 2, то самое, что осталось после обрезки. Как и в прошлой статье,
-  ответы честные: каждого студента предсказывает дерево, обученное на остальных девяти (leave-one-out).
+  Данные и модель взяты из <a href="article.html?slug=linear-regression-by-shapes">статьи про линейную регрессию
+  по формам матриц</a>: четыре квартиры, площадь в десятках квадратных метров, возраст дома в десятках лет,
+  цена в миллионах. Нормальные уравнения дали там веса <span class="math-inline" data-tex="w = (27, -25)/23"></span> и <span class="math-inline" data-tex="b = 74/23"></span>. Все прогнозы и остатки —
+  дроби со знаменателем 23, поэтому каждую метрику можно проверить руками.
 </p>
 
 
 <div class="dt-table"><table class="shape-table">
-  <tr><th>#</th><th>Часы</th><th>Пропуски</th><th>Баллы <span class="math-inline" data-tex="y"></span></th><th>Прогноз дерева <span class="math-inline" data-tex="\hat y"></span></th><th>Остаток <span class="math-inline" data-tex="e = y - \hat y"></span></th></tr>
-  <tr><td>1</td><td>2.0</td><td>3.0</td><td>30.0</td><td>48,7</td><td>−18,7</td></tr>
-  <tr><td>2</td><td>4.0</td><td>7.0</td><td>22.0</td><td>38,2</td><td>−16,2</td></tr>
-  <tr><td>3</td><td>6.0</td><td>4.0</td><td>41.0</td><td>26,0</td><td>+15,0</td></tr>
-  <tr><td>4</td><td>8.0</td><td>1.0</td><td>58.0</td><td>41,0</td><td>+17,0</td></tr>
-  <tr><td>5</td><td>10.0</td><td>8.0</td><td>35.0</td><td>48,7</td><td>−13,7</td></tr>
-  <tr><td>6</td><td>12.0</td><td>5.0</td><td>47.0</td><td>32,0</td><td>+15,0</td></tr>
-  <tr><td>7</td><td>14.0</td><td>2.0</td><td>72.0</td><td>45,2</td><td>+26,8</td></tr>
-  <tr><td>8</td><td>16.0</td><td>6.0</td><td>61.0</td><td>72,0</td><td>−11,0</td></tr>
-  <tr><td>9</td><td>18.0</td><td>3.0</td><td>80.0</td><td>66,5</td><td>+13,5</td></tr>
-  <tr><td>10</td><td>20.0</td><td>4.0</td><td>84.0</td><td>76,0</td><td>+8,0</td></tr>
+  <tr><th>#</th><th>Площадь, м²</th><th>Возраст дома, лет</th><th>Цена <span class="math-inline" data-tex="y"></span>, млн</th><th>Прогноз <span class="math-inline" data-tex="\hat y"></span></th><th>Остаток <span class="math-inline" data-tex="e = y - \hat y"></span></th></tr>
+  <tr><td>1</td><td>20</td><td>10</td><td>5</td><td><span class="math-inline" data-tex="\tfrac{103}{23} \approx 4{,}478"></span></td><td><span class="math-inline" data-tex="\tfrac{12}{23} \approx 0{,}522"></span></td></tr>
+  <tr><td>2</td><td>30</td><td>10</td><td>5</td><td><span class="math-inline" data-tex="\tfrac{130}{23} \approx 5{,}652"></span></td><td><span class="math-inline" data-tex="\tfrac{-15}{23} \approx -0{,}652"></span></td></tr>
+  <tr><td>3</td><td>10</td><td>30</td><td>1</td><td><span class="math-inline" data-tex="\tfrac{26}{23} \approx 1{,}130"></span></td><td><span class="math-inline" data-tex="\tfrac{-3}{23} \approx -0{,}130"></span></td></tr>
+  <tr><td>4</td><td>40</td><td>20</td><td>6</td><td><span class="math-inline" data-tex="\tfrac{132}{23} \approx 5{,}739"></span></td><td><span class="math-inline" data-tex="\tfrac{6}{23} \approx 0{,}261"></span></td></tr>
 </table></div>
+
+
+<p>
+  В частях 1–4 метрики считаются на тех же квартирах, на которых модель обучалась, как в статье по формам.
+  Так удобнее разбирать формулы. В части 5 станет видно, почему для оценки модели этого мало.
+</p>
+
 
 ## Часть 1. Остатки, MAE, MSE и RMSE
 
@@ -117,19 +119,20 @@
 
 <div class="stage" id="stageResid" tabindex="0">
   <div class="stage-figure">
-<svg id="residSvg" viewBox="0 0 960 390" role="img" aria-label="Баллы десяти студентов, прогноз дерева и остатки"><style>#residSvg { font-family: Helvetica, Arial, sans-serif; }</style>
-<rect x="0" y="0" width="960" height="390" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
-<g data-key="axes"><line x1="70" y1="300" x2="950" y2="300" stroke="#D8D4C8" stroke-width="1.2"/><line x1="64" y1="300" x2="70" y2="300" stroke="#5E5850" stroke-width="1"/><text x="58" y="304" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">0</text><line x1="64" y1="252" x2="70" y2="252" stroke="#5E5850" stroke-width="1"/><text x="58" y="256" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">20</text><line x1="70" y1="252" x2="950" y2="252" stroke="#F1EEE6" stroke-width="1"/><line x1="64" y1="204" x2="70" y2="204" stroke="#5E5850" stroke-width="1"/><text x="58" y="208" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">40</text><line x1="70" y1="204" x2="950" y2="204" stroke="#F1EEE6" stroke-width="1"/><line x1="64" y1="156" x2="70" y2="156" stroke="#5E5850" stroke-width="1"/><text x="58" y="160" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">60</text><line x1="70" y1="156" x2="950" y2="156" stroke="#F1EEE6" stroke-width="1"/><line x1="64" y1="108" x2="70" y2="108" stroke="#5E5850" stroke-width="1"/><text x="58" y="112" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">80</text><line x1="70" y1="108" x2="950" y2="108" stroke="#F1EEE6" stroke-width="1"/><line x1="64" y1="60" x2="70" y2="60" stroke="#5E5850" stroke-width="1"/><text x="58" y="64" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">100</text><line x1="70" y1="60" x2="950" y2="60" stroke="#F1EEE6" stroke-width="1"/><text x="24" y="180" font-size="13" fill="#5E5850" text-anchor="middle" font-weight="400" transform="rotate(-90 24 180.0)">баллы</text></g>
-<g data-key="sq" data-only="1"><rect x="110" y="183.2" width="44.8" height="44.8" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><text x="132.4" y="209.6" font-size="11" fill="#8F7406" text-anchor="middle" font-weight="700">348</text><rect x="194" y="208.2" width="39" height="39" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><text x="213.5" y="231.7" font-size="11" fill="#8F7406" text-anchor="middle" font-weight="700">264</text><rect x="278" y="201.6" width="36" height="36" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><text x="296" y="223.6" font-size="11" fill="#8F7406" text-anchor="middle" font-weight="700">225</text><rect x="362" y="160.8" width="40.8" height="40.8" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><text x="382.4" y="185.2" font-size="11" fill="#8F7406" text-anchor="middle" font-weight="700">289</text><rect x="446" y="183.2" width="32.8" height="32.8" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><text x="462.4" y="203.6" font-size="11" fill="#8F7406" text-anchor="middle" font-weight="700">187</text><rect x="530" y="187.2" width="36" height="36" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><text x="548" y="209.2" font-size="11" fill="#8F7406" text-anchor="middle" font-weight="700">225</text><rect x="614" y="127.2" width="64.2" height="64.2" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><text x="646.1" y="163.3" font-size="11" fill="#8F7406" text-anchor="middle" font-weight="700">716</text><rect x="698" y="127.2" width="26.4" height="26.4" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="782" y="108" width="32.4" height="32.4" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><text x="798.2" y="128.2" font-size="11" fill="#8F7406" text-anchor="middle" font-weight="700">182</text><rect x="866" y="98.4" width="19.2" height="19.2" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/></g>
-<g data-key="dots"><circle cx="110" cy="228.0" r="11" fill="#C30B0A" stroke="#FFFFFF" stroke-width="1.5"/><text x="110" y="232" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">1</text><circle cx="194" cy="247.2" r="11" fill="#C30B0A" stroke="#FFFFFF" stroke-width="1.5"/><text x="194" y="251.2" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">2</text><circle cx="278" cy="201.6" r="11" fill="#C30B0A" stroke="#FFFFFF" stroke-width="1.5"/><text x="278" y="205.6" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">3</text><circle cx="362" cy="160.8" r="11" fill="#73B222" stroke="#FFFFFF" stroke-width="1.5"/><text x="362" y="164.8" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">4</text><circle cx="446" cy="216.0" r="11" fill="#C30B0A" stroke="#FFFFFF" stroke-width="1.5"/><text x="446" y="220" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">5</text><circle cx="530" cy="187.2" r="11" fill="#C30B0A" stroke="#FFFFFF" stroke-width="1.5"/><text x="530" y="191.2" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">6</text><circle cx="614" cy="127.2" r="11" fill="#73B222" stroke="#FFFFFF" stroke-width="1.5"/><text x="614" y="131.2" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">7</text><circle cx="698" cy="153.6" r="11" fill="#73B222" stroke="#FFFFFF" stroke-width="1.5"/><text x="698" y="157.6" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">8</text><circle cx="782" cy="108.0" r="11" fill="#73B222" stroke="#FFFFFF" stroke-width="1.5"/><text x="782" y="112" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">9</text><circle cx="866" cy="98.4" r="11" fill="#73B222" stroke="#FFFFFF" stroke-width="1.5"/><text x="866" y="102.4" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">10</text></g>
-<g data-key="pred"><line x1="96" y1="183.2" x2="124" y2="183.2" stroke="#3576C0" stroke-width="3.4"/><line x1="180" y1="208.2" x2="208" y2="208.2" stroke="#3576C0" stroke-width="3.4"/><line x1="264" y1="237.6" x2="292" y2="237.6" stroke="#3576C0" stroke-width="3.4"/><line x1="348" y1="201.6" x2="376" y2="201.6" stroke="#3576C0" stroke-width="3.4"/><line x1="432" y1="183.2" x2="460" y2="183.2" stroke="#3576C0" stroke-width="3.4"/><line x1="516" y1="223.2" x2="544" y2="223.2" stroke="#3576C0" stroke-width="3.4"/><line x1="600" y1="191.4" x2="628" y2="191.4" stroke="#3576C0" stroke-width="3.4"/><line x1="684" y1="127.2" x2="712" y2="127.2" stroke="#3576C0" stroke-width="3.4"/><line x1="768" y1="140.4" x2="796" y2="140.4" stroke="#3576C0" stroke-width="3.4"/><line x1="852" y1="117.6" x2="880" y2="117.6" stroke="#3576C0" stroke-width="3.4"/></g>
-<g data-key="seg"><line x1="110" y1="183.2" x2="110" y2="228" stroke="#C29E08" stroke-width="2.6"/><line x1="194" y1="208.2" x2="194" y2="247.2" stroke="#C29E08" stroke-width="2.6"/><line x1="278" y1="237.6" x2="278" y2="201.6" stroke="#C29E08" stroke-width="2.6"/><line x1="362" y1="201.6" x2="362" y2="160.8" stroke="#C29E08" stroke-width="2.6"/><line x1="446" y1="183.2" x2="446" y2="216" stroke="#C29E08" stroke-width="2.6"/><line x1="530" y1="223.2" x2="530" y2="187.2" stroke="#C29E08" stroke-width="2.6"/><line x1="614" y1="191.4" x2="614" y2="127.2" stroke="#C29E08" stroke-width="2.6"/><line x1="698" y1="127.2" x2="698" y2="153.6" stroke="#C29E08" stroke-width="2.6"/><line x1="782" y1="140.4" x2="782" y2="108" stroke="#C29E08" stroke-width="2.6"/><line x1="866" y1="117.6" x2="866" y2="98.4" stroke="#C29E08" stroke-width="2.6"/></g>
-<g data-key="lab" data-only="1"><line x1="110" y1="183.2" x2="110" y2="228" stroke="#C29E08" stroke-width="2.6"/><line x1="194" y1="208.2" x2="194" y2="247.2" stroke="#C29E08" stroke-width="2.6"/><line x1="278" y1="237.6" x2="278" y2="201.6" stroke="#C29E08" stroke-width="2.6"/><line x1="362" y1="201.6" x2="362" y2="160.8" stroke="#C29E08" stroke-width="2.6"/><line x1="446" y1="183.2" x2="446" y2="216" stroke="#C29E08" stroke-width="2.6"/><line x1="530" y1="223.2" x2="530" y2="187.2" stroke="#C29E08" stroke-width="2.6"/><line x1="614" y1="191.4" x2="614" y2="127.2" stroke="#C29E08" stroke-width="2.6"/><line x1="698" y1="127.2" x2="698" y2="153.6" stroke="#C29E08" stroke-width="2.6"/><line x1="782" y1="140.4" x2="782" y2="108" stroke="#C29E08" stroke-width="2.6"/><line x1="866" y1="117.6" x2="866" y2="98.4" stroke="#C29E08" stroke-width="2.6"/><text x="119" y="209.6" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">−18,7</text><text x="203" y="231.7" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">−16,2</text><text x="287" y="223.6" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">+15,0</text><text x="371" y="185.2" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">+17,0</text><text x="455" y="203.6" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">−13,7</text><text x="539" y="209.2" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">+15,0</text><text x="623" y="163.3" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">+26,8</text><text x="707" y="144.4" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">−11,0</text><text x="791" y="128.2" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">+13,5</text><text x="875" y="112" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">+8,0</text></g>
-<g data-key="labs" data-only="1"><line x1="110" y1="183.2" x2="110" y2="228" stroke="#C29E08" stroke-width="2.6"/><line x1="194" y1="208.2" x2="194" y2="247.2" stroke="#C29E08" stroke-width="2.6"/><line x1="278" y1="237.6" x2="278" y2="201.6" stroke="#C29E08" stroke-width="2.6"/><line x1="362" y1="201.6" x2="362" y2="160.8" stroke="#C29E08" stroke-width="2.6"/><line x1="446" y1="183.2" x2="446" y2="216" stroke="#C29E08" stroke-width="2.6"/><line x1="530" y1="223.2" x2="530" y2="187.2" stroke="#C29E08" stroke-width="2.6"/><line x1="614" y1="191.4" x2="614" y2="127.2" stroke="#C29E08" stroke-width="2.6"/><line x1="698" y1="127.2" x2="698" y2="153.6" stroke="#C29E08" stroke-width="2.6"/><line x1="782" y1="140.4" x2="782" y2="108" stroke="#C29E08" stroke-width="2.6"/><line x1="866" y1="117.6" x2="866" y2="98.4" stroke="#C29E08" stroke-width="2.6"/><text x="119" y="209.6" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">18,7</text><text x="203" y="231.7" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">16,2</text><text x="287" y="223.6" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">15,0</text><text x="371" y="185.2" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">17,0</text><text x="455" y="203.6" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">13,7</text><text x="539" y="209.2" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">15,0</text><text x="623" y="163.3" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">26,8</text><text x="707" y="144.4" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">11,0</text><text x="791" y="128.2" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">13,5</text><text x="875" y="112" font-size="12" fill="#8F7406" text-anchor="start" font-weight="700">8,0</text></g>
-<g data-key="f_bias" data-only="1"><foreignObject x="50" y="326" width="860" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:18px;color:#111111;font-weight:400" data-tex="\bar e = \tfrac{1}{10}\sum e_i = \tfrac{1}{10}\,(95{,}25 - 59{,}58) = 3{,}57"></div></foreignObject></g>
-<g data-key="f_mae" data-only="1"><foreignObject x="50" y="326" width="860" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:18px;color:#111111;font-weight:400" data-tex="\text{MAE} = \tfrac{1}{10}\sum |e_i| = \tfrac{154{,}8}{10} = 15{,}5\ \text{балла}"></div></foreignObject></g>
-<g data-key="f_mse" data-only="1"><foreignObject x="50" y="326" width="860" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:18px;color:#111111;font-weight:400" data-tex="\text{MSE} = \tfrac{1}{10}\sum e_i^2 = \tfrac{2621}{10} = 262{,}1\ \text{балла}^2"></div></foreignObject></g>
-<g data-key="f_rmse" data-only="1"><foreignObject x="50" y="326" width="860" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:18px;color:#111111;font-weight:400" data-tex="\text{RMSE} = \sqrt{\text{MSE}} = \sqrt{262{,}1} = 16{,}2\ \text{балла} \;\ge\; \text{MAE} = 15{,}5"></div></foreignObject></g>
+<svg id="residSvg" viewBox="0 0 960 640" role="img" aria-label="Цены четырёх квартир, прогноз линейной регрессии и остатки"><style>#residSvg { font-family: Helvetica, Arial, sans-serif; }</style>
+<rect x="0" y="0" width="960" height="640" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<g data-key="axes"><line x1="110" y1="530" x2="950" y2="530" stroke="#D8D4C8" stroke-width="1.2"/><line x1="104" y1="530" x2="110" y2="530" stroke="#5E5850" stroke-width="1"/><text x="98" y="534" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">0</text><line x1="104" y1="460" x2="110" y2="460" stroke="#5E5850" stroke-width="1"/><text x="98" y="464" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">1</text><line x1="110" y1="460" x2="950" y2="460" stroke="#F1EEE6" stroke-width="1"/><line x1="104" y1="390" x2="110" y2="390" stroke="#5E5850" stroke-width="1"/><text x="98" y="394" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">2</text><line x1="110" y1="390" x2="950" y2="390" stroke="#F1EEE6" stroke-width="1"/><line x1="104" y1="320" x2="110" y2="320" stroke="#5E5850" stroke-width="1"/><text x="98" y="324" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">3</text><line x1="110" y1="320" x2="950" y2="320" stroke="#F1EEE6" stroke-width="1"/><line x1="104" y1="250" x2="110" y2="250" stroke="#5E5850" stroke-width="1"/><text x="98" y="254" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">4</text><line x1="110" y1="250" x2="950" y2="250" stroke="#F1EEE6" stroke-width="1"/><line x1="104" y1="180" x2="110" y2="180" stroke="#5E5850" stroke-width="1"/><text x="98" y="184" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">5</text><line x1="110" y1="180" x2="950" y2="180" stroke="#F1EEE6" stroke-width="1"/><line x1="104" y1="110" x2="110" y2="110" stroke="#5E5850" stroke-width="1"/><text x="98" y="114" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">6</text><line x1="110" y1="110" x2="950" y2="110" stroke="#F1EEE6" stroke-width="1"/><line x1="104" y1="40" x2="110" y2="40" stroke="#5E5850" stroke-width="1"/><text x="98" y="44" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">7</text><line x1="110" y1="40" x2="950" y2="40" stroke="#F1EEE6" stroke-width="1"/><text x="60" y="285" font-size="13" fill="#5E5850" text-anchor="middle" font-weight="400" transform="rotate(-90 60 285.0)">цена, млн</text><text x="190" y="550" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">кв. 1: 20 м², 10 лет</text><text x="380" y="550" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">кв. 2: 30 м², 10 лет</text><text x="570" y="550" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">кв. 3: 10 м², 30 лет</text><text x="760" y="550" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">кв. 4: 40 м², 20 лет</text></g>
+<g data-key="sq" data-only="1"><rect x="190" y="180" width="36.52" height="36.52" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.3" fill-opacity="0.85"/><text x="232.52" y="203.26" font-size="13" fill="#8F7406" text-anchor="start" font-weight="700">0,272</text><rect x="380" y="134.35" width="45.65" height="45.65" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.3" fill-opacity="0.85"/><text x="431.65" y="162.17" font-size="13" fill="#8F7406" text-anchor="start" font-weight="700">0,425</text><rect x="570" y="450.87" width="9.13" height="9.13" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.3" fill-opacity="0.85"/><text x="585.13" y="460.43" font-size="13" fill="#8F7406" text-anchor="start" font-weight="700">0,017</text><rect x="760" y="110" width="18.26" height="18.26" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.3" fill-opacity="0.85"/><text x="784.26" y="124.13" font-size="13" fill="#8F7406" text-anchor="start" font-weight="700">0,068</text></g>
+<g data-key="dots"><circle cx="190" cy="180.0" r="7" fill="#3F3A33" stroke="#FFFFFF" stroke-width="1.5"/><text x="176" y="185" font-size="14" fill="#3F3A33" text-anchor="end" font-weight="700">1</text><circle cx="380" cy="180.0" r="7" fill="#3F3A33" stroke="#FFFFFF" stroke-width="1.5"/><text x="366" y="185" font-size="14" fill="#3F3A33" text-anchor="end" font-weight="700">2</text><circle cx="570" cy="460.0" r="7" fill="#3F3A33" stroke="#FFFFFF" stroke-width="1.5"/><text x="556" y="465" font-size="14" fill="#3F3A33" text-anchor="end" font-weight="700">3</text><circle cx="760" cy="110.0" r="7" fill="#3F3A33" stroke="#FFFFFF" stroke-width="1.5"/><text x="746" y="115" font-size="14" fill="#3F3A33" text-anchor="end" font-weight="700">4</text></g>
+<g data-key="pred"><line x1="168" y1="216.52" x2="212" y2="216.52" stroke="#3576C0" stroke-width="4"/><line x1="358" y1="134.35" x2="402" y2="134.35" stroke="#3576C0" stroke-width="4"/><line x1="548" y1="450.87" x2="592" y2="450.87" stroke="#3576C0" stroke-width="4"/><line x1="738" y1="128.26" x2="782" y2="128.26" stroke="#3576C0" stroke-width="4"/></g>
+<g data-key="seg"><line x1="190" y1="216.52" x2="190" y2="180" stroke="#C29E08" stroke-width="3"/><line x1="380" y1="134.35" x2="380" y2="180" stroke="#C29E08" stroke-width="3"/><line x1="570" y1="450.87" x2="570" y2="460" stroke="#C29E08" stroke-width="3"/><line x1="760" y1="128.26" x2="760" y2="110" stroke="#C29E08" stroke-width="3"/></g>
+<g data-key="lab" data-only="1"><line x1="190" y1="216.52" x2="190" y2="180" stroke="#C29E08" stroke-width="3"/><line x1="380" y1="134.35" x2="380" y2="180" stroke="#C29E08" stroke-width="3"/><line x1="570" y1="450.87" x2="570" y2="460" stroke="#C29E08" stroke-width="3"/><line x1="760" y1="128.26" x2="760" y2="110" stroke="#C29E08" stroke-width="3"/><text x="216" y="203.26" font-size="14" fill="#8F7406" text-anchor="start" font-weight="700">+0,52</text><text x="406" y="162.17" font-size="14" fill="#8F7406" text-anchor="start" font-weight="700">−0,65</text><text x="596" y="460.43" font-size="14" fill="#8F7406" text-anchor="start" font-weight="700">−0,13</text><text x="786" y="124.13" font-size="14" fill="#8F7406" text-anchor="start" font-weight="700">+0,26</text></g>
+<g data-key="labs" data-only="1"><line x1="190" y1="216.52" x2="190" y2="180" stroke="#C29E08" stroke-width="3"/><line x1="380" y1="134.35" x2="380" y2="180" stroke="#C29E08" stroke-width="3"/><line x1="570" y1="450.87" x2="570" y2="460" stroke="#C29E08" stroke-width="3"/><line x1="760" y1="128.26" x2="760" y2="110" stroke="#C29E08" stroke-width="3"/><text x="216" y="203.26" font-size="14" fill="#8F7406" text-anchor="start" font-weight="700">0,52</text><text x="406" y="162.17" font-size="14" fill="#8F7406" text-anchor="start" font-weight="700">0,65</text><text x="596" y="460.43" font-size="14" fill="#8F7406" text-anchor="start" font-weight="700">0,13</text><text x="786" y="124.13" font-size="14" fill="#8F7406" text-anchor="start" font-weight="700">0,26</text></g>
+<g data-key="f_pred" data-only="1"><foreignObject x="40" y="562" width="880" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="\hat y = \tfrac{1}{23}\,(27 \cdot \text{площадь} - 25 \cdot \text{возраст} + 74)"></div></foreignObject></g>
+<g data-key="f_bias" data-only="1"><foreignObject x="40" y="562" width="880" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="\bar e = \tfrac14 \cdot \tfrac{12 - 15 - 3 + 6}{23} = 0"></div></foreignObject></g>
+<g data-key="f_mae" data-only="1"><foreignObject x="40" y="562" width="880" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="\text{MAE} = \tfrac14 \cdot \tfrac{12 + 15 + 3 + 6}{23} = \tfrac{9}{23} \approx 0{,}391\ \text{млн}"></div></foreignObject></g>
+<g data-key="f_mse" data-only="1"><foreignObject x="40" y="562" width="880" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="\text{MSE} = \tfrac14 \cdot \tfrac{144 + 225 + 9 + 36}{529} = \tfrac{9}{46} \approx 0{,}196\ \text{млн}^2"></div></foreignObject></g>
+<g data-key="f_rmse" data-only="1"><foreignObject x="40" y="562" width="880" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="\text{RMSE} = \sqrt{0{,}196} \approx 0{,}442\ \text{млн} \;\ge\; \text{MAE} \approx 0{,}391"></div></foreignObject></g>
 </svg>
   </div>
   <div class="stage-bar">
@@ -140,45 +143,44 @@
   </div>
   <div class="stage-notes">
     <div class="step-panel" data-on="axes dots" data-focus="dots">
-      <div class="step-kicker">Шаг 1 · баллы</div>
-      <h4>Настоящие баллы</h4>
-      <p>Кружки — баллы десяти студентов за экзамен: зелёные набрали 50 и больше, красные меньше. Студенты стоят по номерам, по вертикали баллы.</p>
+      <div class="step-kicker">Шаг 1 · цены</div>
+      <h4>Четыре квартиры</h4>
+      <p>Кружки — цены четырёх квартир из статьи про линейную регрессию по формам, в миллионах. Под каждой подписаны площадь и возраст дома.</p>
     </div>
-    <div class="step-panel" data-on="axes dots pred" data-focus="pred">
+    <div class="step-panel" data-on="axes dots pred f_pred" data-focus="pred f_pred">
       <div class="step-kicker">Шаг 2 · прогноз</div>
-      <h4>Прогноз дерева</h4>
-      <p>Синие черточки — прогноз дерева регрессии глубины 2. Каждого студента предсказывает дерево, обученное на остальных девяти (leave-one-out), поэтому прогноз честный: этого студента дерево не видело.</p>
-<p>У студента 3 прогноз <span class="math-inline" data-tex="26"></span> при настоящих <span class="math-inline" data-tex="41"></span>, у студента 8 прогноз <span class="math-inline" data-tex="72"></span> при <span class="math-inline" data-tex="61"></span>.</p>
+      <h4>Прогноз обученной регрессии</h4>
+      <p>Синие черточки — прогноз линейной регрессии с весами из нормальных уравнений: <span class="math-inline" data-tex="w = (27, -25)/23"></span>, <span class="math-inline" data-tex="b = 74/23"></span>. Для первой квартиры <span class="math-inline" data-tex="(27 \cdot 2 - 25 \cdot 1 + 74)/23 = 103/23 \approx 4{,}48"></span> млн при настоящих 5.</p>
     </div>
     <div class="step-panel" data-on="axes dots pred seg lab" data-focus="seg lab">
       <div class="step-kicker">Шаг 3 · остатки</div>
       <h4>Остаток: правда минус прогноз</h4>
-      <p>Остаток <span class="math-inline" data-tex="e_i = y_i - \hat y_i"></span> показывает, на сколько баллов промахнулась модель и в какую сторону. Плюс — дерево недооценило студента, минус — переоценило.</p>
-<p>Самый большой промах у студента 7: <span class="math-inline" data-tex="72 - 45{,}25 = 26{,}75"></span>.</p>
+      <p>Остаток <span class="math-inline" data-tex="e_i = y_i - \hat y_i"></span>. Плюс — модель недооценила квартиру, минус — переоценила. Все четыре остатка — дроби со знаменателем 23: <span class="math-inline" data-tex="(12,\ -15,\ -3,\ 6)/23"></span>.</p>
+<p>В статье по формам остаток записан наоборот, <span class="math-inline" data-tex="R = \hat Y - Y"></span>. На MAE, MSE и RMSE знак не влияет, на смещение влияет.</p>
     </div>
     <div class="step-panel" data-on="axes dots pred seg lab f_bias" data-focus="f_bias">
       <div class="step-kicker">Шаг 4 · смещение</div>
-      <h4>Среднее остатков почти ничего не говорит о точности</h4>
-      <p>Плюсы в сумме дают <span class="math-inline" data-tex="95{,}25"></span>, минусы <span class="math-inline" data-tex="-59{,}58"></span>. Среднее остатков <span class="math-inline" data-tex="3{,}57"></span>: дерево в среднем недооценивает студентов на три с половиной балла. Это смещение (bias), полезная вещь: оно показывает систематический сдвиг.</p>
-<p>Но о размере ошибок оно не говорит: положительные и отрицательные промахи гасят друг друга. Модель с остатками <span class="math-inline" data-tex="+30"></span> и <span class="math-inline" data-tex="-30"></span> имела бы нулевое смещение. Чтобы промахи не гасились, у остатка убирают знак: берут модуль или квадрат.</p>
+      <h4>Среднее остатков ровно ноль</h4>
+      <p><span class="math-inline" data-tex="12 - 15 - 3 + 6 = 0"></span>: модель на этих квартирах не завышает и не занижает цены в среднем. Это не совпадение. У наименьших квадратов со свободным членом сумма остатков на обучающих данных всегда ноль: это условие <span class="math-inline" data-tex="\tilde X^\top R = 0"></span> для столбца единиц из части 7 статьи по формам.</p>
+<p>Поэтому смещение обученной линейной регрессии имеет смысл проверять только на новых данных. О размере промахов оно в любом случае не говорит: плюсы и минусы гасят друг друга.</p>
     </div>
     <div class="step-panel" data-on="axes dots pred seg labs f_mae" data-focus="labs f_mae">
       <div class="step-kicker">Шаг 5 · MAE</div>
       <h4>MAE: средний модуль остатка</h4>
-      <p>Берём остатки без знака и усредняем. Получается MAE (mean absolute error): <span class="math-inline" data-tex="15{,}5"></span> балла.</p>
-<p>MAE измеряется в тех же единицах, что и баллы, и читается напрямую: на новом студенте дерево в среднем промахивается на 15,5 балла. Каждый балл промаха весит одинаково, большой он или маленький.</p>
+      <p>Убираем знак и усредняем: MAE (mean absolute error) <span class="math-inline" data-tex="= 9/23 \approx 0{,}391"></span> млн. Модель промахивается в среднем на 391 тысячу.</p>
+<p>MAE в тех же единицах, что цены, и читается без пересчёта. Каждый рубль промаха весит одинаково.</p>
     </div>
     <div class="step-panel" data-on="axes sq dots pred seg f_mse" data-focus="sq f_mse">
       <div class="step-kicker">Шаг 6 · MSE</div>
       <h4>MSE: средний квадрат остатка</h4>
-      <p>Теперь возведём каждый остаток в квадрат. На схеме это буквально квадраты со стороной <span class="math-inline" data-tex="|e_i|"></span>: число внутри — их площадь. Промах в 26,75 балла даёт 716, а промах в 8 баллов только 64.</p>
-<p>Среднее этих площадей — MSE (mean squared error), <span class="math-inline" data-tex="262{,}1"></span>. Это та же величина, которую дерево уменьшало при выборе вопросов и которую минимизирует линейная регрессия. Единицы у неё — баллы в квадрате, поэтому само число трудно прочитать.</p>
+      <p>Теперь каждый остаток возведён в квадрат, на схеме это квадраты со стороной <span class="math-inline" data-tex="|e_i|"></span>. Число рядом — площадь. Вторая квартира с промахом 0,65 даёт 0,425, третья с промахом 0,13 — только 0,017.</p>
+<p>Среднее площадей — MSE <span class="math-inline" data-tex="= 9/46 \approx 0{,}196"></span>. Это ровно <span class="math-inline" data-tex="L^* = 0{,}1957"></span> из статьи по формам: минимум, к которому сходится градиентный спуск. Единицы — миллионы в квадрате.</p>
     </div>
     <div class="step-panel" data-on="axes sq dots pred seg f_rmse" data-focus="f_rmse">
       <div class="step-kicker">Шаг 7 · RMSE</div>
-      <h4>RMSE возвращает баллы</h4>
-      <p>Корень из MSE снова в баллах: RMSE (root mean squared error) <span class="math-inline" data-tex="= 16{,}2"></span>. Это сторона квадрата, площадь которого равна средней площади всех десяти.</p>
-<p>RMSE никогда не меньше MAE. Они равны, только если все промахи одного размера. Чем больше RMSE отрывается от MAE, тем неравномернее ошибки: у дерева <span class="math-inline" data-tex="16{,}2"></span> против <span class="math-inline" data-tex="15{,}5"></span>, промахи примерно одинаковые.</p>
+      <h4>RMSE возвращает миллионы</h4>
+      <p>Корень из MSE снова в миллионах: RMSE <span class="math-inline" data-tex="\approx 0{,}442"></span>. Это сторона квадрата, площадь которого равна средней площади четырёх квадратов.</p>
+<p>RMSE не бывает меньше MAE. Разрыв тем больше, чем сильнее промахи различаются по размеру; ниже это разобрано подробно.</p>
     </div>
   </div>
 </div>
@@ -193,16 +195,20 @@
 ### Остаток и его знак
 
 <p>
-  Остаток студента <span class="math-inline" data-tex="i"></span> — разность между настоящим ответом и прогнозом:
+  Остаток квартиры <span class="math-inline" data-tex="i"></span> — разность между настоящей ценой и прогнозом:
 </p>
 
 <div class="math-display" data-tex="e_i = y_i - \hat y_i"></div>
 
 <p>
-  Знак остатка показывает направление промаха. Положительный остаток значит, что модель недооценила студента:
-  студент 7 набрал 72, а дерево дало ему 45,25, остаток <span class="math-inline" data-tex="+26{,}75"></span>. Отрицательный — переоценила: студенту 1 дерево
-  дало 48,67 при настоящих 30, остаток <span class="math-inline" data-tex="-18{,}67"></span>. Знак в формуле — договорённость. Иногда пишут <span class="math-inline" data-tex="\hat y_i - y_i"></span>,
-  и тогда смысл знака противоположный. На MAE, MSE и RMSE это не влияет, на смещение влияет.
+  Знак показывает направление промаха. Положительный остаток значит, что модель недооценила квартиру: первая стоит 5 млн,
+  а регрессия дала <span class="math-inline" data-tex="103/23 \approx 4{,}478"></span>, остаток <span class="math-inline" data-tex="+0{,}522"></span>. Отрицательный — переоценила: вторую при цене 5 модель
+  оценила в <span class="math-inline" data-tex="130/23 \approx 5{,}652"></span>, остаток <span class="math-inline" data-tex="-0{,}652"></span>.
+</p>
+
+<p>
+  В статье по формам остаток записан с обратным знаком, <span class="math-inline" data-tex="R = \hat Y - Y"></span>: так удобнее выводить градиент.
+  В метриках чаще пишут <span class="math-inline" data-tex="y - \hat y"></span>. На MAE, MSE и RMSE знак не влияет, на смещение влияет.
 </p>
 
 <p>
@@ -212,24 +218,18 @@
 </p>
 
 <p>
-  Все остатки дерева и всё, что из них получается, в одной таблице:
+  Все остатки и то, что из них получается, в одной таблице:
 </p>
 
 
 <div class="dt-table"><table class="shape-table">
   <tr><th>#</th><th><span class="math-inline" data-tex="y"></span></th><th><span class="math-inline" data-tex="\hat y"></span></th><th><span class="math-inline" data-tex="e = y - \hat y"></span></th><th><span class="math-inline" data-tex="|e|"></span></th><th><span class="math-inline" data-tex="e^2"></span></th></tr>
-  <tr><td>1</td><td>30</td><td>48,67</td><td>−18,67</td><td>18,67</td><td>348,4</td></tr>
-  <tr><td>2</td><td>22</td><td>38,25</td><td>−16,25</td><td>16,25</td><td>264,1</td></tr>
-  <tr><td>3</td><td>41</td><td>26,00</td><td>+15,00</td><td>15,00</td><td>225,0</td></tr>
-  <tr><td>4</td><td>58</td><td>41,00</td><td>+17,00</td><td>17,00</td><td>289,0</td></tr>
-  <tr><td>5</td><td>35</td><td>48,67</td><td>−13,67</td><td>13,67</td><td>186,8</td></tr>
-  <tr><td>6</td><td>47</td><td>32,00</td><td>+15,00</td><td>15,00</td><td>225,0</td></tr>
-  <tr class="hl"><td>7</td><td>72</td><td>45,25</td><td>+26,75</td><td>26,75</td><td>715,6</td></tr>
-  <tr><td>8</td><td>61</td><td>72,00</td><td>−11,00</td><td>11,00</td><td>121,0</td></tr>
-  <tr><td>9</td><td>80</td><td>66,50</td><td>+13,50</td><td>13,50</td><td>182,2</td></tr>
-  <tr><td>10</td><td>84</td><td>76,00</td><td>+8,00</td><td>8,00</td><td>64,0</td></tr>
-  <tr><td><b>сумма</b></td><td><b>530</b></td><td></td><td><b>+35,67</b></td><td><b>154,83</b></td><td><b>2621,1</b></td></tr>
-  <tr><td><b>среднее</b></td><td><b>53</b></td><td></td><td><b>3,57</b> (смещение)</td><td><b>15,48</b> (MAE)</td><td><b>262,1</b> (MSE)</td></tr>
+  <tr><td>1</td><td>5</td><td>4,478</td><td>+0,522 &nbsp;(12/23)</td><td>0,522</td><td>0,272 &nbsp;(144/529)</td></tr>
+  <tr class="hl"><td>2</td><td>5</td><td>5,652</td><td>−0,652 &nbsp;(-15/23)</td><td>0,652</td><td>0,425 &nbsp;(225/529)</td></tr>
+  <tr><td>3</td><td>1</td><td>1,130</td><td>−0,130 &nbsp;(-3/23)</td><td>0,130</td><td>0,017 &nbsp;(9/529)</td></tr>
+  <tr><td>4</td><td>6</td><td>5,739</td><td>+0,261 &nbsp;(6/23)</td><td>0,261</td><td>0,068 &nbsp;(36/529)</td></tr>
+  <tr><td><b>сумма</b></td><td><b>17</b></td><td><b>17</b></td><td><b>0</b></td><td><b>1,565</b> (36/23)</td><td><b>0,783</b> (414/529)</td></tr>
+  <tr><td><b>среднее</b></td><td><b>4,25</b></td><td></td><td><b>0</b> (смещение)</td><td><b>0,391</b> (MAE)</td><td><b>0,196</b> (MSE)</td></tr>
 </table></div>
 
 
@@ -239,95 +239,93 @@
   Среднее остатков со знаком называют смещением (bias):
 </p>
 
-<div class="math-display" data-tex="\bar e = \frac{1}{n}\sum_i e_i = \frac{35{,}67}{10} = 3{,}57"></div>
+<div class="math-display" data-tex="\bar e = \frac{1}{n}\sum_i e_i = \frac{1}{4}\cdot\frac{12 - 15 - 3 + 6}{23} = 0"></div>
 
 <p>
-  Положительные остатки дают в сумме <span class="math-inline" data-tex="95{,}25"></span>, отрицательные <span class="math-inline" data-tex="-59{,}58"></span>. Дерево чаще и сильнее недооценивает,
-  чем переоценивает, и в среднем занижает балл на 3,57.
+  Ноль здесь не случайный. Наименьшие квадраты выбирают веса так, чтобы вектор остатков был перпендикулярен каждому
+  столбцу <span class="math-inline" data-tex="\tilde X"></span>, в том числе столбцу единиц, который отвечает за свободный член <span class="math-inline" data-tex="b"></span>. Перпендикулярность столбцу
+  единиц и означает <span class="math-inline" data-tex="\sum_i e_i = 0"></span>: это условие <span class="math-inline" data-tex="\tilde X^\top R = 0"></span> из части 7 статьи по формам. У любой
+  линейной регрессии со свободным членом смещение на обучающих данных равно нулю, поэтому проверять его имеет смысл
+  только на новых данных.
 </p>
 
 <p>
   Смещение связано с MSE точной формулой: средний квадрат остатков равен квадрату их среднего плюс их дисперсия.
 </p>
 
-<div class="math-display" data-tex="\text{MSE} = \bar e^{\,2} + \text{Var}(e) = 3{,}57^2 + 249{,}4 = 12{,}7 + 249{,}4 = 262{,}1"></div>
+<div class="math-display" data-tex="\text{MSE} = \bar e^{\,2} + \text{Var}(e)"></div>
 
 <p>
-  Это та же формула, что <span class="math-inline" data-tex="\text{Var}(x) = \overline{x^2} - \bar x^{\,2}"></span>, только прочитанная в другую сторону.
-  Если прибавить ко всем прогнозам 3,57, смещение станет нулевым, и MSE упадёт до 249,4, а MAE с 15,48 до 14,77.
-  Больше простым сдвигом ничего не выиграть: оставшиеся 249,4 — разброс остатков вокруг их среднего,
-  и уменьшить его можно только другой моделью.
-</p>
-
-<p>
-  Здесь только 5 % MSE приходится на смещение. Но поправку 3,57 мы посчитали на тех же студентах, на которых
-  её проверяем, поэтому выигрыш завышен. На практике сдвиг оценивают на валидационной выборке.
+  Это та же формула, что <span class="math-inline" data-tex="\text{Var}(x) = \overline{x^2} - \bar x^{\,2}"></span>, прочитанная в другую сторону. У обученной
+  регрессии <span class="math-inline" data-tex="\bar e = 0"></span>, и вся MSE — разброс остатков: <span class="math-inline" data-tex="0{,}196 = 0 + 0{,}196"></span>. Если прибавить ко всем прогнозам 0,5 млн,
+  остатки сдвинутся на <span class="math-inline" data-tex="-0{,}5"></span>, разброс останется тем же, а к MSE добавится квадрат смещения: <span class="math-inline" data-tex="0{,}25 + 0{,}196 = 0{,}446"></span>.
+  Поэтому сдвиг всех прогнозов на одно число уже обученной регрессии может только навредить.
 </p>
 
 ### MAE: средний модуль
 
-<div class="math-display" data-tex="\text{MAE} = \frac{1}{n}\sum_i |e_i| = \frac{154{,}83}{10} = 15{,}48"></div>
+<div class="math-display" data-tex="\text{MAE} = \frac{1}{n}\sum_i |e_i| = \frac{1}{4}\cdot\frac{12 + 15 + 3 + 6}{23} = \frac{9}{23} \approx 0{,}391"></div>
 
 <p>
-  MAE — среднее расстояние между прогнозом и правдой, в баллах. Её проще всего объяснить: «модель в среднем
-  промахивается на 15,5 балла». Для масштаба: баллы студентов лежат от 22 до 84, их стандартное отклонение 20,3.
+  MAE — среднее расстояние между прогнозом и ценой, в миллионах: модель промахивается в среднем на 391 тысячу.
+  Для масштаба: цены лежат от 1 до 6 млн, их стандартное отклонение 1,92 млн.
 </p>
 
 <p>
-  Главное свойство MAE: каждый балл промаха стоит одинаково. Если приблизить прогноз на 1 балл к правде, MAE
-  уменьшится на <span class="math-inline" data-tex="1/10 = 0{,}1"></span> у любого студента, будь его промах 8 баллов или 26,75. Поэтому модель, которая
-  минимизирует MAE, не тратит силы на крупные промахи сильнее, чем на мелкие. В части 3 видно, к чему это ведёт:
-  лучший постоянный прогноз по MAE — медиана.
+  Главное свойство MAE: каждый рубль промаха стоит одинаково. Если приблизить прогноз к цене на 0,1 млн, MAE
+  уменьшится на <span class="math-inline" data-tex="0{,}1/4 = 0{,}025"></span> у любой квартиры, будь её промах 0,13 или 0,65. Модель, которая минимизирует MAE,
+  не тратит на крупные промахи больше сил, чем на мелкие. В части 3 видно, к чему это ведёт: лучший постоянный прогноз
+  по MAE — медиана.
 </p>
 
 <p>
-  Рядом с MAE полезно смотреть ещё на два числа.
+  Рядом с MAE полезно смотреть на максимальную ошибку (max error): у регрессии это 0,652 млн на второй квартире.
+  Она нужна там, где важен худший случай, а не средний.
 </p>
-
-<ul>
-  <li><b>Медиана модулей остатков</b> (median absolute error): 15 баллов. Половина студентов предсказана
-    точнее, половина хуже. Один огромный промах её почти не сдвигает.</li>
-  <li><b>Максимальная ошибка</b> (max error): 26,75 балла на студенте 7. Нужна там, где важен худший случай,
-    а не средний.</li>
-</ul>
 
 ### MSE: средний квадрат
 
-<div class="math-display" data-tex="\text{MSE} = \frac{1}{n}\sum_i e_i^2 = \frac{2621{,}1}{10} = 262{,}1"></div>
+<div class="math-display" data-tex="\text{MSE} = \frac{1}{n}\sum_i e_i^2 = \frac{1}{4}\cdot\frac{144 + 225 + 9 + 36}{529} = \frac{9}{46} \approx 0{,}196"></div>
 
 <p>
-  Квадрат меняет вес промахов. Студент 7 даёт 17 % суммы модулей (<span class="math-inline" data-tex="26{,}75 / 154{,}83"></span>), но 27 % суммы квадратов
-  (<span class="math-inline" data-tex="715{,}6 / 2621{,}1"></span>). Чем крупнее промах, тем большую долю MSE он занимает.
+  Квадрат меняет вес промахов. Вторая квартира даёт 42 % суммы модулей (<span class="math-inline" data-tex="15/36"></span>), но 54 % суммы квадратов
+  (<span class="math-inline" data-tex="225/414"></span>). Третья — 8 % модулей и только 2 % квадратов. Чем крупнее промах, тем большую долю MSE он занимает.
 </p>
 
 <p>
-  Это видно и по тому, как MSE реагирует на исправление одного прогноза. Приблизим прогноз на 1 балл к правде:
+  Это видно и по реакции MSE на исправление одного прогноза. Приблизим прогноз на 0,1 млн к цене:
 </p>
 
 <ul>
-  <li>студенту 7: квадрат падает с <span class="math-inline" data-tex="26{,}75^2 = 715{,}6"></span> до <span class="math-inline" data-tex="25{,}75^2 = 663{,}1"></span>, MSE уменьшается на 5,25;</li>
-  <li>студенту 10: с <span class="math-inline" data-tex="8^2 = 64"></span> до <span class="math-inline" data-tex="7^2 = 49"></span>, MSE уменьшается на 1,5.</li>
+  <li>второй квартире: квадрат падает с <span class="math-inline" data-tex="0{,}652^2 = 0{,}425"></span> до <span class="math-inline" data-tex="0{,}552^2 = 0{,}305"></span>, MSE уменьшается на 0,030;</li>
+  <li>третьей: с <span class="math-inline" data-tex="0{,}130^2 = 0{,}017"></span> до <span class="math-inline" data-tex="0{,}030^2 = 0{,}001"></span>, MSE уменьшается на 0,004.</li>
 </ul>
 
 <p>
-  MAE в обоих случаях уменьшилась бы на одни и те же 0,1. MSE за тот же балл награждает исправление студента 7
-  в 3,5 раза щедрее: выигрыш пропорционален размеру промаха, <span class="math-inline" data-tex="(e^2 - (e-1)^2)/n \approx 2e/n"></span>. Поэтому модель
-  на MSE в первую очередь борется с крупными промахами.
+  MAE в обоих случаях уменьшилась бы на одни и те же 0,025. MSE за тот же шаг награждает исправление второй квартиры
+  в 7,5 раза щедрее: выигрыш пропорционален размеру промаха, <span class="math-inline" data-tex="(e^2 - (e - \delta)^2)/n \approx 2e\delta/n"></span>.
+  Поэтому модель на MSE в первую очередь борется с крупными промахами.
 </p>
 
 <p>
-  У MSE неудобные единицы, баллы в квадрате. Зато она связана с дисперсией: MSE постоянного прогноза средним
-  равна дисперсии баллов, 413,4. Поэтому на MSE построен <span class="math-inline" data-tex="R^2"></span> из части 4, и по той же причине MSE удобно
-  дифференцировать при обучении: производная квадрата равна <span class="math-inline" data-tex="2e"></span>, она плавно уменьшается у минимума.
+  Именно MSE минимизирует линейная регрессия: <span class="math-inline" data-tex="9/46"></span> — это <span class="math-inline" data-tex="L^* = 0{,}1957"></span> из статьи по формам, минимум, к которому
+  сходится градиентный спуск и который нормальные уравнения дают одной формулой. Никакие другие веса не дадут на этих
+  четырёх квартирах MSE меньше. По MAE это не так: другие веса могли бы дать MAE меньше 0,391, потому что регрессию
+  обучали не на ней.
+</p>
+
+<p>
+  У MSE неудобные единицы, миллионы в квадрате. Зато она связана с дисперсией: MSE постоянного прогноза средней ценой
+  равна дисперсии цен, 3,6875. На этом построен <span class="math-inline" data-tex="R^2"></span> из части 4.
 </p>
 
 ### RMSE: корень из MSE
 
-<div class="math-display" data-tex="\text{RMSE} = \sqrt{\text{MSE}} = \sqrt{262{,}1} = 16{,}19"></div>
+<div class="math-display" data-tex="\text{RMSE} = \sqrt{\text{MSE}} = \sqrt{0{,}196} \approx 0{,}442"></div>
 
 <p>
-  Корень возвращает баллы, и RMSE можно ставить рядом с MAE. Это среднее квадратическое модулей остатков:
-  сторона квадрата, площадь которого равна средней площади всех десяти квадратов из сцены.
+  Корень возвращает миллионы, и RMSE можно ставить рядом с MAE. Это среднее квадратическое модулей остатков:
+  сторона квадрата, площадь которого равна средней площади четырёх квадратов из сцены.
 </p>
 
 <p>
@@ -335,59 +333,59 @@
   к модулям остатков:
 </p>
 
-<div class="math-display" data-tex="\text{RMSE}^2 = \text{MAE}^2 + \text{Var}(|e|) = 15{,}48^2 + 22{,}4 = 239{,}7 + 22{,}4 = 262{,}1"></div>
+<div class="math-display" data-tex="\text{RMSE}^2 = \text{MAE}^2 + \text{Var}(|e|) = 0{,}391^2 + 0{,}043 = 0{,}153 + 0{,}043 = 0{,}196"></div>
 
 <p>
   Дисперсия не бывает отрицательной, поэтому <span class="math-inline" data-tex="\text{RMSE} \ge \text{MAE}"></span>. Равенство только при
-  <span class="math-inline" data-tex="\text{Var}(|e|) = 0"></span>, когда все промахи одного размера. Разрыв между ними — мера того, насколько промахи
-  разные. У дерева стандартное отклонение модулей всего 4,7 балла, поэтому RMSE 16,19 почти не отличается
-  от MAE 15,48.
+  <span class="math-inline" data-tex="\text{Var}(|e|) = 0"></span>, когда все промахи одного размера. Так было со стартовыми весами <span class="math-inline" data-tex="w = (2, -1)"></span>, <span class="math-inline" data-tex="b = 1"></span> из статьи
+  по формам: все четыре промаха ровно по 1 млн, и MAE, MSE и RMSE равны 1.
 </p>
 
 <p>
-  Сверху RMSE ограничена тоже: <span class="math-inline" data-tex="\text{RMSE} \le \sqrt{n}\cdot\text{MAE}"></span>. Граница достигается, когда весь
-  промах приходится на одного студента. Для десяти студентов отношение RMSE/MAE лежит между 1 и
-  <span class="math-inline" data-tex="\sqrt{10} \approx 3{,}16"></span>; у дерева оно 1,05.
+  Сверху RMSE тоже ограничена: <span class="math-inline" data-tex="\text{RMSE} \le \sqrt{n}\cdot\text{MAE}"></span>. Граница достигается, когда весь промах
+  приходится на одну квартиру. Для четырёх квартир отношение RMSE/MAE лежит между 1 и <span class="math-inline" data-tex="\sqrt{4} = 2"></span>;
+  у обученной регрессии оно 1,13. Чем ближе отношение к верхней границе, тем сильнее промахи сосредоточены
+  на немногих объектах.
 </p>
 
 <p>
-  Поэтому RMSE нельзя читать как «типичный промах». Типичный промах у дерева 15 баллов (медиана модулей),
-  а RMSE отражает и типичные промахи, и то, насколько среди них выделяются крупные.
+  Поэтому RMSE нельзя читать как «типичный промах». Она отражает и типичные промахи, и то, насколько среди них
+  выделяются крупные.
 </p>
 
 <p>
-  В интерактиве все эти формулы пересчитываются при каждом движении прогноза. Попробуйте кнопки: «убрать смещение»
-  обнуляет <span class="math-inline" data-tex="\bar e"></span>, «все промахи по 15,48» делает RMSE равной MAE, а «ошибка только у студента 10» доводит
-  отношение RMSE/MAE до <span class="math-inline" data-tex="\sqrt{10}"></span>.
+  В интерактиве все эти формулы пересчитываются при каждом движении прогноза. Кнопка «стартовые веса» делает
+  все промахи по 1 и RMSE равной MAE. «Всем прогнозам +0,5» показывает, как смещение добавляется к MSE.
+  «Ошибка только у квартиры 3» доводит отношение RMSE/MAE до 2.
 </p>
 
 
 <div class="dt-live" id="resLive">
-  <div class="dt-live-head"><strong>Интерактив: двигайте прогнозы и смотрите на четыре метрики</strong>
-    <p>Перетащите синюю черточку любого студента вверх или вниз, или выберите студента кнопкой и двигайте ползунок. Кнопки ниже ставят готовые наборы прогнозов.</p></div>
-  <div class="thr-fig"><svg id="resSvg" viewBox="0 0 640 330" role="img" aria-label="Баллы, прогнозы и остатки десяти студентов" style="touch-action: pan-y; cursor: ns-resize; user-select: none; -webkit-user-select: none"></svg></div>
+  <div class="dt-live-head"><strong>Интерактив: двигайте прогнозы и смотрите на метрики</strong>
+    <p>Перетащите синюю черточку любой квартиры вверх или вниз, или выберите квартиру кнопкой и двигайте ползунок. Кнопки справа ставят готовые наборы прогнозов.</p></div>
+  <div class="thr-fig"><svg id="resSvg" viewBox="0 0 640 330" role="img" aria-label="Цены, прогнозы и остатки четырёх квартир" style="touch-action: pan-y; cursor: ns-resize; user-select: none; -webkit-user-select: none"></svg></div>
   <div class="thr-panel">
     <div class="dt-controls">
-      <div class="rm-modes" id="resPick"><button type="button" data-k="0" aria-pressed="false">1</button><button type="button" data-k="1" aria-pressed="false">2</button><button type="button" data-k="2" aria-pressed="false">3</button><button type="button" data-k="3" aria-pressed="false">4</button><button type="button" data-k="4" aria-pressed="false">5</button><button type="button" data-k="5" aria-pressed="false">6</button><button type="button" data-k="6" aria-pressed="true">7</button><button type="button" data-k="7" aria-pressed="false">8</button><button type="button" data-k="8" aria-pressed="false">9</button><button type="button" data-k="9" aria-pressed="false">10</button></div>
-      <div class="dt-control"><label for="resR"><span id="resLab">прогноз для студента 7</span><output id="resV">45,3</output></label>
-        <input id="resR" type="range" min="0" max="100" step="0.5" value="45.25"></div>
+      <div class="rm-modes" id="resPick"><button type="button" data-k="0" aria-pressed="false">кв. 1</button><button type="button" data-k="1" aria-pressed="true">кв. 2</button><button type="button" data-k="2" aria-pressed="false">кв. 3</button><button type="button" data-k="3" aria-pressed="false">кв. 4</button></div>
+      <div class="dt-control"><label for="resR"><span id="resLab">прогноз для квартиры 2</span><output id="resV">—</output></label>
+        <input id="resR" type="range" min="0" max="8" step="0.05" value="5.65"></div>
       <div class="dt-seg"><button type="button" id="resSq" aria-pressed="false">показать квадраты</button></div>
     </div>
     <div class="dt-presets" style="align-content: start">
-      <button type="button" data-preset="tree">прогноз дерева</button>
-      <button type="button" data-preset="shift">убрать смещение: всем +3,57</button>
-      <button type="button" data-preset="equal">все промахи по 15,48</button>
-      <button type="button" data-preset="one">ошибка только у студента 10</button>
+      <button type="button" data-preset="fit">обученная регрессия</button>
+      <button type="button" data-preset="start">стартовые веса: все промахи по 1</button>
+      <button type="button" data-preset="shift">всем прогнозам +0,5</button>
+      <button type="button" data-preset="one">ошибка только у квартиры 3</button>
     </div>
     <div class="dt-metrics">
       <div class="dt-metric"><span>смещение</span><strong id="resB">—</strong></div>
       <div class="dt-metric"><span>MAE</span><strong id="resMae">—</strong></div>
       <div class="dt-metric"><span>MSE</span><strong id="resMse">—</strong></div>
       <div class="dt-metric"><span>RMSE</span><strong id="resRmse">—</strong></div>
-      <div class="dt-metric" style="grid-column: 1 / -1"><span>RMSE / MAE (от 1 до √10 ≈ 3,16)</span><strong id="resRatio">—</strong></div>
+      <div class="dt-metric" style="grid-column: 1 / -1"><span>RMSE / MAE (от 1 до √4 = 2)</span><strong id="resRatio">—</strong></div>
     </div>
   </div>
-  <div class="dt-table"><table class="shape-table" id="resTab"><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>сумма</th></tr></table></div>
+  <div class="dt-table"><table class="shape-table" id="resTab"><tr><th></th><th>кв. 1</th><th>кв. 2</th><th>кв. 3</th><th>кв. 4</th><th>сумма</th></tr></table></div>
   <div class="dt-formula" id="resF1"></div>
   <div class="dt-formula" id="resF2"></div>
 </div>
@@ -412,46 +410,47 @@
     if (window.katex) window.katex.render(src, node, {throwOnError: false, displayMode: false});
     else node.textContent = plain;
   }
-  var D = {"y": [30.0, 22.0, 41.0, 58.0, 35.0, 47.0, 72.0, 61.0, 80.0, 84.0], "p": [48.667, 38.25, 26.0, 41.0, 48.667, 32.0, 45.25, 72.0, 66.5, 76.0]};
-  var p = D.p.slice(), sel = 6, squares = false, drag = false;
+  var D = {"y": [5, 5, 1, 6], "p": [4.4783, 5.6522, 1.1304, 5.7391], "s": [4, 6, 0, 7]};
+  var n = D.y.length, p = D.p.slice(), sel = 1, squares = false, drag = false;
   var R = document.getElementById('resR');
-  function cx(i) { return 80 + i * 56; }
-  function sy(v) { return 290 - v * 2.4; }
-  function vy(py) { return Math.max(0, Math.min(100, Math.round((290 - py) / 2.4 * 2) / 2)); }
-  function f1(v) { return fmt(v, Math.abs(v) >= 100 ? 0 : 1).replace('-', '−'); }
+  function cx(i) { return 130 + i * 140; }
+  function sy(v) { return 290 - v * 30; }
+  function vy(py) { return Math.max(0, Math.min(8, Math.round((290 - py) / 30 * 20) / 20)); }
+  function f3(v) { return fmt(v, 3).replace('-', '−'); }
   function draw(e) {
     while (svg.firstChild) svg.removeChild(svg.firstChild);
     svg.appendChild(el('rect', {x: 0, y: 0, width: 640, height: 330, fill: '#FFFFFF'}));
-    svg.appendChild(el('rect', {x: cx(sel) - 26, y: 40, width: 52, height: 252, fill: '#EEF4FB'}));
-    [0, 20, 40, 60, 80, 100].forEach(function (v) {
+    svg.appendChild(el('rect', {x: cx(sel) - 55, y: 40, width: 110, height: 252, fill: '#EEF4FB'}));
+    for (var v = 0; v <= 8; v++) {
       svg.appendChild(el('line', {x1: 50, y1: sy(v), x2: 630, y2: sy(v), stroke: v ? '#F1EEE6' : '#D8D4C8'}));
       svg.appendChild(el('text', {x: 44, y: sy(v) + 4, 'text-anchor': 'end', 'font-size': 11, fill: '#5E5850'}, String(v)));
-    });
-    for (var i = 0; i < 10; i++) {
-      var s = Math.abs(e[i]) * 2.4, top = Math.min(sy(D.y[i]), sy(p[i]));
-      if (squares && s > 0.5) svg.appendChild(el('rect', {x: cx(i), y: top, width: s, height: s, fill: '#F6EFD0', 'fill-opacity': 0.6, stroke: '#C29E08', 'stroke-width': 1}));
     }
-    for (var j = 0; j < 10; j++) {
-      svg.appendChild(el('line', {x1: cx(j), y1: sy(p[j]), x2: cx(j), y2: sy(D.y[j]), stroke: '#C29E08', 'stroke-width': 2.6}));
-      svg.appendChild(el('circle', {cx: cx(j), cy: sy(D.y[j]), r: 10, fill: D.y[j] >= 50 ? '#73B222' : '#C30B0A', stroke: '#FFFFFF', 'stroke-width': 1.5}));
-      svg.appendChild(el('text', {x: cx(j), y: sy(D.y[j]) + 4, 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 700, fill: '#FFFFFF'}, String(j + 1)));
-      svg.appendChild(el('line', {x1: cx(j) - 15, y1: sy(p[j]), x2: cx(j) + 15, y2: sy(p[j]), stroke: j === sel ? '#2A5E9B' : '#3576C0', 'stroke-width': j === sel ? 5 : 3.4}));
-      svg.appendChild(el('text', {x: cx(j), y: 312, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 700, fill: e[j] >= 0 ? '#5F9420' : '#9C0908'}, (e[j] > 0 ? '+' : '') + f1(e[j])));
+    svg.appendChild(el('text', {x: 52, y: 32, 'font-size': 11, fill: '#5E5850'}, 'цена, млн'));
+    for (var i = 0; i < n; i++) {
+      var s = Math.abs(e[i]) * 30, top = Math.min(sy(D.y[i]), sy(p[i]));
+      if (squares && s > 0.5) svg.appendChild(el('rect', {x: cx(i), y: top, width: s, height: s, fill: '#F6EFD0', 'fill-opacity': 0.7, stroke: '#C29E08', 'stroke-width': 1}));
     }
-    svg.appendChild(el('text', {x: 630, y: 326, 'text-anchor': 'end', 'font-size': 11, fill: '#5E5850'}, 'остаток e = y − ŷ'));
+    for (var j = 0; j < n; j++) {
+      svg.appendChild(el('line', {x1: cx(j), y1: sy(p[j]), x2: cx(j), y2: sy(D.y[j]), stroke: '#C29E08', 'stroke-width': 3}));
+      svg.appendChild(el('circle', {cx: cx(j), cy: sy(D.y[j]), r: 12, fill: '#3F3A33', stroke: '#FFFFFF', 'stroke-width': 1.5}));
+      svg.appendChild(el('text', {x: cx(j), y: sy(D.y[j]) + 4, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 700, fill: '#FFFFFF'}, String(j + 1)));
+      svg.appendChild(el('line', {x1: cx(j) - 24, y1: sy(p[j]), x2: cx(j) + 24, y2: sy(p[j]), stroke: j === sel ? '#2A5E9B' : '#3576C0', 'stroke-width': j === sel ? 6 : 4}));
+      svg.appendChild(el('text', {x: cx(j), y: 312, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#8F7406'}, (e[j] > 0 ? '+' : '') + f3(e[j])));
+    }
+    svg.appendChild(el('text', {x: 630, y: 328, 'text-anchor': 'end', 'font-size': 11, fill: '#5E5850'}, 'остаток e = y − ŷ'));
   }
   function update() {
     var e = D.y.map(function (v, i) { return v - p[i]; });
-    var n = 10, se = 0, sa = 0, sq = 0;
+    var se = 0, sa = 0, sq = 0;
     e.forEach(function (v) { se += v; sa += Math.abs(v); sq += v * v; });
     var b = se / n, mae = sa / n, mse = sq / n, rmse = Math.sqrt(mse);
-    document.getElementById('resB').textContent = f1(b);
-    document.getElementById('resMae').textContent = fmt(mae, 2);
-    document.getElementById('resMse').textContent = fmt(mse, 1);
-    document.getElementById('resRmse').textContent = fmt(rmse, 2);
-    document.getElementById('resRatio').textContent = mae > 0 ? fmt(rmse / mae, 2) : '—';
-    document.getElementById('resLab').textContent = 'прогноз для студента ' + (sel + 1);
-    document.getElementById('resV').textContent = fmt(p[sel], 1);
+    document.getElementById('resB').textContent = f3(b);
+    document.getElementById('resMae').textContent = fmt(mae, 3);
+    document.getElementById('resMse').textContent = fmt(mse, 3);
+    document.getElementById('resRmse').textContent = fmt(rmse, 3);
+    document.getElementById('resRatio').textContent = mae > 1e-9 ? fmt(rmse / mae, 2) : '—';
+    document.getElementById('resLab').textContent = 'прогноз для квартиры ' + (sel + 1);
+    document.getElementById('resV').textContent = fmt(p[sel], 2);
     R.value = p[sel];
     var rows = [['e', e, se], ['|e|', e.map(Math.abs), sa], ['e²', e.map(function (v) { return v * v; }), sq]];
     var tab = document.getElementById('resTab');
@@ -459,12 +458,12 @@
     rows.forEach(function (r) {
       var tr = tab.insertRow();
       tr.insertCell().innerHTML = '<b>' + r[0] + '</b>';
-      r[1].forEach(function (v, i) { var c = tr.insertCell(); c.textContent = f1(v); if (i === sel) c.className = 'hl'; });
-      tr.insertCell().innerHTML = '<b>' + f1(r[2]) + '</b>';
+      r[1].forEach(function (v, i) { var c = tr.insertCell(); c.textContent = f3(v); if (i === sel) c.className = 'hl'; });
+      tr.insertCell().innerHTML = '<b>' + f3(r[2]) + '</b>';
     });
-    var c = function (v, d) { return fmt(v, d).replace('-', '-').replace(',', '{,}'); };
-    tex(document.getElementById('resF1'), '\\text{MSE} = \\bar e^{\\,2} + \\text{Var}(e):\\quad ' + c(mse, 1) + ' = ' + c(b * b, 1) + ' + ' + c(mse - b * b, 1), 'MSE = bias² + Var(e)');
-    tex(document.getElementById('resF2'), '\\text{RMSE}^2 = \\text{MAE}^2 + \\text{Var}(|e|):\\quad ' + c(mse, 1) + ' = ' + c(mae * mae, 1) + ' + ' + c(mse - mae * mae, 1), 'RMSE² = MAE² + Var(|e|)');
+    var c = function (v) { return fmt(v, 3).replace(',', '{,}'); };
+    tex(document.getElementById('resF1'), '\\text{MSE} = \\bar e^{\\,2} + \\text{Var}(e):\\quad ' + c(mse) + ' = ' + c(b * b) + ' + ' + c(mse - b * b), 'MSE = bias² + Var(e)');
+    tex(document.getElementById('resF2'), '\\text{RMSE}^2 = \\text{MAE}^2 + \\text{Var}(|e|):\\quad ' + c(mse) + ' = ' + c(mae * mae) + ' + ' + c(mse - mae * mae), 'RMSE² = MAE² + Var(|e|)');
     draw(e);
   }
   function pick(k) {
@@ -473,7 +472,7 @@
   }
   function fromEvent(ev, start) {
     var r = svg.getBoundingClientRect(), x = (ev.clientX - r.left) * 640 / r.width, y = (ev.clientY - r.top) * 330 / r.height;
-    if (start) pick(Math.max(0, Math.min(9, Math.round((x - 80) / 56))));
+    if (start) pick(Math.max(0, Math.min(n - 1, Math.round((x - 130) / 140))));
     p[sel] = vy(y); update();
   }
   svg.addEventListener('pointerdown', function (ev) { drag = true; svg.setPointerCapture(ev.pointerId); fromEvent(ev, true); });
@@ -485,15 +484,13 @@
   document.getElementById('resSq').addEventListener('click', function () {
     squares = !squares; this.setAttribute('aria-pressed', String(squares)); this.textContent = squares ? 'скрыть квадраты' : 'показать квадраты'; update();
   });
-  var TREE_BIAS = D.y.reduce(function (s, v, i) { return s + v - D.p[i]; }, 0) / 10;
-  var MAE0 = D.y.reduce(function (s, v, i) { return s + Math.abs(v - D.p[i]); }, 0) / 10;
   document.querySelectorAll('#resLive [data-preset]').forEach(function (b) {
     b.addEventListener('click', function () {
       var k = b.getAttribute('data-preset');
-      if (k === 'tree') p = D.p.slice();
-      if (k === 'shift') p = D.p.map(function (v) { return v + TREE_BIAS; });
-      if (k === 'equal') p = D.y.map(function (v, i) { return v - (v - D.p[i] >= 0 ? 1 : -1) * MAE0; });
-      if (k === 'one') { p = D.y.slice(); p[9] = 0; pick(9); }
+      if (k === 'fit') p = D.p.slice();
+      if (k === 'start') p = D.s.slice();
+      if (k === 'shift') p = D.p.map(function (v) { return v + 0.5; });
+      if (k === 'one') { p = D.y.slice(); p[2] = D.y[2] + 2; pick(2); }
       update();
     });
   });
@@ -504,20 +501,20 @@
 ## Часть 2. MAE против RMSE: один выброс
 
 <p>
-  Пусть дерево уже обучено, а студент 10 на экзамен не пришёл и получил 0 баллов. Дерево по-прежнему
-  предсказывает ему 76: остаток <span class="math-inline" data-tex="-76"></span> вместо <span class="math-inline" data-tex="+8"></span>.
+  Пусть регрессия уже обучена, а в базе цену четвёртой квартиры записали с лишним нулём: 60 млн вместо 6.
+  Прогноз остаётся прежним, <span class="math-inline" data-tex="5{,}739"></span>, а остаток становится <span class="math-inline" data-tex="+54{,}26"></span> вместо <span class="math-inline" data-tex="+0{,}26"></span>.
 </p>
 
 
 <div class="dt-live" id="outLive">
-  <div class="dt-live-head"><strong>Интерактив: один студент не пришёл на экзамен</strong>
-    <p>Прогнозы дерева остаются прежними, меняется только настоящий балл студента 10. Сверху модули остатков, снизу их квадраты.</p></div>
-  <div class="thr-fig"><svg id="outSvg" viewBox="0 0 600 360" role="img" aria-label="Модули и квадраты остатков десяти студентов"></svg></div>
+  <div class="dt-live-head"><strong>Интерактив: опечатка в цене одной квартиры</strong>
+    <p>Прогнозы регрессии остаются прежними, меняется только записанная цена квартиры 4. Сверху модули остатков, снизу их квадраты.</p></div>
+  <div class="thr-fig"><svg id="outSvg" viewBox="0 0 600 360" role="img" aria-label="Модули и квадраты остатков четырёх квартир"></svg></div>
   <div class="thr-panel">
     <div class="dt-controls">
-      <div class="dt-control"><label for="outR"><span>балл студента 10</span><output id="outV">84</output></label>
-        <input id="outR" type="range" min="0" max="100" step="1" value="84"></div>
-      <div class="dt-presets"><button type="button" data-v="84">84, как было</button><button type="button" data-v="0">не пришёл: 0</button></div>
+      <div class="dt-control"><label for="outR"><span>цена квартиры 4, млн</span><output id="outV">6</output></label>
+        <input id="outR" type="range" min="0" max="60" step="0.5" value="6"></div>
+      <div class="dt-presets"><button type="button" data-v="6">6, как было</button><button type="button" data-v="60">лишний ноль: 60</button></div>
     </div>
     <div class="dt-metrics">
       <div class="dt-metric"><span>MAE</span><strong id="outMae">—</strong></div>
@@ -525,7 +522,7 @@
     </div>
     <div class="dt-metrics">
       <div class="dt-metric"><span>RMSE / MAE</span><strong id="outRatio">—</strong></div>
-      <div class="dt-metric"><span>доля студента 10 в сумме квадратов</span><strong id="outShare">—</strong></div>
+      <div class="dt-metric"><span>доля квартиры 4 в сумме квадратов</span><strong id="outShare">—</strong></div>
     </div>
   </div>
   <div class="dt-formula" id="outF1"></div>
@@ -552,40 +549,41 @@
     if (window.katex) window.katex.render(src, node, {throwOnError: false, displayMode: false});
     else node.textContent = plain;
   }
-  var D = {"y": [30.0, 22.0, 41.0, 58.0, 35.0, 47.0, 72.0, 61.0, 80.0, 84.0], "p": [48.667, 38.25, 26.0, 41.0, 48.667, 32.0, 45.25, 72.0, 66.5, 76.0]};
+  var D = {"y": [5, 5, 1, 6], "p": [4.4783, 5.6522, 1.1304, 5.7391]};
   var R = document.getElementById('outR');
-  function cx(i) { return 70 + i * 52; }
+  function cx(i) { return 120 + i * 130; }
+  function lab(v) { return v >= 100 ? String(Math.round(v)) : fmt(v, v < 10 ? 3 : 1); }
   function update() {
-    var y = D.y.slice(); y[9] = +R.value;
+    var y = D.y.slice(); y[3] = +R.value;
     var e = y.map(function (v, i) { return v - D.p[i]; });
     var a = e.map(Math.abs), q = e.map(function (v) { return v * v; });
     var sa = a.reduce(function (s, v) { return s + v; }, 0), sq = q.reduce(function (s, v) { return s + v; }, 0);
-    var maeV = sa / 10, rmseV = Math.sqrt(sq / 10);
+    var maeV = sa / 4, rmseV = Math.sqrt(sq / 4);
     while (svg.firstChild) svg.removeChild(svg.firstChild);
     svg.appendChild(el('rect', {x: 0, y: 0, width: 600, height: 360, fill: '#FFFFFF'}));
-    var P1 = {top: 30, h: 120, max: 80}, P2 = {top: 200, h: 120, max: 6400};
-    [[P1, '|e|, баллы', a, '#C29E08', '#F6EFD0'], [P2, 'e², баллы²', q, '#3576C0', '#DCE8F5']].forEach(function (r) {
+    var P1 = {top: 34, h: 120, max: Math.max(1, Math.max.apply(null, a))}, P2 = {top: 204, h: 120, max: Math.max(1, Math.max.apply(null, q))};
+    [[P1, '|e|, млн', a, '#C29E08', '#F6EFD0', maeV, 'MAE '], [P2, 'e², млн²', q, '#3576C0', '#DCE8F5', sq / 4, 'MSE ']].forEach(function (r) {
       var P = r[0], vals = r[2], base = P.top + P.h;
       svg.appendChild(el('line', {x1: 40, y1: base, x2: 590, y2: base, stroke: '#D8D4C8'}));
-      svg.appendChild(el('text', {x: 40, y: P.top - 12, 'font-size': 13, 'font-weight': 700, fill: '#111111'}, r[1]));
+      svg.appendChild(el('text', {x: 40, y: P.top - 14, 'font-size': 13, 'font-weight': 700, fill: '#111111'}, r[1] + ' (шкала до ' + lab(P.max) + ')'));
       vals.forEach(function (v, i) {
-        var h = Math.min(v / P.max, 1) * P.h;
-        svg.appendChild(el('rect', {x: cx(i) - 16, y: base - h, width: 32, height: h, fill: r[4], stroke: r[3], 'stroke-width': 1.4}));
-        svg.appendChild(el('text', {x: cx(i), y: base - h - 5, 'text-anchor': 'middle', 'font-size': 11, fill: '#5E5850'}, v >= 1000 ? Math.round(v) : fmt(v, v < 100 ? 1 : 0)));
-        svg.appendChild(el('text', {x: cx(i), y: base + 15, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 700, fill: i === 9 ? '#2A5E9B' : '#5E5850'}, String(i + 1)));
+        var h = v / P.max * P.h;
+        svg.appendChild(el('rect', {x: cx(i) - 30, y: base - h, width: 60, height: h, fill: r[4], stroke: r[3], 'stroke-width': 1.4}));
+        svg.appendChild(el('text', {x: cx(i), y: base - h - 5, 'text-anchor': 'middle', 'font-size': 11, fill: '#5E5850'}, lab(v)));
+        svg.appendChild(el('text', {x: cx(i), y: base + 15, 'text-anchor': 'middle', 'font-size': 11, 'font-weight': 700, fill: i === 3 ? '#2A5E9B' : '#5E5850'}, 'кв. ' + (i + 1)));
       });
-      var mv = P === P1 ? maeV : sq / 10, my = base - Math.min(mv / P.max, 1) * P.h;
+      var my = base - r[5] / P.max * P.h;
       svg.appendChild(el('line', {x1: 44, y1: my, x2: 586, y2: my, stroke: r[3], 'stroke-width': 2, 'stroke-dasharray': '6 4'}));
-      svg.appendChild(el('text', {x: 586, y: my - 5, 'text-anchor': 'end', 'font-size': 12, 'font-weight': 700, fill: r[3]}, (P === P1 ? 'MAE ' : 'MSE ') + fmt(mv, 1)));
+      svg.appendChild(el('text', {x: 586, y: my - 5, 'text-anchor': 'end', 'font-size': 12, 'font-weight': 700, fill: r[3]}, r[6] + lab(r[5])));
     });
-    document.getElementById('outV').textContent = y[9];
-    document.getElementById('outMae').textContent = fmt(maeV, 2);
-    document.getElementById('outRmse').textContent = fmt(rmseV, 2);
+    document.getElementById('outV').textContent = fmt(y[3], y[3] % 1 ? 1 : 0);
+    document.getElementById('outMae').textContent = fmt(maeV, 3);
+    document.getElementById('outRmse').textContent = fmt(rmseV, 3);
     document.getElementById('outRatio').textContent = fmt(rmseV / maeV, 2);
-    document.getElementById('outShare').textContent = fmt(q[9] / sq * 100, 0) + ' %';
+    document.getElementById('outShare').textContent = fmt(q[3] / sq * 100, q[3] / sq > 0.995 ? 2 : 0) + ' %';
     var c = function (v, d) { return fmt(v, d).replace(',', '{,}'); };
-    tex(document.getElementById('outF1'), '\\text{MAE} = \\dfrac{' + c(sa - a[9], 1) + ' + ' + c(a[9], 1) + '}{10} = ' + c(maeV, 2), 'MAE ' + fmt(maeV, 2));
-    tex(document.getElementById('outF2'), '\\text{RMSE} = \\sqrt{\\dfrac{' + c(sq - q[9], 0) + ' + ' + c(q[9], 0) + '}{10}} = ' + c(rmseV, 2), 'RMSE ' + fmt(rmseV, 2));
+    tex(document.getElementById('outF1'), '\\text{MAE} = \\dfrac{' + c(sa - a[3], 3) + ' + ' + c(a[3], 3) + '}{4} = ' + c(maeV, 3), 'MAE ' + fmt(maeV, 3));
+    tex(document.getElementById('outF2'), '\\text{RMSE} = \\sqrt{\\dfrac{' + c(sq - q[3], 3) + ' + ' + c(q[3], q[3] >= 100 ? 1 : 3) + '}{4}} = ' + c(rmseV, 3), 'RMSE ' + fmt(rmseV, 3));
   }
   R.addEventListener('input', update);
   document.querySelectorAll('#outLive [data-v]').forEach(function (b) { b.addEventListener('click', function () { R.value = b.getAttribute('data-v'); update(); }); });
@@ -595,42 +593,47 @@
 
 
 <p>
-  MAE выросла с 15,5 до 22,3, на 44 %. RMSE — с 16,2 до 28,9, на 78 %. Студент 10 даёт 69 % всей суммы квадратов:
-  при возведении в квадрат промах в 76 баллов весит как 90 промахов по 8. Отношение RMSE к MAE выросло с 1,05 до 1,30.
-  По нему видно, что ошибки стали неравномерными.
+  MAE выросла с 0,391 до 13,89, в 35 раз. RMSE — с 0,442 до 27,13, в 61 раз. Четвёртая квартира даёт 99,98 % суммы
+  квадратов, и отношение RMSE/MAE подходит к верхней границе 2: почти весь промах приходится на один объект.
+  Одна опечатка сделала RMSE числом про эту опечатку, а не про модель.
 </p>
 
 <ul>
-  <li>RMSE подходит, если большой промах действительно хуже нескольких маленьких той же суммы. Пример: по прогнозу
-    решают, кого записать на дополнительные занятия, и ошибка на 40 баллов означает провал, а на 10 — почти ничего.</li>
-  <li>MAE подходит, если каждый балл ошибки стоит одинаково, или если в данных есть мусор вроде неявки,
-    который не хочется делать главным в оценке.</li>
+  <li>RMSE подходит, если большой промах действительно хуже нескольких маленьких той же суммы. Банк, который оценивает
+    квартиру как залог, переживёт много промахов по 200 тысяч, а один промах на 5 млн означает невозвратный кредит.</li>
+  <li>MAE подходит, если каждый рубль ошибки стоит одинаково, или если в данных есть мусор вроде опечаток,
+    который не должен решать оценку.</li>
 </ul>
+
+<p>
+  Резкий рост RMSE при спокойной MAE — повод посмотреть на данные: часто там опечатка, а не плохая модель.
+</p>
 
 
 ## Часть 3. Какой прогноз лучший для каждой метрики
 
 <p>
-  В <a href="article.html?slug=regression-tree-full-cycle">статье про дерево регрессии</a> было показано: если всем
-  студентам дать одно и то же число <span class="math-inline" data-tex="c"></span>, сумму квадратов минимизирует среднее, а сумму модулей — медиана.
-  Это не частность константного прогноза. Метрика сама решает, что считать правильным ответом.
+  Пусть модель не смотрит на признаки и всем квартирам называет одно число <span class="math-inline" data-tex="c"></span>. Какое <span class="math-inline" data-tex="c"></span> лучше? Ответ зависит
+  от метрики: сумму квадратов минимизирует среднее, сумму модулей — медиана. Это не частность постоянного прогноза:
+  метрика сама решает, что считать правильным ответом.
 </p>
 
 
 <div class="dt-live" id="cLive">
   <div class="dt-live-head"><strong>Интерактив: лучший постоянный прогноз для MSE и MAE</strong>
-    <p>Двигайте константу c — прогноз, одинаковый для всех десяти студентов. Кривая показывает метрику при каждом c, синяя точка — её минимум.</p></div>
-  <div class="thr-fig"><svg id="cLiveSvg" viewBox="0 0 600 330" role="img" aria-label="Метрика константного прогноза в зависимости от c"></svg></div>
+    <p>Двигайте константу c — прогноз, одинаковый для всех четырёх квартир. Кривая показывает метрику при каждом c, синяя точка — её минимум.</p></div>
+  <div class="thr-fig"><svg id="cLiveSvg" viewBox="0 0 600 330" role="img" aria-label="Метрика постоянного прогноза в зависимости от c"></svg></div>
   <div class="thr-panel">
     <div class="dt-controls">
       <div class="rm-modes"><button type="button" data-m="mse" aria-pressed="true">MSE</button><button type="button" data-m="mae" aria-pressed="false">MAE</button></div>
-      <div class="dt-control"><label for="cLiveC"><span>константа c</span><output id="cLiveCv">40</output></label>
-        <input id="cLiveC" type="range" min="0" max="100" step="0.5" value="40"></div>
+      <div class="dt-control"><label for="cLiveC"><span>константа c, млн</span><output id="cLiveCv">3</output></label>
+        <input id="cLiveC" type="range" min="0" max="8" step="0.05" value="3"></div>
+      <div class="dt-presets"><button type="button" data-alt="0" aria-pressed="true">цены как есть</button><button type="button" data-alt="1" aria-pressed="false">кв. 4 с лишним нулём: 60</button></div>
     </div>
     <div class="dt-metrics" style="grid-column: span 2">
       <div class="dt-metric"><span id="cLiveName">—</span><strong id="cLiveVal">—</strong></div>
       <div class="dt-metric"><span>лучшее c</span><strong id="cLiveBest">—</strong></div>
-      <div class="dt-metric" style="grid-column: 1 / -1"><span>среднее и медиана баллов</span><strong id="cLiveMm">—</strong></div>
+      <div class="dt-metric" style="grid-column: 1 / -1"><span>среднее и медиана цен</span><strong id="cLiveMm">—</strong></div>
     </div>
   </div>
 </div>
@@ -655,11 +658,11 @@
     if (window.katex) window.katex.render(src, node, {throwOnError: false, displayMode: false});
     else node.textContent = plain;
   }
-  var Y0 = [30.0, 22.0, 41.0, 58.0, 35.0, 47.0, 72.0, 61.0, 80.0, 84.0];
-  var mode = 'mse', absent = false, tau = 0.9;
-  var C = document.getElementById('cLiveC'), QR = null;
+  var Y0 = [5, 5, 1, 6], ALT = [3, 60];
+  var mode = 'mse', useAlt = false, tau = 0.9;
+  var C = document.getElementById('cLiveC'), QR = document.getElementById('cLiveQ');
   var NAMES = {mse: 'MSE', mae: 'MAE', mape: 'MAPE', q: 'квантильная потеря'};
-  function ys() { var y = Y0.slice(); if (absent) y[9] = 0; return y; }
+  function ys() { var y = Y0.slice(); if (useAlt) y[ALT[0]] = ALT[1]; return y; }
   function metric(y, c) {
     var s = 0;
     for (var i = 0; i < y.length; i++) {
@@ -671,58 +674,59 @@
     }
     return s / y.length;
   }
-  function sx(c) { return 50 + c * 5.2; }
-  function fmtv(v) { return mode === 'mape' ? fmt(v * 100, 1) + ' %' : fmt(v, mode === 'mse' ? 1 : 2); }
+  function fmtv(v) { return mode === 'mape' ? fmt(v * 100, 1) + ' %' : fmt(v, 3); }
   function update() {
-    var y = ys(), c = +C.value;
+    var y = ys(), top = Math.max(8, Math.ceil(Math.max.apply(null, y) + 2));
+    C.max = top; var c = Math.min(+C.value, top);
+    var sx = function (v) { return 50 + v * 520 / top; };
     while (svg.firstChild) svg.removeChild(svg.firstChild);
     svg.appendChild(el('rect', {x: 0, y: 0, width: 600, height: 330, fill: '#FFFFFF'}));
-    svg.appendChild(el('line', {x1: sx(0), y1: 60, x2: sx(100), y2: 60, stroke: '#D8D4C8', 'stroke-width': 1.4}));
-    [0, 20, 40, 60, 80, 100].forEach(function (v) {
-      svg.appendChild(el('text', {x: sx(v), y: 316, 'text-anchor': 'middle', 'font-size': 12, fill: '#5E5850'}, String(v)));
-      svg.appendChild(el('line', {x1: sx(v), y1: 296, x2: sx(v), y2: 302, stroke: '#5E5850'}));
-    });
-    svg.appendChild(el('text', {x: sx(100), y: 30, 'text-anchor': 'end', 'font-size': 12, fill: '#5E5850'}, 'баллы студентов'));
-    var pts = [], vals = [], best = Infinity;
-    for (var k = 0; k <= 400; k++) { var cc = k / 4, v = metric(y, cc); vals.push(v); if (v < best) best = v; }
-    var finite = isFinite(best);
-    var lo = null, hi = null;
-    if (finite) vals.forEach(function (v, k) { if (v <= best + 1e-9) { if (lo === null) lo = k / 4; hi = k / 4; } });
+    svg.appendChild(el('line', {x1: sx(0), y1: 60, x2: sx(top), y2: 60, stroke: '#D8D4C8', 'stroke-width': 1.4}));
+    var stepT = top <= 10 ? 1 : 10;
+    for (var t = 0; t <= top; t += stepT) {
+      svg.appendChild(el('text', {x: sx(t), y: 316, 'text-anchor': 'middle', 'font-size': 12, fill: '#5E5850'}, String(t)));
+      svg.appendChild(el('line', {x1: sx(t), y1: 296, x2: sx(t), y2: 302, stroke: '#5E5850'}));
+    }
+    svg.appendChild(el('text', {x: sx(top), y: 30, 'text-anchor': 'end', 'font-size': 12, fill: '#5E5850'}, 'цены квартир, млн'));
+    var vals = [], best = Infinity, K = Math.round(top * 100);
+    for (var k = 0; k <= K; k++) { var v = metric(y, k * top / K); vals.push(v); if (v < best) best = v; }
+    var finite = isFinite(best), lo = null, hi = null;
+    if (finite) vals.forEach(function (v, k) { if (v <= best + 1e-9 * Math.max(1, best)) { if (lo === null) lo = k * top / K; hi = k * top / K; } });
     if (finite) {
-      var vmax = Math.max.apply(null, vals);
-      var py = function (v) { return 296 - v / vmax * 190; };
-      svg.appendChild(el('path', {d: vals.map(function (v, k) { return (k ? 'L' : 'M') + sx(k / 4).toFixed(1) + ' ' + py(v).toFixed(1); }).join(' '),
-                                  fill: 'none', stroke: '#C29E08', 'stroke-width': 3}));
+      var vmax = Math.max.apply(null, vals), py = function (v) { return 296 - v / vmax * 190; };
+      svg.appendChild(el('path', {d: vals.map(function (v, k) { return (k ? 'L' : 'M') + sx(k * top / K).toFixed(1) + ' ' + py(v).toFixed(1); }).join(' '), fill: 'none', stroke: '#C29E08', 'stroke-width': 3}));
       svg.appendChild(el('line', {x1: sx(lo), y1: py(best), x2: sx(hi), y2: py(best), stroke: '#2A5E9B', 'stroke-width': 5}));
       svg.appendChild(el('circle', {cx: sx((lo + hi) / 2), cy: py(best), r: 6, fill: '#2A5E9B', stroke: '#FFFFFF', 'stroke-width': 2}));
       svg.appendChild(el('line', {x1: sx(c), y1: py(metric(y, c)), x2: sx(c), y2: 296, stroke: '#C29E08', 'stroke-dasharray': '3 3'}));
       svg.appendChild(el('circle', {cx: sx(c), cy: py(metric(y, c)), r: 6, fill: '#8F7406', stroke: '#FFFFFF', 'stroke-width': 2}));
     } else {
-      svg.appendChild(el('text', {x: 300, y: 190, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: '#9C0908'}, 'MAPE не определена: у студента 10 ноль баллов'));
+      svg.appendChild(el('text', {x: 300, y: 190, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: '#9C0908'}, 'MAPE не определена: в ценах есть ноль'));
     }
     svg.appendChild(el('line', {x1: sx(c), y1: 40, x2: sx(c), y2: 80, stroke: '#C29E08', 'stroke-width': 3}));
+    var seen = {};
     y.forEach(function (v, i) {
-      svg.appendChild(el('circle', {cx: sx(v), cy: 60, r: 9, fill: v >= 50 ? '#73B222' : '#C30B0A', stroke: '#FFFFFF', 'stroke-width': 1.5}));
-      svg.appendChild(el('text', {x: sx(v), y: 64, 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 700, fill: '#FFFFFF'}, String(i + 1)));
+      var dy = (seen[v] = (seen[v] || 0) + 1) > 1 ? -18 : 0;
+      svg.appendChild(el('circle', {cx: sx(v), cy: 60 + dy, r: 9, fill: '#3F3A33', stroke: '#FFFFFF', 'stroke-width': 1.5}));
+      svg.appendChild(el('text', {x: sx(v), y: 64 + dy, 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 700, fill: '#FFFFFF'}, String(i + 1)));
     });
     var srt = y.slice().sort(function (a, b) { return a - b; });
-    var mean = y.reduce(function (s, v) { return s + v; }, 0) / 10, med = (srt[4] + srt[5]) / 2;
-    document.getElementById('cLiveCv').textContent = fmt(c, 1);
+    var mean = y.reduce(function (s, v) { return s + v; }, 0) / y.length, med = (srt[1] + srt[2]) / 2;
+    document.getElementById('cLiveCv').textContent = fmt(c, 2);
     document.getElementById('cLiveName').textContent = NAMES[mode] + ' при этом c';
     document.getElementById('cLiveVal').textContent = finite ? fmtv(metric(y, c)) : '∞';
-    document.getElementById('cLiveBest').textContent = !finite ? '—' : (hi - lo < 0.3 ? fmt((lo + hi) / 2, 1) : 'от ' + fmt(lo, 1) + ' до ' + fmt(hi, 1));
-    document.getElementById('cLiveMm').textContent = 'среднее ' + fmt(mean, 1) + ', медиана ' + fmt(med, 1);
+    document.getElementById('cLiveBest').textContent = !finite ? '—' : (hi - lo < 0.05 ? fmt((lo + hi) / 2, 2) : 'от ' + fmt(lo, 2) + ' до ' + fmt(hi, 2));
+    document.getElementById('cLiveMm').textContent = 'среднее ' + fmt(mean, 2) + ', медиана ' + fmt(med, 2);
     var qb = document.querySelector('#cLive [data-qbox]'); if (qb) qb.style.display = mode === 'q' ? '' : 'none';
   }
   C.addEventListener('input', update);
-  if (QR) QR.addEventListener('input', function () { tau = +QR.value; document.getElementById('QV').textContent = fmt(tau, 2); update(); });
+  if (QR) QR.addEventListener('input', function () { tau = +QR.value; document.getElementById('cLiveQv').textContent = fmt(tau, 2); update(); });
   document.querySelectorAll('#cLive [data-m]').forEach(function (b) {
     b.addEventListener('click', function () { mode = b.getAttribute('data-m');
       document.querySelectorAll('#cLive [data-m]').forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); }); update(); });
   });
-  document.querySelectorAll('#cLive [data-abs]').forEach(function (b) {
-    b.addEventListener('click', function () { absent = b.getAttribute('data-abs') === '1';
-      document.querySelectorAll('#cLive [data-abs]').forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); }); update(); });
+  document.querySelectorAll('#cLive [data-alt]').forEach(function (b) {
+    b.addEventListener('click', function () { useAlt = b.getAttribute('data-alt') === '1';
+      document.querySelectorAll('#cLive [data-alt]').forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); }); update(); });
   });
   update();
 })();
@@ -730,48 +734,53 @@
 
 
 <p>
-  MSE минимальна при <span class="math-inline" data-tex="c = 53"></span>, среднем баллов: MSE 413,4, RMSE около 20,3. У MAE минимум плоский: любое <span class="math-inline" data-tex="c"></span> от 47 до 58
-  даёт MAE 18. Пока <span class="math-inline" data-tex="c"></span> внутри этого отрезка, ниже него и выше остаётся по пять студентов, и при сдвиге <span class="math-inline" data-tex="c"></span> одни
-  промахи растут ровно на столько, на сколько уменьшаются другие. Медиана 52,5 — середина отрезка по договорённости.
+  MSE минимальна при <span class="math-inline" data-tex="c = 4{,}25"></span>, средней цене: MSE 3,6875, RMSE 1,92. MAE минимальна при <span class="math-inline" data-tex="c = 5"></span>, медиане
+  цен 1, 5, 5, 6: MAE 1,25. Среднее ниже медианы, потому что его тянет вниз дешёвая третья квартира. Средняя цена
+  ошибается по модулю сильнее медианы, 1,625 против 1,25, зато по квадрату лучше.
 </p>
 
 <p>
-  То же верно и для настоящих моделей. Модель, обученная на квадрате ошибки, предсказывает среднее балла
-  для студентов с такими часами и пропусками, а модель на модуле — медиану. Если обучать на MSE, а оценивать по MAE,
-  модель целится в одно, а оценивают её за другое. На симметричных данных разница мала, на данных с выбросами
-  она видна, это часть 8.
+  Кнопка «лишний ноль» показывает, как это работает при выбросе. Среднее прыгает с 4,25 до 17,75: такой прогноз
+  не подходит ни одной квартире. Медиана остаётся 5.
+</p>
+
+<p>
+  То же верно и для настоящих моделей. Регрессия, обученная на квадрате ошибки, предсказывает среднюю цену квартир
+  с такими площадью и возрастом, а регрессия на модуле — медианную. Если обучать на MSE, а оценивать по MAE, модель
+  целится в одно, а оценивают её за другое. На симметричных данных разница мала, на данных с выбросами она видна,
+  это часть 9.
 </p>
 
 
 ## Часть 4. Базовая модель и R²
 
 <p>
-  Само по себе MAE 15,5 балла не говорит, хорошо это или плохо. Нужен эталон, и самый простой эталон —
-  модель, которая признаки не смотрит вовсе.
+  Само по себе MAE 0,391 млн не говорит, хорошо это или плохо. Нужен эталон, и самый простой эталон — модель,
+  которая на признаки не смотрит вовсе.
 </p>
 
 
 <div class="stage" id="stageR2" tabindex="0">
   <div class="stage-figure">
-<svg id="r2Svg" viewBox="0 0 960 390" role="img" aria-label="Суммы квадратов от среднего и от прогноза модели"><style>#r2Svg { font-family: Helvetica, Arial, sans-serif; }</style>
-<rect x="0" y="0" width="960" height="390" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
-<g data-key="axes"><line x1="70" y1="300" x2="950" y2="300" stroke="#D8D4C8" stroke-width="1.2"/><line x1="64" y1="300" x2="70" y2="300" stroke="#5E5850" stroke-width="1"/><text x="58" y="304" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">0</text><line x1="64" y1="252" x2="70" y2="252" stroke="#5E5850" stroke-width="1"/><text x="58" y="256" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">20</text><line x1="70" y1="252" x2="950" y2="252" stroke="#F1EEE6" stroke-width="1"/><line x1="64" y1="204" x2="70" y2="204" stroke="#5E5850" stroke-width="1"/><text x="58" y="208" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">40</text><line x1="70" y1="204" x2="950" y2="204" stroke="#F1EEE6" stroke-width="1"/><line x1="64" y1="156" x2="70" y2="156" stroke="#5E5850" stroke-width="1"/><text x="58" y="160" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">60</text><line x1="70" y1="156" x2="950" y2="156" stroke="#F1EEE6" stroke-width="1"/><line x1="64" y1="108" x2="70" y2="108" stroke="#5E5850" stroke-width="1"/><text x="58" y="112" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">80</text><line x1="70" y1="108" x2="950" y2="108" stroke="#F1EEE6" stroke-width="1"/><line x1="64" y1="60" x2="70" y2="60" stroke="#5E5850" stroke-width="1"/><text x="58" y="64" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">100</text><line x1="70" y1="60" x2="950" y2="60" stroke="#F1EEE6" stroke-width="1"/><text x="24" y="180" font-size="13" fill="#5E5850" text-anchor="middle" font-weight="400" transform="rotate(-90 24 180.0)">баллы</text></g>
-<g data-key="sq_m" data-only="1"><rect x="110" y="172.8" width="55.2" height="55.2" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><text x="137.6" y="204.4" font-size="11" fill="#2A5E9B" text-anchor="middle" font-weight="700">529</text><rect x="194" y="172.8" width="74.4" height="74.4" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><text x="231.2" y="214" font-size="11" fill="#2A5E9B" text-anchor="middle" font-weight="700">961</text><rect x="278" y="172.8" width="28.8" height="28.8" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><rect x="362" y="160.8" width="12" height="12" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><rect x="446" y="172.8" width="43.2" height="43.2" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><text x="467.6" y="198.4" font-size="11" fill="#2A5E9B" text-anchor="middle" font-weight="700">324</text><rect x="530" y="172.8" width="14.4" height="14.4" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><rect x="614" y="127.2" width="45.6" height="45.6" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><text x="636.8" y="154" font-size="11" fill="#2A5E9B" text-anchor="middle" font-weight="700">361</text><rect x="698" y="153.6" width="19.2" height="19.2" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><rect x="782" y="108" width="64.8" height="64.8" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><text x="814.4" y="144.4" font-size="11" fill="#2A5E9B" text-anchor="middle" font-weight="700">729</text><rect x="866" y="98.4" width="74.4" height="74.4" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><text x="903.2" y="139.6" font-size="11" fill="#2A5E9B" text-anchor="middle" font-weight="700">961</text></g>
-<g data-key="sq_t" data-only="1"><rect x="110" y="183.2" width="44.8" height="44.8" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><text x="132.4" y="209.6" font-size="11" fill="#8F7406" text-anchor="middle" font-weight="700">348</text><rect x="194" y="208.2" width="39" height="39" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><text x="213.5" y="231.7" font-size="11" fill="#8F7406" text-anchor="middle" font-weight="700">264</text><rect x="278" y="201.6" width="36" height="36" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><text x="296" y="223.6" font-size="11" fill="#8F7406" text-anchor="middle" font-weight="700">225</text><rect x="362" y="160.8" width="40.8" height="40.8" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><text x="382.4" y="185.2" font-size="11" fill="#8F7406" text-anchor="middle" font-weight="700">289</text><rect x="446" y="183.2" width="32.8" height="32.8" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><text x="462.4" y="203.6" font-size="11" fill="#8F7406" text-anchor="middle" font-weight="700">187</text><rect x="530" y="187.2" width="36" height="36" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><text x="548" y="209.2" font-size="11" fill="#8F7406" text-anchor="middle" font-weight="700">225</text><rect x="614" y="127.2" width="64.2" height="64.2" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><text x="646.1" y="163.3" font-size="11" fill="#8F7406" text-anchor="middle" font-weight="700">716</text><rect x="698" y="127.2" width="26.4" height="26.4" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="782" y="108" width="32.4" height="32.4" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><text x="798.2" y="128.2" font-size="11" fill="#8F7406" text-anchor="middle" font-weight="700">182</text><rect x="866" y="98.4" width="19.2" height="19.2" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/></g>
-<g data-key="sq_m0" data-only="1"><rect x="110" y="172.8" width="55.2" height="55.2" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><rect x="194" y="172.8" width="74.4" height="74.4" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><rect x="278" y="172.8" width="28.8" height="28.8" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><rect x="362" y="160.8" width="12" height="12" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><rect x="446" y="172.8" width="43.2" height="43.2" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><rect x="530" y="172.8" width="14.4" height="14.4" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><rect x="614" y="127.2" width="45.6" height="45.6" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><rect x="698" y="153.6" width="19.2" height="19.2" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><rect x="782" y="108" width="64.8" height="64.8" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><rect x="866" y="98.4" width="74.4" height="74.4" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/></g>
-<g data-key="sq_t0" data-only="1"><rect x="110" y="183.2" width="44.8" height="44.8" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="194" y="208.2" width="39" height="39" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="278" y="201.6" width="36" height="36" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="362" y="160.8" width="40.8" height="40.8" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="446" y="183.2" width="32.8" height="32.8" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="530" y="187.2" width="36" height="36" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="614" y="127.2" width="64.2" height="64.2" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="698" y="127.2" width="26.4" height="26.4" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="782" y="108" width="32.4" height="32.4" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="866" y="98.4" width="19.2" height="19.2" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/></g>
-<g data-key="sq_l" data-only="1"><rect x="110" y="224.25" width="3.75" height="3.75" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="194" y="247.2" width="6.65" height="6.65" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="278" y="201.6" width="5.92" height="5.92" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="362" y="160.8" width="1.41" height="1.41" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="446" y="216" width="2.18" height="2.18" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="530" y="170.58" width="16.62" height="16.62" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="614" y="127.2" width="0.67" height="0.67" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="698" y="153.07" width="0.53" height="0.53" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="782" y="108" width="0.57" height="0.57" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/><rect x="866" y="98.4" width="8.23" height="8.23" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.2" fill-opacity="0.85"/></g>
-<g data-key="sq_o" data-only="1"><rect x="110" y="166.67" width="61.33" height="61.33" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><text x="140.67" y="201.33" font-size="11" fill="#2A5E9B" text-anchor="middle" font-weight="700">653</text><rect x="194" y="164.53" width="82.67" height="82.67" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><text x="235.33" y="209.87" font-size="11" fill="#2A5E9B" text-anchor="middle" font-weight="700">1186</text><rect x="278" y="169.6" width="32" height="32" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><text x="294" y="189.6" font-size="11" fill="#2A5E9B" text-anchor="middle" font-weight="700">178</text><rect x="362" y="160.8" width="13.33" height="13.33" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><rect x="446" y="168" width="48" height="48" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><text x="470" y="196" font-size="11" fill="#2A5E9B" text-anchor="middle" font-weight="700">400</text><rect x="530" y="171.2" width="16" height="16" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><rect x="614" y="127.2" width="50.67" height="50.67" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><text x="639.33" y="156.53" font-size="11" fill="#2A5E9B" text-anchor="middle" font-weight="700">446</text><rect x="698" y="153.6" width="21.33" height="21.33" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><rect x="782" y="108" width="72" height="72" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><text x="818" y="148" font-size="11" fill="#2A5E9B" text-anchor="middle" font-weight="700">900</text><rect x="866" y="98.4" width="82.67" height="82.67" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.2" fill-opacity="0.85"/><text x="907.33" y="143.73" font-size="11" fill="#2A5E9B" text-anchor="middle" font-weight="700">1186</text></g>
-<g data-key="mline" data-only="1"><line x1="70" y1="172.8" x2="950" y2="172.8" stroke="#5E5850" stroke-width="2" stroke-dasharray="7 5"/><text x="74" y="166.8" font-size="12" fill="#5E5850" text-anchor="start" font-weight="700">среднее 53</text></g>
-<g data-key="dots"><circle cx="110" cy="228.0" r="11" fill="#C30B0A" stroke="#FFFFFF" stroke-width="1.5"/><text x="110" y="232" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">1</text><circle cx="194" cy="247.2" r="11" fill="#C30B0A" stroke="#FFFFFF" stroke-width="1.5"/><text x="194" y="251.2" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">2</text><circle cx="278" cy="201.6" r="11" fill="#C30B0A" stroke="#FFFFFF" stroke-width="1.5"/><text x="278" y="205.6" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">3</text><circle cx="362" cy="160.8" r="11" fill="#73B222" stroke="#FFFFFF" stroke-width="1.5"/><text x="362" y="164.8" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">4</text><circle cx="446" cy="216.0" r="11" fill="#C30B0A" stroke="#FFFFFF" stroke-width="1.5"/><text x="446" y="220" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">5</text><circle cx="530" cy="187.2" r="11" fill="#C30B0A" stroke="#FFFFFF" stroke-width="1.5"/><text x="530" y="191.2" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">6</text><circle cx="614" cy="127.2" r="11" fill="#73B222" stroke="#FFFFFF" stroke-width="1.5"/><text x="614" y="131.2" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">7</text><circle cx="698" cy="153.6" r="11" fill="#73B222" stroke="#FFFFFF" stroke-width="1.5"/><text x="698" y="157.6" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">8</text><circle cx="782" cy="108.0" r="11" fill="#73B222" stroke="#FFFFFF" stroke-width="1.5"/><text x="782" y="112" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">9</text><circle cx="866" cy="98.4" r="11" fill="#73B222" stroke="#FFFFFF" stroke-width="1.5"/><text x="866" y="102.4" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="700">10</text></g>
-<g data-key="p_t" data-only="1"><line x1="96" y1="183.2" x2="124" y2="183.2" stroke="#3576C0" stroke-width="3.4"/><line x1="180" y1="208.2" x2="208" y2="208.2" stroke="#3576C0" stroke-width="3.4"/><line x1="264" y1="237.6" x2="292" y2="237.6" stroke="#3576C0" stroke-width="3.4"/><line x1="348" y1="201.6" x2="376" y2="201.6" stroke="#3576C0" stroke-width="3.4"/><line x1="432" y1="183.2" x2="460" y2="183.2" stroke="#3576C0" stroke-width="3.4"/><line x1="516" y1="223.2" x2="544" y2="223.2" stroke="#3576C0" stroke-width="3.4"/><line x1="600" y1="191.4" x2="628" y2="191.4" stroke="#3576C0" stroke-width="3.4"/><line x1="684" y1="127.2" x2="712" y2="127.2" stroke="#3576C0" stroke-width="3.4"/><line x1="768" y1="140.4" x2="796" y2="140.4" stroke="#3576C0" stroke-width="3.4"/><line x1="852" y1="117.6" x2="880" y2="117.6" stroke="#3576C0" stroke-width="3.4"/></g>
-<g data-key="p_l" data-only="1"><line x1="96" y1="224.25" x2="124" y2="224.25" stroke="#5F9420" stroke-width="3.4"/><line x1="180" y1="253.85" x2="208" y2="253.85" stroke="#5F9420" stroke-width="3.4"/><line x1="264" y1="207.52" x2="292" y2="207.52" stroke="#5F9420" stroke-width="3.4"/><line x1="348" y1="162.21" x2="376" y2="162.21" stroke="#5F9420" stroke-width="3.4"/><line x1="432" y1="218.18" x2="460" y2="218.18" stroke="#5F9420" stroke-width="3.4"/><line x1="516" y1="170.58" x2="544" y2="170.58" stroke="#5F9420" stroke-width="3.4"/><line x1="600" y1="127.87" x2="628" y2="127.87" stroke="#5F9420" stroke-width="3.4"/><line x1="684" y1="153.07" x2="712" y2="153.07" stroke="#5F9420" stroke-width="3.4"/><line x1="768" y1="108.57" x2="796" y2="108.57" stroke="#5F9420" stroke-width="3.4"/><line x1="852" y1="106.63" x2="880" y2="106.63" stroke="#5F9420" stroke-width="3.4"/></g>
-<g data-key="p_o" data-only="1"><line x1="96" y1="166.67" x2="124" y2="166.67" stroke="#5E5850" stroke-width="3.4"/><line x1="180" y1="164.53" x2="208" y2="164.53" stroke="#5E5850" stroke-width="3.4"/><line x1="264" y1="169.6" x2="292" y2="169.6" stroke="#5E5850" stroke-width="3.4"/><line x1="348" y1="174.13" x2="376" y2="174.13" stroke="#5E5850" stroke-width="3.4"/><line x1="432" y1="168" x2="460" y2="168" stroke="#5E5850" stroke-width="3.4"/><line x1="516" y1="171.2" x2="544" y2="171.2" stroke="#5E5850" stroke-width="3.4"/><line x1="600" y1="177.87" x2="628" y2="177.87" stroke="#5E5850" stroke-width="3.4"/><line x1="684" y1="174.93" x2="712" y2="174.93" stroke="#5E5850" stroke-width="3.4"/><line x1="768" y1="180" x2="796" y2="180" stroke="#5E5850" stroke-width="3.4"/><line x1="852" y1="181.07" x2="880" y2="181.07" stroke="#5E5850" stroke-width="3.4"/></g>
-<g data-key="f_sst" data-only="1"><foreignObject x="50" y="326" width="860" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:18px;color:#111111;font-weight:400" data-tex="\text{SST} = \sum (y_i - \bar y)^2 = 4134 \qquad \text{MSE константы} = 413{,}4"></div></foreignObject></g>
-<g data-key="f_sse" data-only="1"><foreignObject x="50" y="326" width="860" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:18px;color:#111111;font-weight:400" data-tex="\text{SSE}_{\text{дерево}} = \sum (y_i - \hat y_i)^2 = 2621"></div></foreignObject></g>
-<g data-key="f_r2" data-only="1"><foreignObject x="50" y="324" width="860" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="R^2 = 1 - \dfrac{\text{SSE}}{\text{SST}} = 1 - \dfrac{2621}{4134} = 0{,}366"></div></foreignObject></g>
-<g data-key="f_lin" data-only="1"><foreignObject x="50" y="324" width="860" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="R^2_{\text{лин. регрессия}} = 1 - \dfrac{77}{4134} = 0{,}981"></div></foreignObject></g>
-<g data-key="f_loo" data-only="1"><foreignObject x="50" y="324" width="860" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="R^2_{\text{среднее остальных}} = 1 - \dfrac{5104}{4134} = -0{,}235"></div></foreignObject></g>
+<svg id="r2Svg" viewBox="0 0 960 440" role="img" aria-label="Суммы квадратов от среднего и от прогноза модели"><style>#r2Svg { font-family: Helvetica, Arial, sans-serif; }</style>
+<rect x="0" y="0" width="960" height="440" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<g data-key="axes"><line x1="110" y1="340" x2="950" y2="340" stroke="#D8D4C8" stroke-width="1.2"/><line x1="104" y1="340" x2="110" y2="340" stroke="#5E5850" stroke-width="1"/><text x="98" y="344" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">0</text><line x1="104" y1="297" x2="110" y2="297" stroke="#5E5850" stroke-width="1"/><text x="98" y="301" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">1</text><line x1="110" y1="297" x2="950" y2="297" stroke="#F1EEE6" stroke-width="1"/><line x1="104" y1="254" x2="110" y2="254" stroke="#5E5850" stroke-width="1"/><text x="98" y="258" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">2</text><line x1="110" y1="254" x2="950" y2="254" stroke="#F1EEE6" stroke-width="1"/><line x1="104" y1="211" x2="110" y2="211" stroke="#5E5850" stroke-width="1"/><text x="98" y="215" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">3</text><line x1="110" y1="211" x2="950" y2="211" stroke="#F1EEE6" stroke-width="1"/><line x1="104" y1="168" x2="110" y2="168" stroke="#5E5850" stroke-width="1"/><text x="98" y="172" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">4</text><line x1="110" y1="168" x2="950" y2="168" stroke="#F1EEE6" stroke-width="1"/><line x1="104" y1="125" x2="110" y2="125" stroke="#5E5850" stroke-width="1"/><text x="98" y="129" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">5</text><line x1="110" y1="125" x2="950" y2="125" stroke="#F1EEE6" stroke-width="1"/><line x1="104" y1="82" x2="110" y2="82" stroke="#5E5850" stroke-width="1"/><text x="98" y="86" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">6</text><line x1="110" y1="82" x2="950" y2="82" stroke="#F1EEE6" stroke-width="1"/><line x1="104" y1="39" x2="110" y2="39" stroke="#5E5850" stroke-width="1"/><text x="98" y="43" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">7</text><line x1="110" y1="39" x2="950" y2="39" stroke="#F1EEE6" stroke-width="1"/><text x="60" y="189.5" font-size="13" fill="#5E5850" text-anchor="middle" font-weight="400" transform="rotate(-90 60 189.5)">цена, млн</text><text x="190" y="360" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">кв. 1: 20 м², 10 лет</text><text x="380" y="360" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">кв. 2: 30 м², 10 лет</text><text x="570" y="360" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">кв. 3: 10 м², 30 лет</text><text x="760" y="360" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">кв. 4: 40 м², 20 лет</text></g>
+<g data-key="sq_m" data-only="1"><rect x="190" y="125" width="32.25" height="32.25" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.3" fill-opacity="0.85"/><text x="228.25" y="146.12" font-size="13" fill="#2A5E9B" text-anchor="start" font-weight="700">0,562</text><rect x="380" y="125" width="32.25" height="32.25" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.3" fill-opacity="0.85"/><text x="418.25" y="146.12" font-size="13" fill="#2A5E9B" text-anchor="start" font-weight="700">0,562</text><rect x="570" y="157.25" width="139.75" height="139.75" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.3" fill-opacity="0.85"/><text x="639.88" y="232.12" font-size="13" fill="#2A5E9B" text-anchor="middle" font-weight="700">10,56</text><rect x="760" y="82" width="75.25" height="75.25" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.3" fill-opacity="0.85"/><text x="797.62" y="124.62" font-size="13" fill="#2A5E9B" text-anchor="middle" font-weight="700">3,06</text></g>
+<g data-key="sq_t" data-only="1"><rect x="190" y="125" width="22.43" height="22.43" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.3" fill-opacity="0.85"/><text x="218.43" y="141.22" font-size="13" fill="#8F7406" text-anchor="start" font-weight="700">0,272</text><rect x="380" y="96.96" width="28.04" height="28.04" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.3" fill-opacity="0.85"/><text x="414.04" y="115.98" font-size="13" fill="#8F7406" text-anchor="start" font-weight="700">0,425</text><rect x="570" y="291.39" width="5.61" height="5.61" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.3" fill-opacity="0.85"/><text x="581.61" y="299.2" font-size="13" fill="#8F7406" text-anchor="start" font-weight="700">0,017</text><rect x="760" y="82" width="11.22" height="11.22" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.3" fill-opacity="0.85"/><text x="777.22" y="92.61" font-size="13" fill="#8F7406" text-anchor="start" font-weight="700">0,068</text></g>
+<g data-key="sq_s" data-only="1"><rect x="190" y="125" width="43" height="43" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.3" fill-opacity="0.85"/><text x="239" y="151.5" font-size="13" fill="#8F7406" text-anchor="start" font-weight="700">1,00</text><rect x="380" y="82" width="43" height="43" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.3" fill-opacity="0.85"/><text x="429" y="108.5" font-size="13" fill="#8F7406" text-anchor="start" font-weight="700">1,00</text><rect x="570" y="297" width="43" height="43" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.3" fill-opacity="0.85"/><text x="619" y="323.5" font-size="13" fill="#8F7406" text-anchor="start" font-weight="700">1,00</text><rect x="760" y="39" width="43" height="43" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.3" fill-opacity="0.85"/><text x="809" y="65.5" font-size="13" fill="#8F7406" text-anchor="start" font-weight="700">1,00</text></g>
+<g data-key="sq_o" data-only="1"><rect x="190" y="125" width="43" height="43" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.3" fill-opacity="0.85"/><text x="239" y="151.5" font-size="13" fill="#2A5E9B" text-anchor="start" font-weight="700">1,00</text><rect x="380" y="125" width="43" height="43" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.3" fill-opacity="0.85"/><text x="429" y="151.5" font-size="13" fill="#2A5E9B" text-anchor="start" font-weight="700">1,00</text><rect x="570" y="110.67" width="186.33" height="186.33" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.3" fill-opacity="0.85"/><text x="663.17" y="208.83" font-size="13" fill="#2A5E9B" text-anchor="middle" font-weight="700">18,78</text><rect x="760" y="82" width="100.33" height="100.33" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.3" fill-opacity="0.85"/><text x="810.17" y="137.17" font-size="13" fill="#2A5E9B" text-anchor="middle" font-weight="700">5,44</text></g>
+<g data-key="sq_m0" data-only="1"><rect x="190" y="125" width="32.25" height="32.25" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.3" fill-opacity="0.85"/><rect x="380" y="125" width="32.25" height="32.25" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.3" fill-opacity="0.85"/><rect x="570" y="157.25" width="139.75" height="139.75" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.3" fill-opacity="0.85"/><rect x="760" y="82" width="75.25" height="75.25" rx="0" fill="#DCE8F5" stroke="#3576C0" stroke-width="1.3" fill-opacity="0.85"/></g>
+<g data-key="sq_t0" data-only="1"><rect x="190" y="125" width="22.43" height="22.43" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.3" fill-opacity="0.85"/><rect x="380" y="96.96" width="28.04" height="28.04" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.3" fill-opacity="0.85"/><rect x="570" y="291.39" width="5.61" height="5.61" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.3" fill-opacity="0.85"/><rect x="760" y="82" width="11.22" height="11.22" rx="0" fill="#F6EFD0" stroke="#C29E08" stroke-width="1.3" fill-opacity="0.85"/></g>
+<g data-key="mline" data-only="1"><line x1="110" y1="157.25" x2="950" y2="157.25" stroke="#5E5850" stroke-width="2" stroke-dasharray="7 5"/><text x="946" y="151.25" font-size="12" fill="#5E5850" text-anchor="end" font-weight="700">среднее 4,25</text></g>
+<g data-key="dots"><circle cx="190" cy="125.0" r="7" fill="#3F3A33" stroke="#FFFFFF" stroke-width="1.5"/><text x="176" y="130" font-size="14" fill="#3F3A33" text-anchor="end" font-weight="700">1</text><circle cx="380" cy="125.0" r="7" fill="#3F3A33" stroke="#FFFFFF" stroke-width="1.5"/><text x="366" y="130" font-size="14" fill="#3F3A33" text-anchor="end" font-weight="700">2</text><circle cx="570" cy="297.0" r="7" fill="#3F3A33" stroke="#FFFFFF" stroke-width="1.5"/><text x="556" y="302" font-size="14" fill="#3F3A33" text-anchor="end" font-weight="700">3</text><circle cx="760" cy="82.0" r="7" fill="#3F3A33" stroke="#FFFFFF" stroke-width="1.5"/><text x="746" y="87" font-size="14" fill="#3F3A33" text-anchor="end" font-weight="700">4</text></g>
+<g data-key="p_t" data-only="1"><line x1="168" y1="147.43" x2="212" y2="147.43" stroke="#3576C0" stroke-width="4"/><line x1="358" y1="96.96" x2="402" y2="96.96" stroke="#3576C0" stroke-width="4"/><line x1="548" y1="291.39" x2="592" y2="291.39" stroke="#3576C0" stroke-width="4"/><line x1="738" y1="93.22" x2="782" y2="93.22" stroke="#3576C0" stroke-width="4"/></g>
+<g data-key="p_s" data-only="1"><line x1="168" y1="168" x2="212" y2="168" stroke="#5F9420" stroke-width="4"/><line x1="358" y1="82" x2="402" y2="82" stroke="#5F9420" stroke-width="4"/><line x1="548" y1="340" x2="592" y2="340" stroke="#5F9420" stroke-width="4"/><line x1="738" y1="39" x2="782" y2="39" stroke="#5F9420" stroke-width="4"/></g>
+<g data-key="p_o" data-only="1"><line x1="168" y1="168" x2="212" y2="168" stroke="#5E5850" stroke-width="4"/><line x1="358" y1="168" x2="402" y2="168" stroke="#5E5850" stroke-width="4"/><line x1="548" y1="110.67" x2="592" y2="110.67" stroke="#5E5850" stroke-width="4"/><line x1="738" y1="182.33" x2="782" y2="182.33" stroke="#5E5850" stroke-width="4"/></g>
+<g data-key="f_sst" data-only="1"><foreignObject x="40" y="372" width="880" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="\text{SST} = 0{,}75^2 + 0{,}75^2 + 3{,}25^2 + 1{,}75^2 = 14{,}75 \qquad \text{MSE константы} = 3{,}6875"></div></foreignObject></g>
+<g data-key="f_sse" data-only="1"><foreignObject x="40" y="372" width="880" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="\text{SSE} = \tfrac{144 + 225 + 9 + 36}{529} = \tfrac{18}{23} \approx 0{,}783"></div></foreignObject></g>
+<g data-key="f_r2" data-only="1"><foreignObject x="40" y="372" width="880" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="R^2 = 1 - \dfrac{\text{SSE}}{\text{SST}} = 1 - \dfrac{0{,}783}{14{,}75} = 0{,}947"></div></foreignObject></g>
+<g data-key="f_s" data-only="1"><foreignObject x="40" y="372" width="880" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="R^2_{\text{старт}} = 1 - \dfrac{4}{14{,}75} = 0{,}729"></div></foreignObject></g>
+<g data-key="f_o" data-only="1"><foreignObject x="40" y="372" width="880" height="60"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="R^2_{\text{среднее остальных}} = 1 - \dfrac{26{,}22}{14{,}75} = -0{,}778"></div></foreignObject></g>
 </svg>
   </div>
   <div class="stage-bar">
@@ -784,31 +793,31 @@
     <div class="step-panel" data-on="axes dots mline sq_m f_sst" data-focus="sq_m f_sst">
       <div class="step-kicker">Шаг 1 · база</div>
       <h4>Сначала модель без признаков</h4>
-      <p>Самая простая модель не смотрит ни на часы, ни на пропуски и всем отвечает средним, 53 балла. Синие квадраты — квадраты отклонений от среднего. Их сумма называется SST (total sum of squares): <span class="math-inline" data-tex="4134"></span>.</p>
-<p>Это та же сумма, с которой начиналось дерево регрессии в корне. MSE такой константы <span class="math-inline" data-tex="413{,}4"></span>, RMSE около 20 баллов.</p>
+      <p>Самая простая модель не смотрит ни на площадь, ни на возраст и всем отвечает средней ценой, 4,25 млн. Синие квадраты — квадраты отклонений от среднего, их сумма SST (total sum of squares) <span class="math-inline" data-tex="= 14{,}75"></span>.</p>
+<p>Почти три четверти суммы даёт третья квартира: она стоит 1 млн, на 3,25 дешевле среднего. MSE такой константы <span class="math-inline" data-tex="3{,}6875"></span> — это дисперсия цен.</p>
     </div>
     <div class="step-panel" data-on="axes dots p_t sq_t f_sse" data-focus="sq_t f_sse">
-      <div class="step-kicker">Шаг 2 · дерево</div>
-      <h4>Квадраты остатков дерева</h4>
-      <p>Те же квадраты для прогноза дерева из части 1 — сумма квадратов остатков, SSE: <span class="math-inline" data-tex="2621"></span>. Она меньше 4134: часы и пропуски помогли.</p>
+      <div class="step-kicker">Шаг 2 · регрессия</div>
+      <h4>Квадраты остатков регрессии</h4>
+      <p>Те же квадраты для обученной регрессии, их сумма SSE <span class="math-inline" data-tex="= 18/23 \approx 0{,}783"></span>. Рядом с синими квадратами они почти не видны.</p>
     </div>
     <div class="step-panel" data-on="axes dots mline sq_m0 p_t sq_t0 f_r2" data-focus="f_r2">
       <div class="step-kicker">Шаг 3 · R²</div>
       <h4>R²: какую долю разброса модель убрала</h4>
-      <p>Сравним две суммы: дерево оставило <span class="math-inline" data-tex="2621 / 4134 = 63{,}4\,\%"></span> квадратичного разброса, значит, убрало <span class="math-inline" data-tex="36{,}6\,\%"></span>.</p>
-<p>Это коэффициент детерминации <span class="math-inline" data-tex="R^2"></span>. Он не зависит от единиц: баллы, рубли или градусы, <span class="math-inline" data-tex="R^2 = 0"></span> означает «не лучше среднего», <span class="math-inline" data-tex="R^2 = 1"></span> — прогноз без ошибок. Это удобно для сравнения задач, но цены ошибки в баллах <span class="math-inline" data-tex="R^2"></span> не показывает.</p>
+      <p>Регрессия оставила <span class="math-inline" data-tex="0{,}783 / 14{,}75 = 5{,}3\,\%"></span> квадратичного разброса, значит, убрала <span class="math-inline" data-tex="94{,}7\,\%"></span>. Это коэффициент детерминации <span class="math-inline" data-tex="R^2"></span>.</p>
+<p><span class="math-inline" data-tex="R^2"></span> не зависит от единиц: в миллионах или в рублях получится то же число. <span class="math-inline" data-tex="R^2 = 0"></span> значит «не лучше средней цены», <span class="math-inline" data-tex="R^2 = 1"></span> — прогноз без ошибок. Насколько ошибка велика в рублях, <span class="math-inline" data-tex="R^2"></span> не показывает.</p>
     </div>
-    <div class="step-panel" data-on="axes dots p_l sq_l f_lin" data-focus="sq_l f_lin">
-      <div class="step-kicker">Шаг 4 · линейная регрессия</div>
-      <h4>Почти без ошибок</h4>
-      <p>Линейная регрессия на тех же студентах, тоже leave-one-out. Квадраты почти исчезли: <span class="math-inline" data-tex="\text{SSE} = 77"></span>, <span class="math-inline" data-tex="R^2 = 0{,}981"></span>, MAE 1,9 балла.</p>
-<p>Баллы у наших студентов почти точно ложатся на плоскость <span class="math-inline" data-tex="37{,}4 + 3{,}06 \cdot \text{часы} - 4{,}18 \cdot \text{пропуски}"></span>, а дерево глубины 2 приближает её четырьмя ступеньками.</p>
+    <div class="step-panel" data-on="axes dots p_s sq_s f_s" data-focus="sq_s f_s">
+      <div class="step-kicker">Шаг 4 · старт</div>
+      <h4>Модель со стартовыми весами</h4>
+      <p>Зелёные черточки — прогноз со стартовыми весами <span class="math-inline" data-tex="w = (2, -1)"></span>, <span class="math-inline" data-tex="b = 1"></span>, с которых в статье по формам начинался градиентный спуск. Все четыре промаха по 1 млн, SSE <span class="math-inline" data-tex="= 4"></span>.</p>
+<p><span class="math-inline" data-tex="R^2 = 0{,}729"></span>, то же число, что в статье по формам: даже веса, выбранные наугад, убирают почти три четверти разброса. После обучения <span class="math-inline" data-tex="R^2"></span> вырос до 0,947.</p>
     </div>
-    <div class="step-panel" data-on="axes dots mline p_o sq_o f_loo" data-focus="sq_o f_loo">
+    <div class="step-panel" data-on="axes dots mline p_o sq_o f_o" data-focus="sq_o f_o">
       <div class="step-kicker">Шаг 5 · ниже нуля</div>
       <h4>R² бывает отрицательным</h4>
-      <p>Серые черточки — «модель среднего», которой тоже не дали увидеть студента: каждому она отвечает средним по остальным девяти. Студенту 10 с 84 баллами — <span class="math-inline" data-tex="(530 - 84)/9 = 49{,}6"></span>, студенту 2 с 22 баллами — <span class="math-inline" data-tex="56{,}4"></span>. Прогноз каждый раз сдвигается от студента, и квадраты выходят больше синих из первого шага: <span class="math-inline" data-tex="5104"></span>.</p>
-<p><span class="math-inline" data-tex="R^2 = -0{,}235"></span>: на новых данных модель хуже, чем среднее этих же данных. Отрицательный <span class="math-inline" data-tex="R^2"></span> на тесте не ошибка в расчёте: эталоном служит среднее теста, которого модель знать не может.</p>
+      <p>Серые черточки — «модель средней цены», которой не дали увидеть квартиру: каждой она отвечает средним по остальным трём. Третьей квартире — <span class="math-inline" data-tex="(5 + 5 + 6)/3 = 5{,}33"></span>, хотя та стоит 1. Прогноз сдвигается от каждой квартиры, и квадраты выходят больше синих из первого шага: <span class="math-inline" data-tex="26{,}22"></span>.</p>
+<p><span class="math-inline" data-tex="R^2 = -0{,}778"></span>. На новых данных модель может быть хуже среднего этих данных: эталоном служит среднее, которое модель знать не может. С самой регрессией та же история, это часть 5.</p>
     </div>
   </div>
 </div>
@@ -816,24 +825,23 @@
 
 
 <p>
-  Три модели в одной таблице:
+  Все модели в одной таблице. Средняя цена остальных трёх и стартовые веса посчитаны на тех же квартирах:
 </p>
 
 
 <div class="dt-table"><table class="shape-table">
-  <tr><th>Модель (leave-one-out)</th><th>MAE</th><th>RMSE</th><th><span class="math-inline" data-tex="R^2"></span></th></tr>
-  <tr><td>среднее остальных девяти</td><td>20,0</td><td>22,6</td><td>−0,235</td></tr>
-  <tr><td>дерево глубины 2</td><td>15,5</td><td>16,2</td><td>0,366</td></tr>
-  <tr><td>линейная регрессия</td><td>1,9</td><td>2,8</td><td>0,981</td></tr>
+  <tr><th>Модель</th><th>MAE</th><th>RMSE</th><th><span class="math-inline" data-tex="R^2"></span></th></tr>
+  <tr><td>средняя цена остальных трёх</td><td>2,167</td><td>2,560</td><td>−0,778</td></tr>
+  <tr><td>стартовые веса <span class="math-inline" data-tex="w = (2, -1)"></span>, <span class="math-inline" data-tex="b = 1"></span></td><td>1,000</td><td>1,000</td><td>0,729</td></tr>
+  <tr><td>обученная регрессия</td><td>0,391</td><td>0,442</td><td>0,947</td></tr>
 </table></div>
 
 
 <p>
   Формулу <span class="math-inline" data-tex="R^2"></span> можно переписать через MSE: <span class="math-inline" data-tex="R^2 = 1 - \text{MSE} / \text{Var}(y)"></span>, где <span class="math-inline" data-tex="\text{Var}(y)"></span> — разброс
-  настоящих ответов в тех данных, на которых считаем. Отсюда следует подвох: одна и та же модель с одним и тем же MSE
-  получит разный <span class="math-inline" data-tex="R^2"></span> на разных тестах. При MSE 262 и дисперсии баллов 413 получаем <span class="math-inline" data-tex="R^2 = 0{,}37"></span>.
-  Если взять группу, где баллы разбросаны меньше, с дисперсией 300, тот же MSE даст <span class="math-inline" data-tex="R^2 = 0{,}13"></span>.
-  Поэтому <span class="math-inline" data-tex="R^2"></span> сравнивают только на одних и тех же данных.
+  настоящих ответов в данных, на которых считаем. Отсюда следует подвох: одна и та же модель с одним и тем же MSE получит
+  разный <span class="math-inline" data-tex="R^2"></span> на разных данных. При MSE 0,196 и дисперсии цен 3,69 получаем 0,947. Если бы цены в выборке были
+  разбросаны меньше, с дисперсией 0,5, тот же MSE дал бы 0,61. Поэтому <span class="math-inline" data-tex="R^2"></span> сравнивают только на одних и тех же данных.
 </p>
 
 <p>
@@ -842,10 +850,65 @@
 </p>
 
 
-## Часть 5. Относительные ошибки: MAPE и WAPE
+## Часть 5. Честная проверка
 
 <p>
-  Промах в 16 баллов у студента с 22 баллами и у студента с 84 баллами ощущается по-разному. Относительная ошибка
+  Все числа выше посчитаны на тех же четырёх квартирах, на которых регрессия подбирала веса. Проверим её честно,
+  как в статье о метриках классификации: каждую квартиру предсказывает регрессия, обученная на трёх остальных
+  (leave-one-out).
+</p>
+
+
+<div class="dt-table"><table class="shape-table">
+  <tr><th>#</th><th>Плоскость по трём остальным (<span class="math-inline" data-tex="a"></span> — площадь, <span class="math-inline" data-tex="g"></span> — возраст)</th><th>Цена</th><th>Прогноз без неё</th><th>Остаток</th><th>Прогноз, если её видели</th></tr>
+  <tr><td>1</td><td><span class="math-inline" data-tex="1{,}5 \cdot a - 0{,}5 \cdot g + 1"></span></td><td>5</td><td>3,5</td><td>+1,5</td><td>4,478</td></tr>
+  <tr><td>2</td><td><span class="math-inline" data-tex="1{,}2 \cdot a - 1{,}4 \cdot g + 4"></span></td><td>5</td><td>6,2</td><td>−1,2</td><td>5,652</td></tr>
+  <tr class="hl"><td>3</td><td><span class="math-inline" data-tex="0 \cdot a + 1 \cdot g + 4"></span></td><td>1</td><td>7,0</td><td>−6,0</td><td>1,130</td></tr>
+  <tr><td>4</td><td><span class="math-inline" data-tex="0 \cdot a - 2 \cdot g + 7"></span></td><td>6</td><td>3,0</td><td>+3,0</td><td>5,739</td></tr>
+</table></div>
+
+
+<p>
+  У модели три параметра: два веса и свободный член. Через три точки плоскость проходит точно, поэтому каждая
+  регрессия из таблицы на своих трёх квартирах не ошибается ни на рубль. На четвёртой всё иначе. Без третьей квартиры,
+  единственной в старом доме, все оставшиеся дома моложе, и по ним выходит «чем старше дом, тем дороже»: <span class="math-inline" data-tex="+1"></span> млн
+  за десять лет. Третьей квартире такая плоскость даёт 7 млн при цене 1.
+</p>
+
+<p>
+  Честные метрики: MAE 2,925, RMSE 3,49, <span class="math-inline" data-tex="R^2 = -2{,}30"></span>. Это хуже, чем средняя цена остальных трёх (<span class="math-inline" data-tex="R^2 = -0{,}78"></span>).
+  На обучении было <span class="math-inline" data-tex="R^2 = 0{,}947"></span>. Разница показывает, насколько хорошо плоскость легла на эти четыре точки,
+  а не то, как она предскажет пятую.
+</p>
+
+<p>
+  На четырёх квартирах это крайний случай, но разрыв между обучением и новыми данными есть всегда, и он тем больше,
+  чем меньше объектов приходится на параметр. Синтетические квартиры, устроенные как наши, плюс шум 0,8 млн;
+  средние по 200 повторам:
+</p>
+
+
+<div class="dt-table"><table class="shape-table">
+  <tr><th>Квартир в обучении</th><th><span class="math-inline" data-tex="R^2"></span> на них же</th><th><span class="math-inline" data-tex="R^2"></span> на новых</th><th>MAE на них же</th><th>MAE на новых</th></tr>
+  <tr><td>4</td><td>0,932</td><td>0,495</td><td>0,284</td><td>1,205</td></tr>
+  <tr><td>10</td><td>0,907</td><td>0,844</td><td>0,527</td><td>0,754</td></tr>
+  <tr><td>40</td><td>0,894</td><td>0,881</td><td>0,610</td><td>0,662</td></tr>
+  <tr><td>400</td><td>0,890</td><td>0,889</td><td>0,635</td><td>0,641</td></tr>
+</table></div>
+
+
+<p>
+  На 400 квартирах метрики на обучении и на новых данных почти совпадают, на четырёх расходятся в разы.
+  Для линейной регрессии иногда считают скорректированный <span class="math-inline" data-tex="R^2"></span>, который штрафует за число признаков <span class="math-inline" data-tex="p"></span>:
+  <span class="math-inline" data-tex="1 - (1 - R^2)\frac{n - 1}{n - p - 1}"></span>. У нас <span class="math-inline" data-tex="1 - 0{,}053 \cdot 3/1 = 0{,}84"></span>. Это поправка, а не замена
+  проверке: честный <span class="math-inline" data-tex="R^2"></span> здесь отрицательный.
+</p>
+
+
+## Часть 6. Относительные ошибки: MAPE и WAPE
+
+<p>
+  Промах в 1 млн для квартиры за 1 млн и для квартиры за 6 млн ощущается по-разному. Относительная ошибка
   делит модуль остатка на настоящий ответ:
 </p>
 
@@ -853,50 +916,45 @@
 
 
 <div class="dt-table"><table class="shape-table">
-  <tr><th>#</th><th>Баллы</th><th>Прогноз</th><th><span class="math-inline" data-tex="|e|"></span></th><th><span class="math-inline" data-tex="|e| / y"></span></th></tr>
-  <tr><td>1</td><td>30.0</td><td>48,7</td><td>18,7</td><td>62,2 %</td></tr>
-  <tr class="hl"><td>2</td><td>22.0</td><td>38,2</td><td>16,2</td><td>73,9 %</td></tr>
-  <tr><td>3</td><td>41.0</td><td>26,0</td><td>15,0</td><td>36,6 %</td></tr>
-  <tr><td>4</td><td>58.0</td><td>41,0</td><td>17,0</td><td>29,3 %</td></tr>
-  <tr><td>5</td><td>35.0</td><td>48,7</td><td>13,7</td><td>39,0 %</td></tr>
-  <tr><td>6</td><td>47.0</td><td>32,0</td><td>15,0</td><td>31,9 %</td></tr>
-  <tr><td>7</td><td>72.0</td><td>45,2</td><td>26,8</td><td>37,2 %</td></tr>
-  <tr><td>8</td><td>61.0</td><td>72,0</td><td>11,0</td><td>18,0 %</td></tr>
-  <tr><td>9</td><td>80.0</td><td>66,5</td><td>13,5</td><td>16,9 %</td></tr>
-  <tr class="hl"><td>10</td><td>84.0</td><td>76,0</td><td>8,0</td><td>9,5 %</td></tr>
-  <tr><td>всего</td><td>530</td><td></td><td>154,8</td><td>среднее 35,5 %</td></tr>
+  <tr><th>#</th><th>Цена</th><th><span class="math-inline" data-tex="|e|"></span> обученной</th><th><span class="math-inline" data-tex="|e| / y"></span></th><th><span class="math-inline" data-tex="|e|"></span> стартовой</th><th><span class="math-inline" data-tex="|e| / y"></span></th></tr>
+  <tr><td>1</td><td>5</td><td>0,522</td><td>10,4 %</td><td>1</td><td>20,0 %</td></tr>
+  <tr><td>2</td><td>5</td><td>0,652</td><td>13,0 %</td><td>1</td><td>20,0 %</td></tr>
+  <tr class="hl"><td>3</td><td>1</td><td>0,130</td><td>13,0 %</td><td>1</td><td>100,0 %</td></tr>
+  <tr><td>4</td><td>6</td><td>0,261</td><td>4,3 %</td><td>1</td><td>16,7 %</td></tr>
+  <tr><td><b>MAPE</b></td><td></td><td></td><td><b>10,2 %</b></td><td></td><td><b>39,2 %</b></td></tr>
+  <tr><td><b>WAPE</b></td><td>17</td><td>1,565</td><td><b>9,2 %</b></td><td>4</td><td><b>23,5 %</b></td></tr>
 </table></div>
 
 
 <p>
-  MAPE дерева 35,5 %. Больше всего в неё вносят студенты с низкими баллами: студент 2 промахом в 16,25 балла
-  даёт 73,9 %, а студент 10 промахом в 8 баллов — 9,5 %. У MAPE три известные проблемы.
+  У обученной регрессии MAPE 10,2 %. У стартовых весов все промахи по 1 млн, но MAPE 39,2 %: третья квартира
+  за 1 млн с прогнозом 0 даёт 100 %, остальные по 17–20 %. У MAPE три известные проблемы.
 </p>
 
 <ul>
-  <li><b>Ноль в ответах.</b> Студент, который не пришёл и получил 0, делает MAPE бесконечной. В sklearn
+  <li><b>Ноль в ответах.</b> Если цена не указана и записана как 0, MAPE становится бесконечной. В sklearn
     <code>mean_absolute_percentage_error</code> в этом случае делит на очень маленькое число и возвращает огромное значение.</li>
+  <li><b>Вес дешёвых объектов.</b> MAPE считает квартиру за 1 млн в шесть раз важнее квартиры за 6 млн. Лучший
+    постоянный прогноз по MAPE для наших цен — 1 млн, цена самой дешёвой квартиры: остальные три промаха в процентах
+    обходятся дешевле, чем промах на ней. Это видно в интерактиве части 7.</li>
   <li><b>Несимметричность.</b> Недооценка не может стоить больше 100 % (прогноз 0), а переоценка не ограничена.
-    Поэтому модель, обученная на MAPE, занижает прогнозы. Лучшая константа по MAPE для наших студентов — 41 балл,
-    на 11,5 ниже медианы. Это видно в интерактиве части 6.</li>
-  <li><b>Вес малых ответов.</b> MAPE считает студента с 22 баллами почти в четыре раза важнее студента с 84 баллами.
-    Иногда так и нужно, но чаще это получается случайно.</li>
+    Поэтому модель, обученная на MAPE, занижает прогнозы.</li>
 </ul>
 
 <p>
   WAPE (weighted absolute percentage error) делит сумму модулей ошибок на сумму ответов:
-  <span class="math-inline" data-tex="\text{WAPE} = \sum |e_i| / \sum |y_i| = 154{,}8 / 530 = 29{,}2\,\%"></span>. Это MAE, делённая на средний ответ.
-  Её можно считать при нулевых ответах, и вклад каждого студента пропорционален его промаху в баллах.
-  WAPE обычно берут, когда нужен процент для отчёта: на сколько процентов прогноз промахивается в сумме.
+  <span class="math-inline" data-tex="\text{WAPE} = \sum |e_i| / \sum |y_i| = 1{,}565 / 17 = 9{,}2\,\%"></span>. Это MAE, делённая на среднюю цену.
+  Её можно считать при нулевых ответах, и вклад каждой квартиры пропорционален промаху в рублях. WAPE обычно берут,
+  когда нужен процент для отчёта: на сколько процентов оценка промахивается в сумме.
 </p>
 
 
-## Часть 6. Когда недооценка и переоценка стоят по-разному
+## Часть 7. Когда недооценка и переоценка стоят по-разному
 
 <p>
-  MAE и RMSE одинаково наказывают промах вверх и вниз. Иногда одна сторона дороже. Пусть по прогнозу баллов
-  деканат решает, кого не звать на консультацию перед пересдачей. Переоценить слабого студента дорого: он останется
-  без помощи. Недооценить сильного дёшево: он потратит час.
+  MAE и RMSE одинаково наказывают промах вверх и вниз. Иногда одна сторона дороже. Банк оценивает квартиру как залог:
+  если оценка выше настоящей цены, при продаже залога деньги не вернутся, а если ниже — клиент получит кредит поменьше.
+  Переоценка здесь намного дороже.
 </p>
 
 <p>
@@ -906,38 +964,36 @@
 <div class="math-display" data-tex="L_\tau(e) = \begin{cases} \tau \cdot e, &amp; e \ge 0 \ \text{(недооценка)} \\ (\tau - 1) \cdot e, &amp; e &lt; 0 \ \text{(переоценка)} \end{cases}"></div>
 
 <p>
-  При <span class="math-inline" data-tex="\tau = 0{,}1"></span> балл переоценки стоит <span class="math-inline" data-tex="0{,}9"></span>, а балл недооценки <span class="math-inline" data-tex="0{,}1"></span>, в девять раз дешевле.
-  Лучшей константой оказывается 10-й процентиль: у наших студентов любое число от 22 до 30. Прогноз
-  сдвигается вниз, и переоценка почти исчезает. При <span class="math-inline" data-tex="\tau = 0{,}9"></span> всё наоборот, лучшая константа от 80 до 84.
-  При <span class="math-inline" data-tex="\tau = 0{,}5"></span> потеря равна половине модуля, и получается медиана.
+  При <span class="math-inline" data-tex="\tau = 0{,}1"></span> миллион переоценки стоит <span class="math-inline" data-tex="0{,}9"></span>, а миллион недооценки <span class="math-inline" data-tex="0{,}1"></span>, в девять раз дешевле. Лучшей
+  константой становится 10-й процентиль цен: у наших четырёх квартир это 1 млн. При <span class="math-inline" data-tex="\tau = 0{,}75"></span> — любое число
+  от 5 до 6, при <span class="math-inline" data-tex="\tau = 0{,}9"></span> — 6. При <span class="math-inline" data-tex="\tau = 0{,}5"></span> потеря равна половине модуля, и получается медиана.
 </p>
 
 <p>
-  Модель, обученная на квантильной потере, предсказывает не средний балл, а балл, ниже которого окажется доля <span class="math-inline" data-tex="\tau"></span>
-  похожих студентов. Две такие модели, с <span class="math-inline" data-tex="\tau = 0{,}1"></span> и <span class="math-inline" data-tex="\tau = 0{,}9"></span>, дают интервал, куда попадает 80 %
-  студентов. В sklearn это <code>QuantileRegressor</code> и
-  <code>GradientBoostingRegressor</code> с параметрами <code>loss="quantile"</code> и <code>alpha=0.9</code>, а оценивают такие модели функцией
-  <code>mean_pinball_loss</code>.
+  Модель, обученная на квантильной потере, предсказывает не среднюю цену, а цену, ниже которой окажется доля <span class="math-inline" data-tex="\tau"></span>
+  похожих квартир. Две такие модели, с <span class="math-inline" data-tex="\tau = 0{,}1"></span> и <span class="math-inline" data-tex="\tau = 0{,}9"></span>, дают интервал, куда попадает 80 % цен.
+  В sklearn это <code>QuantileRegressor</code> и <code>GradientBoostingRegressor</code> с параметрами
+  <code>loss="quantile"</code> и <code>alpha=0.9</code>, а оценивают такие модели функцией <code>mean_pinball_loss</code>.
 </p>
 
 
 <div class="dt-live" id="qLive">
   <div class="dt-live-head"><strong>Интерактив: MAPE и квантильная потеря сдвигают лучший прогноз</strong>
-    <p>Двигайте константу c — прогноз, одинаковый для всех десяти студентов. Кривая показывает метрику при каждом c, синяя точка — её минимум.</p></div>
-  <div class="thr-fig"><svg id="qLiveSvg" viewBox="0 0 600 330" role="img" aria-label="Метрика константного прогноза в зависимости от c"></svg></div>
+    <p>Двигайте константу c — прогноз, одинаковый для всех четырёх квартир. Кривая показывает метрику при каждом c, синяя точка — её минимум.</p></div>
+  <div class="thr-fig"><svg id="qLiveSvg" viewBox="0 0 600 330" role="img" aria-label="Метрика постоянного прогноза в зависимости от c"></svg></div>
   <div class="thr-panel">
     <div class="dt-controls">
       <div class="rm-modes"><button type="button" data-m="mae" aria-pressed="false">MAE</button><button type="button" data-m="mape" aria-pressed="true">MAPE</button><button type="button" data-m="q" aria-pressed="false">квантильная</button></div>
       <div class="dt-control" data-qbox><label for="qLiveQ"><span>квантиль τ</span><output id="qLiveQv">0,90</output></label>
         <input id="qLiveQ" type="range" min="0.05" max="0.95" step="0.05" value="0.9"></div>
-      <div class="dt-control"><label for="qLiveC"><span>константа c</span><output id="qLiveCv">40</output></label>
-        <input id="qLiveC" type="range" min="0" max="100" step="0.5" value="40"></div>
-      <div class="dt-presets"><button type="button" data-abs="0" aria-pressed="true">баллы как есть</button><button type="button" data-abs="1" aria-pressed="false">студент 10 не пришёл: 0</button></div>
+      <div class="dt-control"><label for="qLiveC"><span>константа c, млн</span><output id="qLiveCv">3</output></label>
+        <input id="qLiveC" type="range" min="0" max="8" step="0.05" value="3"></div>
+      <div class="dt-presets"><button type="button" data-alt="0" aria-pressed="true">цены как есть</button><button type="button" data-alt="1" aria-pressed="false">цена кв. 3 не указана: 0</button></div>
     </div>
     <div class="dt-metrics" style="grid-column: span 2">
       <div class="dt-metric"><span id="qLiveName">—</span><strong id="qLiveVal">—</strong></div>
       <div class="dt-metric"><span>лучшее c</span><strong id="qLiveBest">—</strong></div>
-      <div class="dt-metric" style="grid-column: 1 / -1"><span>среднее и медиана баллов</span><strong id="qLiveMm">—</strong></div>
+      <div class="dt-metric" style="grid-column: 1 / -1"><span>среднее и медиана цен</span><strong id="qLiveMm">—</strong></div>
     </div>
   </div>
 </div>
@@ -962,11 +1018,11 @@
     if (window.katex) window.katex.render(src, node, {throwOnError: false, displayMode: false});
     else node.textContent = plain;
   }
-  var Y0 = [30.0, 22.0, 41.0, 58.0, 35.0, 47.0, 72.0, 61.0, 80.0, 84.0];
-  var mode = 'mape', absent = false, tau = 0.9;
+  var Y0 = [5, 5, 1, 6], ALT = [2, 0];
+  var mode = 'mape', useAlt = false, tau = 0.9;
   var C = document.getElementById('qLiveC'), QR = document.getElementById('qLiveQ');
   var NAMES = {mse: 'MSE', mae: 'MAE', mape: 'MAPE', q: 'квантильная потеря'};
-  function ys() { var y = Y0.slice(); if (absent) y[9] = 0; return y; }
+  function ys() { var y = Y0.slice(); if (useAlt) y[ALT[0]] = ALT[1]; return y; }
   function metric(y, c) {
     var s = 0;
     for (var i = 0; i < y.length; i++) {
@@ -978,47 +1034,48 @@
     }
     return s / y.length;
   }
-  function sx(c) { return 50 + c * 5.2; }
-  function fmtv(v) { return mode === 'mape' ? fmt(v * 100, 1) + ' %' : fmt(v, mode === 'mse' ? 1 : 2); }
+  function fmtv(v) { return mode === 'mape' ? fmt(v * 100, 1) + ' %' : fmt(v, 3); }
   function update() {
-    var y = ys(), c = +C.value;
+    var y = ys(), top = Math.max(8, Math.ceil(Math.max.apply(null, y) + 2));
+    C.max = top; var c = Math.min(+C.value, top);
+    var sx = function (v) { return 50 + v * 520 / top; };
     while (svg.firstChild) svg.removeChild(svg.firstChild);
     svg.appendChild(el('rect', {x: 0, y: 0, width: 600, height: 330, fill: '#FFFFFF'}));
-    svg.appendChild(el('line', {x1: sx(0), y1: 60, x2: sx(100), y2: 60, stroke: '#D8D4C8', 'stroke-width': 1.4}));
-    [0, 20, 40, 60, 80, 100].forEach(function (v) {
-      svg.appendChild(el('text', {x: sx(v), y: 316, 'text-anchor': 'middle', 'font-size': 12, fill: '#5E5850'}, String(v)));
-      svg.appendChild(el('line', {x1: sx(v), y1: 296, x2: sx(v), y2: 302, stroke: '#5E5850'}));
-    });
-    svg.appendChild(el('text', {x: sx(100), y: 30, 'text-anchor': 'end', 'font-size': 12, fill: '#5E5850'}, 'баллы студентов'));
-    var pts = [], vals = [], best = Infinity;
-    for (var k = 0; k <= 400; k++) { var cc = k / 4, v = metric(y, cc); vals.push(v); if (v < best) best = v; }
-    var finite = isFinite(best);
-    var lo = null, hi = null;
-    if (finite) vals.forEach(function (v, k) { if (v <= best + 1e-9) { if (lo === null) lo = k / 4; hi = k / 4; } });
+    svg.appendChild(el('line', {x1: sx(0), y1: 60, x2: sx(top), y2: 60, stroke: '#D8D4C8', 'stroke-width': 1.4}));
+    var stepT = top <= 10 ? 1 : 10;
+    for (var t = 0; t <= top; t += stepT) {
+      svg.appendChild(el('text', {x: sx(t), y: 316, 'text-anchor': 'middle', 'font-size': 12, fill: '#5E5850'}, String(t)));
+      svg.appendChild(el('line', {x1: sx(t), y1: 296, x2: sx(t), y2: 302, stroke: '#5E5850'}));
+    }
+    svg.appendChild(el('text', {x: sx(top), y: 30, 'text-anchor': 'end', 'font-size': 12, fill: '#5E5850'}, 'цены квартир, млн'));
+    var vals = [], best = Infinity, K = Math.round(top * 100);
+    for (var k = 0; k <= K; k++) { var v = metric(y, k * top / K); vals.push(v); if (v < best) best = v; }
+    var finite = isFinite(best), lo = null, hi = null;
+    if (finite) vals.forEach(function (v, k) { if (v <= best + 1e-9 * Math.max(1, best)) { if (lo === null) lo = k * top / K; hi = k * top / K; } });
     if (finite) {
-      var vmax = Math.max.apply(null, vals);
-      var py = function (v) { return 296 - v / vmax * 190; };
-      svg.appendChild(el('path', {d: vals.map(function (v, k) { return (k ? 'L' : 'M') + sx(k / 4).toFixed(1) + ' ' + py(v).toFixed(1); }).join(' '),
-                                  fill: 'none', stroke: '#C29E08', 'stroke-width': 3}));
+      var vmax = Math.max.apply(null, vals), py = function (v) { return 296 - v / vmax * 190; };
+      svg.appendChild(el('path', {d: vals.map(function (v, k) { return (k ? 'L' : 'M') + sx(k * top / K).toFixed(1) + ' ' + py(v).toFixed(1); }).join(' '), fill: 'none', stroke: '#C29E08', 'stroke-width': 3}));
       svg.appendChild(el('line', {x1: sx(lo), y1: py(best), x2: sx(hi), y2: py(best), stroke: '#2A5E9B', 'stroke-width': 5}));
       svg.appendChild(el('circle', {cx: sx((lo + hi) / 2), cy: py(best), r: 6, fill: '#2A5E9B', stroke: '#FFFFFF', 'stroke-width': 2}));
       svg.appendChild(el('line', {x1: sx(c), y1: py(metric(y, c)), x2: sx(c), y2: 296, stroke: '#C29E08', 'stroke-dasharray': '3 3'}));
       svg.appendChild(el('circle', {cx: sx(c), cy: py(metric(y, c)), r: 6, fill: '#8F7406', stroke: '#FFFFFF', 'stroke-width': 2}));
     } else {
-      svg.appendChild(el('text', {x: 300, y: 190, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: '#9C0908'}, 'MAPE не определена: у студента 10 ноль баллов'));
+      svg.appendChild(el('text', {x: 300, y: 190, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, fill: '#9C0908'}, 'MAPE не определена: в ценах есть ноль'));
     }
     svg.appendChild(el('line', {x1: sx(c), y1: 40, x2: sx(c), y2: 80, stroke: '#C29E08', 'stroke-width': 3}));
+    var seen = {};
     y.forEach(function (v, i) {
-      svg.appendChild(el('circle', {cx: sx(v), cy: 60, r: 9, fill: v >= 50 ? '#73B222' : '#C30B0A', stroke: '#FFFFFF', 'stroke-width': 1.5}));
-      svg.appendChild(el('text', {x: sx(v), y: 64, 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 700, fill: '#FFFFFF'}, String(i + 1)));
+      var dy = (seen[v] = (seen[v] || 0) + 1) > 1 ? -18 : 0;
+      svg.appendChild(el('circle', {cx: sx(v), cy: 60 + dy, r: 9, fill: '#3F3A33', stroke: '#FFFFFF', 'stroke-width': 1.5}));
+      svg.appendChild(el('text', {x: sx(v), y: 64 + dy, 'text-anchor': 'middle', 'font-size': 10, 'font-weight': 700, fill: '#FFFFFF'}, String(i + 1)));
     });
     var srt = y.slice().sort(function (a, b) { return a - b; });
-    var mean = y.reduce(function (s, v) { return s + v; }, 0) / 10, med = (srt[4] + srt[5]) / 2;
-    document.getElementById('qLiveCv').textContent = fmt(c, 1);
+    var mean = y.reduce(function (s, v) { return s + v; }, 0) / y.length, med = (srt[1] + srt[2]) / 2;
+    document.getElementById('qLiveCv').textContent = fmt(c, 2);
     document.getElementById('qLiveName').textContent = NAMES[mode] + ' при этом c';
     document.getElementById('qLiveVal').textContent = finite ? fmtv(metric(y, c)) : '∞';
-    document.getElementById('qLiveBest').textContent = !finite ? '—' : (hi - lo < 0.3 ? fmt((lo + hi) / 2, 1) : 'от ' + fmt(lo, 1) + ' до ' + fmt(hi, 1));
-    document.getElementById('qLiveMm').textContent = 'среднее ' + fmt(mean, 1) + ', медиана ' + fmt(med, 1);
+    document.getElementById('qLiveBest').textContent = !finite ? '—' : (hi - lo < 0.05 ? fmt((lo + hi) / 2, 2) : 'от ' + fmt(lo, 2) + ' до ' + fmt(hi, 2));
+    document.getElementById('qLiveMm').textContent = 'среднее ' + fmt(mean, 2) + ', медиана ' + fmt(med, 2);
     var qb = document.querySelector('#qLive [data-qbox]'); if (qb) qb.style.display = mode === 'q' ? '' : 'none';
   }
   C.addEventListener('input', update);
@@ -1027,9 +1084,9 @@
     b.addEventListener('click', function () { mode = b.getAttribute('data-m');
       document.querySelectorAll('#qLive [data-m]').forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); }); update(); });
   });
-  document.querySelectorAll('#qLive [data-abs]').forEach(function (b) {
-    b.addEventListener('click', function () { absent = b.getAttribute('data-abs') === '1';
-      document.querySelectorAll('#qLive [data-abs]').forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); }); update(); });
+  document.querySelectorAll('#qLive [data-alt]').forEach(function (b) {
+    b.addEventListener('click', function () { useAlt = b.getAttribute('data-alt') === '1';
+      document.querySelectorAll('#qLive [data-alt]').forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); }); update(); });
   });
   update();
 })();
@@ -1037,78 +1094,87 @@
 
 
 <p>
-  В режиме MAPE лучшая константа 41 балл, ниже медианы. Если переключить студента 10 на 0 баллов, MAPE перестаёт
-  существовать, а MAE и квантильная потеря считаются как обычно.
+  В режиме MAPE лучшая константа 1 млн, цена самой дешёвой квартиры. Кнопка «цена не указана» ставит третьей
+  квартире 0: MAPE перестаёт существовать, а MAE и квантильная потеря считаются как обычно.
 </p>
 
 
-## Часть 7. Графики остатков
+## Часть 8. Графики остатков
 
 <p>
-  Одно число не показывает, где модель ошибается. Возьмём синтетических студентов, устроенных как в статье про дерево
-  регрессии: балл растёт с часами, падает с пропусками, а с 13 часов подготовки прыгает на 12 баллов. Шум
-  в баллах 8, поэтому RMSE ниже примерно 8 не получит ни одна модель. Обе модели обучены на 400 студентах
-  и проверены на 20 000.
+  Одно число не показывает, где модель ошибается. Возьмём синтетические квартиры от 20 до 100 м². Цена в них
+  зависит от площади не по прямой: маленькие студии и большие квартиры дороже, чем предсказала бы прямая. Шум 0,8 млн,
+  поэтому RMSE ниже примерно 0,8 не получит ни одна модель. Обе регрессии обучены на 300 квартирах и проверены
+  на 20 000.
 </p>
 
 
-<div class="cm-fig"><svg viewBox="0 0 760 330" role="img" aria-label="Остатки двух моделей в зависимости от часов подготовки"><rect x="0" y="0" width="760" height="330" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/><rect x="70" y="50" width="300" height="200" rx="0" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/><text x="70" y="36" font-size="14" fill="#111111" text-anchor="start" font-weight="700">линейная регрессия</text><text x="370" y="36" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">MAE 6,7, RMSE 8,5</text><line x1="70" y1="150" x2="370" y2="150" stroke="#5E5850" stroke-width="1.2"/><line x1="247.27" y1="50" x2="247.27" y2="250" stroke="#5E5850" stroke-width="1" stroke-dasharray="4 4"/><text x="251.27" y="64" font-size="11" fill="#5E5850" text-anchor="start" font-weight="400">13 ч</text><circle cx="251.4" cy="96.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="268.4" cy="146.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="246.3" cy="236.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="119.0" cy="120.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="346.1" cy="168.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="153.2" cy="145.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="217.7" cy="183.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="275.5" cy="168.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="353.8" cy="150.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="173.6" cy="196.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="302.4" cy="79.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="356.2" cy="100.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="155.9" cy="187.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="173.4" cy="146.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="267.9" cy="186.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="210.3" cy="160.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="140.0" cy="155.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="114.9" cy="110.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="337.5" cy="110.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="232.5" cy="172.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="167.4" cy="146.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="183.3" cy="136.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="158.0" cy="162.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="209.2" cy="157.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="80.5" cy="144.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="357.3" cy="151.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="72.3" cy="132.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="259.5" cy="69.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="87.6" cy="159.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="227.1" cy="186.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="124.1" cy="184.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="178.5" cy="164.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="344.4" cy="141.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="192.7" cy="139.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="205.8" cy="212.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="296.0" cy="157.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="359.8" cy="137.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="351.6" cy="142.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="332.9" cy="68.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="220.7" cy="166.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="100.1" cy="128.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="129.3" cy="177.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="206.0" cy="156.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="139.5" cy="146.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="222.7" cy="194.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="153.6" cy="168.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="335.8" cy="155.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="321.2" cy="148.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="177.9" cy="156.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="343.5" cy="168.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="80.1" cy="161.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="154.4" cy="163.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="91.0" cy="132.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="112.8" cy="119.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="227.5" cy="188.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="191.6" cy="170.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="169.4" cy="126.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="222.3" cy="182.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="303.3" cy="120.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="213.9" cy="158.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="304.1" cy="159.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="252.3" cy="131.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="270.2" cy="105.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="95.6" cy="132.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="189.6" cy="127.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="229.0" cy="175.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="178.3" cy="131.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="252.2" cy="106.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="82.3" cy="107.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="150.2" cy="169.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="197.4" cy="182.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="207.3" cy="198.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="82.1" cy="135.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="233.4" cy="152.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="276.6" cy="182.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="326.5" cy="137.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="137.0" cy="160.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="329.0" cy="142.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="84.9" cy="112.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="224.0" cy="183.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="192.6" cy="158.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="180.7" cy="172.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="244.7" cy="202.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="190.7" cy="140.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="366.9" cy="126.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="255.9" cy="123.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="155.4" cy="120.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="180.7" cy="204.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="276.6" cy="147.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="118.7" cy="146.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="259.1" cy="161.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="81.6" cy="148.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="309.6" cy="91.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="152.2" cy="139.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="130.5" cy="116.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="356.0" cy="150.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="241.1" cy="165.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="347.9" cy="147.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="166.3" cy="160.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="364.1" cy="110.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="163.0" cy="181.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="113.8" cy="182.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="168.5" cy="129.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="360.9" cy="149.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="197.4" cy="130.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="213.5" cy="94.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="339.3" cy="182.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="136.3" cy="127.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="313.5" cy="148.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="193.4" cy="167.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="244.0" cy="167.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="341.6" cy="142.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="154.3" cy="181.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="176.2" cy="141.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="284.5" cy="109.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="251.0" cy="95.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="97.7" cy="130.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="122.8" cy="105.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="268.1" cy="110.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="109.8" cy="188.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="181.8" cy="108.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="364.8" cy="153.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="235.3" cy="168.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="79.3" cy="123.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="292.7" cy="198.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="164.5" cy="157.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="294.0" cy="125.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="137.8" cy="128.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="160.0" cy="158.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="265.8" cy="127.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="83.4" cy="158.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="364.8" cy="134.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="267.0" cy="135.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="233.0" cy="125.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="177.7" cy="92.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="129.9" cy="160.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="162.5" cy="185.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="113.2" cy="154.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="311.2" cy="186.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="270.0" cy="91.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="87.7" cy="136.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="136.7" cy="124.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="284.8" cy="170.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="143.0" cy="123.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="176.6" cy="170.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="184.1" cy="146.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="227.5" cy="155.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="192.5" cy="147.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="222.7" cy="193.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="269.6" cy="136.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="85.8" cy="100.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="367.8" cy="180.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="269.1" cy="103.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="211.3" cy="168.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="184.0" cy="157.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="310.0" cy="154.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="95.9" cy="167.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="127.0" cy="175.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="117.9" cy="168.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="288.5" cy="100.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="328.5" cy="137.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="88.3" cy="144.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="196.1" cy="142.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="189.5" cy="173.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="168.9" cy="135.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="360.3" cy="189.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="173.8" cy="173.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="253.3" cy="87.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="367.3" cy="192.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="163.1" cy="163.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="362.1" cy="153.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="307.8" cy="125.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="115.0" cy="136.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="166.5" cy="142.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="258.7" cy="125.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="86.5" cy="118.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="87.0" cy="145.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="208.7" cy="190.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="237.6" cy="167.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="126.7" cy="125.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="179.5" cy="162.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="167.0" cy="111.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="78.9" cy="182.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="232.1" cy="156.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="98.1" cy="161.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="223.7" cy="164.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="334.5" cy="114.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="244.8" cy="208.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="180.2" cy="171.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="99.2" cy="184.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="241.3" cy="182.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="97.4" cy="171.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="102.6" cy="196.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="100.5" cy="128.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="342.9" cy="139.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="318.3" cy="205.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="132.6" cy="148.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="162.7" cy="144.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="361.7" cy="226.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="142.3" cy="175.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="337.0" cy="148.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="97.8" cy="142.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="163.3" cy="122.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="180.7" cy="174.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="303.6" cy="102.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="159.5" cy="202.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="208.8" cy="151.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="72.3" cy="166.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="90.7" cy="143.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="142.1" cy="191.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="113.0" cy="137.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="232.5" cy="186.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="122.4" cy="199.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="117.7" cy="211.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="189.7" cy="172.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="360.6" cy="101.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="344.5" cy="113.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="177.5" cy="154.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="206.1" cy="164.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="164.8" cy="154.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="349.3" cy="188.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="285.3" cy="122.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="217.0" cy="235.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="211.3" cy="165.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="245.9" cy="145.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="121.3" cy="152.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="173.4" cy="182.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="329.1" cy="138.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="183.7" cy="159.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="296.6" cy="134.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="269.9" cy="156.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="100.7" cy="157.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="168.3" cy="196.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="105.6" cy="156.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="79.0" cy="179.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="366.3" cy="183.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="232.5" cy="174.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="287.4" cy="169.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="103.5" cy="165.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="167.9" cy="144.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="122.0" cy="175.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="277.8" cy="158.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="74.9" cy="152.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="144.5" cy="151.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="285.7" cy="184.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="239.0" cy="169.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="120.3" cy="172.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="201.5" cy="178.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="302.8" cy="145.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="280.1" cy="150.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="342.6" cy="184.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="265.0" cy="171.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="85.8" cy="154.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="301.7" cy="115.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="226.5" cy="163.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="260.1" cy="159.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="355.5" cy="158.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="201.7" cy="149.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="97.7" cy="124.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="70.0" cy="115.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><path d="M76.8 133.9 L90.5 137.1 L104.1 143.2 L117.7 145.0 L131.4 146.4 L145.0 150.8 L158.6 153.4 L172.3 155.8 L185.9 158.5 L199.5 161.8 L213.2 163.8 L226.8 169.1 L240.5 170.4 L254.1 134.6 L267.7 137.4 L281.4 139.6 L295.0 142.6 L308.6 144.6 L322.3 147.6 L335.9 151.2 L349.5 154.1 L363.2 155.5" fill="none" stroke="#3576C0" stroke-width="3.2"/><text x="64" y="254" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">−30</text><text x="64" y="204" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">−15</text><text x="64" y="154" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">0</text><text x="64" y="104" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">15</text><text x="64" y="54" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">30</text><text x="70" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">0</text><text x="138.18" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">5</text><text x="206.36" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">10</text><text x="274.55" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">15</text><text x="342.73" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">20</text><text x="220" y="286" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">часы подготовки</text><rect x="440" y="50" width="300" height="200" rx="0" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/><text x="440" y="36" font-size="14" fill="#111111" text-anchor="start" font-weight="700">дерево глубины 4</text><text x="740" y="36" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">MAE 7,5, RMSE 9,4</text><line x1="440" y1="150" x2="740" y2="150" stroke="#5E5850" stroke-width="1.2"/><line x1="617.27" y1="50" x2="617.27" y2="250" stroke="#5E5850" stroke-width="1" stroke-dasharray="4 4"/><text x="621.27" y="64" font-size="11" fill="#5E5850" text-anchor="start" font-weight="400">13 ч</text><circle cx="621.4" cy="132.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="638.4" cy="174.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="489.0" cy="111.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="716.1" cy="161.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="523.2" cy="127.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="587.7" cy="158.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="645.5" cy="170.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="723.8" cy="149.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="543.6" cy="192.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="672.4" cy="63.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="726.2" cy="102.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="525.9" cy="203.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="543.4" cy="145.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="637.9" cy="200.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="580.3" cy="120.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="510.0" cy="148.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="484.9" cy="110.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="707.5" cy="131.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="602.5" cy="144.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="537.4" cy="162.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="553.3" cy="145.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="528.0" cy="166.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="579.2" cy="129.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="450.5" cy="186.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="727.3" cy="134.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="442.3" cy="121.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="629.5" cy="106.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="457.6" cy="171.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="597.1" cy="164.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="494.1" cy="183.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="548.5" cy="168.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="714.4" cy="133.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="562.7" cy="111.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="575.8" cy="202.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="666.0" cy="144.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="729.8" cy="109.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="721.6" cy="142.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="702.9" cy="103.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="590.7" cy="147.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="470.1" cy="171.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="499.3" cy="149.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="576.0" cy="143.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="509.5" cy="120.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="592.7" cy="168.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="523.6" cy="137.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="705.8" cy="173.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="691.2" cy="118.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="547.9" cy="164.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="713.5" cy="190.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="450.1" cy="129.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="524.4" cy="189.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="461.0" cy="185.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="482.8" cy="125.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="597.5" cy="158.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="561.6" cy="173.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="539.4" cy="118.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="592.3" cy="134.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="673.3" cy="109.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="583.9" cy="124.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="674.1" cy="201.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="622.3" cy="155.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="640.2" cy="132.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="465.6" cy="163.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="559.6" cy="131.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="599.0" cy="142.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="548.3" cy="139.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="622.2" cy="135.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="452.3" cy="135.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="520.2" cy="205.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="567.4" cy="155.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="577.3" cy="167.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="452.1" cy="176.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="603.4" cy="111.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="646.6" cy="183.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="696.5" cy="148.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="507.0" cy="132.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="699.0" cy="151.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="454.9" cy="145.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="594.0" cy="131.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="562.6" cy="138.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="550.7" cy="185.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="614.7" cy="160.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="560.7" cy="140.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="736.9" cy="104.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="625.9" cy="141.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="525.4" cy="124.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="550.7" cy="205.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="646.6" cy="143.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="488.7" cy="162.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="629.1" cy="189.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="451.6" cy="168.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="679.6" cy="122.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="522.2" cy="113.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="500.5" cy="104.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="726.0" cy="156.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="611.1" cy="131.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="717.9" cy="139.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="536.3" cy="164.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="734.1" cy="99.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="533.0" cy="183.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="483.8" cy="196.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="538.5" cy="145.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="730.9" cy="140.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="567.4" cy="101.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="583.5" cy="85.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="709.3" cy="171.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="506.3" cy="95.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="683.5" cy="135.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="563.4" cy="160.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="614.0" cy="137.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="711.6" cy="145.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="524.3" cy="145.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="546.2" cy="145.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="654.5" cy="119.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="621.0" cy="112.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="467.7" cy="174.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="492.8" cy="101.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="638.1" cy="139.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="479.8" cy="227.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="551.8" cy="94.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="734.8" cy="143.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="605.3" cy="130.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="449.3" cy="165.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="662.7" cy="184.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="534.5" cy="176.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="664.0" cy="125.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="507.8" cy="141.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="530.0" cy="128.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="635.8" cy="133.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="453.4" cy="181.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="734.8" cy="139.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="637.0" cy="153.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="603.0" cy="90.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="547.7" cy="97.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="499.9" cy="151.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="532.5" cy="200.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="483.2" cy="167.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="681.2" cy="163.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="640.0" cy="122.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="457.7" cy="149.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="506.7" cy="135.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="654.8" cy="180.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="513.0" cy="125.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="546.6" cy="179.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="554.1" cy="151.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="597.5" cy="116.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="562.5" cy="119.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="592.7" cy="156.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="639.6" cy="140.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="455.8" cy="57.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="737.8" cy="149.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="639.1" cy="111.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="581.3" cy="154.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="554.0" cy="138.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="680.0" cy="181.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="465.9" cy="171.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="497.0" cy="166.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="487.9" cy="180.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="658.5" cy="85.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="698.5" cy="146.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="458.3" cy="169.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="566.1" cy="144.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="559.5" cy="167.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="538.9" cy="142.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="730.3" cy="188.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="543.8" cy="192.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="623.3" cy="102.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="737.3" cy="171.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="533.1" cy="136.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="732.1" cy="134.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="677.8" cy="129.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="485.0" cy="133.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="536.5" cy="150.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="628.7" cy="153.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="456.5" cy="146.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="457.0" cy="164.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="578.7" cy="158.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="607.6" cy="133.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="496.7" cy="134.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="549.5" cy="158.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="537.0" cy="112.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="448.9" cy="203.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="602.1" cy="125.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="468.1" cy="171.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="593.7" cy="125.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="704.5" cy="134.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="614.8" cy="172.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="550.2" cy="166.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="469.2" cy="193.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="611.3" cy="155.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="467.4" cy="203.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="472.6" cy="203.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="470.5" cy="128.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="712.9" cy="162.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="688.3" cy="177.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="502.6" cy="133.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="532.7" cy="116.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="731.7" cy="227.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="512.3" cy="154.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="707.0" cy="164.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="467.8" cy="171.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="533.3" cy="90.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="550.7" cy="182.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="673.6" cy="79.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="529.5" cy="158.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="578.8" cy="139.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="442.3" cy="165.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="460.7" cy="185.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="512.1" cy="177.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="483.0" cy="150.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="602.5" cy="159.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="492.4" cy="211.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="487.7" cy="192.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="559.7" cy="174.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="730.6" cy="99.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="714.5" cy="123.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="547.5" cy="145.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="576.1" cy="153.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="534.8" cy="166.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="719.3" cy="196.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="655.3" cy="136.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="587.0" cy="208.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="581.3" cy="144.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="615.9" cy="174.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="491.3" cy="155.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="543.4" cy="183.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="699.1" cy="171.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="553.7" cy="161.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="666.6" cy="135.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="639.9" cy="178.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="470.7" cy="181.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="538.3" cy="215.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="475.6" cy="159.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="449.0" cy="137.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="736.3" cy="154.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="602.5" cy="145.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="657.4" cy="160.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="473.5" cy="171.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="537.9" cy="143.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="492.0" cy="189.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="647.8" cy="156.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="444.9" cy="121.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="514.5" cy="141.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="655.7" cy="175.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="609.0" cy="136.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="490.3" cy="185.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="571.5" cy="173.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="672.8" cy="128.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="650.1" cy="152.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="712.6" cy="195.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="635.0" cy="181.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="455.8" cy="142.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="671.7" cy="104.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="596.5" cy="131.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="630.1" cy="181.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="725.5" cy="158.3" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="571.7" cy="127.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="467.7" cy="144.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="440.0" cy="103.7" r="2.2" fill="#A8A296" fill-opacity="0.55"/><path d="M446.8 142.1 L460.5 156.6 L474.1 157.3 L487.7 148.9 L501.4 139.2 L515.0 147.9 L528.6 149.0 L542.3 162.4 L555.9 155.5 L569.5 147.7 L583.2 140.0 L596.8 134.7 L610.5 137.1 L624.1 159.0 L637.7 152.6 L651.4 144.4 L665.0 137.0 L678.6 146.2 L692.3 150.8 L705.9 159.0 L719.5 152.0 L733.2 142.6" fill="none" stroke="#C29E08" stroke-width="3.2"/><text x="434" y="254" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">−30</text><text x="434" y="204" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">−15</text><text x="434" y="154" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">0</text><text x="434" y="104" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">15</text><text x="434" y="54" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">30</text><text x="440" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">0</text><text x="508.18" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">5</text><text x="576.36" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">10</text><text x="644.55" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">15</text><text x="712.73" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">20</text><text x="590" y="286" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">часы подготовки</text><text x="22" y="150" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400" transform="rotate(-90 22 150)">остаток, баллы</text><text x="380" y="318" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">Серые точки — отдельные студенты, линия — средний остаток при данном числе часов.</text></svg></div>
+<div class="cm-fig"><svg viewBox="0 0 760 330" role="img" aria-label="Остатки линейной регрессии в зависимости от площади"><rect x="0" y="0" width="760" height="330" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/><rect x="70" y="50" width="300" height="200" rx="0" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/><text x="70" y="36" font-size="14" fill="#111111" text-anchor="start" font-weight="700">площадь и возраст</text><text x="370" y="36" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">MAE 1,18, R² 0,71</text><line x1="70" y1="150" x2="370" y2="150" stroke="#5E5850" stroke-width="1.2"/><circle cx="193.0" cy="189.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="125.1" cy="144.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="209.9" cy="147.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="281.1" cy="146.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="263.5" cy="144.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="108.2" cy="75.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="359.9" cy="91.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="285.6" cy="207.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="247.4" cy="201.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="344.1" cy="102.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="344.5" cy="102.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="159.2" cy="174.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="165.6" cy="183.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="313.4" cy="122.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="297.2" cy="147.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="119.5" cy="128.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="350.9" cy="85.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="255.6" cy="157.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="171.6" cy="180.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="161.9" cy="143.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="321.6" cy="160.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="119.1" cy="101.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="224.9" cy="177.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="157.4" cy="156.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="325.0" cy="148.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="289.0" cy="175.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="184.8" cy="162.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="114.6" cy="159.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="125.1" cy="133.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="344.5" cy="85.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="331.0" cy="110.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="219.6" cy="168.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="148.4" cy="168.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="116.9" cy="124.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="276.6" cy="185.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="199.8" cy="183.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="157.0" cy="194.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="256.8" cy="161.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="287.5" cy="196.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="305.5" cy="159.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="255.6" cy="149.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="320.1" cy="105.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="201.2" cy="179.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="302.9" cy="137.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="309.6" cy="131.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="286.8" cy="129.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="175.0" cy="170.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="200.5" cy="143.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="132.6" cy="152.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="148.8" cy="135.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="170.9" cy="182.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="310.8" cy="97.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="332.9" cy="110.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="101.9" cy="96.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="249.6" cy="169.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="365.9" cy="67.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="254.5" cy="158.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="301.4" cy="151.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="359.5" cy="101.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="124.4" cy="101.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="144.2" cy="164.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="212.9" cy="164.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="117.6" cy="133.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="252.6" cy="195.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="201.6" cy="165.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="328.4" cy="113.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="240.2" cy="166.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="172.0" cy="142.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="106.8" cy="130.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="303.6" cy="148.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="167.1" cy="153.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="193.8" cy="172.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="205.4" cy="186.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="334.0" cy="126.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="107.5" cy="120.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="184.8" cy="189.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="279.2" cy="171.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="240.2" cy="180.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="109.4" cy="127.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="224.1" cy="183.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="266.9" cy="153.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="166.0" cy="182.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="338.1" cy="134.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="137.1" cy="160.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="304.0" cy="170.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="247.4" cy="166.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="85.0" cy="95.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="214.8" cy="166.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="140.9" cy="143.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="157.0" cy="197.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="92.9" cy="103.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="251.9" cy="143.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="115.4" cy="187.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="196.4" cy="165.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="115.8" cy="153.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="188.1" cy="183.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="209.5" cy="206.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="159.2" cy="139.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="83.1" cy="99.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="155.5" cy="135.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="219.6" cy="179.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="146.5" cy="144.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="238.4" cy="166.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="87.6" cy="63.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="266.1" cy="200.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="221.5" cy="144.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="276.6" cy="138.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="280.4" cy="185.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="101.5" cy="124.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="348.6" cy="141.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="126.2" cy="146.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="286.4" cy="136.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="82.0" cy="88.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="95.5" cy="112.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="239.9" cy="179.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="249.6" cy="186.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="202.8" cy="169.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="302.5" cy="164.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="151.0" cy="172.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="94.8" cy="107.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="311.1" cy="125.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="178.8" cy="123.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="285.6" cy="143.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="129.2" cy="144.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="350.9" cy="125.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="325.0" cy="106.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="175.4" cy="187.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="221.1" cy="188.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="289.4" cy="178.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="348.2" cy="79.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="184.4" cy="162.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="161.5" cy="168.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="297.6" cy="147.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="191.5" cy="178.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="332.9" cy="119.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="234.2" cy="189.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="201.2" cy="143.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="216.6" cy="169.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="113.5" cy="138.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="244.8" cy="193.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="340.8" cy="155.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="303.2" cy="158.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="225.2" cy="186.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="208.4" cy="180.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="221.5" cy="161.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="251.1" cy="192.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="237.6" cy="187.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="143.9" cy="146.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="263.5" cy="183.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="218.1" cy="177.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="131.5" cy="150.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="353.9" cy="91.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="173.9" cy="195.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="330.6" cy="134.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="191.5" cy="150.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="239.5" cy="177.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="156.2" cy="176.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="270.6" cy="159.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="320.9" cy="137.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="282.2" cy="157.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="307.8" cy="147.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="361.4" cy="84.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="114.2" cy="174.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="141.6" cy="178.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="108.6" cy="74.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="321.2" cy="171.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="120.6" cy="108.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="170.1" cy="144.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="316.8" cy="111.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="161.5" cy="181.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="336.6" cy="121.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="99.2" cy="121.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="205.4" cy="178.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="286.4" cy="170.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="112.4" cy="97.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="95.5" cy="117.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="102.6" cy="69.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="294.6" cy="165.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="163.4" cy="142.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="199.8" cy="137.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="338.9" cy="102.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="130.4" cy="159.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="84.2" cy="77.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="276.2" cy="169.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="272.1" cy="170.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="354.6" cy="131.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="352.4" cy="97.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="367.0" cy="79.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="73.0" cy="59.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="107.1" cy="114.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="176.5" cy="179.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="84.2" cy="109.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="76.8" cy="94.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="149.5" cy="139.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="122.5" cy="122.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="302.1" cy="180.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="316.4" cy="94.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="355.4" cy="92.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="174.6" cy="164.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="255.3" cy="202.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="88.4" cy="105.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="254.5" cy="189.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="110.5" cy="97.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="262.4" cy="172.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="294.6" cy="127.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="335.5" cy="129.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="243.2" cy="169.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="190.0" cy="171.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="180.6" cy="170.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="113.5" cy="134.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="102.2" cy="76.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="97.8" cy="126.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="105.6" cy="113.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="320.9" cy="112.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="289.4" cy="173.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="140.1" cy="127.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="213.2" cy="149.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="93.6" cy="116.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="250.8" cy="187.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="240.6" cy="170.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="301.0" cy="156.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="259.0" cy="185.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="348.6" cy="85.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="313.8" cy="134.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="88.0" cy="121.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="122.1" cy="116.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="127.8" cy="126.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="283.4" cy="191.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="334.0" cy="134.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="181.0" cy="191.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="71.1" cy="90.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="106.8" cy="105.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="160.8" cy="173.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="204.6" cy="163.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="331.4" cy="129.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="166.8" cy="160.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="354.2" cy="84.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="89.1" cy="87.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="70.4" cy="78.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="82.8" cy="90.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="237.6" cy="194.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="254.5" cy="146.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="242.5" cy="183.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="131.1" cy="131.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="190.8" cy="166.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="96.6" cy="89.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="74.1" cy="109.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="273.2" cy="151.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="238.8" cy="174.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="227.1" cy="185.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="284.1" cy="173.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="263.5" cy="155.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="102.6" cy="108.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="135.6" cy="131.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="159.6" cy="173.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="290.9" cy="182.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="118.8" cy="146.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="301.8" cy="166.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="158.9" cy="159.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><path d="M79.4 91.1 L98.1 111.4 L116.9 131.8 L135.6 146.1 L154.4 160.4 L173.1 169.0 L191.9 175.3 L210.6 178.6 L229.4 179.3 L248.1 175.9 L266.9 169.0 L285.6 160.4 L304.4 146.7 L323.1 130.6 L341.9 113.2 L360.6 90.9" fill="none" stroke="#3576C0" stroke-width="3.2"/><text x="64" y="254" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">−4</text><text x="64" y="204" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">−2</text><text x="64" y="154" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">0</text><text x="64" y="104" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">2</text><text x="64" y="54" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">4</text><text x="70" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">20</text><text x="145" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">40</text><text x="220" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">60</text><text x="295" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">80</text><text x="370" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">100</text><text x="220" y="286" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">площадь, м²</text><rect x="440" y="50" width="300" height="200" rx="0" fill="#FFFFFF" stroke="#D8D4C8" stroke-width="1.2"/><text x="440" y="36" font-size="14" fill="#111111" text-anchor="start" font-weight="700">плюс площадь²</text><text x="740" y="36" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">MAE 0,64, R² 0,91</text><line x1="440" y1="150" x2="740" y2="150" stroke="#5E5850" stroke-width="1.2"/><circle cx="563.0" cy="164.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="495.1" cy="154.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="579.9" cy="120.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="651.1" cy="134.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="633.5" cy="125.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="478.2" cy="99.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="729.9" cy="144.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="655.6" cy="197.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="617.4" cy="177.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="714.1" cy="138.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="714.5" cy="138.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="529.2" cy="163.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="535.6" cy="168.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="683.4" cy="131.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="667.2" cy="144.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="489.5" cy="143.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="720.9" cy="128.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="625.6" cy="134.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="541.6" cy="162.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="531.9" cy="130.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="691.6" cy="175.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="489.1" cy="116.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="594.9" cy="150.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="527.4" cy="146.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="695.0" cy="166.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="659.0" cy="167.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="554.8" cy="139.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="484.6" cy="177.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="495.1" cy="143.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="714.5" cy="121.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="701.0" cy="133.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="589.6" cy="141.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="518.4" cy="163.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="486.9" cy="140.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="646.6" cy="170.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="569.8" cy="158.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="527.0" cy="183.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="626.8" cy="140.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="657.5" cy="187.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="675.5" cy="161.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="625.6" cy="127.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="690.1" cy="119.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="571.2" cy="153.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="672.9" cy="138.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="679.6" cy="136.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="656.8" cy="120.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="545.0" cy="151.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="570.5" cy="118.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="502.6" cy="156.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="518.8" cy="130.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="540.9" cy="165.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="680.8" cy="104.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="702.9" cy="135.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="471.9" cy="126.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="619.6" cy="146.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="735.9" cy="126.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="624.5" cy="136.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="671.4" cy="151.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="729.5" cy="153.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="494.4" cy="111.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="514.2" cy="160.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="582.9" cy="137.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="487.6" cy="148.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="622.6" cy="172.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="571.6" cy="139.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="698.4" cy="134.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="610.2" cy="140.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="542.0" cy="125.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="476.8" cy="155.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="673.6" cy="149.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="537.1" cy="137.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="563.8" cy="148.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="575.4" cy="161.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="704.0" cy="152.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="477.5" cy="145.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="554.8" cy="168.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="649.2" cy="158.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="610.2" cy="154.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="479.4" cy="150.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="594.1" cy="156.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="636.9" cy="135.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="536.0" cy="166.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="708.1" cy="164.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="507.1" cy="161.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="674.0" cy="171.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="617.4" cy="142.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="455.0" cy="143.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="584.8" cy="139.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="510.9" cy="141.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="527.0" cy="186.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="462.9" cy="143.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="621.9" cy="120.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="485.4" cy="204.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="566.4" cy="140.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="485.8" cy="170.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="558.1" cy="160.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="579.5" cy="180.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="529.2" cy="128.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="453.1" cy="148.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="525.5" cy="125.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="589.6" cy="152.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="516.5" cy="139.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="608.4" cy="140.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="457.6" cy="107.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="636.1" cy="182.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="591.5" cy="116.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="646.6" cy="124.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="650.4" cy="173.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="471.5" cy="155.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="718.6" cy="181.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="496.2" cy="154.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="656.4" cy="127.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="452.0" cy="138.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="465.5" cy="148.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="609.9" cy="154.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="619.6" cy="162.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="572.8" cy="143.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="672.5" cy="165.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="521.0" cy="164.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="464.8" cy="144.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="681.1" cy="132.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="548.8" cy="103.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="655.6" cy="134.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="499.2" cy="151.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="720.9" cy="167.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="695.0" cy="124.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="545.4" cy="167.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="591.1" cy="161.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="659.4" cy="171.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="718.2" cy="119.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="554.4" cy="140.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="531.5" cy="155.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="667.6" cy="144.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="561.5" cy="154.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="702.9" cy="144.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="604.2" cy="162.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="571.2" cy="117.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="586.6" cy="141.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="483.5" cy="158.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="614.8" cy="169.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="710.8" cy="187.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="673.2" cy="159.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="595.2" cy="159.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="578.4" cy="153.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="591.5" cy="133.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="621.1" cy="170.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="607.6" cy="161.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="513.9" cy="143.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="633.5" cy="163.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="588.1" cy="149.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="501.5" cy="155.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="723.9" cy="137.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="543.9" cy="176.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="700.6" cy="157.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="561.5" cy="126.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="609.5" cy="151.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="526.2" cy="165.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="640.6" cy="142.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="690.9" cy="151.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="652.2" cy="146.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="677.8" cy="151.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="731.4" cy="138.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="484.2" cy="193.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="511.6" cy="175.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="478.6" cy="97.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="691.2" cy="187.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="490.6" cy="121.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="540.1" cy="126.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="686.8" cy="122.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="531.5" cy="168.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="706.6" cy="149.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="469.2" cy="153.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="575.4" cy="152.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="656.4" cy="161.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="482.4" cy="118.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="465.5" cy="152.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="472.6" cy="98.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="664.6" cy="162.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="533.4" cy="129.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="569.8" cy="112.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="708.9" cy="132.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="500.4" cy="165.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="454.2" cy="125.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="646.2" cy="155.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="642.1" cy="154.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="724.6" cy="178.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="722.4" cy="141.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="737.0" cy="140.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="443.0" cy="121.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="477.1" cy="139.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="546.5" cy="160.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="454.2" cy="157.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="738.5" cy="103.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="446.8" cy="150.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="519.5" cy="132.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="492.5" cy="134.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="672.1" cy="180.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="686.4" cy="105.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="725.4" cy="140.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="544.6" cy="146.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="625.2" cy="180.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="458.4" cy="149.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="624.5" cy="166.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="480.5" cy="119.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="632.4" cy="152.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="664.6" cy="122.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="705.5" cy="155.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="613.2" cy="144.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="560.0" cy="148.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="550.6" cy="150.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="483.5" cy="154.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="472.2" cy="105.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="467.8" cy="159.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="475.6" cy="140.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="690.9" cy="126.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="659.4" cy="165.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="510.1" cy="126.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="583.2" cy="122.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="463.6" cy="154.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="620.8" cy="164.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="610.6" cy="145.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="671.0" cy="156.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="629.0" cy="164.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="718.6" cy="125.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="683.8" cy="142.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="458.0" cy="165.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="492.1" cy="128.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="497.8" cy="134.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="653.4" cy="181.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="704.0" cy="160.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="551.0" cy="169.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="441.1" cy="153.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="476.8" cy="130.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="530.8" cy="160.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="574.6" cy="137.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="701.4" cy="151.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="536.8" cy="144.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="724.2" cy="130.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="459.1" cy="130.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="440.4" cy="142.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="452.8" cy="139.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="607.6" cy="169.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="624.5" cy="123.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="612.5" cy="157.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="501.1" cy="135.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="560.8" cy="142.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="466.6" cy="124.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="444.1" cy="169.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="643.2" cy="135.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="608.8" cy="148.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="597.1" cy="159.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="654.1" cy="162.2" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="633.5" cy="136.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="472.6" cy="137.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="505.6" cy="133.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="529.6" cy="161.8" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="660.9" cy="176.0" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="488.8" cy="161.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="671.8" cy="167.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><circle cx="528.9" cy="147.5" r="2.2" fill="#A8A296" fill-opacity="0.55"/><path d="M449.4 144.9 L468.1 145.1 L486.9 148.3 L505.6 148.4 L524.4 151.1 L543.1 151.1 L561.9 151.7 L580.6 152.1 L599.4 152.7 L618.1 152.2 L636.9 150.9 L655.6 150.8 L674.4 148.7 L693.1 146.8 L711.9 146.6 L730.6 144.2" fill="none" stroke="#C29E08" stroke-width="3.2"/><text x="434" y="254" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">−4</text><text x="434" y="204" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">−2</text><text x="434" y="154" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">0</text><text x="434" y="104" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">2</text><text x="434" y="54" font-size="11" fill="#5E5850" text-anchor="end" font-weight="400">4</text><text x="440" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">20</text><text x="515" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">40</text><text x="590" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">60</text><text x="665" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">80</text><text x="740" y="266" font-size="11" fill="#5E5850" text-anchor="middle" font-weight="400">100</text><text x="590" y="286" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">площадь, м²</text><text x="22" y="150" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400" transform="rotate(-90 22 150)">остаток, млн</text><text x="380" y="318" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">Серые точки — отдельные квартиры, линия — средний остаток при данной площади.</text></svg></div>
 
 
 <p>
-  По числам линейная регрессия лучше: MAE 6,7 против 7,5, <span class="math-inline" data-tex="R^2"></span> 0,857 против 0,825. График остатков от часов
-  показывает, чего числа не видят. У прямой средний остаток идёт пилой: она переоценивает студентов перед 13 часами
-  (до <span class="math-inline" data-tex="-6"></span> баллов) и недооценивает сразу после (до <span class="math-inline" data-tex="+5"></span>). Прыжок на 12 баллов прямая выразить не может и размазывает
-  по всему диапазону. У дерева остатки тоже не нулевые, но без общего наклона: колебания на ±4 балла от ступенек.
+  Обычная регрессия по площади и возрасту даёт <span class="math-inline" data-tex="R^2 = 0{,}705"></span>, и это не выглядит провалом. График остатков от площади
+  показывает, чего число не видит. Средний остаток идёт дугой: у студий около <span class="math-inline" data-tex="+2{,}4"></span> млн (модель их недооценивает),
+  около 60 м² около <span class="math-inline" data-tex="-1{,}2"></span> (переоценивает), у больших квартир снова <span class="math-inline" data-tex="+2{,}4"></span>. Прямая не может изогнуться и промахивается
+  систематически.
+</p>
+
+<p>
+  Если добавить признак «площадь в квадрате», регрессия остаётся линейной по весам, но может описать дугу. Средний
+  остаток прижимается к нулю, MAE падает с 1,18 до 0,64, <span class="math-inline" data-tex="R^2"></span> растёт до 0,91, RMSE 0,805 упирается в шум.
 </p>
 
 <p>
   У модели без систематических ошибок средний остаток держится около нуля при любом значении признака. Если видна
-  закономерность, её можно добавить в модель. Здесь достаточно дать линейной регрессии признак «13 часов и больше».
-  Тот же график стоит строить по прогнозу (остаток против <span class="math-inline" data-tex="\hat y"></span>): если разброс растёт вместе с прогнозом,
-  ошибки неоднородны, и RMSE по всей выборке смешивает точные и неточные области.
+  закономерность, её можно добавить в модель. Тот же график стоит строить по прогнозу (остаток против <span class="math-inline" data-tex="\hat y"></span>):
+  если разброс растёт вместе с прогнозом, дорогие квартиры оцениваются менее точно, и одна RMSE по всей выборке смешивает
+  точные и неточные области.
 </p>
 
 
-## Часть 8. Выбросы: метрика и функция потерь
+## Часть 9. Выбросы: метрика и функция потерь
 
 <p>
-  Добавим в синтетический поток неявки: около 5 % студентов не пришли и получили 0. Обучим три линейные модели
-  на 400 студентах, которые отличаются только тем, что минимизируют: квадрат ошибки, модуль или Huber
-  (квадрат для малых остатков и модуль для больших). Проверка на 20 000 студентах, из них не пришли 4,8 %.
+  Вернёмся к опечатке из части 2, но теперь в данных для обучения. В синтетических объявлениях примерно в 5 % цен
+  записан лишний ноль. Обучим три линейные регрессии на 400 квартирах, которые отличаются только тем, что минимизируют:
+  квадрат ошибки, модуль или Huber (квадрат для малых остатков и модуль для больших). Проверка на 20 000 квартирах,
+  из них с опечаткой 4,8 %. Настоящие веса: 0,9 за 10 м² и <span class="math-inline" data-tex="-0{,}7"></span> за 10 лет.
 </p>
 
 
 <div class="dt-table"><table class="shape-table">
-  <tr><th>Что минимизирует модель</th><th>MAE, все</th><th>RMSE, все</th><th>MAE, пришедшие</th><th>RMSE, пришедшие</th></tr>
-  <tr><td>квадрат (обычная линейная регрессия)</td><td>8,93</td><td>13,06</td><td>7,45</td><td>9,38</td></tr>
-  <tr><td>Huber</td><td>8,51</td><td>13,05</td><td>6,89</td><td>8,68</td></tr>
-  <tr><td>модуль (медианная регрессия)</td><td>8,48</td><td>13,10</td><td>6,84</td><td>8,61</td></tr>
+  <tr><th>Что минимизирует модель</th><th>Веса площади и возраста</th><th>MAE, все</th><th>RMSE, все</th><th>MAE, без опечаток</th><th>RMSE, без опечаток</th></tr>
+  <tr><td>квадрат (обычная линейная регрессия)</td><td>1,88; −0,97</td><td>4,70</td><td>9,84</td><td>3,06</td><td>3,72</td></tr>
+  <tr><td>Huber</td><td>0,94; −0,59</td><td>2,54</td><td>9,89</td><td>0,65</td><td>0,82</td></tr>
+  <tr><td>модуль (медианная регрессия)</td><td>0,93; −0,56</td><td>2,54</td><td>9,90</td><td>0,65</td><td>0,82</td></tr>
 </table></div>
 
 
 <p>
-  На всех студентах по RMSE чуть лучше модель на квадрате, по MAE — модель на модуле. Каждая модель выигрывает
-  по той метрике, которую минимизировала. На студентах, которые пришли, модель на модуле точнее заметно: MAE 6,84
-  против 7,45. Нули неявок тянут плоскость наименьших квадратов вниз: коэффициент при часах у неё 2,73, у медианной регрессии 3,06.
-  Медианная регрессия почти не замечает 5 % нулей.
+  Обычная регрессия подстраивается под опечатки: вес площади вырос до 1,88, вдвое больше настоящего. На квартирах
+  с правильными ценами она ошибается в среднем на 3,06 млн, Huber и медианная регрессия — на 0,65, почти на уровне шума.
 </p>
 
 <p>
-  Отсюда два вывода. Обучать модель лучше на той потере, по которой её потом будут оценивать. И до выбора метрики
-  надо решить, входят ли неявки в задачу. Если входят, это отдельный вопрос «придёт ли студент», и его лучше решать
-  классификатором, а баллы предсказывать только для пришедших.
+  Но по RMSE на всех квартирах обычная регрессия формально лучшая: 9,84 против 9,89 и 9,90. RMSE на грязных данных
+  измеряет в основном опечатки, а их квадраты подогнала именно та модель, которая минимизировала квадраты. По MAE на всех
+  квартирах побеждает медианная регрессия. Каждая модель выигрывает по той метрике, которую минимизировала.
+</p>
+
+<p>
+  Отсюда два вывода. Обучать модель лучше на той потере, по которой её потом будут оценивать. И до выбора метрики надо
+  решить, что делать с мусором: чистить данные, брать устойчивую потерю или считать метрики отдельно на чистых объектах.
 </p>
 
 
-## Часть 9. Как выбрать метрику
+## Часть 10. Как выбрать метрику
 
 
 <div class="dt-table"><table class="shape-table">
   <tr><th>Ситуация</th><th>На что смотреть</th></tr>
-  <tr><td>каждая единица ошибки стоит одинаково, нужен понятный ответ «в среднем на сколько»</td><td>MAE</td></tr>
-  <tr><td>крупный промах намного хуже нескольких мелких</td><td>RMSE</td></tr>
-  <tr><td>в данных есть выбросы, которые не должны решать оценку</td><td>MAE, медиана модулей, Huber при обучении</td></tr>
+  <tr><td>каждый рубль ошибки стоит одинаково, нужен понятный ответ «в среднем на сколько»</td><td>MAE</td></tr>
+  <tr><td>крупный промах намного хуже нескольких мелких: оценка залога, планирование бюджета</td><td>RMSE</td></tr>
+  <tr><td>в данных есть опечатки и выбросы, которые не должны решать оценку</td><td>MAE; при обучении Huber или модуль</td></tr>
   <tr><td>нужно сравнить задачи с разными единицами или объяснить долю разброса</td><td><span class="math-inline" data-tex="R^2"></span> рядом с MAE или RMSE</td></tr>
   <tr><td>ответы одного масштаба без нулей, важна относительная ошибка</td><td>MAPE, иначе WAPE</td></tr>
   <tr><td>недооценка и переоценка стоят по-разному, нужен интервал</td><td>квантильная потеря</td></tr>
@@ -1117,28 +1183,26 @@
 
 
 <p>
-  Общие правила те же, что для классификации: считать метрики на данных, которых модель не видела, и указывать
-  рядом значение у простой модели. Для регрессии это константа: среднее для RMSE и <span class="math-inline" data-tex="R^2"></span>, медиана для MAE.
+  Общие правила те же, что для классификации: считать метрики на данных, которых модель не видела, и указывать рядом
+  значение у простой модели. Для регрессии это константа: средняя цена для RMSE и <span class="math-inline" data-tex="R^2"></span>, медиана для MAE.
 </p>
 
 
-## Часть 10. Код: метрики с нуля и в sklearn
+## Часть 11. Код: метрики с нуля и в sklearn
 
 ### Метрики на чистом Python
-
-<p>
-  Прогнозы дерева округлены до трёх знаков.
-</p>
 
 
 ```python
 from math import sqrt
 
-# настоящие баллы и прогноз дерева глубины 2 (leave-one-out)
-y = [30, 22, 41, 58, 35, 47, 72, 61, 80, 84]
-pred = [48.667, 38.25, 26.0, 41.0, 48.667, 32.0, 45.25, 72.0, 66.5, 76.0]
+# четыре квартиры: площадь (десятки м²), возраст дома (десятки лет), цена (млн)
+X = [[2, 1], [3, 1], [1, 3], [4, 2]]
+y = [5, 5, 1, 6]
+w, b = [27 / 23, -25 / 23], 74 / 23                    # веса из нормальных уравнений
+pred = [w[0] * a + w[1] * g + b for a, g in X]
+e = [t - p for t, p in zip(y, pred)]                    # остатки y - ŷ
 n = len(y)
-e = [a - b for a, b in zip(y, pred)]                       # остатки
 
 
 def mae(e):
@@ -1151,36 +1215,29 @@ def mse(e):
 
 def r2(y, e):
     mean = sum(y) / len(y)
-    sst = sum((v - mean) ** 2 for v in y)                  # разброс вокруг среднего
+    sst = sum((t - mean) ** 2 for t in y)               # разброс цен вокруг средней
     return 1 - sum(v * v for v in e) / sst
 
 
 def mape(y, e):
-    return sum(abs(v) / t for v, t in zip(e, y)) / len(y)  # упадёт, если в y есть ноль
+    return sum(abs(v) / t for v, t in zip(e, y)) / len(y)   # упадёт, если есть нулевая цена
 
 
 def wape(y, e):
     return sum(abs(v) for v in e) / sum(abs(t) for t in y)
 
 
-def pinball(e, tau):
-    """Квантильная потеря: недооценка стоит tau, переоценка 1 - tau за балл."""
-    return sum(max(tau * v, (tau - 1) * v) for v in e) / len(e)
-
-
-print('смещение', round(sum(e) / n, 2))
-print('MAE', round(mae(e), 2), ' MSE', round(mse(e), 1), ' RMSE', round(sqrt(mse(e)), 2))
-print('R2', round(r2(y, e), 3), ' MAPE', round(mape(y, e), 3), ' WAPE', round(wape(y, e), 3))
-print('медиана |e|', sorted(abs(v) for v in e)[4:6], ' max |e|', round(max(abs(v) for v in e), 2))
-print('pinball 0.9', round(pinball(e, 0.9), 2), ' pinball 0.5 = MAE / 2:', round(pinball(e, 0.5), 2))
+print('остатки × 23:', [round(v * 23) for v in e])
+print('смещение', round(sum(e) / n, 12) + 0.0)
+print('MAE', round(mae(e), 4), ' MSE', round(mse(e), 4), ' RMSE', round(sqrt(mse(e)), 4))
+print('R2', round(r2(y, e), 4), ' MAPE', round(mape(y, e), 4), ' WAPE', round(wape(y, e), 4))
 ```
 
 ```text
-смещение 3.57
-MAE 15.48  MSE 262.1  RMSE 16.19
-R2 0.366  MAPE 0.355  WAPE 0.292
-медиана |e| [15.0, 15.0]  max |e| 26.75
-pinball 0.9 9.17  pinball 0.5 = MAE / 2: 7.74
+остатки × 23: [12, -15, -3, 6]
+смещение 0.0
+MAE 0.3913  MSE 0.1957  RMSE 0.4423
+R2 0.9469  MAPE 0.1022  WAPE 0.0921
 ```
 
 
@@ -1197,38 +1254,43 @@ pinball 0.9 9.17  pinball 0.5 = MAE / 2: 7.74
 
 ```python
 import numpy as np
+from sklearn.linear_model import LinearRegression
 from sklearn.metrics import (mean_absolute_error, mean_squared_error, root_mean_squared_error, r2_score,
-                             mean_absolute_percentage_error, median_absolute_error, max_error, mean_pinball_loss)
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.model_selection import cross_val_score, LeaveOneOut
+                             mean_absolute_percentage_error, max_error)
+from sklearn.model_selection import cross_val_predict, cross_val_score, LeaveOneOut
 
-y = [30, 22, 41, 58, 35, 47, 72, 61, 80, 84]
-pred = [48.667, 38.25, 26.0, 41.0, 48.667, 32.0, 45.25, 72.0, 66.5, 76.0]
+X = np.array([[2, 1], [3, 1], [1, 3], [4, 2]])
+y = np.array([5, 5, 1, 6])
 
-print(round(mean_absolute_error(y, pred), 2), round(mean_squared_error(y, pred), 1), round(root_mean_squared_error(y, pred), 2))
-print(round(r2_score(y, pred), 3), round(mean_absolute_percentage_error(y, pred), 3))
-print(median_absolute_error(y, pred), max_error(y, pred), round(mean_pinball_loss(y, pred, alpha=0.9), 2))
+model = LinearRegression().fit(X, y)
+pred = model.predict(X)
+print(np.round(model.coef_ * 23, 6), round(model.intercept_ * 23, 6))
+print(round(mean_absolute_error(y, pred), 4), round(mean_squared_error(y, pred), 4), round(root_mean_squared_error(y, pred), 4))
+print(round(r2_score(y, pred), 4), round(mean_absolute_percentage_error(y, pred), 4), round(max_error(y, pred), 4))
 
-# в scoring метрики ошибок записаны со знаком минус: GridSearchCV всегда максимизирует
-X = [[2, 3], [4, 7], [6, 4], [8, 1], [10, 8], [12, 5], [14, 2], [16, 6], [18, 3], [20, 4]]
-s = cross_val_score(DecisionTreeRegressor(max_depth=2, random_state=0), X, y, cv=LeaveOneOut(),
-                    scoring='neg_mean_absolute_error')
-print(np.round(s, 1), round(-s.mean(), 2))
+# честная проверка: каждую квартиру предсказывает модель, обученная на трёх остальных
+loo = cross_val_predict(LinearRegression(), X, y, cv=LeaveOneOut())
+print(loo, round(mean_absolute_error(y, loo), 4), round(r2_score(y, loo), 4))
+
+# в scoring метрики ошибок записаны со знаком минус: подбор всегда ищет максимум
+s = cross_val_score(LinearRegression(), X, y, cv=LeaveOneOut(), scoring='neg_mean_absolute_error')
+print(s, -s.mean())
 ```
 
 ```text
-15.48 262.1 16.19
-0.366 0.355
-15.0 26.75 9.17
-[-18.7 -16.2 -15.  -17.  -13.7 -15.  -26.8 -11.  -13.5  -8. ] 15.48
+[ 27. -25.] 74.0
+0.3913 0.1957 0.4423
+0.9469 0.1022 0.6522
+[3.5 6.2 7.  3. ] 2.925 -2.301
+[-1.5 -1.2 -6.  -3. ] 2.925
 ```
 
 
 
-### Выбросы и функция потерь
+### Опечатки и функция потерь
 
 <p>
-  Эксперимент из части 8.
+  Эксперимент из части 9.
 </p>
 
 
@@ -1238,63 +1300,66 @@ from sklearn.linear_model import LinearRegression, HuberRegressor, QuantileRegre
 from sklearn.metrics import mean_absolute_error, root_mean_squared_error
 
 
-def stream(n, rng, absent=0.05):
-    """Синтетические студенты; около 5 % не пришли на экзамен и получили 0."""
-    h = rng.uniform(0, 22, n)
-    a = rng.uniform(0, 10, n)
-    mu = 28 + 2.2 * h - 3 * a + 12 * (h >= 13)
-    y = np.clip(mu + rng.normal(0, 8, n), 0, 100)
-    miss = rng.uniform(size=n) < absent
-    y[miss] = 0
-    return np.c_[h, a], y, miss
+def flats(n, rng, typo=0.05):
+    """Синтетические квартиры; примерно в 5 % объявлений цена записана с лишним нулём."""
+    area = rng.uniform(2, 10, n)                # десятки м²
+    age = rng.uniform(0.5, 5, n)                # десятки лет
+    y = 1 + 0.9 * area - 0.7 * age + rng.normal(0, 0.8, n)
+    bad = rng.uniform(size=n) < typo
+    y[bad] *= 10
+    return np.c_[area, age], y, bad
 
 
 rng = np.random.default_rng(1)
-X_train, y_train, _ = stream(400, rng)
-X_test, y_test, miss = stream(20000, rng)
-came = ~miss
+X_train, y_train, _ = flats(400, rng)
+X_test, y_test, bad = flats(20000, rng)
+ok = ~bad
 
 models = {'квадрат (MSE)': LinearRegression(),
-          'Huber': HuberRegressor(epsilon=1.35, max_iter=1000),
+          'Huber': HuberRegressor(epsilon=1.35, max_iter=2000),
           'модуль (MAE)': QuantileRegressor(quantile=0.5, alpha=0, solver='highs')}
 for name, model in models.items():
     p = model.fit(X_train, y_train).predict(X_test)
-    print(f'{name:14s} все: MAE {mean_absolute_error(y_test, p):.2f}  RMSE {root_mean_squared_error(y_test, p):.2f}'
-          f' | пришедшие: MAE {mean_absolute_error(y_test[came], p[came]):.2f}  RMSE {root_mean_squared_error(y_test[came], p[came]):.2f}')
+    print(f'{name:14s} веса {np.round(model.coef_, 2)}  все: MAE {mean_absolute_error(y_test, p):.2f}'
+          f'  RMSE {root_mean_squared_error(y_test, p):.2f} | без опечаток: MAE {mean_absolute_error(y_test[ok], p[ok]):.2f}'
+          f'  RMSE {root_mean_squared_error(y_test[ok], p[ok]):.2f}')
 ```
 
 ```text
-квадрат (MSE)  все: MAE 8.93  RMSE 13.06 | пришедшие: MAE 7.45  RMSE 9.38
-Huber          все: MAE 8.51  RMSE 13.05 | пришедшие: MAE 6.89  RMSE 8.68
-модуль (MAE)   все: MAE 8.48  RMSE 13.10 | пришедшие: MAE 6.84  RMSE 8.61
+квадрат (MSE)  веса [ 1.88 -0.97]  все: MAE 4.70  RMSE 9.84 | без опечаток: MAE 3.06  RMSE 3.72
+Huber          веса [ 0.94 -0.59]  все: MAE 2.54  RMSE 9.89 | без опечаток: MAE 0.65  RMSE 0.82
+модуль (MAE)   веса [ 0.93 -0.56]  все: MAE 2.54  RMSE 9.90 | без опечаток: MAE 0.65  RMSE 0.82
 ```
 
 
-## Часть 11. Что получилось
+## Часть 12. Что получилось
 
 
 <div class="dt-table"><table class="shape-table">
-  <tr><th>Метрика</th><th>Что измеряет</th><th>У дерева на десяти студентах</th></tr>
-  <tr><td>смещение</td><td>средний остаток со знаком</td><td>3,57</td></tr>
-  <tr><td>MAE</td><td>средний модуль остатка</td><td>15,5 балла</td></tr>
-  <tr><td>RMSE</td><td>корень из среднего квадрата</td><td>16,2 балла</td></tr>
-  <tr><td>медиана модулей</td><td>типичный промах, нечувствительный к выбросам</td><td>15 баллов</td></tr>
-  <tr><td><span class="math-inline" data-tex="R^2"></span></td><td>долю квадратичного разброса, которую убрала модель</td><td>0,366</td></tr>
-  <tr><td>MAPE</td><td>средний относительный промах</td><td>35,5 %</td></tr>
-  <tr><td>WAPE</td><td>сумма промахов к сумме ответов</td><td>29,2 %</td></tr>
-  <tr><td>квантильная потеря, <span class="math-inline" data-tex="\tau = 0{,}9"></span></td><td>промахи с разной ценой вверх и вниз</td><td>9,17</td></tr>
+  <tr><th>Метрика</th><th>Что измеряет</th><th>У регрессии на четырёх квартирах</th></tr>
+  <tr><td>смещение</td><td>средний остаток со знаком</td><td>0</td></tr>
+  <tr><td>MAE</td><td>средний модуль остатка</td><td><span class="math-inline" data-tex="9/23 \approx 0{,}391"></span> млн</td></tr>
+  <tr><td>MSE</td><td>средний квадрат остатка</td><td><span class="math-inline" data-tex="9/46 \approx 0{,}196"></span> млн²</td></tr>
+  <tr><td>RMSE</td><td>корень из среднего квадрата</td><td>0,442 млн</td></tr>
+  <tr><td><span class="math-inline" data-tex="R^2"></span></td><td>долю квадратичного разброса, которую убрала модель</td><td>0,947 на обучении, −2,30 честно</td></tr>
+  <tr><td>MAPE</td><td>средний относительный промах</td><td>10,2 %</td></tr>
+  <tr><td>WAPE</td><td>сумма промахов к сумме ответов</td><td>9,2 %</td></tr>
+  <tr><td>максимальная ошибка</td><td>худший промах</td><td>0,652 млн</td></tr>
 </table></div>
 
 
 ### Что важно уметь восстановить по памяти
 
 <ul>
-  <li>Остаток <span class="math-inline" data-tex="e = y - \hat y"></span>; среднее остатков — смещение, оно не говорит о размере ошибок.</li>
+  <li>Остаток <span class="math-inline" data-tex="e = y - \hat y"></span>; среднее остатков — смещение. У линейной регрессии со свободным членом на обучающих
+    данных оно равно нулю.</li>
   <li><span class="math-inline" data-tex="\text{MAE} = \frac{1}{n}\sum|e_i|"></span>, <span class="math-inline" data-tex="\text{RMSE} = \sqrt{\frac{1}{n}\sum e_i^2}"></span>; обе в единицах ответа,
-    <span class="math-inline" data-tex="\text{RMSE} \ge \text{MAE}"></span>, и разрыв растёт с неравномерностью ошибок.</li>
+    <span class="math-inline" data-tex="\text{RMSE}^2 = \text{MAE}^2 + \text{Var}(|e|)"></span>, поэтому <span class="math-inline" data-tex="\text{RMSE} \ge \text{MAE}"></span>.</li>
+  <li><span class="math-inline" data-tex="\text{MSE} = \bar e^{\,2} + \text{Var}(e)"></span>: смещение добавляется к MSE в квадрате.</li>
   <li>Квадрат ошибки минимизирует среднее, модуль — медиана, квантильная потеря с <span class="math-inline" data-tex="\tau"></span> — <span class="math-inline" data-tex="\tau"></span>-квантиль.</li>
-  <li><span class="math-inline" data-tex="R^2 = 1 - \text{SSE}/\text{SST} = 1 - \text{MSE}/\text{Var}(y)"></span>; на тесте бывает отрицательным
-    и зависит от разброса ответов в тесте.</li>
+  <li><span class="math-inline" data-tex="R^2 = 1 - \text{SSE}/\text{SST} = 1 - \text{MSE}/\text{Var}(y)"></span>; на новых данных бывает отрицательным
+    и зависит от разброса ответов.</li>
+  <li>Метрики на обучающих данных оптимистичны тем сильнее, чем меньше объектов на параметр.</li>
   <li>MAPE не определена при нулевых ответах и тянет прогноз вниз; WAPE <span class="math-inline" data-tex="= \sum|e_i| / \sum|y_i|"></span> этих проблем не имеет.</li>
   <li>График остатков от признаков и от прогноза показывает систематические ошибки, которых не видно в одном числе.</li>
   <li>Модель обучают на той потере, которой её будут оценивать.</li>
