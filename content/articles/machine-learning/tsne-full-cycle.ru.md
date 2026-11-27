@@ -409,27 +409,31 @@
 ### Считаем руками: расстояния
 
 <p>
-  Каждая точка задана двумя числами, координатами по горизонтали и по вертикали. Точка 1 — это (1,8; 1,6),
-  точка 2 — (2,4; 1,9). Расстояние между ними считают по теореме Пифагора: разности координат — катеты
-  прямоугольного треугольника, расстояние — его гипотенуза.
+  Каждая точка задана двумя числами: первую координату (признак 1) обозначим <span class="math-inline" data-tex="a"></span>, вторую (признак 2) — <span class="math-inline" data-tex="b"></span>.
+  Точка 1 — это <span class="math-inline" data-tex="(a_1; b_1) = (1{,}8; 1{,}6)"></span>, точка 2 — <span class="math-inline" data-tex="(a_2; b_2) = (2{,}4; 1{,}9)"></span>. Расстояние между ними считают
+  по теореме Пифагора: разности координат — катеты прямоугольного треугольника, расстояние — его гипотенуза.
 </p>
 
 
 <div class="worked-example">
 <div class="worked-label">Расстояние от точки 1 до точки 2</div>
 <div class="worked-trace">
-<div class="worked-trace-row"><div class="worked-trace-name">разности</div><div class="math-display worked-trace-math" data-tex="\Delta x = 2{,}4 - 1{,}8 = 0{,}6, \qquad \Delta y = 1{,}9 - 1{,}6 = 0{,}3"></div><div class="worked-trace-note">насколько точка 2 правее и выше точки 1</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">квадраты</div><div class="math-display worked-trace-math" data-tex="d^2 = 0{,}6^2 + 0{,}3^2 = 0{,}36 + 0{,}09 = 0{,}45"></div><div class="worked-trace-note">сумма квадратов катетов</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">корень</div><div class="math-display worked-trace-math" data-tex="d = \sqrt{0{,}45} = 0{,}671"></div><div class="worked-trace-note">длина гипотенузы, то есть расстояние</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">формула</div><div class="math-display worked-trace-math" data-tex="d = \sqrt{(a_j - a_1)^2 + (b_j - b_1)^2}"></div><div class="worked-trace-note">сначала разности координат, потом квадраты, сумма и корень</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">разность a</div><div class="math-display worked-trace-math" data-tex="\Delta a = a_2 - a_1 = 2{,}4 - 1{,}8 = 0{,}6"></div><div class="worked-trace-note">насколько точка 2 правее точки 1</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">разность b</div><div class="math-display worked-trace-math" data-tex="\Delta b = b_2 - b_1 = 1{,}9 - 1{,}6 = 0{,}3"></div><div class="worked-trace-note">насколько выше</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">квадраты</div><div class="math-display worked-trace-math" data-tex="d^2 = \Delta a^2 + \Delta b^2 = 0{,}6^2 + 0{,}3^2 = 0{,}36 + 0{,}09 = 0{,}45"></div><div class="worked-trace-note">сумма квадратов катетов</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">корень</div><div class="math-display worked-trace-math" data-tex="d = \sqrt{d^2} = \sqrt{0{,}45} = 0{,}671"></div><div class="worked-trace-note">длина гипотенузы, то есть расстояние</div></div>
 </div>
 </div>
 
 <div class="worked-example">
 <div class="worked-label">Расстояние от точки 1 до точки 10</div>
 <div class="worked-trace">
-<div class="worked-trace-row"><div class="worked-trace-name">разности</div><div class="math-display worked-trace-math" data-tex="\Delta x = 2{,}8 - 1{,}8 = 1{,}0, \qquad \Delta y = 6{,}0 - 1{,}6 = 4{,}4"></div><div class="worked-trace-note">точка 10 почти прямо над точкой 1</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">квадраты</div><div class="math-display worked-trace-math" data-tex="d^2 = 1{,}0^2 + 4{,}4^2 = 1{,}00 + 19{,}36 = 20{,}36"></div><div class="worked-trace-note"></div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">корень</div><div class="math-display worked-trace-math" data-tex="d = \sqrt{20{,}36} = 4{,}512"></div><div class="worked-trace-note">в семь раз дальше, чем точка 2</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">формула</div><div class="math-display worked-trace-math" data-tex="d = \sqrt{(a_{10} - a_1)^2 + (b_{10} - b_1)^2}"></div><div class="worked-trace-note">та же формула, другая точка</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">разность a</div><div class="math-display worked-trace-math" data-tex="\Delta a = a_{10} - a_1 = 2{,}8 - 1{,}8 = 1{,}0"></div><div class="worked-trace-note"></div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">разность b</div><div class="math-display worked-trace-math" data-tex="\Delta b = b_{10} - b_1 = 6{,}0 - 1{,}6 = 4{,}4"></div><div class="worked-trace-note">точка 10 почти прямо над точкой 1</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">квадраты</div><div class="math-display worked-trace-math" data-tex="d^2 = \Delta a^2 + \Delta b^2 = 1{,}0^2 + 4{,}4^2 = 1{,}00 + 19{,}36 = 20{,}36"></div><div class="worked-trace-note"></div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">корень</div><div class="math-display worked-trace-math" data-tex="d = \sqrt{d^2} = \sqrt{20{,}36} = 4{,}512"></div><div class="worked-trace-note">в семь раз дальше, чем точка 2</div></div>
 </div>
 <p class="worked-reading">Для рукописных цифр формула та же, только разностей не две, а 64: по одной на каждый пиксель. Складывают 64 квадрата разностей и извлекают корень.</p>
 </div>
@@ -442,7 +446,7 @@
 
 
 <div class="dt-table"><table class="shape-table">
-  <tr><th><span class="math-inline" data-tex="j"></span></th><th>точка <span class="math-inline" data-tex="j"></span></th><th><span class="math-inline" data-tex="\Delta x"></span></th><th><span class="math-inline" data-tex="\Delta y"></span></th><th><span class="math-inline" data-tex="d^2 = \Delta x^2 + \Delta y^2"></span></th><th><span class="math-inline" data-tex="d"></span></th></tr>
+  <tr><th><span class="math-inline" data-tex="j"></span></th><th>точка <span class="math-inline" data-tex="j"></span></th><th><span class="math-inline" data-tex="\Delta a = a_j - a_1"></span></th><th><span class="math-inline" data-tex="\Delta b = b_j - b_1"></span></th><th><span class="math-inline" data-tex="d^2 = \Delta a^2 + \Delta b^2"></span></th><th><span class="math-inline" data-tex="d = \sqrt{d^2}"></span></th></tr>
   <tr><td>2</td><td>(2,4; 1,9)</td><td>0,6</td><td>0,3</td><td>0,45</td><td>0,671</td></tr>
   <tr><td>3</td><td>(2,0; 2,5)</td><td>0,2</td><td>0,9</td><td>0,85</td><td>0,922</td></tr>
   <tr><td>4</td><td>(2,6; 2,6)</td><td>0,8</td><td>1,0</td><td>1,64</td><td>1,281</td></tr>
@@ -469,23 +473,25 @@
 ### Считаем руками: вес каждого соседа
 
 <p>
-  Вес соседа <span class="math-inline" data-tex="j"></span> для точки 1 — это <span class="math-inline" data-tex="e^{-d^2 / 2\sigma_1^2}"></span>. Ширина колокола у точки 1 <span class="math-inline" data-tex="\sigma_1 = 1{,}286"></span>;
-  откуда она взялась, покажет часть 4. Сначала знаменатель: <span class="math-inline" data-tex="2\sigma_1^2 = 2 \cdot 1{,}286^2 = 3{,}309"></span>.
+  Ширина колокола у точки 1 <span class="math-inline" data-tex="\sigma_1 = 1{,}286"></span>; откуда она взялась, покажет часть 4. Вес считаем в три
+  действия: знаменатель <span class="math-inline" data-tex="2\sigma_1^2"></span>, показатель степени <span class="math-inline" data-tex="d^2 / 2\sigma_1^2"></span> и экспонента.
 </p>
 
 
 <div class="worked-example">
 <div class="worked-label">Вес точки 2 и вес точки 10</div>
 <div class="worked-trace">
-<div class="worked-trace-row"><div class="worked-trace-name">точка 2</div><div class="math-display worked-trace-math" data-tex="\frac{d^2}{2\sigma_1^2} = \frac{0{,}45}{3{,}309} = 0{,}136"></div><div class="worked-trace-note">показатель степени</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">формула</div><div class="math-display worked-trace-math" data-tex="w_j = e^{-d_{1j}^2 / 2\sigma_1^2}"></div><div class="worked-trace-note">вес соседа j для точки 1</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">знаменатель</div><div class="math-display worked-trace-math" data-tex="2\sigma_1^2 = 2 \cdot 1{,}286^2 = 3{,}309"></div><div class="worked-trace-note">один на все одиннадцать точек</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">показатель 2</div><div class="math-display worked-trace-math" data-tex="\frac{d_{12}^2}{2\sigma_1^2} = \frac{0{,}45}{3{,}309} = 0{,}136"></div><div class="worked-trace-note">d² из таблицы расстояний</div></div>
 <div class="worked-trace-row"><div class="worked-trace-name">вес 2</div><div class="math-display worked-trace-math" data-tex="w_2 = e^{-0{,}136} = 0{,}873"></div><div class="worked-trace-note">близкая точка: показатель маленький, вес почти 1</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">точка 10</div><div class="math-display worked-trace-math" data-tex="\frac{d^2}{2\sigma_1^2} = \frac{20{,}36}{3{,}309} = 6{,}153"></div><div class="worked-trace-note">показатель степени</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">показатель 10</div><div class="math-display worked-trace-math" data-tex="\frac{d_{1{,}10}^2}{2\sigma_1^2} = \frac{20{,}36}{3{,}309} = 6{,}153"></div><div class="worked-trace-note"></div></div>
 <div class="worked-trace-row"><div class="worked-trace-name">вес 10</div><div class="math-display worked-trace-math" data-tex="w_{10} = e^{-6{,}153} = 0{,}00213"></div><div class="worked-trace-note">далёкая точка: показатель 6, вес в 400 раз меньше</div></div>
 </div>
 </div>
 
 <div class="dt-table"><table class="shape-table">
-  <tr><th><span class="math-inline" data-tex="j"></span></th><th><span class="math-inline" data-tex="d^2"></span></th><th><span class="math-inline" data-tex="d^2 / 2\sigma_1^2"></span></th><th>вес <span class="math-inline" data-tex="w_j = e^{-d^2/2\sigma_1^2}"></span></th></tr>
+  <tr><th><span class="math-inline" data-tex="j"></span></th><th><span class="math-inline" data-tex="d_{1j}^2"></span></th><th><span class="math-inline" data-tex="d_{1j}^2 / 2\sigma_1^2"></span></th><th><span class="math-inline" data-tex="w_j = e^{-d_{1j}^2/2\sigma_1^2}"></span></th></tr>
   <tr><td>2</td><td>0,45</td><td>0,136</td><td>0,872845</td></tr>
   <tr><td>3</td><td>0,85</td><td>0,257</td><td>0,773459</td></tr>
   <tr><td>4</td><td>1,64</td><td>0,496</td><td>0,609185</td></tr>
@@ -509,14 +515,22 @@
 
 <p>
   Веса пока ничего не говорят по отдельности: «0,873» много или мало, зависит от остальных. Поэтому их делят на
-  сумму, и получаются доли, которые в сумме дают 1. Сумма всех одиннадцати весов:
+  сумму, и получаются доли, которые в сумме дают 1.
 </p>
 
-<div class="math-display" data-tex="S = 0{,}873 + 0{,}773 + 0{,}609 + 0{,}00213 + 0{,}00094 + \ldots = 2{,}2588"></div>
 
+<div class="worked-example">
+<div class="worked-label">Сумма весов и вероятность точки 2</div>
+<div class="worked-trace">
+<div class="worked-trace-row"><div class="worked-trace-name">формулы</div><div class="math-display worked-trace-math" data-tex="S = \sum_{j \ne 1} w_j, \qquad p_{j|1} = \frac{w_j}{S}"></div><div class="worked-trace-note">сумма всех одиннадцати весов и доля каждого</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">сумма</div><div class="math-display worked-trace-math" data-tex="S = w_2 + w_3 + w_4 + \ldots + w_{12}"></div><div class="worked-trace-note">одиннадцать весов из таблицы</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">числа</div><div class="math-display worked-trace-math" data-tex="S = 0{,}873 + 0{,}773 + 0{,}609 + 0{,}00213 + \ldots = 2{,}2588"></div><div class="worked-trace-note">остальные веса добавляют всего 0,003</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">точка 2</div><div class="math-display worked-trace-math" data-tex="p_{2|1} = \frac{w_2}{S} = \frac{0{,}8728}{2{,}2588} = 0{,}3864"></div><div class="worked-trace-note">вес, делённый на сумму весов</div></div>
+</div>
+</div>
 
 <div class="dt-table"><table class="shape-table">
-  <tr><th><span class="math-inline" data-tex="j"></span></th><th>вес <span class="math-inline" data-tex="w_j"></span></th><th><span class="math-inline" data-tex="p_{j|1} = w_j / S"></span></th></tr>
+  <tr><th><span class="math-inline" data-tex="j"></span></th><th><span class="math-inline" data-tex="w_j"></span></th><th><span class="math-inline" data-tex="p_{j|1} = w_j / S"></span></th></tr>
   <tr><td>2</td><td>0,872845</td><td>0,3864</td></tr>
   <tr><td>3</td><td>0,773459</td><td>0,3424</td></tr>
   <tr><td>4</td><td>0,609185</td><td>0,2697</td></tr>
@@ -532,10 +546,10 @@
 </table></div>
 
 <div class="worked-example">
-<div class="worked-label">Как читать вероятность</div>
+<div class="worked-label">Проверка и смысл</div>
 <div class="worked-trace">
-<div class="worked-trace-row"><div class="worked-trace-name">точка 2</div><div class="math-display worked-trace-math" data-tex="p_{2|1} = \frac{0{,}8728}{2{,}2588} = 0{,}3864"></div><div class="worked-trace-note">вес, делённый на сумму весов</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">проверка</div><div class="math-display worked-trace-math" data-tex="0{,}3864 + 0{,}3424 + 0{,}2697 + 0{,}0015 = 1{,}0000"></div><div class="worked-trace-note">доли всегда дают в сумме 1</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">формула</div><div class="math-display worked-trace-math" data-tex="\sum_{j \ne 1} p_{j|1} = \frac{\sum_j w_j}{S} = \frac{S}{S} = 1"></div><div class="worked-trace-note">доли всегда дают в сумме 1</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">числа</div><div class="math-display worked-trace-math" data-tex="0{,}3864 + 0{,}3424 + 0{,}2697 + 0{,}0015 = 1{,}0000"></div><div class="worked-trace-note">три соседа и все остальные вместе</div></div>
 </div>
 <p class="worked-reading">Представьте, что точка 1 тянет жребий, кого назвать соседом, и шанс каждой точки пропорционален её весу. Точку 2 она вытянет в 38,6 % случаев, точку 3 — в 34,2 %, точку 4 — в 27,0 %, а всех остальных вместе — в 0,15 %.</p>
 </div>
@@ -720,9 +734,12 @@
 <div class="worked-example">
 <div class="worked-label">Три распределения, где ответ очевиден</div>
 <div class="worked-trace">
-<div class="worked-trace-row"><div class="worked-trace-name">два поровну</div><div class="math-display worked-trace-math" data-tex="H = -(0{,}5 \cdot (-1) + 0{,}5 \cdot (-1)) = 1, \quad 2^1 = 2"></div><div class="worked-trace-note">два равных соседа — перплексия 2</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">четыре поровну</div><div class="math-display worked-trace-math" data-tex="H = -4 \cdot 0{,}25 \cdot (-2) = 2, \quad 2^2 = 4"></div><div class="worked-trace-note">четыре равных соседа — перплексия 4</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">0,9 и 0,1</div><div class="math-display worked-trace-math" data-tex="H = -(0{,}9 \cdot (-0{,}152) + 0{,}1 \cdot (-3{,}322)) = 0{,}469, \quad 2^{0{,}469} = 1{,}38"></div><div class="worked-trace-note">почти весь шанс у одного — «полтора соседа»</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">формулы</div><div class="math-display worked-trace-math" data-tex="H = -\sum_j p_j \log_2 p_j, \qquad \text{Perp} = 2^H"></div><div class="worked-trace-note">энтропия и перплексия</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">два поровну</div><div class="math-display worked-trace-math" data-tex="H = -(0{,}5 \log_2 0{,}5 + 0{,}5 \log_2 0{,}5)"></div><div class="worked-trace-note">p = (0,5; 0,5)</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">числа</div><div class="math-display worked-trace-math" data-tex="H = -(0{,}5 \cdot (-1) + 0{,}5 \cdot (-1)) = 1"></div><div class="worked-trace-note"><span class="math-inline" data-tex="2^1 = 2"></span>: два равных соседа — перплексия 2</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">четыре поровну</div><div class="math-display worked-trace-math" data-tex="H = -4 \cdot 0{,}25 \log_2 0{,}25 = -4 \cdot 0{,}25 \cdot (-2) = 2"></div><div class="worked-trace-note"><span class="math-inline" data-tex="2^2 = 4"></span>: четыре равных соседа — перплексия 4</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">0,9 и 0,1</div><div class="math-display worked-trace-math" data-tex="H = -(0{,}9 \log_2 0{,}9 + 0{,}1 \log_2 0{,}1)"></div><div class="worked-trace-note">p = (0,9; 0,1)</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">числа</div><div class="math-display worked-trace-math" data-tex="H = -(0{,}9 \cdot (-0{,}152) + 0{,}1 \cdot (-3{,}322)) = 0{,}469"></div><div class="worked-trace-note"><span class="math-inline" data-tex="2^{0{,}469} = 1{,}38"></span>: почти весь шанс у одного</div></div>
 </div>
 <p class="worked-reading">Перплексия — это число равных соседей, которое дало бы такую же энтропию. Если вероятности не равны, она получается дробной.</p>
 </div>
@@ -745,8 +762,11 @@
 <div class="worked-example">
 <div class="worked-label">Перплексия точки 1</div>
 <div class="worked-trace">
-<div class="worked-trace-row"><div class="worked-trace-name">энтропия</div><div class="math-display worked-trace-math" data-tex="H = 0{,}530 + 0{,}529 + 0{,}510 + 0{,}016 = 1{,}585"></div><div class="worked-trace-note">бита</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">перплексия</div><div class="math-display worked-trace-math" data-tex="2^{1{,}585} = 3{,}00"></div><div class="worked-trace-note">у точки 1 ровно три эффективных соседа</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">формулы</div><div class="math-display worked-trace-math" data-tex="H_1 = -\sum_{j \ne 1} p_{j|1} \log_2 p_{j|1}, \qquad \text{Perp}_1 = 2^{H_1}"></div><div class="worked-trace-note"></div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">слагаемое 2</div><div class="math-display worked-trace-math" data-tex="-p_{2|1} \log_2 p_{2|1} = -0{,}3864 \cdot \log_2 0{,}3864"></div><div class="worked-trace-note">первая строка таблицы</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">числа</div><div class="math-display worked-trace-math" data-tex="= -0{,}3864 \cdot (−1{,}372) = 0{,}530"></div><div class="worked-trace-note"><span class="math-inline" data-tex="\log_2 0{,}3864 = -1{,}372"></span></div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">энтропия</div><div class="math-display worked-trace-math" data-tex="H_1 = 0{,}530 + 0{,}529 + 0{,}510 + 0{,}016 = 1{,}585"></div><div class="worked-trace-note">бита: сумма последнего столбца</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">перплексия</div><div class="math-display worked-trace-math" data-tex="\text{Perp}_1 = 2^{H_1} = 2^{1{,}585} = 3{,}00"></div><div class="worked-trace-note">у точки 1 ровно три эффективных соседа</div></div>
 </div>
 <p class="worked-reading">Именно так был выбран <span class="math-inline" data-tex="\sigma_1 = 1{,}286"></span>: это ширина колокола, при которой перплексия точки 1 равна заданной, трём.</p>
 </div>
@@ -770,6 +790,17 @@
   Каждая строка таблицы — заново посчитанные одиннадцать весов, вероятностей и энтропия точки 7, как в таблицах выше.
 </p>
 
+
+<div class="worked-example">
+<div class="worked-label">Формулы одного шага поиска</div>
+<div class="worked-trace">
+<div class="worked-trace-row"><div class="worked-trace-name">формулы</div><div class="math-display worked-trace-math" data-tex="\beta = \frac{1}{2\sigma^2}, \qquad \sigma = \frac{1}{\sqrt{2\beta}}, \qquad w_j = e^{-\beta\, d_{7j}^2}"></div><div class="worked-trace-note">β и σ — два способа записать одну ширину</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">середина</div><div class="math-display worked-trace-math" data-tex="\beta_{\text{новое}} = \frac{\beta_{\text{недолёт}} + \beta_{\text{перелёт}}}{2}"></div><div class="worked-trace-note">когда ответ уже зажат между двумя β</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">шаг 1</div><div class="math-display worked-trace-math" data-tex="\beta = 1: \quad \sigma = \frac{1}{\sqrt{2 \cdot 1}} = 0{,}707"></div><div class="worked-trace-note">перплексия 2,00 — мало, β делим на 2</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">шаг 6</div><div class="math-display worked-trace-math" data-tex="\beta = \frac{0{,}125 + 0{,}0625}{2} = 0{,}09375"></div><div class="worked-trace-note">середина между β шагов 4 и 5</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">σ шага 6</div><div class="math-display worked-trace-math" data-tex="\sigma = \frac{1}{\sqrt{2 \cdot 0{,}09375}} = 2{,}309"></div><div class="worked-trace-note">перплексия 3,008 — чуть больше 3, β увеличиваем</div></div>
+</div>
+</div>
 
 <div class="dt-table"><table class="shape-table">
   <tr><th>шаг</th><th><span class="math-inline" data-tex="\beta"></span></th><th><span class="math-inline" data-tex="\sigma = 1/\sqrt{2\beta}"></span></th><th><span class="math-inline" data-tex="H"></span></th><th>перплексия <span class="math-inline" data-tex="2^H"></span></th><th>решение</th></tr>
@@ -855,10 +886,11 @@
 <div class="worked-example">
 <div class="worked-label">Две пары вручную</div>
 <div class="worked-trace">
-<div class="worked-trace-row"><div class="worked-trace-name">пара 5–7</div><div class="math-display worked-trace-math" data-tex="p_{57} = \frac{p_{7|5} + p_{5|7}}{2n} = \frac{0{,}0815 + 0{,}2018}{2 \cdot 12}"></div><div class="worked-trace-note">точка 5 «выбирает» 7 реже, чем 7 выбирает 5</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">итог 5–7</div><div class="math-display worked-trace-math" data-tex="p_{57} = \frac{0{,}2834}{24} = 0{,}0118"></div><div class="worked-trace-note">одно число на пару вместо двух</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">пара 1–2</div><div class="math-display worked-trace-math" data-tex="p_{12} = \frac{0{,}3864 + 0{,}3433}{24} = \frac{0{,}7297}{24} = 0{,}0304"></div><div class="worked-trace-note">самая сильная пара группы А</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">почему 2n</div><div class="math-display worked-trace-math" data-tex="\sum_{i}\sum_{j} p_{j|i} = 12 \cdot 1 = 12, \qquad 12 + 12 = 24"></div><div class="worked-trace-note">двенадцать строк по 1, плюс то же в обратном порядке</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">формула</div><div class="math-display worked-trace-math" data-tex="p_{ij} = \frac{p_{j|i} + p_{i|j}}{2n}"></div><div class="worked-trace-note">n = 12 — число точек</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">пара 5–7</div><div class="math-display worked-trace-math" data-tex="p_{57} = \frac{p_{7|5} + p_{5|7}}{2 \cdot 12} = \frac{0{,}0815 + 0{,}2018}{24} = \frac{0{,}2834}{24} = 0{,}0118"></div><div class="worked-trace-note">точка 5 «выбирает» 7 реже, чем 7 выбирает 5</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">пара 1–2</div><div class="math-display worked-trace-math" data-tex="p_{12} = \frac{p_{2|1} + p_{1|2}}{2 \cdot 12} = \frac{0{,}3864 + 0{,}3433}{24} = \frac{0{,}7297}{24} = 0{,}0304"></div><div class="worked-trace-note">самая сильная пара группы А</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">почему 2n</div><div class="math-display worked-trace-math" data-tex="\sum_{i}\sum_{j} p_{j|i} = n \cdot 1 = 12"></div><div class="worked-trace-note">двенадцать строк, в каждой сумма 1</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">оба порядка</div><div class="math-display worked-trace-math" data-tex="\sum_{i}\sum_{j} \left(p_{j|i} + p_{i|j}\right) = 2n = 24"></div><div class="worked-trace-note">то же в обратном порядке ещё раз</div></div>
 </div>
 <p class="worked-reading">Если сложить все <span class="math-inline" data-tex="p_{j|i}"></span>, получится 12: двенадцать строк, в каждой сумма 1. Сложив вероятности в обоих направлениях, получаем 24, поэтому делим на <span class="math-inline" data-tex="2n = 24"></span>, и вся таблица <span class="math-inline" data-tex="p_{ij}"></span> даёт в сумме ровно 1.</p>
 </div>
@@ -929,16 +961,18 @@
 
 ### Считаем руками: q в самом начале
 
-<p>
-  В начале все y почти нули, поэтому расстояние на карте между любыми двумя точками почти 0, и вес каждой пары
-  <span class="math-inline" data-tex="1/(1 + 0^2) = 1"></span>. Упорядоченных пар (i, j) с <span class="math-inline" data-tex="i \ne j"></span> у двенадцати точек <span class="math-inline" data-tex="12 \cdot 11 = 132"></span>. Значит,
-</p>
 
-<div class="math-display" data-tex="Z = \sum_{k \ne l} \frac{1}{1 + (y_k - y_l)^2} = 132, \qquad q_{ij} = \frac{1}{132} = 0{,}00758"></div>
+<div class="worked-example">
+<div class="worked-label">Вероятности на карте до первого шага</div>
+<div class="worked-trace">
+<div class="worked-trace-row"><div class="worked-trace-name">формулы</div><div class="math-display worked-trace-math" data-tex="w_{kl} = \frac{1}{1 + (y_k - y_l)^2}, \qquad Z = \sum_{k \ne l} w_{kl}, \qquad q_{ij} = \frac{w_{ij}}{Z}"></div><div class="worked-trace-note">вес пары, сумма весов всех пар, вероятность пары</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">вес</div><div class="math-display worked-trace-math" data-tex="w_{kl} = \frac{1}{1 + 0^2} = 1"></div><div class="worked-trace-note">все y почти нули, все расстояния почти 0</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">сумма</div><div class="math-display worked-trace-math" data-tex="Z = 12 \cdot 11 \cdot 1 = 132"></div><div class="worked-trace-note">упорядоченных пар (k, l) с k ≠ l: 12 · 11</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">вероятность</div><div class="math-display worked-trace-math" data-tex="q_{ij} = \frac{1}{132} = 0{,}00758"></div><div class="worked-trace-note">у всех 132 пар одинаково</div></div>
+</div>
+<p class="worked-reading">Все пары равновероятны: карта пока не знает, кто с кем сосед.</p>
+</div>
 
-<p>
-  Все пары равновероятны: карта пока не знает, кто с кем сосед.
-</p>
 
 ### Считаем руками: q на испорченной карте
 
@@ -965,23 +999,9 @@
 
 
 <p>
-  Для точки 1 считаем расстояние на прямой до каждой точки, его квадрат и вес <span class="math-inline" data-tex="w = 1/(1 + d^2)"></span>. На прямой расстояние
-  — просто разность координат.
-</p>
-
-
-<div class="worked-example">
-<div class="worked-label">Вес пары 1–2 на карте</div>
-<div class="worked-trace">
-<div class="worked-trace-row"><div class="worked-trace-name">расстояние</div><div class="math-display worked-trace-math" data-tex="y_1 - y_2 = 8 - (−0{,}788) = 8{,}788"></div><div class="worked-trace-note">точка 2 осталась в группе А</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">вес</div><div class="math-display worked-trace-math" data-tex="w_{12} = \frac{1}{1 + 8{,}788^2} = \frac{1}{1 + 77{,}23} = 0{,}01278"></div><div class="worked-trace-note">в 78 раз меньше единицы</div></div>
-</div>
-</div>
-
-
-<p>
-  Чтобы перевести веса в вероятности, нужна сумма весов всех 132 пар, <span class="math-inline" data-tex="Z"></span>. Её удобно считать по строкам: для каждой
-  точки сложить веса её одиннадцати пар, потом сложить двенадцать сумм.
+  Формулы те же: вес пары <span class="math-inline" data-tex="w_{kl} = 1/(1 + (y_k - y_l)^2)"></span>, сумма <span class="math-inline" data-tex="Z"></span> по всем 132 парам и <span class="math-inline" data-tex="q_{ij} = w_{ij} / Z"></span>.
+  <span class="math-inline" data-tex="Z"></span> удобно считать по строкам: для каждой точки <span class="math-inline" data-tex="i"></span> сложить веса её одиннадцати пар, <span class="math-inline" data-tex="\sum_j w_{ij}"></span>, потом
+  сложить двенадцать таких сумм.
 </p>
 
 
@@ -1004,12 +1024,22 @@
 
 
 <p>
-  У точки 1 сумма весов самая маленькая, 0,173: она стоит одна, далеко от всех. Теперь строка точки 1 целиком:
+  У точки 1 сумма весов самая маленькая, 0,173: она стоит одна, далеко от всех. Теперь пара 1–2 по шагам.
 </p>
 
 
+<div class="worked-example">
+<div class="worked-label">Пара 1–2 на испорченной карте</div>
+<div class="worked-trace">
+<div class="worked-trace-row"><div class="worked-trace-name">формулы</div><div class="math-display worked-trace-math" data-tex="d = y_1 - y_2, \qquad w_{12} = \frac{1}{1 + d^2}, \qquad q_{12} = \frac{w_{12}}{Z}"></div><div class="worked-trace-note">на прямой расстояние — разность координат</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">расстояние</div><div class="math-display worked-trace-math" data-tex="d = y_1 - y_2 = 8 - (−0{,}788) = 8{,}788"></div><div class="worked-trace-note">точка 2 осталась в группе А</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">вес</div><div class="math-display worked-trace-math" data-tex="w_{12} = \frac{1}{1 + d^2} = \frac{1}{1 + 8{,}788^2} = \frac{1}{1 + 77{,}23} = 0{,}01278"></div><div class="worked-trace-note">в 78 раз меньше единицы</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">вероятность</div><div class="math-display worked-trace-math" data-tex="q_{12} = \frac{w_{12}}{Z} = \frac{0{,}01278}{25{,}28} = 0{,}00051"></div><div class="worked-trace-note">а в данных <span class="math-inline" data-tex="p_{12} = 0{,}03041"></span>, в 60 раз больше</div></div>
+</div>
+</div>
+
 <div class="dt-table"><table class="shape-table">
-  <tr><th><span class="math-inline" data-tex="j"></span></th><th><span class="math-inline" data-tex="y_j"></span></th><th><span class="math-inline" data-tex="d = 8 - y_j"></span></th><th><span class="math-inline" data-tex="d^2"></span></th><th><span class="math-inline" data-tex="w = 1/(1 + d^2)"></span></th><th><span class="math-inline" data-tex="q_{1j} = w / Z"></span></th><th><span class="math-inline" data-tex="p_{1j}"></span></th></tr>
+  <tr><th><span class="math-inline" data-tex="j"></span></th><th><span class="math-inline" data-tex="y_j"></span></th><th><span class="math-inline" data-tex="d = y_1 - y_j"></span></th><th><span class="math-inline" data-tex="d^2"></span></th><th><span class="math-inline" data-tex="w = 1/(1 + d^2)"></span></th><th><span class="math-inline" data-tex="q_{1j} = w / Z"></span></th><th><span class="math-inline" data-tex="p_{1j}"></span></th></tr>
   <tr><td>2</td><td>−0,79</td><td>8,79</td><td>77,2</td><td>0,01278</td><td>0,00051</td><td>0,03041</td></tr>
   <tr><td>3</td><td>−0,47</td><td>8,47</td><td>71,8</td><td>0,01374</td><td>0,00054</td><td>0,02625</td></tr>
   <tr><td>4</td><td>−0,32</td><td>8,32</td><td>69,2</td><td>0,01425</td><td>0,00056</td><td>0,02084</td></tr>
@@ -1023,14 +1053,14 @@
   <tr><td>12</td><td>−17,13</td><td>25,13</td><td>631,7</td><td>0,00158</td><td>0,00006</td><td>4,7·10⁻⁶</td></tr>
 </table></div>
 
-
-<p>
-  Для пары 1–2: <span class="math-inline" data-tex="q_{12} = 0{,}01278 / 25{,}28 = 0{,}00051"></span>, а в данных <span class="math-inline" data-tex="p_{12} = 0{,}03041"></span>,
-  в 60 раз больше. Для сравнения на правильной карте точки 1 и 2 стоят в 0,28 друг от друга:
-  <span class="math-inline" data-tex="w = 1/(1 + 0{,}28^2) = 0{,}9273"></span>, <span class="math-inline" data-tex="Z = 29{,}61"></span>, <span class="math-inline" data-tex="q_{12} = 0{,}0313"></span> — почти
-  те же 0,0304, что в данных.
-</p>
-
+<div class="worked-example">
+<div class="worked-label">Для сравнения: пара 1–2 на правильной карте</div>
+<div class="worked-trace">
+<div class="worked-trace-row"><div class="worked-trace-name">формулы</div><div class="math-display worked-trace-math" data-tex="w_{12} = \frac{1}{1 + (y_1 - y_2)^2}, \qquad q_{12} = \frac{w_{12}}{Z}"></div><div class="worked-trace-note">те же формулы</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">вес</div><div class="math-display worked-trace-math" data-tex="w_{12} = \frac{1}{1 + 0{,}28^2} = 0{,}9273"></div><div class="worked-trace-note">точки 1 и 2 рядом, расстояние 0,28</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">вероятность</div><div class="math-display worked-trace-math" data-tex="q_{12} = \frac{0{,}9273}{29{,}61} = 0{,}0313"></div><div class="worked-trace-note">почти те же 0,0304, что в данных</div></div>
+</div>
+</div>
 
 <div class="callout-blue">
 <p><b>Справка: натуральный логарифм</b></p>
@@ -1046,15 +1076,16 @@
 
 <p>
   Сначала самый маленький пример. Настоящая монетка: орёл и решка по 0,5, это <span class="math-inline" data-tex="p"></span>. Наша модель думает, что орёл
-  выпадает в 90 % случаев: <span class="math-inline" data-tex="q = (0{,}9;\ 0{,}1)"></span>. KL складывает по всем исходам <span class="math-inline" data-tex="p \ln(p/q)"></span>:
+  выпадает в 90 % случаев: <span class="math-inline" data-tex="q = (0{,}9;\ 0{,}1)"></span>.
 </p>
 
 
 <div class="worked-example">
 <div class="worked-label">KL(p ‖ q) для монетки</div>
 <div class="worked-trace">
-<div class="worked-trace-row"><div class="worked-trace-name">орёл</div><div class="math-display worked-trace-math" data-tex="0{,}5 \cdot \ln\frac{0{,}5}{0{,}9} = 0{,}5 \cdot (-0{,}588) = −0{,}294"></div><div class="worked-trace-note">модель переоценила орла: вклад отрицательный и небольшой</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">решка</div><div class="math-display worked-trace-math" data-tex="0{,}5 \cdot \ln\frac{0{,}5}{0{,}1} = 0{,}5 \cdot 1{,}609 = 0{,}805"></div><div class="worked-trace-note">модель недооценила решку в 5 раз: вклад большой</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">формула</div><div class="math-display worked-trace-math" data-tex="\text{KL}(p \,\|\, q) = \sum_{\text{исходы}} p \ln\frac{p}{q}"></div><div class="worked-trace-note">по каждому исходу: p, умноженное на логарифм отношения</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">орёл</div><div class="math-display worked-trace-math" data-tex="p_{о} \ln\frac{p_{о}}{q_{о}} = 0{,}5 \cdot \ln\frac{0{,}5}{0{,}9} = 0{,}5 \cdot (-0{,}588) = −0{,}294"></div><div class="worked-trace-note">модель переоценила орла: вклад отрицательный и небольшой</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">решка</div><div class="math-display worked-trace-math" data-tex="p_{р} \ln\frac{p_{р}}{q_{р}} = 0{,}5 \cdot \ln\frac{0{,}5}{0{,}1} = 0{,}5 \cdot 1{,}609 = 0{,}805"></div><div class="worked-trace-note">модель недооценила решку в 5 раз: вклад большой</div></div>
 <div class="worked-trace-row"><div class="worked-trace-name">итого</div><div class="math-display worked-trace-math" data-tex="\text{KL} = −0{,}294 + 0{,}805 = 0{,}511"></div><div class="worked-trace-note">если бы q совпало с p, было бы 0</div></div>
 </div>
 <p class="worked-reading">Сумма всегда не меньше нуля, хотя отдельные слагаемые бывают отрицательными. И KL несимметрично: если поменять p и q местами, получится 0,368, а не 0,511. Больнее всего, когда событие на самом деле частое (большое p), а модель считает его редким (маленькое q).</p>
@@ -1064,10 +1095,27 @@
 ### Считаем руками: KL испорченной карты
 
 <p>
-  Для карты то же самое, только исходов не два, а 132 пары. Начнём со строки точки 1: для каждой пары делим p на q,
-  берём натуральный логарифм и умножаем на p.
+  Для карты то же самое, только исходов не два, а 132 пары:
 </p>
 
+<div class="math-display" data-tex="\text{KL}(P \,\|\, Q) = \sum_{i}\sum_{j \ne i} p_{ij} \ln\frac{p_{ij}}{q_{ij}}"></div>
+
+<p>
+  Начнём со строки точки 1, <span class="math-inline" data-tex="i = 1"></span>: для каждой пары делим p на q, берём натуральный логарифм и умножаем на p.
+</p>
+
+
+<div class="worked-example">
+<div class="worked-label">Два слагаемых строки 1</div>
+<div class="worked-trace">
+<div class="worked-trace-row"><div class="worked-trace-name">формула</div><div class="math-display worked-trace-math" data-tex="p_{1j} \ln\frac{p_{1j}}{q_{1j}}"></div><div class="worked-trace-note">вклад одной пары</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">пара 1–2</div><div class="math-display worked-trace-math" data-tex="p_{12} \ln\frac{p_{12}}{q_{12}} = 0{,}03041 \cdot \ln\frac{0{,}03041}{0{,}00051} = 0{,}03041 \cdot \ln 60{,}13"></div><div class="worked-trace-note">соседи по данным, на карте в 60 раз «реже»</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">итог 1–2</div><div class="math-display worked-trace-math" data-tex="= 0{,}03041 \cdot 4{,}097 = 0{,}1246"></div><div class="worked-trace-note">самый большой вклад во всей сумме</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">пара 1–5</div><div class="math-display worked-trace-math" data-tex="p_{15} \ln\frac{p_{15}}{q_{15}} = 0{,}00005 \cdot \ln\frac{0{,}00005}{0{,}00142}"></div><div class="worked-trace-note">чужие, на карте ближе, чем нужно</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">итог 1–5</div><div class="math-display worked-trace-math" data-tex="= 0{,}00005 \cdot (−3{,}310) = −0{,}00017"></div><div class="worked-trace-note">вклад почти нулевой</div></div>
+</div>
+<p class="worked-reading">Как на монетке: дорого стоит пара, которая в данных частая, а на карте редкая. Обратная ошибка почти бесплатна, потому что её вклад умножается на крошечное <span class="math-inline" data-tex="p"></span>.</p>
+</div>
 
 <div class="dt-table"><table class="shape-table">
   <tr><th><span class="math-inline" data-tex="j"></span></th><th><span class="math-inline" data-tex="p_{1j}"></span></th><th><span class="math-inline" data-tex="q_{1j}"></span></th><th><span class="math-inline" data-tex="p/q"></span></th><th><span class="math-inline" data-tex="\ln(p/q)"></span></th><th><span class="math-inline" data-tex="p \ln(p/q)"></span></th></tr>
@@ -1085,19 +1133,9 @@
   <tr><td>сумма</td><td></td><td></td><td></td><td></td><td>0,3012</td></tr>
 </table></div>
 
-<div class="worked-example">
-<div class="worked-label">Самое тяжёлое слагаемое</div>
-<div class="worked-trace">
-<div class="worked-trace-row"><div class="worked-trace-name">пара 1–2</div><div class="math-display worked-trace-math" data-tex="0{,}03041 \cdot \ln\frac{0{,}03041}{0{,}00051} = 0{,}03041 \cdot \ln 60{,}13"></div><div class="worked-trace-note">соседи по данным, на карте в 60 раз «реже»</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">итог 1–2</div><div class="math-display worked-trace-math" data-tex="0{,}03041 \cdot 4{,}097 = 0{,}1246"></div><div class="worked-trace-note">самый большой вклад во всей сумме</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">пара 1–5</div><div class="math-display worked-trace-math" data-tex="0{,}00005 \cdot \ln\frac{0{,}00005}{0{,}00142} = 0{,}00005 \cdot (−3{,}310) = −0{,}0002"></div><div class="worked-trace-note">чужие, на карте ближе, чем нужно: вклад почти нулевой</div></div>
-</div>
-<p class="worked-reading">Как на монетке: дорого стоит пара, которая в данных частая, а на карте редкая. Обратная ошибка почти бесплатна, потому что её вклад умножается на крошечное <span class="math-inline" data-tex="p"></span>.</p>
-</div>
-
 
 <p>
-  Так же считаем строки остальных одиннадцати точек и складываем:
+  Так же считаем строки остальных одиннадцати точек, <span class="math-inline" data-tex="\sum_j p_{ij} \ln(p_{ij}/q_{ij})"></span> для каждой <span class="math-inline" data-tex="i"></span>, и складываем:
 </p>
 
 
@@ -1154,31 +1192,32 @@
 <div class="callout-blue">
 <p><b>Справка: производная и градиентный спуск</b></p>
 <p>
-  Производная KL по <span class="math-inline" data-tex="y_1"></span> говорит, насколько изменится KL, если чуть сдвинуть точку 1 вправо. Если производная равна
-  0,0384, то сдвиг на +0,01 увеличит KL примерно на <span class="math-inline" data-tex="0{,}0384 \cdot 0{,}01 = 0{,}000384"></span>, а сдвиг влево на столько
-  же уменьшит. Градиентный спуск делает шаг против знака производной: <span class="math-inline" data-tex="y_1 \leftarrow y_1 - \eta \cdot \partial \text{KL} / \partial y_1"></span>, где <span class="math-inline" data-tex="\eta"></span> — шаг обучения.
+  Производная KL по <span class="math-inline" data-tex="y_1"></span> говорит, насколько изменится KL, если чуть сдвинуть точку 1 вправо:
+  <span class="math-inline" data-tex="\Delta \text{KL} \approx \frac{\partial \text{KL}}{\partial y_1} \cdot \Delta y_1"></span>. Если производная равна 0,0384, то
+  сдвиг на <span class="math-inline" data-tex="\Delta y_1 = +0{,}01"></span> увеличит KL примерно на <span class="math-inline" data-tex="0{,}0384 \cdot 0{,}01 = 0{,}000384"></span>, а сдвиг влево на
+  столько же уменьшит. Градиентный спуск делает шаг против знака производной:
+  <span class="math-inline" data-tex="y_1 \leftarrow y_1 - \eta \cdot \partial \text{KL} / \partial y_1"></span>, где <span class="math-inline" data-tex="\eta"></span> — шаг обучения.
 </p>
 </div>
 
 
 ### Считаем руками: градиент для точки 1
 
-<p>
-  Слагаемое для каждой другой точки <span class="math-inline" data-tex="j"></span> — это произведение четырёх чисел: <span class="math-inline" data-tex="4"></span>, разности <span class="math-inline" data-tex="p_{1j} - q_{1j}"></span>,
-  разности координат <span class="math-inline" data-tex="y_1 - y_j"></span> и веса <span class="math-inline" data-tex="w_{1j} = 1/(1 + (y_1 - y_j)^2)"></span>, который мы уже посчитали.
-</p>
-
 
 <div class="worked-example">
 <div class="worked-label">Слагаемое для точки 2</div>
 <div class="worked-trace">
+<div class="worked-trace-row"><div class="worked-trace-name">формула</div><div class="math-display worked-trace-math" data-tex="\frac{\partial\,\text{KL}}{\partial y_1} = \sum_{j \ne 1} 4\,(p_{1j} - q_{1j})\,(y_1 - y_j)\,w_{1j}"></div><div class="worked-trace-note">сумма одиннадцати слагаемых, по одному на каждую точку j</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">где</div><div class="math-display worked-trace-math" data-tex="w_{1j} = \frac{1}{1 + (y_1 - y_j)^2}"></div><div class="worked-trace-note">вес пары на карте из части 6</div></div>
 <div class="worked-trace-row"><div class="worked-trace-name">p − q</div><div class="math-display worked-trace-math" data-tex="p_{12} - q_{12} = 0{,}03041 - 0{,}00051 = 0{,}02990"></div><div class="worked-trace-note">в данных пара сильнее, чем на карте</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">слагаемое</div><div class="math-display worked-trace-math" data-tex="4 \cdot 0{,}02990 \cdot 8{,}788 \cdot 0{,}01278 = 0{,}01344"></div><div class="worked-trace-note">плюс: KL растёт, если двигать точку 1 вправо, от точки 2</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">y₁ − y₂</div><div class="math-display worked-trace-math" data-tex="y_1 - y_2 = 8 - (−0{,}788) = 8{,}788"></div><div class="worked-trace-note">расстояние со знаком</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">w₁₂</div><div class="math-display worked-trace-math" data-tex="w_{12} = 0{,}01278"></div><div class="worked-trace-note">посчитан выше, в части 6</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">слагаемое</div><div class="math-display worked-trace-math" data-tex="4\,(p_{12} - q_{12})\,(y_1 - y_2)\,w_{12} = 4 \cdot 0{,}02990 \cdot 8{,}788 \cdot 0{,}01278 = 0{,}01344"></div><div class="worked-trace-note">плюс: KL растёт, если двигать точку 1 вправо, от точки 2</div></div>
 </div>
 </div>
 
 <div class="dt-table"><table class="shape-table">
-  <tr><th><span class="math-inline" data-tex="j"></span></th><th><span class="math-inline" data-tex="p_{1j} - q_{1j}"></span></th><th><span class="math-inline" data-tex="y_1 - y_j"></span></th><th><span class="math-inline" data-tex="w_{1j}"></span></th><th><span class="math-inline" data-tex="4(p - q)(y_1 - y_j)\,w"></span></th></tr>
+  <tr><th><span class="math-inline" data-tex="j"></span></th><th><span class="math-inline" data-tex="p_{1j} - q_{1j}"></span></th><th><span class="math-inline" data-tex="y_1 - y_j"></span></th><th><span class="math-inline" data-tex="w_{1j}"></span></th><th><span class="math-inline" data-tex="4(p_{1j} - q_{1j})(y_1 - y_j)\,w_{1j}"></span></th></tr>
   <tr><td>2</td><td>0,02990</td><td>8,79</td><td>0,01278</td><td>0,01344</td></tr>
   <tr><td>3</td><td>0,02571</td><td>8,47</td><td>0,01374</td><td>0,01197</td></tr>
   <tr><td>4</td><td>0,02027</td><td>8,32</td><td>0,01425</td><td>0,00961</td></tr>
@@ -1196,11 +1235,12 @@
 <div class="worked-example">
 <div class="worked-label">Что получилось</div>
 <div class="worked-trace">
-<div class="worked-trace-row"><div class="worked-trace-name">градиент</div><div class="math-display worked-trace-math" data-tex="\frac{\partial\,\text{KL}}{\partial y_1} = 0{,}0384"></div><div class="worked-trace-note">больше нуля: точку выгодно двигать влево</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">проверка</div><div class="math-display worked-trace-math" data-tex="\text{KL}(y_1 = 7{,}8) = 0{,}4871"></div><div class="worked-trace-note">сдвинули точку 1 на 0,2 влево и пересчитали KL целиком</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">прогноз</div><div class="math-display worked-trace-math" data-tex="0{,}4948 - 0{,}2 \cdot 0{,}0384 = 0{,}4872"></div><div class="worked-trace-note">то же по производной: разница 0,0001</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">притяжение</div><div class="math-display worked-trace-math" data-tex="\sum_j 4\,p_{1j}\,w_{1j}\,(y_1 - y_j) = 0{,}0357"></div><div class="worked-trace-note">вклад p: тянет к 2, 3, 4</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">отталкивание</div><div class="math-display worked-trace-math" data-tex="-\sum_j 4\,q_{1j}\,w_{1j}\,(y_1 - y_j) = 0{,}0027"></div><div class="worked-trace-note">вклад q: толкает прочь от группы Б</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">градиент</div><div class="math-display worked-trace-math" data-tex="\frac{\partial\,\text{KL}}{\partial y_1} = \sum_{j \ne 1} (\ldots) = 0{,}0384"></div><div class="worked-trace-note">сумма последнего столбца; больше нуля — точку выгодно двигать влево</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">проверка</div><div class="math-display worked-trace-math" data-tex="\text{KL}(y_1 + \Delta y_1) \approx \text{KL}(y_1) + \frac{\partial\,\text{KL}}{\partial y_1} \Delta y_1"></div><div class="worked-trace-note">прогноз по производной</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">прогноз</div><div class="math-display worked-trace-math" data-tex="= 0{,}4948 + 0{,}0384 \cdot (-0{,}2) = 0{,}4872"></div><div class="worked-trace-note">сдвиг на 0,2 влево: Δy₁ = −0,2</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">честно</div><div class="math-display worked-trace-math" data-tex="\text{KL}(y_1 = 7{,}8) = 0{,}4871"></div><div class="worked-trace-note">пересчитали q и KL целиком: разница 0,0001</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">притяжение</div><div class="math-display worked-trace-math" data-tex="\sum_j 4\,p_{1j}\,w_{1j}\,(y_1 - y_j) = 0{,}0357"></div><div class="worked-trace-note">часть с p: тянет к 2, 3, 4</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">отталкивание</div><div class="math-display worked-trace-math" data-tex="-\sum_j 4\,q_{1j}\,w_{1j}\,(y_1 - y_j) = 0{,}0027"></div><div class="worked-trace-note">часть с q: толкает прочь от группы Б</div></div>
 </div>
 <p class="worked-reading">Обе части положительные, то есть обе гонят точку 1 влево: к своим и от чужих. В сумме 0,0357 + 0,0027 = 0,0384, ровно градиент.</p>
 </div>
@@ -1208,8 +1248,9 @@
 <div class="worked-example">
 <div class="worked-label">Один шаг градиентного спуска</div>
 <div class="worked-trace">
-<div class="worked-trace-row"><div class="worked-trace-name">простой шаг</div><div class="math-display worked-trace-math" data-tex="y_1 \leftarrow 8 - 5 \cdot 0{,}0384 = 7{,}808"></div><div class="worked-trace-note">шаг обучения η = 5, как в нашем примере</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">с множителем</div><div class="math-display worked-trace-math" data-tex="y_1 \leftarrow 8 - 5 \cdot 1{,}2 \cdot 0{,}0384 = 7{,}770"></div><div class="worked-trace-note">на первом шаге множитель скорости вырос с 1 до 1,2</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">формула</div><div class="math-display worked-trace-math" data-tex="y_1 \leftarrow y_1 - \eta \cdot \gamma_1 \cdot \frac{\partial\,\text{KL}}{\partial y_1}"></div><div class="worked-trace-note">η — шаг обучения, γ — множитель скорости точки</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">простой шаг</div><div class="math-display worked-trace-math" data-tex="y_1 \leftarrow 8 - 5 \cdot 1 \cdot 0{,}0384 = 7{,}808"></div><div class="worked-trace-note">η = 5, γ = 1</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">с множителем</div><div class="math-display worked-trace-math" data-tex="y_1 \leftarrow 8 - 5 \cdot 1{,}2 \cdot 0{,}0384 = 7{,}770"></div><div class="worked-trace-note">на первом шаге γ вырос с 1 до 1,2</div></div>
 <div class="worked-trace-row"><div class="worked-trace-name">после шага</div><div class="math-display worked-trace-math" data-tex="\text{KL} = 0{,}474"></div><div class="worked-trace-note">двигаются все 12 точек, у каждой свой градиент</div></div>
 </div>
 <p class="worked-reading">Это тот самый первый шаг, который делает кнопка «один шаг» в виджете ниже: KL 0,495 → 0,474. Дальше шаг повторяется, но к нему прибавляется доля прошлого шага, инерция, поэтому точка разгоняется.</p>
@@ -1431,9 +1472,11 @@
 <div class="worked-example">
 <div class="worked-label">Какое расстояние даёт вес 0,01</div>
 <div class="worked-trace">
-<div class="worked-trace-row"><div class="worked-trace-name">Гаусс</div><div class="math-display worked-trace-math" data-tex="e^{-d^2} = 0{,}01 \;\Rightarrow\; d^2 = -\ln 0{,}01 = 4{,}605 \;\Rightarrow\; d = 2{,}15"></div><div class="worked-trace-note">логарифм снимает экспоненту</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">Стьюдент</div><div class="math-display worked-trace-math" data-tex="\frac{1}{1 + d^2} = 0{,}01 \;\Rightarrow\; 1 + d^2 = 100 \;\Rightarrow\; d = \sqrt{99} = 9{,}95"></div><div class="worked-trace-note">переворачиваем дробь</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">на расстоянии 3</div><div class="math-display worked-trace-math" data-tex="e^{-9} = 0{,}000123, \qquad \frac{1}{1 + 9} = 0{,}1"></div><div class="worked-trace-note">у Стьюдента вес в 800 раз больше</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">формулы</div><div class="math-display worked-trace-math" data-tex="w_{\text{Гаусс}}(d) = e^{-d^2}, \qquad w_{\text{Стьюдент}}(d) = \frac{1}{1 + d^2}"></div><div class="worked-trace-note">оба ядра равны 1 при d = 0</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">Гаусс</div><div class="math-display worked-trace-math" data-tex="e^{-d^2} = 0{,}01 \;\Rightarrow\; d^2 = -\ln 0{,}01 = 4{,}605 \;\Rightarrow\; d = \sqrt{4{,}605} = 2{,}15"></div><div class="worked-trace-note">логарифм снимает экспоненту</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">Стьюдент</div><div class="math-display worked-trace-math" data-tex="\frac{1}{1 + d^2} = 0{,}01 \;\Rightarrow\; 1 + d^2 = \frac{1}{0{,}01} = 100 \;\Rightarrow\; d = \sqrt{99} = 9{,}95"></div><div class="worked-trace-note">переворачиваем дробь</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">Гаусс, d = 3</div><div class="math-display worked-trace-math" data-tex="w_{\text{Гаусс}}(3) = e^{-3^2} = e^{-9} = 0{,}000123"></div><div class="worked-trace-note"></div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">Стьюдент, d = 3</div><div class="math-display worked-trace-math" data-tex="w_{\text{Стьюдент}}(3) = \frac{1}{1 + 3^2} = \frac{1}{10} = 0{,}1"></div><div class="worked-trace-note">в 800 раз больше, чем у Гаусса</div></div>
 </div>
 <p class="worked-reading">Чтобы получить на карте маленькую вероятность, по Гауссу хватает расстояния 2,15, а по Стьюденту нужно 9,95. Поэтому с ядром Стьюдента умеренно далёкие точки на карте ставятся дальше, и между группами остаются промежутки.</p>
 </div>
@@ -1459,9 +1502,9 @@
 <div class="worked-example">
 <div class="worked-label">Раннее преувеличение в числах</div>
 <div class="worked-trace">
-<div class="worked-trace-row"><div class="worked-trace-name">обычно</div><div class="math-display worked-trace-math" data-tex="p_{12} = 0{,}0304"></div><div class="worked-trace-note">вероятность пары 1–2</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">×12</div><div class="math-display worked-trace-math" data-tex="12 \cdot 0{,}0304 = 0{,}365"></div><div class="worked-trace-note">первые 250 шагов градиент считается с таким p</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">шаг</div><div class="math-display worked-trace-math" data-tex="\Delta_t = 0{,}5\,\Delta_{t-1} - \eta \cdot g_t \cdot \frac{\partial\,\text{KL}}{\partial y}"></div><div class="worked-trace-note">Δ — сдвиг точки, g — её множитель скорости</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">формулы</div><div class="math-display worked-trace-math" data-tex="p_{ij} \to \alpha\, p_{ij}, \qquad \Delta_t = \mu\,\Delta_{t-1} - \eta \cdot \gamma \cdot \frac{\partial\,\text{KL}}{\partial y}"></div><div class="worked-trace-note">α = 12 первые 250 шагов; Δ — сдвиг точки, μ — инерция</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">пара 1–2</div><div class="math-display worked-trace-math" data-tex="\alpha\, p_{12} = 12 \cdot 0{,}0304 = 0{,}365"></div><div class="worked-trace-note">с таким p считается притяжение в начале</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">шаг</div><div class="math-display worked-trace-math" data-tex="\Delta_t = 0{,}5\,\Delta_{t-1} - \eta \cdot \gamma \cdot \frac{\partial\,\text{KL}}{\partial y}"></div><div class="worked-trace-note">μ = 0,5 первые 250 шагов, потом 0,8</div></div>
 </div>
 <p class="worked-reading">Слагаемые притяжения в градиенте растут в 12 раз, отталкивания остаются прежними, и точки одного вида быстро сбиваются в комки. После 250-го шага множитель снимают, а инерцию поднимают с 0,5 до 0,8.</p>
 </div>
