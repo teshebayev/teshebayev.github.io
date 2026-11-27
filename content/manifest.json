@@ -187,7 +187,7 @@
             "en": "Nearest neighbors",
             "kk": "Жақын көршілер әдісі"
           },
-          "articles": ["knn-full-cycle"]
+          "articles": ["knn-full-cycle", "similarity-measures"]
         },
         {
           "group": "evaluation",
@@ -684,6 +684,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/machine-learning/knn-full-cycle.ru.md"
+  }
+},
+    {
+  "slug": "similarity-measures",
+  "category": "machine-learning",
+  "title": {
+    "ru": "Меры близости: от евклидова расстояния до Жаккара и Левенштейна"
+  },
+  "description": {
+    "ru": "Меры близости на студентах, профилях подготовки, посещаемости и словах: аксиомы метрики и почему квадрат расстояния ей не является, семейство Минковского и его шары, расстояние Махаланобиса и поиск аномалий, косинусная мера и когда она вредит, Хэмминг против Жаккара, расстояние Левенштейна таблицей, как мера меняет ответ kNN, код на scipy и sklearn."
+  },
+  "date": "2026-11-27",
+  "reading_time": 20,
+  "tags": ["ml-basics"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/similarity-measures.ru.md"
   }
 },
     {
