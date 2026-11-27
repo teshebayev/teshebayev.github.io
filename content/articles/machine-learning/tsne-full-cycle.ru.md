@@ -81,13 +81,19 @@
   .prose .pca-z b { color: #111111; }
   .prose .pca-z .off { color: #B8B2A6; text-decoration: line-through; }
   .prose .pca-wide { max-width: 760px; }
+  .prose .worked-trace-math { overflow-x: auto; overflow-y: hidden; }
+  .prose .worked-trace-name:empty { visibility: hidden; }
+  @media (min-width: 721px) {
+    .prose .worked-trace-row { grid-template-columns: 100px minmax(0, 2.4fr) minmax(140px, .75fr); }
+  }
 </style>
 <style>
   .prose .ts-steps { font-size: 13px; color: #5E5850; line-height: 1.6; font-variant-numeric: tabular-nums; min-height: 1.6em; }
   .prose .ts-steps b { color: #111111; }
   .prose .worked-trace-math { overflow-x: auto; overflow-y: hidden; }
+  .prose .worked-trace-name:empty { visibility: hidden; }
   @media (min-width: 721px) {
-    .prose .worked-trace-row { grid-template-columns: 104px minmax(0, 1.75fr) minmax(150px, .8fr); }
+    .prose .worked-trace-row { grid-template-columns: 100px minmax(0, 2.4fr) minmax(140px, .75fr); }
   }
 </style>
 
@@ -1212,7 +1218,8 @@
 <div class="worked-trace-row"><div class="worked-trace-name">p − q</div><div class="math-display worked-trace-math" data-tex="p_{12} - q_{12} = 0{,}03041 - 0{,}00051 = 0{,}02990"></div><div class="worked-trace-note">в данных пара сильнее, чем на карте</div></div>
 <div class="worked-trace-row"><div class="worked-trace-name">y₁ − y₂</div><div class="math-display worked-trace-math" data-tex="y_1 - y_2 = 8 - (−0{,}788) = 8{,}788"></div><div class="worked-trace-note">расстояние со знаком</div></div>
 <div class="worked-trace-row"><div class="worked-trace-name">w₁₂</div><div class="math-display worked-trace-math" data-tex="w_{12} = 0{,}01278"></div><div class="worked-trace-note">посчитан выше, в части 6</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">слагаемое</div><div class="math-display worked-trace-math" data-tex="4\,(p_{12} - q_{12})\,(y_1 - y_2)\,w_{12} = 4 \cdot 0{,}02990 \cdot 8{,}788 \cdot 0{,}01278 = 0{,}01344"></div><div class="worked-trace-note">плюс: KL растёт, если двигать точку 1 вправо, от точки 2</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">слагаемое</div><div class="math-display worked-trace-math" data-tex="4\,(p_{12} - q_{12})\,(y_1 - y_2)\,w_{12}"></div><div class="worked-trace-note">перемножаем четыре числа</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name"></div><div class="math-display worked-trace-math" data-tex="= 4 \cdot 0{,}02990 \cdot 8{,}788 \cdot 0{,}01278 = 0{,}01344"></div><div class="worked-trace-note">плюс: KL растёт, если двигать точку 1 вправо, от точки 2</div></div>
 </div>
 </div>
 
@@ -1473,8 +1480,10 @@
 <div class="worked-label">Какое расстояние даёт вес 0,01</div>
 <div class="worked-trace">
 <div class="worked-trace-row"><div class="worked-trace-name">формулы</div><div class="math-display worked-trace-math" data-tex="w_{\text{Гаусс}}(d) = e^{-d^2}, \qquad w_{\text{Стьюдент}}(d) = \frac{1}{1 + d^2}"></div><div class="worked-trace-note">оба ядра равны 1 при d = 0</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">Гаусс</div><div class="math-display worked-trace-math" data-tex="e^{-d^2} = 0{,}01 \;\Rightarrow\; d^2 = -\ln 0{,}01 = 4{,}605 \;\Rightarrow\; d = \sqrt{4{,}605} = 2{,}15"></div><div class="worked-trace-note">логарифм снимает экспоненту</div></div>
-<div class="worked-trace-row"><div class="worked-trace-name">Стьюдент</div><div class="math-display worked-trace-math" data-tex="\frac{1}{1 + d^2} = 0{,}01 \;\Rightarrow\; 1 + d^2 = \frac{1}{0{,}01} = 100 \;\Rightarrow\; d = \sqrt{99} = 9{,}95"></div><div class="worked-trace-note">переворачиваем дробь</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">Гаусс</div><div class="math-display worked-trace-math" data-tex="e^{-d^2} = 0{,}01 \;\Rightarrow\; d^2 = -\ln 0{,}01 = 4{,}605"></div><div class="worked-trace-note">логарифм снимает экспоненту</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name"></div><div class="math-display worked-trace-math" data-tex="d = \sqrt{4{,}605} = 2{,}15"></div><div class="worked-trace-note"></div></div>
+<div class="worked-trace-row"><div class="worked-trace-name">Стьюдент</div><div class="math-display worked-trace-math" data-tex="\frac{1}{1 + d^2} = 0{,}01 \;\Rightarrow\; 1 + d^2 = \frac{1}{0{,}01} = 100"></div><div class="worked-trace-note">переворачиваем дробь</div></div>
+<div class="worked-trace-row"><div class="worked-trace-name"></div><div class="math-display worked-trace-math" data-tex="d = \sqrt{99} = 9{,}95"></div><div class="worked-trace-note"></div></div>
 <div class="worked-trace-row"><div class="worked-trace-name">Гаусс, d = 3</div><div class="math-display worked-trace-math" data-tex="w_{\text{Гаусс}}(3) = e^{-3^2} = e^{-9} = 0{,}000123"></div><div class="worked-trace-note"></div></div>
 <div class="worked-trace-row"><div class="worked-trace-name">Стьюдент, d = 3</div><div class="math-display worked-trace-math" data-tex="w_{\text{Стьюдент}}(3) = \frac{1}{1 + 3^2} = \frac{1}{10} = 0{,}1"></div><div class="worked-trace-note">в 800 раз больше, чем у Гаусса</div></div>
 </div>
