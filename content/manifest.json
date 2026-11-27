@@ -179,6 +179,15 @@
             "kk": "Шешім ағаштары"
           },
           "articles": ["decision-tree-full-cycle", "regression-tree-full-cycle", "random-forest-full-cycle", "gradient-boosting-full-cycle"]
+        },
+        {
+          "group": "evaluation",
+          "label": {
+            "ru": "Оценка моделей",
+            "en": "Model evaluation",
+            "kk": "Модельдерді бағалау"
+          },
+          "articles": ["classification-metrics-full-cycle"]
         }
       ]
     },
@@ -615,6 +624,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/machine-learning/regression-tree-full-cycle.ru.md"
+  }
+},
+    {
+  "slug": "classification-metrics-full-cycle",
+  "category": "machine-learning",
+  "title": {
+    "ru": "Метрики классификации: от матрицы ошибок до ROC и калибровки на десяти студентах"
+  },
+  "description": {
+    "ru": "Метрики классификации на ответах случайного леса: почему accuracy обманывает при редком классе, матрица ошибок, precision и recall, порог, F1 и F-бета, ROC-кривая и AUC как доля верных пар, PR-кривая и AP при дисбалансе, log loss, Brier и калибровка, несколько классов, код с нуля и на sklearn."
+  },
+  "date": "2026-11-27",
+  "reading_time": 30,
+  "tags": ["ml-basics"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/classification-metrics-full-cycle.ru.md"
   }
 },
     {
