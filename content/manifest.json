@@ -181,6 +181,15 @@
           "articles": ["decision-tree-full-cycle", "regression-tree-full-cycle", "random-forest-full-cycle", "gradient-boosting-full-cycle"]
         },
         {
+          "group": "neighbors",
+          "label": {
+            "ru": "Метод ближайших соседей",
+            "en": "Nearest neighbors",
+            "kk": "Жақын көршілер әдісі"
+          },
+          "articles": ["knn-full-cycle"]
+        },
+        {
           "group": "evaluation",
           "label": {
             "ru": "Оценка моделей",
@@ -658,6 +667,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/machine-learning/regression-metrics-full-cycle.ru.md"
+  }
+},
+    {
+  "slug": "knn-full-cycle",
+  "category": "machine-learning",
+  "title": {
+    "ru": "Метод ближайших соседей (kNN) на десяти студентах"
+  },
+  "description": {
+    "ru": "kNN с нуля на десяти студентах: соседи нового студента на плоскости, евклидово и манхэттенское расстояние, голосование, ничьи и веса по расстоянию, почему без стандартизации ответ зависит от единиц измерения, выбор k и граница решений, регрессия соседями, проклятие размерности, скорость поиска, код с нуля и на sklearn."
+  },
+  "date": "2026-11-27",
+  "reading_time": 20,
+  "tags": ["ml-basics"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/knn-full-cycle.ru.md"
   }
 },
     {
