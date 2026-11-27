@@ -1431,7 +1431,123 @@
 ---
 
 
-## Часть 13. Что важно уметь восстановить по памяти
+<!-- trained-model-part:start -->
+
+<style>
+  .prose .stage-figure .katex svg { height: inherit; }
+</style>
+
+## Часть 13. Обученная модель и её ошибка
+
+<p>
+  Обе дороги привели к одним весам. Посмотрим, что получилось: какие цены модель предсказывает, насколько ошибается
+  и чего стоит эта ошибка, если квартира новая.
+</p>
+
+<div class="stage" id="stage-trained" tabindex="0">
+  <div class="stage-figure">
+<svg id="trainedErr" viewBox="0 0 960 560" role="img" aria-label="Обученная модель: прогнозы, остатки и ошибка на новых данных"><style>#trainedErr { font-family: Helvetica, Arial, sans-serif; }</style>
+<rect x="0" y="0" width="960" height="560" rx="0" fill="#FFFFFF" stroke="none" stroke-width="0"/>
+<g data-key="axes"><line x1="90" y1="470" x2="940" y2="470" stroke="#D8D4C8" stroke-width="1.2"/><line x1="84" y1="470" x2="90" y2="470" stroke="#5E5850" stroke-width="1"/><text x="78" y="474" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">0</text><line x1="84" y1="410" x2="90" y2="410" stroke="#5E5850" stroke-width="1"/><text x="78" y="414" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">1</text><line x1="90" y1="410" x2="940" y2="410" stroke="#F1EEE6" stroke-width="1"/><line x1="84" y1="350" x2="90" y2="350" stroke="#5E5850" stroke-width="1"/><text x="78" y="354" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">2</text><line x1="90" y1="350" x2="940" y2="350" stroke="#F1EEE6" stroke-width="1"/><line x1="84" y1="290" x2="90" y2="290" stroke="#5E5850" stroke-width="1"/><text x="78" y="294" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">3</text><line x1="90" y1="290" x2="940" y2="290" stroke="#F1EEE6" stroke-width="1"/><line x1="84" y1="230" x2="90" y2="230" stroke="#5E5850" stroke-width="1"/><text x="78" y="234" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">4</text><line x1="90" y1="230" x2="940" y2="230" stroke="#F1EEE6" stroke-width="1"/><line x1="84" y1="170" x2="90" y2="170" stroke="#5E5850" stroke-width="1"/><text x="78" y="174" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">5</text><line x1="90" y1="170" x2="940" y2="170" stroke="#F1EEE6" stroke-width="1"/><line x1="84" y1="110" x2="90" y2="110" stroke="#5E5850" stroke-width="1"/><text x="78" y="114" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">6</text><line x1="90" y1="110" x2="940" y2="110" stroke="#F1EEE6" stroke-width="1"/><line x1="84" y1="50" x2="90" y2="50" stroke="#5E5850" stroke-width="1"/><text x="78" y="54" font-size="12" fill="#5E5850" text-anchor="end" font-weight="400">7</text><line x1="90" y1="50" x2="940" y2="50" stroke="#F1EEE6" stroke-width="1"/><text x="40" y="260" font-size="13" fill="#5E5850" text-anchor="middle" font-weight="400" transform="rotate(-90 40 260.0)">цена, млн</text><text x="150" y="490" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">кв. 1: 20 м², 10 лет</text><text x="300" y="490" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">кв. 2: 30 м², 10 лет</text><text x="450" y="490" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">кв. 3: 10 м², 30 лет</text><text x="600" y="490" font-size="12" fill="#5E5850" text-anchor="middle" font-weight="400">кв. 4: 40 м², 20 лет</text><line x1="710" y1="38" x2="710" y2="470" stroke="#D8D4C8" stroke-width="1.2" stroke-dasharray="5 5"/></g>
+<g data-key="sq_s" data-only="1"><rect x="90" y="170" width="60" height="60" rx="0" fill="#EEF6E2" stroke="#73B222" stroke-width="1.3" fill-opacity="0.8"/><rect x="240" y="110" width="60" height="60" rx="0" fill="#EEF6E2" stroke="#73B222" stroke-width="1.3" fill-opacity="0.8"/><rect x="390" y="410" width="60" height="60" rx="0" fill="#EEF6E2" stroke="#73B222" stroke-width="1.3" fill-opacity="0.8"/><rect x="540" y="50" width="60" height="60" rx="0" fill="#EEF6E2" stroke="#73B222" stroke-width="1.3" fill-opacity="0.8"/></g>
+<g data-key="sq_f" data-only="1"><rect x="150" y="170" width="31.3" height="31.3" rx="0" fill="#FCE9E9" stroke="#C30B0A" stroke-width="1.3" fill-opacity="0.8"/><rect x="300" y="130.87" width="39.13" height="39.13" rx="0" fill="#FCE9E9" stroke="#C30B0A" stroke-width="1.3" fill-opacity="0.8"/><rect x="450" y="402.17" width="7.83" height="7.83" rx="0" fill="#FCE9E9" stroke="#C30B0A" stroke-width="1.3" fill-opacity="0.8"/><rect x="600" y="110" width="15.65" height="15.65" rx="0" fill="#FCE9E9" stroke="#C30B0A" stroke-width="1.3" fill-opacity="0.8"/></g>
+<g data-key="dots"><circle cx="150" cy="170.0" r="7" fill="#3F3A33" stroke="#FFFFFF" stroke-width="1.5"/><text x="136" y="175" font-size="14" fill="#3F3A33" text-anchor="end" font-weight="700">1</text><circle cx="300" cy="170.0" r="7" fill="#3F3A33" stroke="#FFFFFF" stroke-width="1.5"/><text x="286" y="175" font-size="14" fill="#3F3A33" text-anchor="end" font-weight="700">2</text><circle cx="450" cy="410.0" r="7" fill="#3F3A33" stroke="#FFFFFF" stroke-width="1.5"/><text x="436" y="415" font-size="14" fill="#3F3A33" text-anchor="end" font-weight="700">3</text><circle cx="600" cy="110.0" r="7" fill="#3F3A33" stroke="#FFFFFF" stroke-width="1.5"/><text x="586" y="115" font-size="14" fill="#3F3A33" text-anchor="end" font-weight="700">4</text></g>
+<g data-key="p_s" data-only="1"><line x1="128" y1="230" x2="172" y2="230" stroke="#5F9420" stroke-width="4"/><line x1="278" y1="110" x2="322" y2="110" stroke="#5F9420" stroke-width="4"/><line x1="428" y1="470" x2="472" y2="470" stroke="#5F9420" stroke-width="4"/><line x1="578" y1="50" x2="622" y2="50" stroke="#5F9420" stroke-width="4"/></g>
+<g data-key="p_f"><line x1="128" y1="201.3" x2="172" y2="201.3" stroke="#3576C0" stroke-width="4"/><line x1="278" y1="130.87" x2="322" y2="130.87" stroke="#3576C0" stroke-width="4"/><line x1="428" y1="402.17" x2="472" y2="402.17" stroke="#3576C0" stroke-width="4"/><line x1="578" y1="125.65" x2="622" y2="125.65" stroke="#3576C0" stroke-width="4"/></g>
+<g data-key="p_l" data-only="1"><line x1="128" y1="260" x2="172" y2="260" stroke="#5E5850" stroke-width="4"/><line x1="278" y1="98" x2="322" y2="98" stroke="#5E5850" stroke-width="4"/><line x1="428" y1="50" x2="472" y2="50" stroke="#5E5850" stroke-width="4"/><line x1="578" y1="290" x2="622" y2="290" stroke="#5E5850" stroke-width="4"/></g>
+<g data-key="seg_f" data-only="1"><line x1="150" y1="201.3" x2="150" y2="170" stroke="#C30B0A" stroke-width="3"/><line x1="300" y1="130.87" x2="300" y2="170" stroke="#C30B0A" stroke-width="3"/><line x1="450" y1="402.17" x2="450" y2="410" stroke="#C30B0A" stroke-width="3"/><line x1="600" y1="125.65" x2="600" y2="110" stroke="#C30B0A" stroke-width="3"/></g>
+<g data-key="lab_f" data-only="1"><line x1="150" y1="201.3" x2="150" y2="170" stroke="#C30B0A" stroke-width="3"/><text x="178" y="190.65" font-size="14" fill="#9C0908" text-anchor="start" font-weight="700">−0,52</text><line x1="300" y1="130.87" x2="300" y2="170" stroke="#C30B0A" stroke-width="3"/><text x="328" y="155.43" font-size="14" fill="#9C0908" text-anchor="start" font-weight="700">+0,65</text><line x1="450" y1="402.17" x2="450" y2="410" stroke="#C30B0A" stroke-width="3"/><text x="478" y="411.09" font-size="14" fill="#9C0908" text-anchor="start" font-weight="700">+0,13</text><line x1="600" y1="125.65" x2="600" y2="110" stroke="#C30B0A" stroke-width="3"/><text x="628" y="122.83" font-size="14" fill="#9C0908" text-anchor="start" font-weight="700">−0,26</text></g>
+<g data-key="seg_l" data-only="1"><line x1="150" y1="260" x2="150" y2="170" stroke="#C30B0A" stroke-width="3"/><text x="178" y="220" font-size="14" fill="#9C0908" text-anchor="start" font-weight="700">−1,50</text><line x1="300" y1="98" x2="300" y2="170" stroke="#C30B0A" stroke-width="3"/><text x="328" y="139" font-size="14" fill="#9C0908" text-anchor="start" font-weight="700">+1,20</text><line x1="450" y1="50" x2="450" y2="410" stroke="#C30B0A" stroke-width="3"/><text x="478" y="235" font-size="14" fill="#9C0908" text-anchor="start" font-weight="700">+6,00</text><line x1="600" y1="290" x2="600" y2="110" stroke="#C30B0A" stroke-width="3"/><text x="628" y="205" font-size="14" fill="#9C0908" text-anchor="start" font-weight="700">−3,00</text></g>
+<g data-key="new" data-only="1"><circle cx="820" cy="198.7" r="9" fill="#FFFFFF" stroke="#3576C0" stroke-width="3"/><line x1="798" y1="198.7" x2="842" y2="198.7" stroke="#3576C0" stroke-width="4"/><text x="850" y="203.7" font-size="15" fill="#2A5E9B" text-anchor="start" font-weight="700">4,52 млн</text><text x="820" y="490" font-size="12" fill="#2A5E9B" text-anchor="middle" font-weight="700">новая: 25 м², 15 лет</text></g>
+<g data-key="f1" data-only="1"><foreignObject x="30" y="500" width="900" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="\hat y = \tfrac{1}{23}\,(27 \cdot \text{площадь} - 25 \cdot \text{возраст} + 74) \approx 1{,}17 \cdot \text{площадь} - 1{,}09 \cdot \text{возраст} + 3{,}22"></div></foreignObject></g>
+<g data-key="f2" data-only="1"><foreignObject x="30" y="500" width="900" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="R^* = \hat Y - Y = \tfrac{1}{23}\,(-12,\ 15,\ 3,\ -6), \qquad \textstyle\sum_i R^*_i = 0"></div></foreignObject></g>
+<g data-key="f3" data-only="1"><foreignObject x="30" y="500" width="900" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="L:\ 1 \;\to\; L^* = \tfrac{9}{46} \approx 0{,}196"></div></foreignObject></g>
+<g data-key="f4" data-only="1"><foreignObject x="30" y="500" width="900" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:18px;color:#111111;font-weight:400" data-tex="\text{RMSE} = \sqrt{L^*} \approx 0{,}44\ \text{млн}, \quad \text{MAE} = \tfrac{9}{23} \approx 0{,}39\ \text{млн}, \quad R^2 = 1 - \tfrac{0{,}196}{3{,}6875} = 0{,}947"></div></foreignObject></g>
+<g data-key="f5" data-only="1"><foreignObject x="30" y="500" width="900" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:19px;color:#111111;font-weight:400" data-tex="\hat y_{\text{новая}} = \tfrac{1}{23}\,(27 \cdot 2{,}5 - 25 \cdot 1{,}5 + 74) = \tfrac{104}{23} \approx 4{,}52\ \text{млн}"></div></foreignObject></g>
+<g data-key="f6" data-only="1"><foreignObject x="30" y="500" width="900" height="56"><div xmlns="http://www.w3.org/1999/xhtml" class="svg-math svg-math-fit svg-math-center" style="font-size:18px;color:#111111;font-weight:400" data-tex="\text{без квартиры в обучении:}\ \ \text{MAE} = 2{,}93,\quad \text{RMSE} = 3{,}49,\quad R^2 = -2{,}30"></div></foreignObject></g>
+</svg>
+  </div>
+  <div class="stage-bar">
+    <button type="button" data-nav="prev">← Назад</button>
+    <button type="button" data-nav="next">Далее →</button>
+    <div class="stage-progress"></div>
+    <div class="stage-counter"></div>
+  </div>
+  <div class="stage-notes">
+    <div class="step-panel" data-on="axes dots p_f f1" data-focus="p_f f1">
+      <div class="step-kicker">Шаг 1 · модель</div>
+      <h4>Обученная модель</h4>
+      <p>Веса из нормальных уравнений: <span class="math-inline" data-tex="\theta^* = (27,\ -25,\ 74)/23"></span>. В единицах задачи модель говорит: каждые 10 м² добавляют к цене 1,17 млн, каждые 10 лет возраста дома снимают 1,09 млн, база 3,22 млн.</p>
+<p>Синие черточки — её прогнозы для четырёх квартир: <span class="math-inline" data-tex="103/23,\ 130/23,\ 26/23,\ 132/23"></span>, то есть 4,48, 5,65, 1,13 и 5,74 млн.</p>
+    </div>
+    <div class="step-panel" data-on="axes dots p_f seg_f lab_f f2" data-focus="seg_f lab_f f2">
+      <div class="step-kicker">Шаг 2 · остатки</div>
+      <h4>Остатки обученной модели</h4>
+      <p>Красные отрезки — остатки <span class="math-inline" data-tex="R^* = \hat Y - Y"></span>, тот самый вектор из части 7. Модель недооценила первую и четвёртую квартиры и переоценила вторую и третью. Больше всего она ошиблась на второй: 0,65 млн.</p>
+<p>Сумма остатков ровно ноль. Это уравнение для <span class="math-inline" data-tex="b"></span>: вектор остатков перпендикулярен столбцу единиц.</p>
+    </div>
+    <div class="step-panel" data-on="axes sq_s sq_f dots p_s p_f f3" data-focus="sq_s sq_f f3">
+      <div class="step-kicker">Шаг 3 · старт и финиш</div>
+      <h4>Что дало обучение</h4>
+      <p>Зелёные черточки — прогнозы стартовых весов <span class="math-inline" data-tex="w = (2, -1)"></span>, <span class="math-inline" data-tex="b = 1"></span>. Каждый промах ровно 1 млн, и квадрат каждого промаха (зелёный, слева) равен 1. Красные квадраты справа — квадраты остатков обученной модели.</p>
+<p>Потеря <span class="math-inline" data-tex="L"></span> — средняя площадь квадратов. Обучение уменьшило её с 1 до <span class="math-inline" data-tex="9/46 \approx 0{,}196"></span>, в пять раз. Меньше на этих данных не получить: это минимум.</p>
+    </div>
+    <div class="step-panel" data-on="axes dots p_f seg_f f4" data-focus="f4">
+      <div class="step-kicker">Шаг 4 · ошибка</div>
+      <h4>Ошибка в понятных единицах</h4>
+      <p><span class="math-inline" data-tex="L^*"></span> измеряется в квадратных миллионах, и её трудно прочитать. Корень из неё, RMSE, снова в миллионах: 0,44. Средний модуль остатка, MAE, — 0,39 млн: модель промахивается в среднем на 391 тысячу.</p>
+<p>Ориентир из части 5 — дисперсия цен 3,6875, потеря модели, которая всем отвечает средней ценой. <span class="math-inline" data-tex="R^2 = 0{,}947"></span>: обученная модель убрала почти 95 % разброса цен, стартовые веса убирали 73 %.</p>
+    </div>
+    <div class="step-panel" data-on="axes dots p_f new f5" data-focus="new f5">
+      <div class="step-kicker">Шаг 5 · новая квартира</div>
+      <h4>Прогноз для квартиры, которой не было</h4>
+      <p>Ради этого модель и обучали. Квартира 25 м² в доме 15 лет: <span class="math-inline" data-tex="x = (2{,}5;\ 1{,}5)"></span>. Модель называет <span class="math-inline" data-tex="104/23 \approx 4{,}52"></span> млн.</p>
+<p>Насколько этому верить? Ошибки 0,39–0,44 млн посчитаны на тех квартирах, по которым подбирали веса. Про новую квартиру они ничего не обещают.</p>
+    </div>
+    <div class="step-panel" data-on="axes dots p_l seg_l f6" data-focus="p_l seg_l f6">
+      <div class="step-kicker">Шаг 6 · честная ошибка</div>
+      <h4>Ошибка на квартирах, которых модель не видела</h4>
+      <p>Проверим честно: каждую квартиру предскажем моделью, обученной на трёх остальных. Серые черточки — такие прогнозы. У модели три параметра, и через три точки плоскость проходит точно, поэтому без одной квартиры веса меняются сильно.</p>
+<p>Без третьей квартиры, единственной в старом доме, остальные дома моложе, и выходит «чем старше дом, тем дороже». Третьей квартире такая модель даёт 7 млн при цене 1. Честная ошибка: MAE 2,93 млн вместо 0,39, <span class="math-inline" data-tex="R^2 = -2{,}30"></span> вместо 0,947 — хуже, чем просто средняя цена.</p>
+    </div>
+  </div>
+</div>
+<p class="stage-hint">Наведите фокус на сцену и листайте стрелками ← →.</p>
+
+<p>
+  Три числа ошибки в одной таблице:
+</p>
+
+<div class="dt-table"><table class="shape-table">
+  <tr><th></th><th>Стартовые веса</th><th>Обученная модель, на тех же квартирах</th><th>Обученная модель, каждая квартира без неё в обучении</th></tr>
+  <tr><td><span class="math-inline" data-tex="L"></span> (MSE), млн²</td><td>1</td><td>0,196</td><td>12,17</td></tr>
+  <tr><td>RMSE, млн</td><td>1</td><td>0,442</td><td>3,49</td></tr>
+  <tr><td>MAE, млн</td><td>1</td><td>0,391</td><td>2,93</td></tr>
+  <tr><td><span class="math-inline" data-tex="R^2"></span></td><td>0,729</td><td>0,947</td><td>−2,30</td></tr>
+</table></div>
+
+<p>
+  На четырёх квартирах это крайний случай: три параметра почти запоминают данные. Но разрыв между ошибкой на обучающих
+  данных и ошибкой на новых есть у любой модели, и он тем больше, чем меньше объектов приходится на параметр.
+  На 400 синтетических квартирах с тем же устройством <span class="math-inline" data-tex="R^2"></span> на обучении 0,890, а на новых квартирах 0,889.
+</p>
+
+<p>
+  Что такое MAE, RMSE и <span class="math-inline" data-tex="R^2"></span>, почему <span class="math-inline" data-tex="R^2"></span> бывает отрицательным и какую метрику выбрать, разобрано на этих же
+  четырёх квартирах в статье <a href="article.html?slug=regression-metrics-full-cycle">«Метрики регрессии»</a>.
+</p>
+
+<div class="callout">
+  <strong>Главная мысль части:</strong> минимум потери <span class="math-inline" data-tex="L^*"></span> показывает,
+  насколько хорошо плоскость легла на обучающие точки. Ошибку на новых объектах меряют на данных, которых модель не видела.
+</div>
+
+---
+
+<!-- trained-model-part:end -->
+
+
+## Часть 14. Что важно уметь восстановить по памяти
 
 <ol class="end-list">
   <li><strong>Модель:</strong> <span class="math-inline" data-tex="\hat Y = XW + b"></span>, <code>[B × d] · [d × 1] + [1] = [B × 1]</code> — один нейрон без активации.</li>
@@ -1444,6 +1560,7 @@
   <li><strong>Градиент:</strong> <span class="math-inline" data-tex="\tfrac{2}{B}\tilde X^{\top}(\tilde X\theta - Y)"></span>; ноль градиента = нормальные уравнения.</li>
   <li><strong>Сумма остатков при модели со смещением</strong> в оптимуме равна нулю — это уравнение для b.</li>
   <li><strong>Шаг спуска</strong> ограничен <span class="math-inline" data-tex="2/\lambda_{max}"></span>, скорость — обусловленностью; поэтому признаки нормируют.</li>
+  <li><strong>Ошибка на новых данных:</strong> <span class="math-inline" data-tex="L^*"></span> на обучающих объектах оптимистична; честную ошибку меряют на объектах, которых модель не видела (у нас RMSE 0,44 против 3,49).</li>
 </ol>
 
 <p>
