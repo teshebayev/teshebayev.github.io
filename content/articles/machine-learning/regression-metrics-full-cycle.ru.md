@@ -104,6 +104,124 @@
 
 
 <p>
+  Прежде чем считать метрики, полезно почувствовать ошибку руками. Подвигайте веса модели и посмотрите,
+  как меняются прогнозы, остатки и числа под графиком. Кнопка «стартовые веса» ставит <span class="math-inline" data-tex="w = (2, -1)"></span>, <span class="math-inline" data-tex="b = 1"></span>,
+  с которых в статье по формам начинался градиентный спуск, кнопка «обученная модель» — веса из нормальных уравнений.
+</p>
+
+
+<div class="dt-live" id="fitLive">
+  <div class="dt-live-head"><strong>Интерактив: двигайте веса модели и наблюдайте ошибку</strong>
+    <p>Модель <span class="math-inline" data-tex="\hat y = w_1 \cdot \text{площадь} + w_2 \cdot \text{возраст} + b"></span>. Синие черточки — её прогнозы, красные пунктирные отрезки — остатки, серые черточки — прогноз обученной модели.</p></div>
+  <div class="thr-fig"><svg id="fitSvg" viewBox="0 0 600 380" role="img" aria-label="Цены квартир, прогнозы модели и остатки"></svg></div>
+  <div class="thr-panel">
+    <div class="dt-controls">
+      <div class="dt-control"><label for="fitW1"><span>вес площади <span class="math-inline" data-tex="w_1"></span></span><output id="fitW1v">2,00</output></label>
+        <input id="fitW1" type="range" min="-1" max="3" step="any" value="2"></div>
+      <div class="dt-control"><label for="fitW2"><span>вес возраста <span class="math-inline" data-tex="w_2"></span></span><output id="fitW2v">−1,00</output></label>
+        <input id="fitW2" type="range" min="-3" max="1" step="any" value="-1"></div>
+      <div class="dt-control"><label for="fitB"><span>сдвиг <span class="math-inline" data-tex="b"></span></span><output id="fitBv">1,00</output></label>
+        <input id="fitB" type="range" min="-2" max="7" step="any" value="1"></div>
+    </div>
+      <div class="dt-presets" style="align-content: start">
+        <button type="button" data-w="2,-1,1">стартовые веса</button>
+        <button type="button" data-w="1.173913,-1.086957,3.217391">обученная модель</button>
+        <button type="button" data-w="0,0,4.25">средняя цена</button>
+      </div>
+      <div class="dt-metrics">
+        <div class="dt-metric is-main"><span>MSE (потеря L)</span><strong id="fitMse">—</strong></div>
+        <div class="dt-metric"><span>RMSE</span><strong id="fitRmse">—</strong></div>
+        <div class="dt-metric"><span>MAE</span><strong id="fitMae">—</strong></div>
+        <div class="dt-metric"><span>R²</span><strong id="fitR2">—</strong></div>
+        <div class="dt-metric"><span>средний остаток</span><strong id="fitBias">—</strong></div>
+      </div>
+  </div>
+  <div class="dt-formula" id="fitF"></div>
+  <p class="dt-note">Лучшее, чего можно добиться на этих четырёх квартирах: <span class="math-inline" data-tex="w = (27, -25)/23 \approx (1{,}17;\ -1{,}09)"></span>, <span class="math-inline" data-tex="b = 74/23 \approx 3{,}22"></span>, MSE = 9/46 ≈ 0,1957. Ни одно положение ползунков не даст MSE меньше.</p>
+</div>
+<script>
+(function () {
+  var svg = document.getElementById('fitSvg');
+  if (!svg) return;
+  function el(n, a, t) {
+    var e = document.createElementNS('http://www.w3.org/2000/svg', n);
+    for (var k in a) e.setAttribute(k, a[k]);
+    if (t !== undefined) e.textContent = t;
+    return e;
+  }
+  function fmt(v, d) { return v.toFixed(d).replace('.', ','); }
+  function H(k, n) {
+    if (n === 0) return 0;
+    var p = k / n, s = 0;
+    [p, 1 - p].forEach(function (q) { if (q > 0) s -= q * Math.log2(q); });
+    return s;
+  }
+  function tex(node, src, plain) {
+    if (window.katex) window.katex.render(src, node, {throwOnError: false, displayMode: false});
+    else node.textContent = plain;
+  }
+  var D = {"X": [[2, 1], [3, 1], [1, 3], [4, 2]], "y": [5, 5, 1, 6], "fit": [4.4783, 5.6522, 1.1304, 5.7391]};
+  var W1 = document.getElementById('fitW1'), W2 = document.getElementById('fitW2'), B = document.getElementById('fitB');
+  var VAR = 3.6875;
+  function cx(i) { return 120 + i * 125; }
+  function sy(v) { return 320 - Math.max(-1, Math.min(9, v)) * 32; }
+  function f2(v) { return fmt(v, 2).replace('-', '−'); }
+  function draw(p) {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    svg.appendChild(el('rect', {x: 0, y: 0, width: 600, height: 380, fill: '#FFFFFF'}));
+    for (var v = 0; v <= 8; v++) {
+      svg.appendChild(el('line', {x1: 60, y1: sy(v), x2: 590, y2: sy(v), stroke: v ? '#F1EEE6' : '#D8D4C8'}));
+      svg.appendChild(el('text', {x: 54, y: sy(v) + 4, 'text-anchor': 'end', 'font-size': 11, fill: '#5E5850'}, String(v)));
+    }
+    svg.appendChild(el('text', {x: 60, y: 22, 'font-size': 12, fill: '#5E5850'}, 'цена, млн'));
+    for (var i = 0; i < 4; i++) {
+      var x = cx(i), y = D.y[i];
+      svg.appendChild(el('line', {x1: x - 24, y1: sy(D.fit[i]), x2: x + 24, y2: sy(D.fit[i]), stroke: '#C9C3B6', 'stroke-width': 4}));
+      svg.appendChild(el('line', {x1: x, y1: sy(y), x2: x, y2: sy(p[i]), stroke: '#C30B0A', 'stroke-width': 2.2, 'stroke-dasharray': '4 3'}));
+      svg.appendChild(el('line', {x1: x - 24, y1: sy(p[i]), x2: x + 24, y2: sy(p[i]), stroke: '#3576C0', 'stroke-width': 4}));
+      svg.appendChild(el('circle', {cx: x, cy: sy(y), r: 7, fill: '#3F3A33', stroke: '#FFFFFF', 'stroke-width': 1.5}));
+      svg.appendChild(el('text', {x: x - 14, y: sy(y) + 5, 'text-anchor': 'end', 'font-size': 13, 'font-weight': 700, fill: '#3F3A33'}, String(i + 1)));
+      var e = y - p[i];
+      svg.appendChild(el('text', {x: x, y: 346, 'text-anchor': 'middle', 'font-size': 11, fill: '#5E5850'}, D.X[i][0] * 10 + ' м², ' + D.X[i][1] * 10 + ' лет'));
+      svg.appendChild(el('text', {x: x, y: 366, 'text-anchor': 'middle', 'font-size': 12, 'font-weight': 700, fill: '#9C0908'}, 'e = ' + (e > 0 ? '+' : '') + f2(e)));
+    }
+  }
+  function update() {
+    var w1 = +W1.value, w2 = +W2.value, b = +B.value;
+    var p = D.X.map(function (r) { return w1 * r[0] + w2 * r[1] + b; });
+    var se = 0, sa = 0, sq = 0;
+    p.forEach(function (v, i) { var e = D.y[i] - v; se += e; sa += Math.abs(e); sq += e * e; });
+    var mse = sq / 4;
+    document.getElementById('fitW1v').textContent = f2(w1);
+    document.getElementById('fitW2v').textContent = f2(w2);
+    document.getElementById('fitBv').textContent = f2(b);
+    document.getElementById('fitMse').textContent = fmt(mse, 4);
+    document.getElementById('fitRmse').textContent = fmt(Math.sqrt(mse), 3);
+    document.getElementById('fitMae').textContent = fmt(sa / 4, 3);
+    document.getElementById('fitR2').textContent = f2(1 - mse / VAR).replace(/(,\d\d)$/, '$1') ;
+    document.getElementById('fitBias').textContent = f2(se / 4);
+    var c = function (v) { return fmt(Math.abs(v), 2).replace(',', '{,}'); };
+    tex(document.getElementById('fitF'),
+        '\\hat y = ' + (w1 < 0 ? '-' : '') + c(w1) + ' \\cdot \\text{площадь} ' + (w2 < 0 ? '- ' : '+ ') + c(w2) + ' \\cdot \\text{возраст} ' + (b < 0 ? '- ' : '+ ') + c(b) +
+        ',\\qquad \\text{MSE} = \\tfrac{1}{4}\\sum e_i^2 = ' + fmt(mse, 4).replace(',', '{,}'), 'MSE ' + fmt(mse, 4));
+    draw(p);
+  }
+  [W1, W2, B].forEach(function (r) { r.addEventListener('input', update); });
+  document.querySelectorAll('#fitLive [data-w]').forEach(function (btn) {
+    btn.addEventListener('click', function () { var v = btn.getAttribute('data-w').split(','); W1.value = v[0]; W2.value = v[1]; B.value = v[2]; update(); });
+  });
+  update();
+})();
+</script>
+
+
+<p>
+  У обученной модели MSE наименьшая из возможных, 0,1957, а средний остаток ровно ноль. Но ноль среднего остатка
+  легко получить и плохой моделью: кнопка «средняя цена» тоже даёт ноль, при MSE 3,69. Средний остаток показывает
+  только перекос в одну сторону, размер промахов меряют MAE, MSE и RMSE.
+</p>
+
+<p>
   В частях 1–4 метрики считаются на тех же квартирах, на которых модель обучалась, как в статье по формам.
   Так удобнее разбирать формулы. В части 5 станет видно, почему для оценки модели этого мало.
 </p>
