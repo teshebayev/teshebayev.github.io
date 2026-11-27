@@ -190,6 +190,15 @@
           "articles": ["knn-full-cycle", "similarity-measures"]
         },
         {
+          "group": "unsupervised",
+          "label": {
+            "ru": "Обучение без учителя",
+            "en": "Unsupervised learning",
+            "kk": "Мұғалімсіз оқыту"
+          },
+          "articles": ["pca-full-cycle"]
+        },
+        {
           "group": "evaluation",
           "label": {
             "ru": "Оценка моделей",
@@ -701,6 +710,25 @@
   "draft": false,
   "content": {
     "ru": "content/articles/machine-learning/similarity-measures.ru.md"
+  }
+},
+    {
+  "slug": "pca-full-cycle",
+  "category": "machine-learning",
+  "title": {
+    "ru": "Метод главных компонент (PCA): от тени на прямой до собственных векторов"
+  },
+  "description": {
+    "ru": "PCA на оценках десяти студентов и рукописных цифрах: центрирование и проекция на направление, почему максимум разброса и минимум потерь дают одну прямую, ковариационная матрица и собственные векторы, новые оси и доли объяснённой дисперсии, масштаб признаков и стандартизация, пять предметов и две компоненты, восстановление по k компонентам, сколько компонент оставить, цифры на плоскости PC1–PC2, где PCA ошибается, код на numpy и sklearn."
+  },
+  "date": "2026-11-27",
+  "reading_time": 22,
+  "tags": [
+    "ml-basics"
+  ],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/pca-full-cycle.ru.md"
   }
 },
     {
