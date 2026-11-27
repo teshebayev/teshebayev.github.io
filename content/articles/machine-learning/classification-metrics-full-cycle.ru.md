@@ -194,6 +194,8 @@
       <p class="dt-note">Модель угадывает всех, кто сдаст, и не находит ни одного, кто не сдаст.</p>
     </div>
   </div>
+  <div class="dt-formula" id="accF1"></div>
+  <div class="dt-formula" id="accF2"></div>
 </div>
 <script>
 (function () {
@@ -243,6 +245,14 @@
     document.getElementById('accN').textContent = n + ' из 1000';
     document.getElementById('accA').textContent = fmt((1000 - n) / 10, 1) + ' %';
     document.getElementById('accF').textContent = '0 из ' + n;
+    var ok = 1000 - n, acc = fmt(ok / 1000, 3).replace(',', '{,}');
+    tex(document.getElementById('accF1'),
+        '\\text{accuracy} = \\dfrac{\\text{верных ответов}}{\\text{всех ответов}} = \\dfrac{1000 - ' + n + '}{1000} = \\dfrac{' + ok + '}{1000} = ' + acc,
+        'accuracy = ' + ok + '/1000 = ' + fmt(ok / 1000, 3));
+    tex(document.getElementById('accF2'),
+        n ? '\\text{найдено} = \\dfrac{\\text{найденных несдавших}}{\\text{всех несдавших}} = \\dfrac{0}{' + n + '} = 0'
+          : '\\text{найдено} = \\dfrac{0}{0}\\text{ — несдавших нет}',
+        'найдено 0 из ' + n);
   }
   R.addEventListener('input', update);
   document.querySelectorAll('#accLive [data-n]').forEach(function (b) {
