@@ -187,7 +187,7 @@
             "en": "Model evaluation",
             "kk": "Модельдерді бағалау"
           },
-          "articles": ["classification-metrics-full-cycle"]
+          "articles": ["classification-metrics-full-cycle", "regression-metrics-full-cycle"]
         }
       ]
     },
@@ -641,6 +641,23 @@
   "draft": false,
   "content": {
     "ru": "content/articles/machine-learning/classification-metrics-full-cycle.ru.md"
+  }
+},
+    {
+  "slug": "regression-metrics-full-cycle",
+  "category": "machine-learning",
+  "title": {
+    "ru": "Метрики регрессии: MAE, RMSE, R² и остатки на баллах десяти студентов"
+  },
+  "description": {
+    "ru": "Метрики регрессии на прогнозах дерева: остатки и смещение, MAE, MSE и RMSE на квадратах, как один выброс меняет RMSE, какой прогноз лучший для каждой метрики, R² и почему он бывает отрицательным, MAPE и WAPE, квантильная потеря, графики остатков, выбросы и выбор функции потерь, код с нуля и на sklearn."
+  },
+  "date": "2026-11-27",
+  "reading_time": 25,
+  "tags": ["ml-basics"],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/regression-metrics-full-cycle.ru.md"
   }
 },
     {
