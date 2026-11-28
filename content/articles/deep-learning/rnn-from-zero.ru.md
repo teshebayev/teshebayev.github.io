@@ -1107,7 +1107,7 @@
 
 <p>
   Та же идея ещё раз, крупной схемой: сначала обычный полносвязный слой, затем ячейка со
-  скрытым состоянием и матрицами <code>W</code>, <code>U</code>, <code>V</code>, и наконец
+  скрытым состоянием и матрицами <code>W<sub>xh</sub></code>, <code>W<sub>hh</sub></code>, <code>W<sub>hy</sub></code>, и наконец
   развёртка этой ячейки на три такта сквозного примера. Развёрнутая сеть здесь та же, что в
   сцене обратного прохода.
 </p>
@@ -1195,7 +1195,7 @@
 <path class="flow-blue" d="M492 214 V295" marker-end="url(#rc-blue)"/>
 <rect class="memory-box" x="436" y="309" width="112" height="96" rx="12"/>
 <text x="492" y="365" text-anchor="middle" class="state-label">h<tspan dy="-9" font-size="14">t</tspan></text>
-<text class="svg-form" style="fill:#8C7106" text-anchor="middle" x="492" y="446">W, U, V, b<tspan dy="6" font-size="12">h</tspan><tspan dy="-6">, b</tspan><tspan dy="6" font-size="12">y</tspan></text>
+<text class="svg-form" style="fill:#8C7106" text-anchor="middle" x="492" y="446">W<tspan dy="6" font-size="12">xh</tspan><tspan dy="-6">, W</tspan><tspan dy="6" font-size="12">hh</tspan><tspan dy="-6">, W</tspan><tspan dy="6" font-size="12">hy</tspan><tspan dy="-6">, b</tspan><tspan dy="6" font-size="12">h</tspan><tspan dy="-6">, b</tspan><tspan dy="6" font-size="12">y</tspan></text>
 <path class="flow-green" d="M548 357 H626" marker-end="url(#rc-green)"/>
 <rect class="output-chip" x="640" y="322" width="84" height="70" rx="12"/>
 <text x="682" y="366" text-anchor="middle" class="state-label" style="fill:#5A8C1C">y<tspan dy="-9" font-size="14">t</tspan></text>
@@ -1229,9 +1229,9 @@
 <path class="connect" d="M333 288 L551 284"/>
 <path class="connect" d="M569 192 L782 282"/><path class="connect" d="M569 238 L782 326"/><path class="connect" d="M569 284 L782 382"/>
 </g>
-<text class="svg-form" style="fill:#8C7106" x="244" y="384">W<tspan dy="7" font-size="13">(E×H)</tspan></text>
-<text class="svg-form" style="fill:#2A5E9B" x="410" y="176">U<tspan dy="7" font-size="13">(H×H)</tspan></text>
-<text class="svg-form" style="fill:#5A8C1C" x="648" y="226">V<tspan dy="7" font-size="13">(H×O)</tspan></text>
+<text class="svg-form" style="fill:#8C7106" x="244" y="384">W<tspan dy="6" font-size="12">xh</tspan><tspan dy="1" font-size="13"> (E×H)</tspan></text>
+<text class="svg-form" style="fill:#2A5E9B" x="410" y="176">W<tspan dy="6" font-size="12">hh</tspan><tspan dy="1" font-size="13"> (H×H)</tspan></text>
+<text class="svg-form" style="fill:#5A8C1C" x="648" y="226">W<tspan dy="6" font-size="12">hy</tspan><tspan dy="1" font-size="13"> (H×O)</tspan></text>
 <text class="svg-form" style="fill:#8C7106" x="552" y="389">b<tspan dy="7" font-size="13">h</tspan></text>
 <text class="svg-form" style="fill:#5A8C1C" text-anchor="middle" x="792" y="448">b<tspan dy="7" font-size="13">y</tspan></text>
 </g>
@@ -1240,13 +1240,13 @@
 <g data-key="h0" data-only="1"><rect x="315" y="64" width="92" height="60" rx="12" class="state-t0"/><text x="361" y="102" text-anchor="middle" class="state-label">h<tspan dy="-9" font-size="14">0</tspan></text><text x="423" y="99" class="target">начальная память = 0</text></g>
 <g data-key="r1" data-only="1"><text x="40" y="212" class="svg-word" style="font-size:17px">&lt;BOS&gt;</text><text x="40" y="236" class="step-tag">t = 1</text><rect x="108" y="154" width="80" height="112" rx="18" class="input-vector"/><text x="148" y="180" text-anchor="middle" class="svg-small">1</text><text x="148" y="202" text-anchor="middle" class="svg-small">0</text><text x="148" y="224" text-anchor="middle" class="svg-small">0</text><text x="148" y="246" text-anchor="middle" class="svg-small">0</text><text x="210" y="218" text-anchor="middle" class="state-label" style="fill:#3576C0">x<tspan dy="-9" font-size="14">1</tspan></text><path d="M226 210 H303" class="flow-blue" marker-end="url(#rc-blue)"/><rect x="315" y="168" width="92" height="84" rx="12" class="state-blue"/><text x="361" y="218" text-anchor="middle" class="state-label">h<tspan dy="-9" font-size="14">1</tspan></text><path d="M407 210 H454" class="flow-blue" marker-end="url(#rc-blue)"/><rect x="466" y="178" width="76" height="64" rx="10" class="output-box"/><text x="504" y="218" text-anchor="middle" class="out-label" style="fill:#2A5E9B">y<tspan dy="-9" font-size="14">1</tspan></text></g>
 <g data-key="u1" data-only="1"><path d="M361 124 V156" class="flow-gray" marker-end="url(#rc-gray)"/></g>
-<g data-key="p1" data-only="1"><text x="264" y="198" text-anchor="middle" class="param" style="fill:#8C7106">W</text><text x="379" y="152" class="param" style="fill:#2A5E9B">U</text><text x="430" y="198" text-anchor="middle" class="param" style="fill:#5A8C1C">V</text></g>
+<g data-key="p1" data-only="1"><text x="264" y="198" text-anchor="middle" class="param" style="fill:#8C7106">W<tspan dy="5" font-size="11">xh</tspan></text><text x="379" y="152" class="param" style="fill:#2A5E9B">W<tspan dy="5" font-size="11">hh</tspan></text><text x="430" y="198" text-anchor="middle" class="param" style="fill:#5A8C1C">W<tspan dy="5" font-size="11">hy</tspan></text></g>
 <g data-key="r2" data-only="1"><text x="40" y="382" class="svg-word" style="font-size:17px">you</text><text x="40" y="406" class="step-tag">t = 2</text><rect x="108" y="324" width="80" height="112" rx="18" class="input-vector"/><text x="148" y="350" text-anchor="middle" class="svg-small">0</text><text x="148" y="372" text-anchor="middle" class="svg-small">1</text><text x="148" y="394" text-anchor="middle" class="svg-small">0</text><text x="148" y="416" text-anchor="middle" class="svg-small">0</text><text x="210" y="388" text-anchor="middle" class="state-label" style="fill:#3576C0">x<tspan dy="-9" font-size="14">2</tspan></text><path d="M226 380 H303" class="flow-blue" marker-end="url(#rc-blue)"/><rect x="315" y="338" width="92" height="84" rx="12" class="state-yellow"/><text x="361" y="388" text-anchor="middle" class="state-label">h<tspan dy="-9" font-size="14">2</tspan></text><path d="M407 380 H454" class="flow-yellow" marker-end="url(#rc-yellow)"/><rect x="466" y="348" width="76" height="64" rx="10" class="output-box"/><text x="504" y="388" text-anchor="middle" class="out-label" style="fill:#8C7106">y<tspan dy="-9" font-size="14">2</tspan></text></g>
 <g data-key="u2" data-only="1"><path d="M361 252 V326" class="flow-blue" marker-end="url(#rc-blue)"/></g>
-<g data-key="p2" data-only="1"><text x="264" y="368" text-anchor="middle" class="param" style="fill:#8C7106">W</text><text x="379" y="301" class="param" style="fill:#2A5E9B">U</text><text x="430" y="368" text-anchor="middle" class="param" style="fill:#5A8C1C">V</text></g>
+<g data-key="p2" data-only="1"><text x="264" y="368" text-anchor="middle" class="param" style="fill:#8C7106">W<tspan dy="5" font-size="11">xh</tspan></text><text x="379" y="301" class="param" style="fill:#2A5E9B">W<tspan dy="5" font-size="11">hh</tspan></text><text x="430" y="368" text-anchor="middle" class="param" style="fill:#5A8C1C">W<tspan dy="5" font-size="11">hy</tspan></text></g>
 <g data-key="r3" data-only="1"><text x="40" y="552" class="svg-word" style="font-size:17px">will</text><text x="40" y="576" class="step-tag">t = 3</text><rect x="108" y="494" width="80" height="112" rx="18" class="input-vector"/><text x="148" y="520" text-anchor="middle" class="svg-small">0</text><text x="148" y="542" text-anchor="middle" class="svg-small">0</text><text x="148" y="564" text-anchor="middle" class="svg-small">1</text><text x="148" y="586" text-anchor="middle" class="svg-small">0</text><text x="210" y="558" text-anchor="middle" class="state-label" style="fill:#3576C0">x<tspan dy="-9" font-size="14">3</tspan></text><path d="M226 550 H303" class="flow-blue" marker-end="url(#rc-blue)"/><rect x="315" y="508" width="92" height="84" rx="12" class="state-green"/><text x="361" y="558" text-anchor="middle" class="state-label">h<tspan dy="-9" font-size="14">3</tspan></text><path d="M407 550 H454" class="flow-green" marker-end="url(#rc-green)"/><rect x="466" y="518" width="76" height="64" rx="10" class="output-box"/><text x="504" y="558" text-anchor="middle" class="out-label" style="fill:#5A8C1C">y<tspan dy="-9" font-size="14">3</tspan></text></g>
 <g data-key="u3" data-only="1"><path d="M361 422 V496" class="flow-yellow" marker-end="url(#rc-yellow)"/></g>
-<g data-key="p3" data-only="1"><text x="264" y="538" text-anchor="middle" class="param" style="fill:#8C7106">W</text><text x="379" y="471" class="param" style="fill:#2A5E9B">U</text><text x="430" y="538" text-anchor="middle" class="param" style="fill:#5A8C1C">V</text></g>
+<g data-key="p3" data-only="1"><text x="264" y="538" text-anchor="middle" class="param" style="fill:#8C7106">W<tspan dy="5" font-size="11">xh</tspan></text><text x="379" y="471" class="param" style="fill:#2A5E9B">W<tspan dy="5" font-size="11">hh</tspan></text><text x="430" y="538" text-anchor="middle" class="param" style="fill:#5A8C1C">W<tspan dy="5" font-size="11">hy</tspan></text></g>
 <g data-key="head" data-only="1"><path d="M542 550 H578" class="flow-green" marker-end="url(#rc-green)"/><rect x="590" y="504" width="100" height="92" rx="12" class="head-box"/><text x="640" y="543" text-anchor="middle" class="svg-form-sm">FC</text><text x="640" y="572" text-anchor="middle" class="svg-form" style="fill:#A30908">W<tspan dy="6" font-size="12">fc</tspan><tspan dy="-6">, b</tspan><tspan dy="6" font-size="12">fc</tspan></text><path d="M690 550 H714" class="flow-red" marker-end="url(#rc-red)"/><rect x="726" y="518" width="64" height="64" rx="10" class="loss-box"/><text x="758" y="559" text-anchor="middle" class="svg-big" style="fill:#A30908">ŷ</text><path d="M790 550 H814" class="flow-red" marker-end="url(#rc-red)"/><rect x="826" y="510" width="118" height="80" rx="12" class="loss-box"/><text x="885" y="542" text-anchor="middle" class="svg-form-sm">loss</text><text x="885" y="572" text-anchor="middle" class="svg-form">L(ŷ, y)</text><text x="885" y="498" text-anchor="middle" class="target">цель: pass</text></g>
 </svg>
   </div>
@@ -1267,36 +1267,36 @@
       <div class="step-kicker">Шаг 2 · новая сущность</div>
       <h4>У рекуррентного слоя появляется скрытое состояние</h4>
       <p>Вход <code>xᵗ</code> и выход <code>yᵗ</code> остаются, но сверху приходит дополнительный вход — скрытое состояние прошлого такта <code>hᵗ⁻¹</code>. Это и есть память слоя: она переносит информацию из прошлого в текущий момент.</p><p>Здесь два вычисления. Сначала сеть обновляет память — из текущего входа и прошлой памяти собирает <code>hᵗ</code>. Потом из нового состояния строит выход.</p>
-      <div class="math-display" data-tex="h^{t}=\tanh\!\left(x^{t}W+h^{t-1}U+b_h\right),\qquad y^{t}=f\!\left(h^{t}V+b_y\right)"></div>
+      <div class="math-display" data-tex="h^{t}=\tanh\!\left(x^{t}W_{xh}+h^{t-1}W_{hh}+b_h\right),\qquad y^{t}=f\!\left(h^{t}W_{hy}+b_y\right)"></div>
     </div>
     <div class="step-panel" data-on="mat" data-focus="mat">
       <div class="step-kicker">Шаг 3 · та же ячейка по нейронам</div>
       <h4>Видно, какая матрица за что отвечает</h4>
-      <p>Вход <code>xᵗ</code> из <code>E</code> чисел умножается на <code>W</code>, прошлая память <code>hᵗ⁻¹</code> из <code>H</code> чисел — на <code>U</code>. Сигналы складываются, к ним добавляется <code>b<sub>h</sub></code>, и получается новое состояние <code>hᵗ</code> того же размера <code>H</code>. Затем <code>V</code> переводит его в выход <code>yᵗ</code> размера <code>O</code>.</p><p>Поэтому <code>U</code> обязана быть квадратной, а размер памяти не меняется от шага к шагу. В основной части статьи это <code>W<sub>xh</sub></code>, <code>W<sub>hh</sub></code> и <code>W<sub>hy</sub></code>; в сквозном примере <code>E = 4</code>, <code>H = 2</code>, <code>O = 4</code>.</p>
-      <div class="math-display" data-tex="W\in\mathbb R^{E\times H},\qquad U\in\mathbb R^{H\times H},\qquad V\in\mathbb R^{H\times O}"></div>
+      <p>Вход <code>xᵗ</code> из <code>E</code> чисел умножается на <code>W<sub>xh</sub></code>, прошлая память <code>hᵗ⁻¹</code> из <code>H</code> чисел — на <code>W<sub>hh</sub></code>. Сигналы складываются, к ним добавляется <code>b<sub>h</sub></code>, и получается новое состояние <code>hᵗ</code> того же размера <code>H</code>. Затем <code>W<sub>hy</sub></code> переводит его в выход <code>yᵗ</code> размера <code>O</code>.</p><p>Поэтому <code>W<sub>hh</sub></code> обязана быть квадратной, а размер памяти не меняется от шага к шагу. В сквозном примере <code>E = 4</code>, <code>H = 2</code>, <code>O = 4</code>.</p>
+      <div class="math-display" data-tex="W_{xh}\in\mathbb R^{E\times H},\qquad W_{hh}\in\mathbb R^{H\times H},\qquad W_{hy}\in\mathbb R^{H\times O}"></div>
     </div>
     <div class="step-panel" data-on="axis h0 r1 u1 p1" data-focus="h0 r1">
       <div class="step-kicker">Шаг 4 · первый такт</div>
       <h4>Разворачиваем ячейку во времени: первый токен</h4>
       <p>Теперь та же ячейка обрабатывает фразу по токенам. На первом такте приходит one-hot вектор <code>&lt;BOS&gt;</code>, а в роли прошлой памяти выступает <code>h⁰</code> — обычно нулевой вектор. Ячейка получает состояние <code>h¹</code> и выход <code>y¹</code>.</p>
-      <div class="math-display" data-tex="h^{1}=\tanh\!\left(x^{1}W+h^{0}U+b_h\right),\qquad h^{0}=0"></div>
+      <div class="math-display" data-tex="h^{1}=\tanh\!\left(x^{1}W_{xh}+h^{0}W_{hh}+b_h\right),\qquad h^{0}=0"></div>
     </div>
     <div class="step-panel" data-on="axis h0 r1 u1 p1 r2 u2 p2" data-focus="u2 r2">
       <div class="step-kicker">Шаг 5 · второй такт</div>
       <h4>Второй токен приходит уже не к пустой памяти</h4>
       <p>Токен <code>you</code> обрабатывается той же ячейкой, но вместо <code>h⁰</code> в неё входит <code>h¹</code>. Вертикальная стрелка — это перенос памяти по времени, горизонтальные — вычисления внутри одного такта. Так в <code>h²</code> попадает информация о первом токене.</p>
-      <div class="math-display" data-tex="h^{2}=\tanh\!\left(x^{2}W+h^{1}U+b_h\right)"></div>
+      <div class="math-display" data-tex="h^{2}=\tanh\!\left(x^{2}W_{xh}+h^{1}W_{hh}+b_h\right)"></div>
     </div>
     <div class="step-panel" data-on="axis h0 r1 u1 p1 r2 u2 p2 r3 u3 p3" data-focus="u3 r3">
       <div class="step-kicker">Шаг 6 · третий такт</div>
       <h4>Последнее состояние видело всю фразу</h4>
       <p>На третьем такте приходит <code>will</code>. Состояние <code>h³</code> зависит от <code>x³</code> напрямую, от <code>x²</code> — через <code>h²</code>, от <code>x¹</code> — через цепочку <code>h¹ → h² → h³</code>. Вся прочитанная часть фразы сжата в <code>H</code> чисел.</p>
-      <div class="math-display" data-tex="h^{3}=\tanh\!\left(x^{3}W+h^{2}U+b_h\right)"></div>
+      <div class="math-display" data-tex="h^{3}=\tanh\!\left(x^{3}W_{xh}+h^{2}W_{hh}+b_h\right)"></div>
     </div>
     <div class="step-panel" data-on="axis h0 r1 u1 p1 r2 u2 p2 r3 u3 p3" data-focus="p1 p2 p3">
       <div class="step-kicker">Шаг 7 · общие параметры</div>
-      <h4>На всех тактах работают одни и те же W, U и V</h4>
-      <p>Матриц не стало больше: на каждом такте стоят те же <code>W</code>, <code>U</code> и <code>V</code>. Развёртка — это картинка цикла <code>for t in range(T)</code>, а не три разных слоя.</p><p>Отсюда главное следствие для обучения: каждый параметр использован <code>T</code> раз, и его градиент соберёт вклады со всех тактов.</p>
+      <h4>На всех тактах работают одни и те же W<sub>xh</sub>, W<sub>hh</sub> и W<sub>hy</sub></h4>
+      <p>Матриц не стало больше: на каждом такте стоят те же <code>W<sub>xh</sub></code>, <code>W<sub>hh</sub></code> и <code>W<sub>hy</sub></code>. Развёртка — это картинка цикла <code>for t in range(T)</code>, а не три разных слоя.</p><p>Отсюда главное следствие для обучения: каждый параметр использован <code>T</code> раз, и его градиент соберёт вклады со всех тактов.</p>
     </div>
     <div class="step-panel" data-on="axis h0 r1 u1 p1 r2 u2 p2 r3 u3 p3 head" data-focus="head">
       <div class="step-kicker">Шаг 8 · ответ по всей последовательности</div>
@@ -1417,9 +1417,7 @@
   До сих пор ячейка, развёртка и loss были схемами. Теперь проведём сквозной
   пример целиком: сначала каждая операция в общем виде, затем та же цепочка по
   элементам матриц, где строка — один такт, и наконец на конкретных числах до
-  <span class="math-inline" data-tex="\mathcal L = 1{,}5192"></span>. Матрицы здесь называются
-  <span class="math-inline" data-tex="W_{xh}, W_{hh}, W_{hy}"></span> — это те же <code>W</code>, <code>U</code> и <code>V</code>
-  из второй части.
+  <span class="math-inline" data-tex="\mathcal L = 1{,}5192"></span>.
 </p>
 
 ### Сеть, которую можно посчитать руками
@@ -1671,8 +1669,8 @@
 ## Часть 4. Backpropagation through time: развёрнутый граф и обратный путь ошибки
 
 <p>
-  Обучать нужно те же параметры, что работают в прямом проходе: матрицы <code>W</code>,
-  <code>U</code>, <code>V</code> и сдвиги <code>b<sub>h</sub></code>, <code>b<sub>y</sub></code>.
+  Обучать нужно те же параметры, что работают в прямом проходе: матрицы <code>W<sub>xh</sub></code>,
+  <code>W<sub>hh</sub></code>, <code>W<sub>hy</sub></code> и сдвиги <code>b<sub>h</sub></code>, <code>b<sub>y</sub></code>.
   Для каждого надо ответить на вопрос «на сколько изменится ошибка, если чуть шевельнуть
   это число». Ответ собирается цепным правилом, но у цепочки появляется новое измерение —
   время. Сцена ниже использует ту же развёрнутую сеть, что и во второй части, и читает её
@@ -1740,17 +1738,17 @@
 <g data-key="h0"><rect x="315" y="64" width="92" height="60" rx="12" class="state-t0"/><text x="361" y="102" text-anchor="middle" class="state-label">h<tspan dy="-9" font-size="14">0</tspan></text><text x="423" y="99" class="target">начальная память = 0</text></g>
 <g data-key="r1"><text x="40" y="212" class="svg-word" style="font-size:17px">&lt;BOS&gt;</text><text x="40" y="236" class="step-tag">t = 1</text><rect x="108" y="154" width="80" height="112" rx="18" class="input-vector"/><text x="148" y="180" text-anchor="middle" class="svg-small">1</text><text x="148" y="202" text-anchor="middle" class="svg-small">0</text><text x="148" y="224" text-anchor="middle" class="svg-small">0</text><text x="148" y="246" text-anchor="middle" class="svg-small">0</text><text x="210" y="218" text-anchor="middle" class="state-label" style="fill:#3576C0">x<tspan dy="-9" font-size="14">1</tspan></text><path d="M226 210 H303" class="flow-blue" marker-end="url(#bp-blue)"/><rect x="315" y="168" width="92" height="84" rx="12" class="state-blue"/><text x="361" y="218" text-anchor="middle" class="state-label">h<tspan dy="-9" font-size="14">1</tspan></text><path d="M407 210 H454" class="flow-blue" marker-end="url(#bp-blue)"/><rect x="466" y="178" width="76" height="64" rx="10" class="output-box"/><text x="504" y="218" text-anchor="middle" class="out-label" style="fill:#2A5E9B">y<tspan dy="-9" font-size="14">1</tspan></text></g>
 <g data-key="u1"><path d="M361 124 V156" class="flow-gray" marker-end="url(#bp-gray)"/></g>
-<g data-key="p1"><text x="264" y="198" text-anchor="middle" class="param" style="fill:#8C7106">W</text><text x="379" y="152" class="param" style="fill:#2A5E9B">U</text><text x="430" y="198" text-anchor="middle" class="param" style="fill:#5A8C1C">V</text></g>
+<g data-key="p1"><text x="264" y="198" text-anchor="middle" class="param" style="fill:#8C7106">W<tspan dy="5" font-size="11">xh</tspan></text><text x="379" y="152" class="param" style="fill:#2A5E9B">W<tspan dy="5" font-size="11">hh</tspan></text><text x="430" y="198" text-anchor="middle" class="param" style="fill:#5A8C1C">W<tspan dy="5" font-size="11">hy</tspan></text></g>
 <g data-key="r2"><text x="40" y="382" class="svg-word" style="font-size:17px">you</text><text x="40" y="406" class="step-tag">t = 2</text><rect x="108" y="324" width="80" height="112" rx="18" class="input-vector"/><text x="148" y="350" text-anchor="middle" class="svg-small">0</text><text x="148" y="372" text-anchor="middle" class="svg-small">1</text><text x="148" y="394" text-anchor="middle" class="svg-small">0</text><text x="148" y="416" text-anchor="middle" class="svg-small">0</text><text x="210" y="388" text-anchor="middle" class="state-label" style="fill:#3576C0">x<tspan dy="-9" font-size="14">2</tspan></text><path d="M226 380 H303" class="flow-blue" marker-end="url(#bp-blue)"/><rect x="315" y="338" width="92" height="84" rx="12" class="state-yellow"/><text x="361" y="388" text-anchor="middle" class="state-label">h<tspan dy="-9" font-size="14">2</tspan></text><path d="M407 380 H454" class="flow-yellow" marker-end="url(#bp-yellow)"/><rect x="466" y="348" width="76" height="64" rx="10" class="output-box"/><text x="504" y="388" text-anchor="middle" class="out-label" style="fill:#8C7106">y<tspan dy="-9" font-size="14">2</tspan></text></g>
 <g data-key="u2"><path d="M361 252 V326" class="flow-blue" marker-end="url(#bp-blue)"/></g>
-<g data-key="p2"><text x="264" y="368" text-anchor="middle" class="param" style="fill:#8C7106">W</text><text x="379" y="301" class="param" style="fill:#2A5E9B">U</text><text x="430" y="368" text-anchor="middle" class="param" style="fill:#5A8C1C">V</text></g>
+<g data-key="p2"><text x="264" y="368" text-anchor="middle" class="param" style="fill:#8C7106">W<tspan dy="5" font-size="11">xh</tspan></text><text x="379" y="301" class="param" style="fill:#2A5E9B">W<tspan dy="5" font-size="11">hh</tspan></text><text x="430" y="368" text-anchor="middle" class="param" style="fill:#5A8C1C">W<tspan dy="5" font-size="11">hy</tspan></text></g>
 <g data-key="r3"><text x="40" y="552" class="svg-word" style="font-size:17px">will</text><text x="40" y="576" class="step-tag">t = 3</text><rect x="108" y="494" width="80" height="112" rx="18" class="input-vector"/><text x="148" y="520" text-anchor="middle" class="svg-small">0</text><text x="148" y="542" text-anchor="middle" class="svg-small">0</text><text x="148" y="564" text-anchor="middle" class="svg-small">1</text><text x="148" y="586" text-anchor="middle" class="svg-small">0</text><text x="210" y="558" text-anchor="middle" class="state-label" style="fill:#3576C0">x<tspan dy="-9" font-size="14">3</tspan></text><path d="M226 550 H303" class="flow-blue" marker-end="url(#bp-blue)"/><rect x="315" y="508" width="92" height="84" rx="12" class="state-green"/><text x="361" y="558" text-anchor="middle" class="state-label">h<tspan dy="-9" font-size="14">3</tspan></text><path d="M407 550 H454" class="flow-green" marker-end="url(#bp-green)"/><rect x="466" y="518" width="76" height="64" rx="10" class="output-box"/><text x="504" y="558" text-anchor="middle" class="out-label" style="fill:#5A8C1C">y<tspan dy="-9" font-size="14">3</tspan></text></g>
 <g data-key="u3"><path d="M361 422 V496" class="flow-yellow" marker-end="url(#bp-yellow)"/></g>
-<g data-key="p3"><text x="264" y="538" text-anchor="middle" class="param" style="fill:#8C7106">W</text><text x="379" y="471" class="param" style="fill:#2A5E9B">U</text><text x="430" y="538" text-anchor="middle" class="param" style="fill:#5A8C1C">V</text></g>
+<g data-key="p3"><text x="264" y="538" text-anchor="middle" class="param" style="fill:#8C7106">W<tspan dy="5" font-size="11">xh</tspan></text><text x="379" y="471" class="param" style="fill:#2A5E9B">W<tspan dy="5" font-size="11">hh</tspan></text><text x="430" y="538" text-anchor="middle" class="param" style="fill:#5A8C1C">W<tspan dy="5" font-size="11">hy</tspan></text></g>
 <g data-key="head"><path d="M542 550 H578" class="flow-green" marker-end="url(#bp-green)"/><rect x="590" y="504" width="100" height="92" rx="12" class="head-box"/><text x="640" y="543" text-anchor="middle" class="svg-form-sm">FC</text><text x="640" y="572" text-anchor="middle" class="svg-form" style="fill:#A30908">W<tspan dy="6" font-size="12">fc</tspan><tspan dy="-6">, b</tspan><tspan dy="6" font-size="12">fc</tspan></text><path d="M690 550 H714" class="flow-red" marker-end="url(#bp-red)"/><rect x="726" y="518" width="64" height="64" rx="10" class="loss-box"/><text x="758" y="559" text-anchor="middle" class="svg-big" style="fill:#A30908">ŷ</text><path d="M790 550 H814" class="flow-red" marker-end="url(#bp-red)"/><rect x="826" y="510" width="118" height="80" rx="12" class="loss-box"/><text x="885" y="542" text-anchor="middle" class="svg-form-sm">loss</text><text x="885" y="572" text-anchor="middle" class="svg-form">L(ŷ, y)</text><text x="885" y="498" text-anchor="middle" class="target">цель: pass</text></g>
 <g data-key="m2m" data-only="1"><path d="M542 210 H578" class="flow-green" marker-end="url(#bp-green)"/><rect x="590" y="164" width="100" height="92" rx="12" class="head-box"/><text x="640" y="203" text-anchor="middle" class="svg-form-sm">FC</text><text x="640" y="232" text-anchor="middle" class="svg-form" style="fill:#A30908">W<tspan dy="6" font-size="12">fc</tspan><tspan dy="-6">, b</tspan><tspan dy="6" font-size="12">fc</tspan></text><path d="M690 210 H714" class="flow-red" marker-end="url(#bp-red)"/><rect x="726" y="178" width="64" height="64" rx="10" class="loss-box"/><text x="758" y="219" text-anchor="middle" class="svg-big" style="fill:#A30908">ŷ<tspan dy="-9" font-size="14">1</tspan></text><path d="M790 210 H814" class="flow-red" marker-end="url(#bp-red)"/><rect x="826" y="170" width="118" height="80" rx="12" class="loss-box"/><text x="885" y="202" text-anchor="middle" class="svg-form-sm">loss</text><text x="885" y="232" text-anchor="middle" class="svg-form">L(ŷ¹, y¹)</text><text x="885" y="158" text-anchor="middle" class="target">цель: you</text><path d="M542 380 H578" class="flow-green" marker-end="url(#bp-green)"/><rect x="590" y="334" width="100" height="92" rx="12" class="head-box"/><text x="640" y="373" text-anchor="middle" class="svg-form-sm">FC</text><text x="640" y="402" text-anchor="middle" class="svg-form" style="fill:#A30908">W<tspan dy="6" font-size="12">fc</tspan><tspan dy="-6">, b</tspan><tspan dy="6" font-size="12">fc</tspan></text><path d="M690 380 H714" class="flow-red" marker-end="url(#bp-red)"/><rect x="726" y="348" width="64" height="64" rx="10" class="loss-box"/><text x="758" y="389" text-anchor="middle" class="svg-big" style="fill:#A30908">ŷ<tspan dy="-9" font-size="14">2</tspan></text><path d="M790 380 H814" class="flow-red" marker-end="url(#bp-red)"/><rect x="826" y="340" width="118" height="80" rx="12" class="loss-box"/><text x="885" y="372" text-anchor="middle" class="svg-form-sm">loss</text><text x="885" y="402" text-anchor="middle" class="svg-form">L(ŷ², y²)</text><text x="885" y="328" text-anchor="middle" class="target">цель: will</text><rect x="726" y="518" width="64" height="64" rx="10" class="loss-box"/><text x="758" y="559" text-anchor="middle" class="svg-big" style="fill:#A30908">ŷ<tspan dy="-9" font-size="14">3</tspan></text><rect x="826" y="510" width="118" height="80" rx="12" class="loss-box"/><text x="885" y="542" text-anchor="middle" class="svg-form-sm">loss</text><text x="885" y="572" text-anchor="middle" class="svg-form">L(ŷ³, y³)</text><text x="868" y="622" text-anchor="middle" class="grad-label">L = L¹ + L² + L³</text></g>
 <g data-key="ghead" data-only="1"><rect x="580" y="494" width="120" height="112" rx="14" class="grad-frame"/><path d="M885 590 V622 H504 V594" class="grad-arrow" marker-end="url(#bp-red)"/><text x="780" y="614" text-anchor="middle" class="grad-label">∂L/∂y³</text></g>
-<g data-key="gv" data-only="1"><rect x="416" y="516" width="28" height="30" rx="6" class="grad-frame"/><text x="430" y="506" text-anchor="middle" class="grad-label">∂L/∂V</text></g>
+<g data-key="gv" data-only="1"><rect x="416" y="516" width="28" height="30" rx="6" class="grad-frame"/><text x="430" y="506" text-anchor="middle" class="grad-label">∂L/∂W<tspan dy="4" font-size="10">hy</tspan></text></g>
 <g data-key="gdh" data-only="1"><rect x="307" y="500" width="108" height="100" rx="16" class="grad-frame"/><text x="361" y="626" text-anchor="middle" class="grad-label">∂L/∂h³</text></g>
 <g data-key="gw1" data-only="1"><rect x="249" y="176" width="30" height="30" rx="6" class="grad-frame"/></g>
 <g data-key="gw2" data-only="1"><rect x="249" y="346" width="30" height="30" rx="6" class="grad-frame"/></g>
@@ -1770,7 +1768,7 @@
       <div class="step-kicker">Шаг 1 · откуда начинается обучение</div>
       <h4>Прямой проход сделан, ошибка посчитана</h4>
       <p>Фраза прошла через ячейку: получены состояния <code>h¹</code>, <code>h²</code>, <code>h³</code>, последний выход передан в голову, а функция <code>L(ŷ, y)</code> измерила ошибку прогноза. Обучение должно ответить, как изменение каждого параметра изменит эту ошибку.</p>
-      <div class="math-display" data-tex="\frac{\partial L}{\partial W},\;\frac{\partial L}{\partial U},\;\frac{\partial L}{\partial V},\;\frac{\partial L}{\partial b_h},\;\frac{\partial L}{\partial b_y}"></div>
+      <div class="math-display" data-tex="\frac{\partial L}{\partial W_{xh}},\;\frac{\partial L}{\partial W_{hh}},\;\frac{\partial L}{\partial W_{hy}},\;\frac{\partial L}{\partial b_h},\;\frac{\partial L}{\partial b_y}"></div>
     </div>
     <div class="step-panel" data-on="axis h0 r1 u1 p1 r2 u2 p2 r3 u3 p3 head ghead" data-focus="ghead">
       <div class="step-kicker">Шаг 2 · выходная голова</div>
@@ -1781,38 +1779,38 @@
     <div class="step-panel" data-on="axis h0 r1 u1 p1 r2 u2 p2 r3 u3 p3 head ghead" data-focus="r3 p3 u3">
       <div class="step-kicker">Шаг 3 · возвращаемся в ячейку</div>
       <h4>Последний такт зависит от входа и от прошлой памяти</h4>
-      <p>Подставим <code>t = 3</code> в формулы ячейки. <code>y³</code> зависит от <code>h³</code> через <code>V</code>, а <code>h³</code> — от <code>x³</code> через <code>W</code> и от <code>h²</code> через <code>U</code>. Поэтому сначала считаем локальные выходные параметры, а потом раскрываем зависимость от прошлого.</p>
-      <div class="math-display" data-tex="h^{3}=\tanh\!\left(x^{3}W+h^{2}U+b_h\right),\qquad y^{3}=f\!\left(h^{3}V+b_y\right)"></div>
+      <p>Подставим <code>t = 3</code> в формулы ячейки. <code>y³</code> зависит от <code>h³</code> через <code>W<sub>hy</sub></code>, а <code>h³</code> — от <code>x³</code> через <code>W<sub>xh</sub></code> и от <code>h²</code> через <code>W<sub>hh</sub></code>. Поэтому сначала считаем локальные выходные параметры, а потом раскрываем зависимость от прошлого.</p>
+      <div class="math-display" data-tex="h^{3}=\tanh\!\left(x^{3}W_{xh}+h^{2}W_{hh}+b_h\right),\qquad y^{3}=f\!\left(h^{3}W_{hy}+b_y\right)"></div>
     </div>
     <div class="step-panel" data-on="axis h0 r1 u1 p1 r2 u2 p2 r3 u3 p3 head ghead gv" data-focus="gv">
       <div class="step-kicker">Шаг 4 · локальный участок</div>
-      <h4>Градиенты V и b_y не требуют движения во времени</h4>
-      <p><code>V</code> и <code>b<sub>y</sub></code> участвуют в вычислении <code>y³</code> напрямую. Их производная — произведение пришедшего градиента по выходу и локальной производной выхода по параметру. Рекурсии здесь нет.</p>
-      <div class="math-display" data-tex="\frac{\partial L}{\partial V}=\frac{\partial L}{\partial y^{3}}\cdot\frac{\partial y^{3}}{\partial V},\qquad \frac{\partial L}{\partial b_y}=\frac{\partial L}{\partial y^{3}}\cdot\frac{\partial y^{3}}{\partial b_y}"></div>
+      <h4>Градиенты W<sub>hy</sub> и b<sub>y</sub> не требуют движения во времени</h4>
+      <p><code>W<sub>hy</sub></code> и <code>b<sub>y</sub></code> участвуют в вычислении <code>y³</code> напрямую. Их производная — произведение пришедшего градиента по выходу и локальной производной выхода по параметру. Рекурсии здесь нет.</p>
+      <div class="math-display" data-tex="\frac{\partial L}{\partial W_{hy}}=\frac{\partial L}{\partial y^{3}}\cdot\frac{\partial y^{3}}{\partial W_{hy}},\qquad \frac{\partial L}{\partial b_y}=\frac{\partial L}{\partial y^{3}}\cdot\frac{\partial y^{3}}{\partial b_y}"></div>
     </div>
     <div class="step-panel" data-on="axis h0 r1 u1 p1 r2 u2 p2 r3 u3 p3 head ghead gdh" data-focus="gdh">
-      <div class="step-kicker">Шаг 5 · переход к матрице W</div>
-      <h4>Для W сначала нужен градиент по последнему состоянию</h4>
-      <p>Матрица <code>W</code> находится внутри формулы <code>h³</code>, поэтому ошибка доходит до неё через <code>∂L/∂h³</code>. Формула выглядит обычной, но множитель <code>dh³/dW</code> скрывает несколько путей: <code>h³</code> зависит от <code>h²</code>, а <code>h²</code> считалось с той же матрицей <code>W</code>.</p>
-      <div class="math-display" data-tex="\frac{dL}{dW}=\frac{\partial L}{\partial h^{3}}\cdot\frac{dh^{3}}{dW}"></div>
+      <div class="step-kicker">Шаг 5 · переход к матрице W<sub>xh</sub></div>
+      <h4>Для W<sub>xh</sub> сначала нужен градиент по последнему состоянию</h4>
+      <p>Матрица <code>W<sub>xh</sub></code> находится внутри формулы <code>h³</code>, поэтому ошибка доходит до неё через <code>∂L/∂h³</code>. Формула выглядит обычной, но множитель <code>dh³/dW<sub>xh</sub></code> скрывает несколько путей: <code>h³</code> зависит от <code>h²</code>, а <code>h²</code> считалось с той же матрицей <code>W<sub>xh</sub></code>.</p>
+      <div class="math-display" data-tex="\frac{dL}{dW_{xh}}=\frac{\partial L}{\partial h^{3}}\cdot\frac{dh^{3}}{dW_{xh}}"></div>
     </div>
     <div class="step-panel" data-on="axis h0 r1 u1 p1 r2 u2 p2 r3 u3 p3 head ghead gdh gw3 gb32" data-focus="gw3 gb32">
       <div class="step-kicker">Шаг 6 · первый рекуррентный путь</div>
       <h4>У h³ два пути зависимости от W</h4>
-      <p>Первое слагаемое — прямой вклад <code>W</code> на третьем такте. Второе проходит через прошлое состояние: множитель <code>∂h³/∂h²</code> (красная стрелка) переносит ошибку с третьего такта на второй. Это первый собственно рекуррентный участок обратного прохода.</p>
-      <div class="math-display" data-tex="\frac{dh^{3}}{dW}=\underbrace{\frac{\partial h^{3}}{\partial W}}_{\text{прямой вклад}}+\underbrace{\frac{\partial h^{3}}{\partial h^{2}}\cdot\frac{dh^{2}}{dW}}_{\text{через }h^{2}}"></div>
+      <p>Первое слагаемое — прямой вклад <code>W<sub>xh</sub></code> на третьем такте. Второе проходит через прошлое состояние: множитель <code>∂h³/∂h²</code> (красная стрелка) переносит ошибку с третьего такта на второй. Это первый собственно рекуррентный участок обратного прохода.</p>
+      <div class="math-display" data-tex="\frac{dh^{3}}{dW_{xh}}=\underbrace{\frac{\partial h^{3}}{\partial W_{xh}}}_{\text{прямой вклад}}+\underbrace{\frac{\partial h^{3}}{\partial h^{2}}\cdot\frac{dh^{2}}{dW_{xh}}}_{\text{через }h^{2}}"></div>
     </div>
     <div class="step-panel" data-on="axis h0 r1 u1 p1 r2 u2 p2 r3 u3 p3 head ghead gdh gw3 gb32 gw2 gb21" data-focus="gw2 gb21">
       <div class="step-kicker">Шаг 7 · рекурсия повторяется</div>
-      <h4>h² тоже зависит от W двумя путями</h4>
-      <p>Тот же аргумент для второго такта: прямой вклад <code>W</code> и вклад через <code>h¹</code>. Градиент продолжает двигаться вверх по цепочке состояний — в сторону, обратную прямому проходу.</p>
-      <div class="math-display" data-tex="\frac{dh^{2}}{dW}=\frac{\partial h^{2}}{\partial W}+\frac{\partial h^{2}}{\partial h^{1}}\cdot\frac{dh^{1}}{dW}"></div>
+      <h4>h² тоже зависит от W<sub>xh</sub> двумя путями</h4>
+      <p>Тот же аргумент для второго такта: прямой вклад <code>W<sub>xh</sub></code> и вклад через <code>h¹</code>. Градиент продолжает двигаться вверх по цепочке состояний — в сторону, обратную прямому проходу.</p>
+      <div class="math-display" data-tex="\frac{dh^{2}}{dW_{xh}}=\frac{\partial h^{2}}{\partial W_{xh}}+\frac{\partial h^{2}}{\partial h^{1}}\cdot\frac{dh^{1}}{dW_{xh}}"></div>
     </div>
     <div class="step-panel" data-on="axis h0 r1 u1 p1 r2 u2 p2 r3 u3 p3 head ghead gdh gw3 gb32 gw2 gb21 gw1" data-focus="gw1 gw2 gw3">
       <div class="step-kicker">Шаг 8 · полное раскрытие</div>
       <h4>Это и есть backpropagation through time</h4>
-      <p>Для трёх тактов получаем три слагаемых — по одному на каждое использование <code>W</code>. Первое — прямой вклад последнего такта, второе проходит через <code>h²</code>, третье — через <code>h²</code> и <code>h¹</code>. Все они относятся к одной матрице и поэтому суммируются.</p><p>Нового вида производной нет: это обычное цепное правило на развёрнутом графе. Так же раскрываются градиенты по <code>U</code> и <code>b<sub>h</sub></code>.</p>
-      <div class="math-display" data-tex="\frac{dL}{dW}=\frac{\partial L}{\partial h^{3}}\left(\frac{\partial h^{3}}{\partial W}+\frac{\partial h^{3}}{\partial h^{2}}\frac{\partial h^{2}}{\partial W}+\frac{\partial h^{3}}{\partial h^{2}}\frac{\partial h^{2}}{\partial h^{1}}\frac{\partial h^{1}}{\partial W}\right)"></div>
+      <p>Для трёх тактов получаем три слагаемых — по одному на каждое использование <code>W<sub>xh</sub></code>. Первое — прямой вклад последнего такта, второе проходит через <code>h²</code>, третье — через <code>h²</code> и <code>h¹</code>. Все они относятся к одной матрице и поэтому суммируются.</p><p>Нового вида производной нет: это обычное цепное правило на развёрнутом графе. Так же раскрываются градиенты по <code>W<sub>hh</sub></code> и <code>b<sub>h</sub></code>.</p>
+      <div class="math-display" data-tex="\frac{dL}{dW_{xh}}=\frac{\partial L}{\partial h^{3}}\left(\frac{\partial h^{3}}{\partial W_{xh}}+\frac{\partial h^{3}}{\partial h^{2}}\frac{\partial h^{2}}{\partial W_{xh}}+\frac{\partial h^{3}}{\partial h^{2}}\frac{\partial h^{2}}{\partial h^{1}}\frac{\partial h^{1}}{\partial W_{xh}}\right)"></div>
     </div>
     <div class="step-panel" data-on="axis h0 r1 u1 p1 r2 u2 p2 r3 u3 p3 head m2m" data-focus="m2m">
       <div class="step-kicker">Шаг 9 · ответ на каждом такте</div>
@@ -2152,6 +2150,26 @@
   это иначе — они добавляют путь, где состояние переносится сложением, без
   умножения на матрицу.
 </div>
+
+### Затухание в настоящем обучении
+
+<p>
+  На фразе из трёх слов затухание не видно: тактов слишком мало. Возьмём задачу, где ответ зависит только от далёкого
+  токена. Последовательность длины <code>T</code> начинается с A или B, дальше идут <code>T − 1</code> случайных токенов
+  x и y, и на последнем такте сеть должна назвать первый. RNN с <code>H = 8</code> обучали Adam'ом
+  3000 шагов, с клиппингом, по пять запусков на каждую длину. При <code>T</code> = 10, 20 и 30 задачу решают
+  все пять запусков, при <code>T = 50</code> — ни один: точность остаётся около 50 %, как при угадывании.
+</p>
+
+<p>
+  Ниже — сколько градиента доходит до каждого такта на длине 50. До обучения до первого токена доходит
+  5,3·10<sup>−14</sup> от градиента последнего такта, после обучения — 9,4·10<sup>−9</sup>. Связь ответа
+  с первым токеном сеть выучить не может: градиент от неё до весов почти не доходит.
+</p>
+
+<div class="stage-figure"><svg viewBox="0 0 680 420" role="img" aria-label="Норма градиента по тактам у RNN на задаче с памятью длины 50" style="display:block;width:100%;max-width:680px;margin:0 auto"><line x1="70" y1="360.0" x2="650" y2="360.0" class="rn-grid"/><text x="62" y="364.0" text-anchor="end" class="rn-tick">10<tspan dy="-6" font-size="10">−14</tspan></text><line x1="70" y1="314.3" x2="650" y2="314.3" class="rn-grid"/><text x="62" y="318.3" text-anchor="end" class="rn-tick">10<tspan dy="-6" font-size="10">−12</tspan></text><line x1="70" y1="268.6" x2="650" y2="268.6" class="rn-grid"/><text x="62" y="272.6" text-anchor="end" class="rn-tick">10<tspan dy="-6" font-size="10">−10</tspan></text><line x1="70" y1="222.9" x2="650" y2="222.9" class="rn-grid"/><text x="62" y="226.9" text-anchor="end" class="rn-tick">10<tspan dy="-6" font-size="10">−8</tspan></text><line x1="70" y1="177.1" x2="650" y2="177.1" class="rn-grid"/><text x="62" y="181.1" text-anchor="end" class="rn-tick">10<tspan dy="-6" font-size="10">−6</tspan></text><line x1="70" y1="131.4" x2="650" y2="131.4" class="rn-grid"/><text x="62" y="135.4" text-anchor="end" class="rn-tick">10<tspan dy="-6" font-size="10">−4</tspan></text><line x1="70" y1="85.7" x2="650" y2="85.7" class="rn-grid"/><text x="62" y="89.7" text-anchor="end" class="rn-tick">10<tspan dy="-6" font-size="10">−2</tspan></text><line x1="70" y1="40.0" x2="650" y2="40.0" class="rn-grid"/><text x="62" y="44.0" text-anchor="end" class="rn-tick">1</text><text x="70.0" y="380" text-anchor="middle" class="rn-tick">1</text><text x="176.5" y="380" text-anchor="middle" class="rn-tick">10</text><text x="294.9" y="380" text-anchor="middle" class="rn-tick">20</text><text x="413.3" y="380" text-anchor="middle" class="rn-tick">30</text><text x="531.6" y="380" text-anchor="middle" class="rn-tick">40</text><text x="650.0" y="380" text-anchor="middle" class="rn-tick">50</text><line x1="70" y1="360" x2="650" y2="360" class="rn-axis"/><line x1="70" y1="40" x2="70" y2="360" class="rn-axis"/><text x="650" y="404" text-anchor="end" class="rn-cap">номер такта: 1 — первый токен, 50 — ответ</text><text x="70" y="26" class="rn-cap">норма градиента по h на такте, доля от последнего такта</text><path d="M70.0 343.5 L81.8 336.4 L93.7 329.6 L105.5 324.3 L117.3 319.9 L129.2 316.4 L141.0 312.0 L152.9 304.5 L164.7 295.7 L176.5 287.2 L188.4 279.9 L200.2 273.7 L212.0 268.7 L223.9 264.8 L235.7 261.5 L247.6 256.2 L259.4 247.7 L271.2 238.6 L283.1 230.5 L294.9 223.6 L306.7 217.7 L318.6 213.0 L330.4 209.5 L342.2 206.2 L354.1 200.1 L365.9 190.9 L377.8 181.8 L389.6 174.1 L401.4 167.3 L413.3 161.7 L425.1 157.4 L436.9 154.1 L448.8 150.7 L460.6 143.5 L472.4 134.0 L484.3 125.2 L496.1 117.7 L508.0 111.2 L519.8 106.0 L531.6 102.0 L543.5 99.2 L555.3 95.3 L567.1 86.6 L579.0 76.9 L590.8 68.3 L602.7 61.4 L614.5 55.1 L626.3 51.4 L638.2 44.2 L650.0 40.0" fill="none" stroke="#C30B0A" stroke-width="3.2" stroke-dasharray="8 6" stroke-linejoin="round"/><line x1="110" y1="250" x2="140" y2="250" stroke="#C30B0A" stroke-width="3.2" stroke-dasharray="8 6"/><text x="150" y="255" font-size="14" fill="#111" font-family="Helvetica, Arial, sans-serif">до обучения</text><path d="M70.0 223.5 L81.8 218.4 L93.7 214.4 L105.5 210.6 L117.3 206.8 L129.2 203.0 L141.0 199.2 L152.9 195.4 L164.7 191.6 L176.5 187.7 L188.4 183.9 L200.2 180.1 L212.0 176.3 L223.9 172.5 L235.7 168.7 L247.6 164.9 L259.4 161.1 L271.2 157.3 L283.1 153.5 L294.9 149.7 L306.7 145.9 L318.6 142.1 L330.4 138.2 L342.2 134.4 L354.1 130.6 L365.9 126.8 L377.8 123.0 L389.6 119.2 L401.4 115.4 L413.3 111.6 L425.1 107.8 L436.9 104.0 L448.8 100.2 L460.6 96.4 L472.4 92.7 L484.3 88.9 L496.1 85.1 L508.0 81.3 L519.8 77.6 L531.6 73.9 L543.5 70.2 L555.3 66.4 L567.1 62.7 L579.0 59.2 L590.8 55.8 L602.7 52.2 L614.5 48.6 L626.3 45.4 L638.2 43.2 L650.0 40.0" fill="none" stroke="#C30B0A" stroke-width="3.2" stroke-linejoin="round"/><line x1="110" y1="274" x2="140" y2="274" stroke="#C30B0A" stroke-width="3.2"/><text x="150" y="279" font-size="14" fill="#111" font-family="Helvetica, Arial, sans-serif">после 3000 шагов</text></svg></div>
+
+<p class="stage-hint">Шкала логарифмическая. Каждая кривая — среднее по 256 последовательностям.</p>
 
 <table class="shape-table">
   <tr><th>Проблема</th><th>Симптом</th><th>Стандартное лечение</th></tr>
@@ -2670,258 +2688,31 @@ print([vocab[i] for i in pred_ids])    # [&#x27;сидит&#x27;, &#x27;на&#x2
 ## Модификация RNN: LSTM и управляемая память
 
 <p>
-  Vanilla RNN переносит только одно скрытое состояние и на каждом такте пропускает его
-  через рекуррентную матрицу. LSTM добавляет отдельную долгосрочную память
-  <code>C<sup>t</sup></code> и ворота, которые управляют забыванием, записью и выдачей
-  информации. Ниже добавлен референсный интерактив ячейки без изменения остальных сцен статьи.
+  LSTM добавляет к ячейке второй вектор состояния — память <span class="math-inline" data-tex="c_t"></span> той же длины
+  <code>H</code> — и три сигмоидных слоя-ворот <span class="math-inline" data-tex="f_t, i_t, o_t"></span>, которые получают
+  тот же вход, что и ячейка: <span class="math-inline" data-tex="x_t"></span> и <span class="math-inline" data-tex="h_{t-1}"></span>.
+  Сама ячейка RNN остаётся внутри как кандидат на запись
+  <span class="math-inline" data-tex="g_t=\tanh\left(x_tW_{xg}+h_{t-1}W_{hg}+b_g\right)"></span>. Память меняется только
+  поэлементно: ворота забывания решают, какую долю каждой координаты оставить, ворота входа — сколько записать из кандидата,
+  ворота выхода — какую часть памяти выдать наружу.
 </p>
-<div class="semantic-key" aria-label="Цветовые обозначения LSTM">
-  <span><i style="background:#C29E08"></i>обучаемые ворота</span>
-  <span><i style="background:#3576C0"></i>память и поэлементные операции</span>
-  <span><i style="background:#73B222"></i>граница ячейки</span>
-  <span><i style="background:#C30B0A"></i>путь, который затухает у vanilla RNN</span>
-</div>
+
+<div class="math-display" data-tex="c_t=f_t\odot c_{t-1}+i_t\odot g_t,\qquad h_t=o_t\odot\tanh(c_t)"></div>
+
+<p>
+  Из первой формулы на обратном проходе получается
+  <span class="math-inline" data-tex="dc_{t-1}=dc_t\odot f_t+\ldots"></span>: по линии памяти градиент умножается только
+  на значения ворот забывания, без <span class="math-inline" data-tex="W_{hh}^{\top}"></span> и без производной
+  <code>tanh</code>. Если сеть держит <span class="math-inline" data-tex="f\approx1"></span> на нужной координате, градиент
+  доходит до далёких тактов. Цена — четыре слоя вместо одного: вчетверо больше параметров и умножений на такт.
+</p>
+
 <div class="callout-blue">
-  <strong>Как читать схему.</strong> Положение блоков не меняется: на каждом шаге яркой
-  остаётся только та часть LSTM, которая сейчас разбирается.
+  <strong>Подробный разбор</strong> — в статье <a href="article.html?slug=lstm-from-zero">«LSTM с нуля»</a>. Там ячейка
+  собирается из этой RNN по одной детали, кандидат использует ровно эти
+  <span class="math-inline" data-tex="W_{xh}, W_{hh}, b_h"></span>, а прямой и обратный проход посчитаны руками на той же
+  фразе ⟨BOS⟩ you will pass. Там же опыт, где RNN и LSTM учатся помнить токен через 50 тактов, и три версии кода.
 </div>
-<div class="stage" id="stageLstm" tabindex="0">
-  <div class="stage-figure">
-<svg id="ls" viewBox="0 0 960 560" role="img" aria-label="Схема ячейки LSTM: магистраль долгосрочной памяти, ворота забывания, входа и выхода">
-  <style>
-    #ls { font-family: Helvetica, Arial, sans-serif; }
-    #ls .cellbox { fill: #F5FBF1; stroke: #73B222; stroke-width: 2; }
-    #ls .cwire { fill: none; stroke: #3576C0; stroke-width: 3.4; }
-    #ls .wire { fill: none; stroke: #5E5850; stroke-width: 2; }
-    #ls .gate { fill: #FFFBEB; stroke: #C29E08; stroke-width: 2; }
-    #ls .opc { fill: #F0F6FC; stroke: #3576C0; stroke-width: 2; }
-    #ls .lbl { font-size: 18px; fill: #111111; font-weight: 700; }
-    #ls .gl { font-size: 16px; fill: #8C7106; font-weight: 700; }
-    #ls .ol { font-size: 17px; fill: #3576C0; font-weight: 700; }
-    #ls .cap { font-size: 13px; fill: #5E5850; }
-  </style>
-  <defs>
-    <marker id="ls-arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5E5850"></path></marker>
-    <marker id="ls-arwb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3576C0"></path></marker>
-  </defs>
-
-  <g data-key="cell">
-    <rect x="180" y="120" width="560" height="330" rx="22" class="cellbox"></rect>
-    <text x="460" y="108" text-anchor="middle" class="cap">одна ячейка LSTM на такте t</text>
-  </g>
-
-  <g data-key="cline">
-    <line x1="110" y1="170" x2="248" y2="170" class="cwire" marker-end="url(#ls-arwb)"></line>
-    <text x="100" y="176" text-anchor="end" class="lbl">Cᵗ⁻¹</text>
-    <line x1="290" y1="170" x2="418" y2="170" class="cwire" marker-end="url(#ls-arwb)"></line>
-    <line x1="460" y1="170" x2="798" y2="170" class="cwire" marker-end="url(#ls-arwb)"></line>
-    <text x="810" y="176" class="lbl">Cᵗ</text>
-    <text x="110" y="146" class="cap">долгосрочная память</text>
-  </g>
-
-  <g data-key="hin">
-    <line x1="110" y1="430" x2="618" y2="430" class="wire"></line>
-    <text x="100" y="436" text-anchor="end" class="lbl">hᵗ⁻¹</text>
-    <line x1="215" y1="526" x2="215" y2="434" class="wire" marker-end="url(#ls-arw)"></line>
-    <text x="215" y="546" text-anchor="middle" class="lbl">xᵗ</text>
-    <text x="252" y="412" class="cap">общий вход всех ворот: [hᵗ⁻¹, xᵗ]</text>
-  </g>
-
-  <g data-key="forget">
-    <line x1="270" y1="430" x2="270" y2="388" class="wire"></line>
-    <rect x="248" y="350" width="44" height="36" rx="9" class="gate"></rect>
-    <text x="270" y="374" text-anchor="middle" class="gl">σ</text>
-    <text x="240" y="374" text-anchor="end" class="gl">f</text>
-    <line x1="270" y1="348" x2="270" y2="192" class="wire" marker-end="url(#ls-arw)"></line>
-    <circle cx="270" cy="170" r="18" class="opc"></circle>
-    <text x="270" y="177" text-anchor="middle" class="ol">×</text>
-  </g>
-
-  <g data-key="ctemp">
-    <text x="360" y="148" text-anchor="middle" class="cap">C_temp = f ∗ Cᵗ⁻¹</text>
-  </g>
-
-  <g data-key="input">
-    <line x1="360" y1="430" x2="360" y2="388" class="wire"></line>
-    <rect x="338" y="350" width="44" height="36" rx="9" class="gate"></rect>
-    <text x="360" y="374" text-anchor="middle" class="gl">σ</text>
-    <text x="326" y="342" text-anchor="middle" class="gl">i</text>
-    <path d="M 360 348 V 265 H 420" class="wire" marker-end="url(#ls-arw)"></path>
-    <line x1="500" y1="430" x2="500" y2="388" class="wire"></line>
-    <rect x="470" y="350" width="60" height="36" rx="9" class="gate"></rect>
-    <text x="500" y="374" text-anchor="middle" class="gl">tanh</text>
-    <text x="556" y="342" text-anchor="middle" class="gl">C_add</text>
-    <path d="M 500 348 V 265 H 460" class="wire" marker-end="url(#ls-arw)"></path>
-    <circle cx="440" cy="265" r="16" class="opc"></circle>
-    <text x="440" y="272" text-anchor="middle" class="ol">×</text>
-    <line x1="440" y1="247" x2="440" y2="192" class="wire" marker-end="url(#ls-arw)"></line>
-    <circle cx="440" cy="170" r="18" class="opc"></circle>
-    <text x="440" y="177" text-anchor="middle" class="ol">+</text>
-  </g>
-
-  <g data-key="output">
-    <line x1="620" y1="430" x2="620" y2="388" class="wire"></line>
-    <rect x="598" y="350" width="44" height="36" rx="9" class="gate"></rect>
-    <text x="620" y="374" text-anchor="middle" class="gl">σ</text>
-    <text x="588" y="342" text-anchor="middle" class="gl">o</text>
-    <path d="M 620 348 V 300 H 640" class="wire" marker-end="url(#ls-arw)"></path>
-    <line x1="660" y1="174" x2="660" y2="192" class="wire"></line>
-    <ellipse cx="660" cy="215" rx="40" ry="21" class="gate"></ellipse>
-    <text x="660" y="221" text-anchor="middle" class="gl">tanh</text>
-    <line x1="660" y1="236" x2="660" y2="280" class="wire" marker-end="url(#ls-arw)"></line>
-    <circle cx="660" cy="300" r="16" class="opc"></circle>
-    <text x="660" y="307" text-anchor="middle" class="ol">×</text>
-  </g>
-
-  <g data-key="hout">
-    <path d="M 678 300 H 720 V 430 H 788" class="wire" marker-end="url(#ls-arw)"></path>
-    <text x="800" y="436" class="lbl">hᵗ</text>
-    <line x1="720" y1="296" x2="720" y2="84" class="wire" marker-end="url(#ls-arw)"></line>
-    <text x="720" y="66" text-anchor="middle" class="lbl">yᵗ</text>
-    <text x="744" y="102" class="cap">выход слоя на этом такте</text>
-  </g>
-
-  <text x="296" y="546" class="cap">жёлтый — обучаемые ворота · синий — память и поэлементные операции · зелёный — граница ячейки</text>
-</svg>
-  </div>
-
-  <div class="stage-bar">
-    <button type="button" data-nav="prev">← Назад</button>
-    <button type="button" data-nav="next">Далее →</button>
-    <div class="stage-progress"></div>
-    <div class="stage-counter"></div>
-  </div>
-
-  <div class="stage-notes">
-    <div class="step-panel" data-on="cell cline hin" data-focus="cell">
-      <div class="step-kicker">Шаг 1 · два вектора вместо одного</div>
-      <h4>Долгосрочная память и текущее состояние</h4>
-      <p>
-        Слева в ячейку входят два вектора: <code>C<sup>t−1</sup></code> —
-        долгосрочная память, и <code>h<sup>t−1</sup></code> — краткосрочная,
-        она же выход прошлого такта. Снизу приходит новый токен
-        <code>x<sup>t</sup></code>. Все трое ворот смотрят на одну и ту же
-        склейку <code>[h<sup>t−1</sup>, x<sup>t</sup>]</code> — отдельного
-        входа у них нет.
-      </p>
-      <p>
-        Векторы <code>C</code> и <code>h</code> имеют одинаковую длину. Разница
-        между ними не в размере, а в том, как они обновляются.
-      </p>
-    </div>
-    <div class="step-panel" data-on="cell cline" data-focus="cline">
-      <div class="step-kicker">Шаг 2 · магистраль</div>
-      <h4>Верхняя линия проходит ячейку почти насквозь</h4>
-      <p>
-        На пути <code>C</code> стоят всего две операции, и обе поэлементные:
-        умножение на вектор из нулей и единиц и сложение. Ни одного умножения на
-        матрицу весов — вот главное отличие от vanilla RNN, где состояние на
-        каждом такте прогонялось через <code>W<sub>hh</sub></code>.
-      </p>
-      <div class="callout-blue">
-        <strong>Аналогия со skip connection.</strong> Это тот же приём, что в
-        ResNet: рядом с вычислениями протянут короткий путь, по которому сигнал
-        (и градиент) идёт без искажений.
-      </div>
-    </div>
-    <div class="step-panel" data-on="cell cline hin forget ctemp" data-focus="forget">
-      <div class="step-kicker">Шаг 3 · ворота забывания</div>
-      <h4>Что из памяти уже можно выкинуть</h4>
-      <div class="math-display" data-tex="f^t=\sigma\left(W_f\cdot[h^{t-1},x^t]+b_f\right),\qquad C_{\text{temp}}^{\,t}=f^t\ast C^{t-1}"></div>
-      <p>
-        Сигмоида даёт вектор значений от нуля до единицы той же длины, что и
-        <code>C</code>. Каждая координата памяти умножается на своё число:
-        единица — сохранить полностью, ноль — стереть, промежуточное значение —
-        ослабить.
-      </p>
-      <div class="callout-yellow">
-        <strong>На примере.</strong> В предложении «Человек в шляпе с красивым
-        попугаем на плече… зашёл в бар» на слове «на» ворота забывания могут
-        стереть из памяти форму слов «красивым попугаем»: согласовывать с ними
-        уже ничего не нужно.
-      </div>
-    </div>
-    <div class="step-panel" data-on="cell cline hin input" data-focus="input">
-      <div class="step-kicker">Шаг 4 · ворота входа</div>
-      <h4>Что из нового стоит записать</h4>
-      <div class="math-display" data-tex="i^t=\sigma\left(W_i\cdot[h^{t-1},x^t]+b_i\right),\qquad C_{\text{add}}^{\,t}=\tanh\left(W_C\cdot[h^{t-1},x^t]+b_C\right)"></div>
-      <p>
-        Здесь работают сразу двое: <code>tanh</code> готовит
-        <em>что</em> записать (вектор-кандидат со значениями от −1 до 1), а
-        сигмоида решает, <em>сколько</em> от него пропустить. Разделение
-        осмысленное: содержание и громкость записи учатся отдельно.
-      </p>
-      <div class="callout-yellow">
-        <strong>На примере.</strong> На слове «человек» сеть добавляет в память
-        признак мужского рода — он понадобится через полтора десятка слов, на
-        слове «которого».
-      </div>
-    </div>
-    <div class="step-panel" data-on="cell cline hin forget input ctemp" data-focus="ctemp input">
-      <div class="step-kicker">Шаг 5 · обновление памяти</div>
-      <h4>Стёрли — и дописали</h4>
-      <div class="math-display" data-tex="C^t=f^t\ast C^{t-1}+i^t\ast C_{\text{add}}^{\,t}"></div>
-      <p>
-        Вся долгосрочная память обновляется одной строчкой: старое содержимое,
-        ослабленное воротами забывания, плюс новое, дозированное воротами входа.
-        Обе операции — поэлементные, поэтому каждая координата памяти живёт своей
-        жизнью и может держать свой собственный признак.
-      </p>
-      <div class="callout">
-        <strong>Вывод шага:</strong> при <code>f = 1</code> и <code>i = 0</code>
-        ячейка просто копирует память дальше без изменений. У vanilla RNN такого
-        режима нет в принципе — там состояние обязательно проходит через матрицу.
-      </div>
-    </div>
-    <div class="step-panel" data-on="cell cline hin output" data-focus="output">
-      <div class="step-kicker">Шаг 6 · ворота выхода</div>
-      <h4>Что из памяти показать наружу</h4>
-      <div class="math-display" data-tex="o^t=\sigma\left(W_o\cdot[h^{t-1},x^t]+b_o\right),\qquad h^t=o^t\ast\tanh\left(C^t\right)"></div>
-      <p>
-        Память и выход разведены: в <code>C</code> может лежать что угодно, но
-        наружу пойдёт только та часть, которую пропустят ворота выхода.
-        <code>tanh</code> здесь нужен, чтобы вернуть значения в диапазон
-        <code>(−1, 1)</code> — ведь сама <code>C</code> ничем не ограничена.
-      </p>
-      <div class="callout-yellow">
-        <strong>На примере.</strong> На слове «попугаем» из памяти нужно достать
-        форму слова «красивым», но не форму слова «человек» — хотя оба признака
-        в памяти лежат. Ровно это и делают ворота выхода.
-      </div>
-    </div>
-    <div class="step-panel" data-on="cell cline hin output hout" data-focus="hout">
-      <div class="step-kicker">Шаг 7 · выход такта</div>
-      <h4>h идёт и наверх, и в следующий такт</h4>
-      <div class="math-display" data-tex="y^t=\sigma\left(W_y h^t+b_y\right)"></div>
-      <p>
-        Вектор <code>h<sup>t</sup></code> уходит сразу в две стороны: вверх — в
-        выходной слой, и вправо — в следующий такт, где станет
-        <code>h<sup>t−1</sup></code>. Вместе с ним дальше едет и
-        <code>C<sup>t</sup></code>: между тактами передаются оба вектора.
-      </p>
-    </div>
-    <div class="step-panel" data-on="cell cline hin forget input ctemp output hout" data-focus="cline">
-      <div class="step-kicker">Шаг 8 · зачем всё это</div>
-      <h4>Градиент по C не проходит через матрицу</h4>
-      <div class="math-display" data-tex="\frac{\partial C^t}{\partial C^{t-1}}=\operatorname{diag}\left(f^t\right)"></div>
-      <p>
-        У vanilla RNN переход между тактами давал якобиан
-        <code>W<sub>hh</sub><sup>⊤</sup>·diag(1 − h²)</code>, и его норма почти
-        всегда была заметно меньше единицы. Здесь на пути стоит только вектор
-        <code>f</code>, который сеть выбирает сама: захочет помнить — поставит
-        значения около единицы, и градиент дойдёт до начала предложения почти
-        нетронутым.
-      </p>
-      <div class="callout-red">
-        <strong>Это не бесплатно.</strong> Четыре матрицы вместо одной — вчетверо
-        больше параметров и вчетверо больше вычислений на такт. И
-        последовательность по-прежнему не распараллеливается по времени: LSTM
-        лечит затухание, но не медлительность.
-      </div>
-    </div>
-  </div>
-</div>
-<p class="stage-hint">Переключайте восемь шагов кнопками или стрелками клавиатуры.</p>
 
 ## Часть 8. Что важно уметь восстановить по памяти
 
@@ -2930,8 +2721,8 @@ print([vocab[i] for i in pred_ids])    # [&#x27;сидит&#x27;, &#x27;на&#x2
   <li><strong>Скрытое состояние</strong> <code>h<sub>t</sub> = tanh(x<sub>t</sub>W<sub>xh</sub> + h<sub>t−1</sub>W<sub>hh</sub> + b<sub>h</sub>)</code> — это и выход, и память.</li>
   <li><strong>W<sub>hh</sub> обязана быть квадратной</strong> <code>[H, H]</code>: состояние возвращается в себя того же размера, поэтому вся история сжата в <code>H</code> чисел.</li>
   <li><strong>Ошибка последовательности</strong> — сумма (или среднее) обычных loss'ов по шагам; padding нужно маскировать.</li>
-  <li><strong>Градиенты по <code>V</code> и <code>b<sub>y</sub></code></strong> — локальные: рекурсии по времени нет.</li>
-  <li><strong>Градиенты по <code>W</code> и <code>U</code> раскрываются рекурсивно:</strong> общий параметр получает вклад от каждого такта, а путь от далёкого такта проходит через <code>∂h<sup>t</sup>/∂h<sup>t−1</sup></code>.</li>
+  <li><strong>Градиенты по <code>W<sub>hy</sub></code> и <code>b<sub>y</sub></code></strong> — локальные: рекурсии по времени нет.</li>
+  <li><strong>Градиенты по <code>W<sub>xh</sub></code> и <code>W<sub>hh</sub></code> раскрываются рекурсивно:</strong> общий параметр получает вклад от каждого такта, а путь от далёкого такта проходит через <code>∂h<sup>t</sup>/∂h<sup>t−1</sup></code>.</li>
   <li><strong>BPTT на практике</strong> — одна обратная рекурсия: <code>δ<sub>t</sub> = (1 − h<sub>t</sub><sup>2</sup>) ⊙ (dz<sub>t</sub>W<sub>hy</sub><sup>⊤</sup> + δ<sub>t+1</sub>W<sub>hh</sub><sup>⊤</sup>)</code>.</li>
   <li><strong>Затухание и взрыв</strong> — следствие произведения <code>T − k</code> одинаковых якобианов; лечатся клиппингом, усечением и воротными ячейками.</li>
   <li><strong>Forward запоминает все такты:</strong> входы, состояния <code>h<sub>0</sub>…h<sub>T</sub></code> и предсказания — память растёт линейно по <code>T</code>, а строка <code>W<sub>xh</sub></code> для токена, ни разу не бывшего входом, получает нулевой градиент.</li>
