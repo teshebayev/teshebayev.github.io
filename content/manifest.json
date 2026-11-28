@@ -196,7 +196,7 @@
             "en": "Unsupervised learning",
             "kk": "Мұғалімсіз оқыту"
           },
-          "articles": ["pca-full-cycle", "tsne-full-cycle"]
+          "articles": ["pca-full-cycle", "tsne-full-cycle", "clustering-full-cycle"]
         },
         {
           "group": "evaluation",
@@ -748,6 +748,25 @@
   "draft": false,
   "content": {
     "ru": "content/articles/machine-learning/tsne-full-cycle.ru.md"
+  }
+},
+    {
+  "slug": "clustering-full-cycle",
+  "category": "machine-learning",
+  "title": {
+    "ru": "Кластеризация: k-means, иерархическая и DBSCAN"
+  },
+  "description": {
+    "ru": "Кластеризация на двенадцати точках из статьи про t-SNE и на рукописных цифрах: k-means по шагам (назначение и обновление, сумма квадратов J), почему он останавливается и где застревает, k-means++ и n_init, выбор k по локтю и силуэту, где k-means ошибается (разный размер, вытянутые и невыпуклые группы, единицы признаков), иерархическая кластеризация и дендрограмма, single, complete, average и Уорд, DBSCAN: ядра, граничные точки и шум, сравнение методов на пяти наборах, кластеры цифр и ARI, кластеризация по карте t-SNE, код на numpy и sklearn; каждая формула посчитана руками."
+  },
+  "date": "2026-11-28",
+  "reading_time": 35,
+  "tags": [
+    "ml-basics"
+  ],
+  "draft": false,
+  "content": {
+    "ru": "content/articles/machine-learning/clustering-full-cycle.ru.md"
   }
 },
     {
