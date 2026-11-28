@@ -251,7 +251,7 @@
             "en": "Recurrent networks",
             "kk": "Рекуррентті желілер"
           },
-          "articles": ["rnn-from-zero", "rnn-by-shapes", "lstm-from-zero"]
+          "articles": ["rnn-from-zero", "lstm-from-zero"]
         },
         {
           "group": "attention",
@@ -1150,7 +1150,7 @@
   "date": "2026-09-21",
   "reading_time": 27,
   "tags": ["ml-basics", "deep-learning"],
-  "draft": false,
+  "draft": true,
   "content": {
     "ru": "content/articles/deep-learning/rnn-by-shapes.ru.md"
   }
